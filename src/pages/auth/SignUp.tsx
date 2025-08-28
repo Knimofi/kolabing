@@ -60,35 +60,81 @@ const SignUp = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm()) return;
+  e.preventDefault();
 
-    const { error } = await signUp(
-      formData.email,
-      formData.password,
-      userType,
-      formData.displayName
-    );
+  if (!validateForm()) return;
 
-    if (error) {
-      if (error.message.includes('already registered')) {
-        setErrors({ email: 'This email is already registered. Try signing in instead.' });
-      } else {
-        toast({
-          title: 'Error',
-          description: error.message || 'Failed to create account',
-          variant: 'destructive'
-        });
-      }
+  // Step 1: create auth user
+  const { data: authData, error: signUpError } = await signUp(
+    formData.email,
+    formData.password,
+    userType,
+    formData.displayName
+  );
+
+  if (signUpError) {
+    if (signUpError.message.includes('already registered')) {
+      setErrors({ email: 'This email is already registered. Try signing in instead.' });
     } else {
       toast({
-        title: 'Account created!',
-        description: 'Please check your email to verify your account.',
+        title: 'Error',
+        description: signUpError.message || 'Failed to create account',
+        variant: 'destructive'
       });
-      navigate(userType === 'business' ? '/business' : '/community');
     }
-  };
+    return;
+  }
+
+  try {
+    // Step 2: insert into profiles
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .insert({
+        id: authData.user.id,      // <- FK to auth.users
+        user_id: authData.user.id, // redundancy but matches your schema
+        display_name: formData.displayName,
+        type: userType
+      })
+      .select()
+      .single();
+
+    if (profileError) throw profileError;
+
+    // Step 3: insert into sub-profile table
+    if (userType === 'business') {
+      const { error: businessError } = await supabase
+        .from('business_profiles')
+        .insert({
+          profile_id: profile.id,
+          name: formData.displayName
+        });
+      if (businessError) throw businessError;
+    } else {
+      const { error: communityError } = await supabase
+        .from('community_profiles')
+        .insert({
+          profile_id: profile.id,
+          name: formData.displayName
+        });
+      if (communityError) throw communityError;
+    }
+
+    // Step 4: success → navigate
+    toast({
+      title: 'Account created!',
+      description: 'Please check your email to verify your account.',
+    });
+    navigate(userType === 'business' ? '/business' : '/community');
+
+  } catch (err: any) {
+    toast({
+      title: 'Error',
+      description: err.message || 'Failed to finish account setup',
+      variant: 'destructive'
+    });
+  }
+};
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
