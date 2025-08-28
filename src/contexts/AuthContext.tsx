@@ -121,26 +121,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Create profile if user was created
       if (data.user) {
-        const { error: profileError } = await supabase
+        const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .insert([{
             user_id: data.user.id,
             type: type,
             display_name: displayName,
             contact_info: { email }
-          }]);
+          }])
+          .select()
+          .single();
 
         if (profileError) {
           console.error('Error creating profile:', profileError);
           return { error: profileError };
         }
 
-        // Create type-specific profile
+        // Create type-specific profile using the actual profile.id
         if (type === 'business') {
           const { error: businessError } = await supabase
             .from('business_profiles')
             .insert([{
-              profile_id: data.user.id
+              profile_id: profileData.id
             }]);
           
           if (businessError) {
@@ -151,7 +153,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const { error: communityError } = await supabase
             .from('community_profiles')
             .insert([{
-              profile_id: data.user.id
+              profile_id: profileData.id
             }]);
           
           if (communityError) {
