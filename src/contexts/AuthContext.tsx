@@ -105,6 +105,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(true);
       const redirectUrl = `${window.location.origin}/`;
       
+      console.log('Starting signup for:', email, 'type:', type);
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -117,12 +119,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       });
 
-      if (error) return { error };
+      if (error) {
+        console.error('Auth signup error:', error);
+        return { error };
+      }
+
+      console.log('Auth signup successful, user ID:', data.user?.id);
 
       // Create profile if user was created
       if (data.user) {
-        // Add small delay to ensure user is fully created
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Add delay to ensure user is fully created
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        console.log('Creating profile for user:', data.user.id);
         
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
@@ -140,8 +149,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           return { error: profileError };
         }
 
+        console.log('Profile created successfully, ID:', profileData.id);
+
         // Create type-specific profile using the actual profile.id
         if (type === 'business') {
+          console.log('Creating business profile for profile ID:', profileData.id);
+          
           const { error: businessError } = await supabase
             .from('business_profiles')
             .insert([{
@@ -152,7 +165,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             console.error('Error creating business profile:', businessError);
             return { error: businessError };
           }
+          
+          console.log('Business profile created successfully');
         } else {
+          console.log('Creating community profile for profile ID:', profileData.id);
+          
           const { error: communityError } = await supabase
             .from('community_profiles')
             .insert([{
@@ -163,11 +180,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             console.error('Error creating community profile:', communityError);
             return { error: communityError };
           }
+          
+          console.log('Community profile created successfully');
         }
       }
 
       return { error: null };
     } catch (error) {
+      console.error('Signup catch error:', error);
       return { error };
     } finally {
       setLoading(false);
