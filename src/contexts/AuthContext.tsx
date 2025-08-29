@@ -119,26 +119,55 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) return { error };
 
-      // Create profile and type-specific profile in a single transaction using the database function
+      // Create profile if user was created
       if (data.user) {
-        const { data: profileId, error: profileError } = await supabase.rpc('create_user_profile', {
-          user_id: data.user.id,
-          profile_type: type,
-          display_name: displayName,
-          user_email: email
-        });
+        // Add small delay to ensure user is fully created
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .insert([{
+            user_id: data.user.id,
+            type: type,
+            display_name: displayName,
+            contact_info: { email }
+          }])
+          .select()
+          .single();
 
         if (profileError) {
           console.error('Error creating profile:', profileError);
           return { error: profileError };
         }
 
-        console.log('Profile created successfully with ID:', profileId);
+        // Create type-specific profile using the actual profile.id
+        if (type === 'business') {
+          const { error: businessError } = await supabase
+            .from('business_profiles')
+            .insert([{
+              profile_id: profileData.id
+            }]);
+          
+          if (businessError) {
+            console.error('Error creating business profile:', businessError);
+            return { error: businessError };
+          }
+        } else {
+          const { error: communityError } = await supabase
+            .from('community_profiles')
+            .insert([{
+              profile_id: profileData.id
+            }]);
+          
+          if (communityError) {
+            console.error('Error creating community profile:', communityError);
+            return { error: communityError };
+          }
+        }
       }
 
       return { error: null };
     } catch (error) {
-      console.error('Signup error:', error);
       return { error };
     } finally {
       setLoading(false);
