@@ -44,6 +44,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "analytics_events_actor_profile_id_fkey"
+            columns: ["actor_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       applications: {
@@ -134,6 +141,13 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: true
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_profiles_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
         ]
@@ -237,6 +251,13 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: true
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_profiles_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
         ]
@@ -392,10 +413,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "reviews_reviewee_profile_id_fkey"
+            columns: ["reviewee_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "reviews_reviewer_profile_id_fkey"
             columns: ["reviewer_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_reviewer_profile_id_fkey"
+            columns: ["reviewer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
         ]
@@ -484,11 +519,59 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "surveys_filled_by_profile_id_fkey"
+            columns: ["filled_by_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
     Views: {
-      [_ in never]: never
+      profiles_public: {
+        Row: {
+          bio: string | null
+          city: string | null
+          contact_info: Json | null
+          created_at: string | null
+          display_name: string | null
+          id: string | null
+          profile_photo: string | null
+          social_links: Json | null
+          type: Database["public"]["Enums"]["user_type"] | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          bio?: string | null
+          city?: string | null
+          contact_info?: never
+          created_at?: string | null
+          display_name?: string | null
+          id?: string | null
+          profile_photo?: string | null
+          social_links?: Json | null
+          type?: Database["public"]["Enums"]["user_type"] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          bio?: string | null
+          city?: string | null
+          contact_info?: never
+          created_at?: string | null
+          display_name?: string | null
+          id?: string | null
+          profile_photo?: string | null
+          social_links?: Json | null
+          type?: Database["public"]["Enums"]["user_type"] | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       accept_application: {
@@ -506,6 +589,22 @@ export type Database = {
       get_current_profile_id: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      get_safe_profile_data: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          bio: string
+          city: string
+          contact_info: Json
+          created_at: string
+          display_name: string
+          id: string
+          profile_photo: string
+          social_links: Json
+          type: Database["public"]["Enums"]["user_type"]
+          updated_at: string
+          user_id: string
+        }[]
       }
       is_business_owner_of_offer: {
         Args: { offer_id: string }
