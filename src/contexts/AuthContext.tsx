@@ -95,10 +95,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (profileError) {
         console.error('Error fetching profile:', profileError);
+        return;
+      }
+
+      if (!profileData) {
+        console.log('No profile found for user');
         return;
       }
 
@@ -187,11 +192,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
-          .insert([{
-            id: data.user.id,
+          .insert({
             user_id: data.user.id,
             email: email
-          }])
+          })
           .select()
           .single();
 
@@ -208,10 +212,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           
           const { error: businessError } = await supabase
             .from('business_profiles')
-            .insert([{
+            .insert({
               id: profileData.id,
               name: displayName
-            }]);
+            });
           
           if (businessError) {
             console.error('Error creating business profile:', businessError);
@@ -224,10 +228,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           
           const { error: communityError } = await supabase
             .from('community_profiles')
-            .insert([{
+            .insert({
               id: profileData.id,
               name: displayName
-            }]);
+            });
           
           if (communityError) {
             console.error('Error creating community profile:', communityError);
