@@ -4,17 +4,24 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
 interface Profile {
+  // Private profile data
   id: string;
   user_id: string;
-  type: 'business' | 'community';
-  display_name: string;
-  bio?: string;
-  contact_info?: any;
-  city?: string;
-  profile_photo?: string;
-  social_links?: any;
+  email?: string;
+  phone_number?: string;
   created_at: string;
   updated_at: string;
+  // Derived data
+  type: 'business' | 'community';
+  // Public profile data (from business_profiles or community_profiles)
+  name?: string;
+  city?: string;
+  profile_photo?: string;
+  website?: string;
+  instagram?: string;
+  tiktok?: string;
+  business_type?: string;
+  community_type?: string;
 }
 
 interface AuthContextType {
@@ -83,18 +90,63 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
+      // First get the basic profile data
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
         .single();
 
-      if (error) {
-        console.error('Error fetching profile:', error);
+      if (profileError) {
+        console.error('Error fetching profile:', profileError);
         return;
       }
 
-      setProfile(data);
+      // Try to get business profile data
+      const { data: businessData } = await supabase
+        .from('business_profiles')
+        .select('*')
+        .eq('id', profileData.id)
+        .maybeSingle();
+
+      // Try to get community profile data  
+      const { data: communityData } = await supabase
+        .from('community_profiles')
+        .select('*')
+        .eq('id', profileData.id)
+        .maybeSingle();
+
+      // Determine profile type and combine data
+      let profile: Profile;
+      if (businessData) {
+        profile = {
+          ...profileData,
+          type: 'business',
+          name: businessData.name,
+          city: businessData.city,
+          profile_photo: businessData.profile_photo,
+          website: businessData.website,
+          instagram: businessData.instagram,
+          business_type: businessData.business_type
+        };
+      } else if (communityData) {
+        profile = {
+          ...profileData,
+          type: 'community',
+          name: communityData.name,
+          city: communityData.city,
+          profile_photo: communityData.profile_photo,
+          website: communityData.website,
+          instagram: communityData.instagram,
+          tiktok: communityData.tiktok,
+          community_type: communityData.community_type
+        };
+      } else {
+        console.error('No business or community profile found for user');
+        return;
+      }
+
+      setProfile(profile);
     } catch (error) {
       console.error('Error fetching profile:', error);
     }
@@ -136,10 +188,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .insert([{
+            id: data.user.id,
             user_id: data.user.id,
-            type: type,
-            display_name: displayName,
-            contact_info: { email }
+            email: email
           }])
           .select()
           .single();
@@ -151,14 +202,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         console.log('Profile created successfully, ID:', profileData.id);
 
-        // Create type-specific profile using the actual profile.id
+        // Create type-specific profile using the profile.id
         if (type === 'business') {
           console.log('Creating business profile for profile ID:', profileData.id);
           
           const { error: businessError } = await supabase
             .from('business_profiles')
             .insert([{
-              profile_id: profileData.id
+              id: profileData.id,
+              name: displayName
             }]);
           
           if (businessError) {
@@ -173,7 +225,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const { error: communityError } = await supabase
             .from('community_profiles')
             .insert([{
-              profile_id: profileData.id
+              id: profileData.id,
+              name: displayName
             }]);
           
           if (communityError) {
@@ -217,15 +270,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateProfile = async (updates: Partial<Profile>) => {
-    if (!user) return { error: new Error('No user logged in') };
+    if (!user || !profile) return { error: new Error('No user logged in or profile not loaded') };
 
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update(updates)
-        .eq('user_id', user.id);
+      // Separate private and public updates
+      const privateUpdates: any = {};
+      const publicUpdates: any = {};
 
-      if (error) return { error };
+      // Private fields go to profiles table
+      if (updates.email !== undefined) privateUpdates.email = updates.email;
+      if (updates.phone_number !== undefined) privateUpdates.phone_number = updates.phone_number;
+
+      // Public fields go to type-specific table
+      if (updates.name !== undefined) publicUpdates.name = updates.name;
+      if (updates.city !== undefined) publicUpdates.city = updates.city;
+      if (updates.profile_photo !== undefined) publicUpdates.profile_photo = updates.profile_photo;
+      if (updates.website !== undefined) publicUpdates.website = updates.website;
+      if (updates.instagram !== undefined) publicUpdates.instagram = updates.instagram;
+      if (updates.tiktok !== undefined) publicUpdates.tiktok = updates.tiktok;
+      if (updates.business_type !== undefined) publicUpdates.business_type = updates.business_type;
+      if (updates.community_type !== undefined) publicUpdates.community_type = updates.community_type;
+
+      // Update private profile if needed
+      if (Object.keys(privateUpdates).length > 0) {
+        const { error: privateError } = await supabase
+          .from('profiles')
+          .update(privateUpdates)
+          .eq('user_id', user.id);
+
+        if (privateError) return { error: privateError };
+      }
+
+      // Update public profile if needed
+      if (Object.keys(publicUpdates).length > 0) {
+        const tableName = profile.type === 'business' ? 'business_profiles' : 'community_profiles';
+        const { error: publicError } = await supabase
+          .from(tableName)
+          .update(publicUpdates)
+          .eq('id', profile.id);
+
+        if (publicError) return { error: publicError };
+      }
 
       // Update local state
       setProfile(prev => prev ? { ...prev, ...updates } : null);

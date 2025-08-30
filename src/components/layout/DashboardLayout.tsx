@@ -105,7 +105,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-foreground truncate">
-                  {profile?.display_name}
+                  {profile?.name}
                 </p>
                 <p className="text-xs text-muted-foreground capitalize">
                   {profile?.type} Account
@@ -170,7 +170,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             
             <div className="flex items-center space-x-4 ml-auto">
               <span className="text-sm text-muted-foreground hidden sm:inline">
-                Welcome back, {profile?.display_name}
+                Welcome back, {profile?.name}
               </span>
             </div>
           </div>
