@@ -36,22 +36,7 @@ export type Database = {
           occurred_at?: string
           payload?: Json
         }
-        Relationships: [
-          {
-            foreignKeyName: "analytics_events_actor_profile_id_fkey"
-            columns: ["actor_profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "analytics_events_actor_profile_id_fkey"
-            columns: ["actor_profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       applications: {
         Row: {
@@ -83,13 +68,6 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "applications_community_profile_id_fkey"
-            columns: ["community_profile_id"]
-            isOneToOne: false
-            referencedRelation: "community_profiles"
-            referencedColumns: ["profile_id"]
-          },
-          {
             foreignKeyName: "applications_offer_id_fkey"
             columns: ["offer_id"]
             isOneToOne: false
@@ -100,54 +78,76 @@ export type Database = {
       }
       business_profiles: {
         Row: {
-          billing_info: Json | null
           business_type: string | null
+          city: string | null
           created_at: string
-          profile_id: string
-          stripe_customer_id: string | null
-          stripe_subscription_id: string | null
-          subscription_status:
-            | Database["public"]["Enums"]["subscription_status"]
-            | null
+          id: string
+          instagram: string | null
+          name: string | null
+          profile_photo: string | null
           updated_at: string
+          website: string | null
         }
         Insert: {
-          billing_info?: Json | null
           business_type?: string | null
+          city?: string | null
           created_at?: string
-          profile_id: string
-          stripe_customer_id?: string | null
-          stripe_subscription_id?: string | null
-          subscription_status?:
-            | Database["public"]["Enums"]["subscription_status"]
-            | null
+          id: string
+          instagram?: string | null
+          name?: string | null
+          profile_photo?: string | null
           updated_at?: string
+          website?: string | null
         }
         Update: {
-          billing_info?: Json | null
           business_type?: string | null
+          city?: string | null
           created_at?: string
-          profile_id?: string
-          stripe_customer_id?: string | null
-          stripe_subscription_id?: string | null
-          subscription_status?:
-            | Database["public"]["Enums"]["subscription_status"]
-            | null
+          id?: string
+          instagram?: string | null
+          name?: string | null
+          profile_photo?: string | null
           updated_at?: string
+          website?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "business_profiles_profile_id_fkey"
-            columns: ["profile_id"]
+            foreignKeyName: "business_profiles_id_fkey"
+            columns: ["id"]
             isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+        ]
+      }
+      business_subscriptions: {
+        Row: {
+          billing_info: Json | null
+          id: string
+          subscription_status:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+        }
+        Insert: {
+          billing_info?: Json | null
+          id: string
+          subscription_status?:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+        }
+        Update: {
+          billing_info?: Json | null
+          id?: string
+          subscription_status?:
+            | Database["public"]["Enums"]["subscription_status"]
+            | null
+        }
+        Relationships: [
           {
-            foreignKeyName: "business_profiles_profile_id_fkey"
-            columns: ["profile_id"]
+            foreignKeyName: "business_subscriptions_id_fkey"
+            columns: ["id"]
             isOneToOne: true
-            referencedRelation: "profiles_public"
+            referencedRelation: "business_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -198,20 +198,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "collaborations_business_profile_id_fkey"
-            columns: ["business_profile_id"]
-            isOneToOne: false
-            referencedRelation: "business_profiles"
-            referencedColumns: ["profile_id"]
-          },
-          {
-            foreignKeyName: "collaborations_community_profile_id_fkey"
-            columns: ["community_profile_id"]
-            isOneToOne: false
-            referencedRelation: "community_profiles"
-            referencedColumns: ["profile_id"]
-          },
-          {
             foreignKeyName: "collaborations_offer_id_fkey"
             columns: ["offer_id"]
             isOneToOne: false
@@ -222,42 +208,47 @@ export type Database = {
       }
       community_profiles: {
         Row: {
-          additional_links: Json | null
+          city: string | null
           community_type: string | null
           created_at: string
-          members_estimate: number | null
-          profile_id: string
+          id: string
+          instagram: string | null
+          name: string | null
+          profile_photo: string | null
+          tiktok: string | null
           updated_at: string
+          website: string | null
         }
         Insert: {
-          additional_links?: Json | null
+          city?: string | null
           community_type?: string | null
           created_at?: string
-          members_estimate?: number | null
-          profile_id: string
+          id: string
+          instagram?: string | null
+          name?: string | null
+          profile_photo?: string | null
+          tiktok?: string | null
           updated_at?: string
+          website?: string | null
         }
         Update: {
-          additional_links?: Json | null
+          city?: string | null
           community_type?: string | null
           created_at?: string
-          members_estimate?: number | null
-          profile_id?: string
+          id?: string
+          instagram?: string | null
+          name?: string | null
+          profile_photo?: string | null
+          tiktok?: string | null
           updated_at?: string
+          website?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "community_profiles_profile_id_fkey"
-            columns: ["profile_id"]
+            foreignKeyName: "community_profiles_id_fkey"
+            columns: ["id"]
             isOneToOne: true
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "community_profiles_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: true
-            referencedRelation: "profiles_public"
             referencedColumns: ["id"]
           },
         ]
@@ -317,53 +308,30 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "offers_business_profile_id_fkey"
-            columns: ["business_profile_id"]
-            isOneToOne: false
-            referencedRelation: "business_profiles"
-            referencedColumns: ["profile_id"]
-          },
-        ]
+        Relationships: []
       }
       profiles: {
         Row: {
-          bio: string | null
-          city: string | null
-          contact_info: Json | null
           created_at: string
-          display_name: string
+          email: string | null
           id: string
-          profile_photo: string | null
-          social_links: Json | null
-          type: Database["public"]["Enums"]["user_type"]
+          phone_number: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
-          bio?: string | null
-          city?: string | null
-          contact_info?: Json | null
           created_at?: string
-          display_name: string
+          email?: string | null
           id?: string
-          profile_photo?: string | null
-          social_links?: Json | null
-          type: Database["public"]["Enums"]["user_type"]
+          phone_number?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
-          bio?: string | null
-          city?: string | null
-          contact_info?: Json | null
           created_at?: string
-          display_name?: string
+          email?: string | null
           id?: string
-          profile_photo?: string | null
-          social_links?: Json | null
-          type?: Database["public"]["Enums"]["user_type"]
+          phone_number?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -405,34 +373,6 @@ export type Database = {
             referencedRelation: "collaborations"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "reviews_reviewee_profile_id_fkey"
-            columns: ["reviewee_profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reviews_reviewee_profile_id_fkey"
-            columns: ["reviewee_profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reviews_reviewer_profile_id_fkey"
-            columns: ["reviewer_profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reviews_reviewer_profile_id_fkey"
-            columns: ["reviewer_profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       subscriptions: {
@@ -469,15 +409,7 @@ export type Database = {
           stripe_subscription_id?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "subscriptions_business_profile_id_fkey"
-            columns: ["business_profile_id"]
-            isOneToOne: false
-            referencedRelation: "business_profiles"
-            referencedColumns: ["profile_id"]
-          },
-        ]
+        Relationships: []
       }
       surveys: {
         Row: {
@@ -512,66 +444,11 @@ export type Database = {
             referencedRelation: "collaborations"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "surveys_filled_by_profile_id_fkey"
-            columns: ["filled_by_profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "surveys_filled_by_profile_id_fkey"
-            columns: ["filled_by_profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
     }
     Views: {
-      profiles_public: {
-        Row: {
-          bio: string | null
-          city: string | null
-          contact_info: Json | null
-          created_at: string | null
-          display_name: string | null
-          id: string | null
-          profile_photo: string | null
-          social_links: Json | null
-          type: Database["public"]["Enums"]["user_type"] | null
-          updated_at: string | null
-          user_id: string | null
-        }
-        Insert: {
-          bio?: string | null
-          city?: string | null
-          contact_info?: never
-          created_at?: string | null
-          display_name?: string | null
-          id?: string | null
-          profile_photo?: string | null
-          social_links?: Json | null
-          type?: Database["public"]["Enums"]["user_type"] | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          bio?: string | null
-          city?: string | null
-          contact_info?: never
-          created_at?: string | null
-          display_name?: string | null
-          id?: string | null
-          profile_photo?: string | null
-          social_links?: Json | null
-          type?: Database["public"]["Enums"]["user_type"] | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       accept_application: {
@@ -586,25 +463,18 @@ export type Database = {
         }
         Returns: string
       }
+      create_user_profile: {
+        Args: {
+          display_name: string
+          profile_type: string
+          user_email: string
+          user_id: string
+        }
+        Returns: string
+      }
       get_current_profile_id: {
         Args: Record<PropertyKey, never>
         Returns: string
-      }
-      get_safe_profile_data: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          bio: string
-          city: string
-          contact_info: Json
-          created_at: string
-          display_name: string
-          id: string
-          profile_photo: string
-          social_links: Json
-          type: Database["public"]["Enums"]["user_type"]
-          updated_at: string
-          user_id: string
-        }[]
       }
       is_business_owner_of_offer: {
         Args: { offer_id: string }
@@ -620,6 +490,10 @@ export type Database = {
       }
       is_profile_owner: {
         Args: { profile_id: string }
+        Returns: boolean
+      }
+      is_profile_owner_by_user_id: {
+        Args: { profile_user_id: string }
         Returns: boolean
       }
     }
