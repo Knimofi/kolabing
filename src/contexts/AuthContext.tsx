@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { ensureUserProvisioned } from '@/lib/auth-provisioning';
 
 interface Profile {
   id: string;
@@ -51,7 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setSession(session);
       setUser(session?.user ?? null);
 
-      if (session?.user) setTimeout(() => fetchProfile(session.user.id), 0);
+      if (session?.user) setTimeout(() => provisionThenFetch(session.user!), 0);
       else setProfile(null);
 
       setLoading(false);
@@ -61,7 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setSession(session);
       setUser(session?.user ?? null);
 
-      if (session?.user) setTimeout(() => fetchProfile(session.user.id), 0);
+      if (session?.user) setTimeout(() => provisionThenFetch(session.user!), 0);
       setLoading(false);
     });
 
@@ -103,11 +104,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const provisionThenFetch = async (userObj: User) => {
+    try {
+      await ensureUserProvisioned(userObj);
+    } catch (e) {
+      console.error('Provisioning error:', e);
+    }
+    await fetchProfile(userObj.id);
+  };
+
   const signUp = async (email: string, password: string, type: 'business' | 'community', displayName: string) => {
     try {
       setLoading(true);
       const redirectUrl = `${window.location.origin}/`;
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -115,33 +125,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           data: { display_name: displayName, type }
         }
       });
-
-      if (error) return { error };
-      if (!data.user) return { error: new Error('No user returned') };
-
-      // Create main profile with user_type
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .insert({ user_id: data.user.id, email, user_type: type })
-        .select()
-        .single();
-
-      if (profileError) return { error: profileError };
-
-      // Create type-specific profile
-      if (type === 'business') {
-        const { error: businessError } = await supabase
-          .from('business_profiles')
-          .insert({ id: profileData.id, name: displayName });
-        if (businessError) return { error: businessError };
-      } else {
-        const { error: communityError } = await supabase
-          .from('community_profiles')
-          .insert({ id: profileData.id, name: displayName });
-        if (communityError) return { error: communityError };
-      }
-
-      return { error: null };
+      return { error };
     } catch (error) {
       console.error('Signup error:', error);
       return { error };
