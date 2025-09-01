@@ -96,6 +96,7 @@ const SignUp = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* Header */}
       <header className="p-4 flex items-center justify-between border-b border-border">
         <Link 
           to="/"
@@ -110,8 +111,10 @@ const SignUp = () => {
         </Link>
       </header>
 
+      {/* Main */}
       <main className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-md">
+          {/* Header Info */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
@@ -123,6 +126,7 @@ const SignUp = () => {
             <p className="text-muted-foreground">Join the marketplace for meaningful collaborations</p>
           </div>
 
+          {/* Account Type Selector */}
           <div className="mb-6">
             <Label className="text-sm font-medium text-foreground mb-3 block">Account Type</Label>
             <div className="flex p-1 bg-muted rounded-lg" role="radiogroup" aria-labelledby="account-type-label">
@@ -155,6 +159,7 @@ const SignUp = () => {
             </div>
           </div>
 
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Display Name */}
             <div>
@@ -172,9 +177,7 @@ const SignUp = () => {
                 aria-describedby={errors.displayName ? 'displayName-error' : undefined}
                 aria-invalid={!!errors.displayName}
               />
-              {errors.displayName && (
-                <p id="displayName-error" role="alert" className="text-sm text-destructive mt-1">{errors.displayName}</p>
-              )}
+              {errors.displayName && <p id="displayName-error" role="alert" className="text-sm text-destructive mt-1">{errors.displayName}</p>}
             </div>
 
             {/* Email */}
