@@ -4,16 +4,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
 interface Profile {
-  // Private profile data
   id: string;
   user_id: string;
   email?: string;
   phone_number?: string;
   created_at: string;
   updated_at: string;
-  // Derived data
   type: 'business' | 'community';
-  // Public profile data (from business_profiles or community_profiles)
   name?: string;
   city?: string;
   profile_photo?: string;
@@ -39,9 +36,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 };
 
@@ -52,36 +47,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          // Defer profile fetch with setTimeout to prevent auth state change deadlock
-          setTimeout(async () => {
-            await fetchProfile(session.user.id);
-          }, 0);
-        } else {
-          setProfile(null);
-        }
-        
-        setLoading(false);
-      }
-    );
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
 
-    // THEN check for existing session
+      if (session?.user) setTimeout(() => fetchProfile(session.user.id), 0);
+      else setProfile(null);
+
+      setLoading(false);
+    });
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        setTimeout(async () => {
-          await fetchProfile(session.user.id);
-        }, 0);
-      }
-      
+
+      if (session?.user) setTimeout(() => fetchProfile(session.user.id), 0);
       setLoading(false);
     });
 
@@ -90,66 +70,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchProfile = async (userId: string) => {
     try {
-      // First get the basic profile data
-      const { data: profileData, error: profileError } = await supabase
+      const { data: profileData } = await supabase
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
         .maybeSingle();
 
-      if (profileError) {
-        console.error('Error fetching profile:', profileError);
-        return;
-      }
+      if (!profileData) return console.log('No profile found');
 
-      if (!profileData) {
-        console.log('No profile found for user');
-        return;
-      }
-
-      // Try to get business profile data
       const { data: businessData } = await supabase
         .from('business_profiles')
         .select('*')
         .eq('id', profileData.id)
         .maybeSingle();
 
-      // Try to get community profile data  
       const { data: communityData } = await supabase
         .from('community_profiles')
         .select('*')
         .eq('id', profileData.id)
         .maybeSingle();
 
-      // Determine profile type and combine data
       let profile: Profile;
       if (businessData) {
-        profile = {
-          ...profileData,
-          type: 'business',
-          name: businessData.name,
-          city: businessData.city,
-          profile_photo: businessData.profile_photo,
-          website: businessData.website,
-          instagram: businessData.instagram,
-          business_type: businessData.business_type
-        };
+        profile = { ...profileData, type: 'business', ...businessData };
       } else if (communityData) {
-        profile = {
-          ...profileData,
-          type: 'community',
-          name: communityData.name,
-          city: communityData.city,
-          profile_photo: communityData.profile_photo,
-          website: communityData.website,
-          instagram: communityData.instagram,
-          tiktok: communityData.tiktok,
-          community_type: communityData.community_type
-        };
-      } else {
-        console.error('No business or community profile found for user');
-        return;
-      }
+        profile = { ...profileData, type: 'community', ...communityData };
+      } else return console.error('No business or community profile found');
 
       setProfile(profile);
     } catch (error) {
@@ -161,90 +107,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       setLoading(true);
       const redirectUrl = `${window.location.origin}/`;
-      
-      console.log('Starting signup for:', email, 'type:', type);
-      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: redirectUrl,
-          data: {
-            display_name: displayName,
-            type: type
-          }
+          data: { display_name: displayName, type }
         }
       });
 
-      if (error) {
-        console.error('Auth signup error:', error);
-        return { error };
-      }
+      if (error) return { error };
+      if (!data.user) return { error: new Error('No user returned') };
 
-      console.log('Auth signup successful, user ID:', data.user?.id);
+      // Create main profile with user_type
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .insert({ user_id: data.user.id, email, user_type: type })
+        .select()
+        .single();
 
-      // Create profile if user was created
-      if (data.user) {
-        // Add delay to ensure user is fully created
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        console.log('Creating profile for user:', data.user.id);
-        
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .insert({
-            user_id: data.user.id,
-            email: email
-          })
-          .select()
-          .single();
+      if (profileError) return { error: profileError };
 
-        if (profileError) {
-          console.error('Error creating profile:', profileError);
-          return { error: profileError };
-        }
-
-        console.log('Profile created successfully, ID:', profileData.id);
-
-        // Create type-specific profile using the profile.id
-        if (type === 'business') {
-          console.log('Creating business profile for profile ID:', profileData.id);
-          
-          const { error: businessError } = await supabase
-            .from('business_profiles')
-            .insert({
-              id: profileData.id,
-              name: displayName
-            });
-          
-          if (businessError) {
-            console.error('Error creating business profile:', businessError);
-            return { error: businessError };
-          }
-          
-          console.log('Business profile created successfully');
-        } else {
-          console.log('Creating community profile for profile ID:', profileData.id);
-          
-          const { error: communityError } = await supabase
-            .from('community_profiles')
-            .insert({
-              id: profileData.id,
-              name: displayName
-            });
-          
-          if (communityError) {
-            console.error('Error creating community profile:', communityError);
-            return { error: communityError };
-          }
-          
-          console.log('Community profile created successfully');
-        }
+      // Create type-specific profile
+      if (type === 'business') {
+        const { error: businessError } = await supabase
+          .from('business_profiles')
+          .insert({ id: profileData.id, name: displayName });
+        if (businessError) return { error: businessError };
+      } else {
+        const { error: communityError } = await supabase
+          .from('community_profiles')
+          .insert({ id: profileData.id, name: displayName });
+        if (communityError) return { error: communityError };
       }
 
       return { error: null };
     } catch (error) {
-      console.error('Signup catch error:', error);
+      console.error('Signup error:', error);
       return { error };
     } finally {
       setLoading(false);
@@ -254,10 +153,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
       return { error };
     } catch (error) {
       return { error };
@@ -270,22 +166,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(true);
     await supabase.auth.signOut();
     setProfile(null);
+    setUser(null);
     setLoading(false);
   };
 
   const updateProfile = async (updates: Partial<Profile>) => {
-    if (!user || !profile) return { error: new Error('No user logged in or profile not loaded') };
+    if (!user || !profile) return { error: new Error('No user or profile loaded') };
 
     try {
-      // Separate private and public updates
       const privateUpdates: any = {};
       const publicUpdates: any = {};
 
-      // Private fields go to profiles table
       if (updates.email !== undefined) privateUpdates.email = updates.email;
       if (updates.phone_number !== undefined) privateUpdates.phone_number = updates.phone_number;
-
-      // Public fields go to type-specific table
       if (updates.name !== undefined) publicUpdates.name = updates.name;
       if (updates.city !== undefined) publicUpdates.city = updates.city;
       if (updates.profile_photo !== undefined) publicUpdates.profile_photo = updates.profile_photo;
@@ -295,28 +188,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (updates.business_type !== undefined) publicUpdates.business_type = updates.business_type;
       if (updates.community_type !== undefined) publicUpdates.community_type = updates.community_type;
 
-      // Update private profile if needed
-      if (Object.keys(privateUpdates).length > 0) {
-        const { error: privateError } = await supabase
-          .from('profiles')
-          .update(privateUpdates)
-          .eq('user_id', user.id);
-
-        if (privateError) return { error: privateError };
+      if (Object.keys(privateUpdates).length) {
+        const { error } = await supabase.from('profiles').update(privateUpdates).eq('user_id', user.id);
+        if (error) return { error };
       }
 
-      // Update public profile if needed
-      if (Object.keys(publicUpdates).length > 0) {
-        const tableName = profile.type === 'business' ? 'business_profiles' : 'community_profiles';
-        const { error: publicError } = await supabase
-          .from(tableName)
-          .update(publicUpdates)
-          .eq('id', profile.id);
-
-        if (publicError) return { error: publicError };
+      if (Object.keys(publicUpdates).length) {
+        const table = profile.type === 'business' ? 'business_profiles' : 'community_profiles';
+        const { error } = await supabase.from(table).update(publicUpdates).eq('id', profile.id);
+        if (error) return { error };
       }
 
-      // Update local state
       setProfile(prev => prev ? { ...prev, ...updates } : null);
       return { error: null };
     } catch (error) {
@@ -324,19 +206,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const value = {
-    user,
-    session,
-    profile,
-    loading,
-    signUp,
-    signIn,
-    signOut,
-    updateProfile
-  };
-
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ user, session, profile, loading, signUp, signIn, signOut, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );
