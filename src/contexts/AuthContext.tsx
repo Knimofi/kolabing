@@ -1,198 +1,110 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/hooks/use-toast';
-import { ensureUserProvisioned } from '@/lib/auth-provisioning';
+-- 1. First, handle the foreign key dependencies
+-- Drop the dependent constraint temporarily
+ALTER TABLE business_subscriptions DROP CONSTRAINT IF EXISTS business_subscriptions_id_fkey;
 
-interface Profile {
-  id: string;
-  user_id: string;
-  email?: string;
-  phone_number?: string;
-  created_at: string;
-  updated_at: string;
-  type: 'business' | 'community';
-  name?: string;
-  city?: string;
-  profile_photo?: string;
-  website?: string;
-  instagram?: string;
-  tiktok?: string;
-  business_type?: string;
-  community_type?: string;
-}
+-- Now we can safely modify the business_profiles table
+ALTER TABLE business_profiles DROP CONSTRAINT IF EXISTS business_profiles_pkey;
+ALTER TABLE community_profiles DROP CONSTRAINT IF EXISTS community_profiles_pkey;
 
-interface AuthContextType {
-  user: User | null;
-  session: Session | null;
-  profile: Profile | null;
-  loading: boolean;
-  signUp: (email: string, password: string, type: 'business' | 'community', displayName: string) => Promise<{ error: any }>;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signOut: () => Promise<void>;
-  updateProfile: (updates: Partial<Profile>) => Promise<{ error: any }>;
-}
+-- Rename id to profile_id to match your trigger functions
+ALTER TABLE business_profiles RENAME COLUMN id TO profile_id;
+ALTER TABLE community_profiles RENAME COLUMN id TO profile_id;
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+-- Add proper foreign key constraints
+ALTER TABLE business_profiles 
+ADD CONSTRAINT business_profiles_pkey PRIMARY KEY (profile_id),
+ADD CONSTRAINT business_profiles_profile_id_fkey 
+FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE;
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within an AuthProvider');
-  return context;
-};
+ALTER TABLE community_profiles 
+ADD CONSTRAINT community_profiles_pkey PRIMARY KEY (profile_id),
+ADD CONSTRAINT community_profiles_profile_id_fkey 
+FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE;
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+-- Recreate the business_subscriptions foreign key with the new column name
+ALTER TABLE business_subscriptions 
+ADD CONSTRAINT business_subscriptions_profile_id_fkey 
+FOREIGN KEY (id) REFERENCES business_profiles(profile_id) ON DELETE CASCADE;
 
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+-- 2. Update the handle_new_user function to process signup metadata properly
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS trigger AS $$
+DECLARE
+    user_type_value text;
+    display_name_value text;
+    profile_id uuid;
+BEGIN
+    -- Extract user_type and display_name from raw_user_meta_data
+    user_type_value := COALESCE(NEW.raw_user_meta_data->>'type', 'business');
+    display_name_value := COALESCE(NEW.raw_user_meta_data->>'display_name', '');
 
-      if (session?.user) setTimeout(() => provisionThenFetch(session.user!), 0);
-      else setProfile(null);
+    -- Insert into profiles with user_type
+    INSERT INTO public.profiles (id, user_id, email, user_type, created_at, updated_at)
+    VALUES (gen_random_uuid(), NEW.id, NEW.email, user_type_value, now(), now())
+    RETURNING id INTO profile_id;
+    
+    -- The handle_new_profile_extensions trigger will handle creating the extension tables
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
-      setLoading(false);
-    });
+-- 3. Update the profile extension trigger to work with the correct column names
+CREATE OR REPLACE FUNCTION handle_new_profile_extensions()
+RETURNS trigger AS $$
+DECLARE
+    display_name_value text;
+BEGIN
+    -- Get display_name from the user's metadata (if available)
+    SELECT COALESCE(u.raw_user_meta_data->>'display_name', '') INTO display_name_value
+    FROM auth.users u 
+    WHERE u.id = NEW.user_id;
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    IF NEW.user_type = 'business' THEN
+        INSERT INTO public.business_profiles (profile_id, name)
+        VALUES (NEW.id, display_name_value);
+    ELSIF NEW.user_type = 'community' THEN
+        INSERT INTO public.community_profiles (profile_id, name)
+        VALUES (NEW.id, display_name_value);
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
-      if (session?.user) setTimeout(() => provisionThenFetch(session.user!), 0);
-      setLoading(false);
-    });
+-- 4. Update constraint functions to work with new schema
+CREATE OR REPLACE FUNCTION enforce_business_profile_constraint()
+RETURNS trigger AS $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM public.profiles 
+        WHERE id = NEW.profile_id AND user_type = 'business'
+    ) THEN
+        RAISE EXCEPTION 'business_profiles can only be created for profiles with user_type=business';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
-    return () => subscription.unsubscribe();
-  }, []);
+CREATE OR REPLACE FUNCTION enforce_community_profile_constraint()
+RETURNS trigger AS $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM public.profiles 
+        WHERE id = NEW.profile_id AND user_type = 'community'
+    ) THEN
+        RAISE EXCEPTION 'community_profiles can only be created for profiles with user_type=community';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
-  const fetchProfile = async (userId: string) => {
-    try {
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .maybeSingle();
+-- 5. Add constraint triggers (if they don't exist)
+DROP TRIGGER IF EXISTS enforce_business_constraint ON business_profiles;
+CREATE TRIGGER enforce_business_constraint
+    BEFORE INSERT ON business_profiles
+    FOR EACH ROW EXECUTE FUNCTION enforce_business_profile_constraint();
 
-      if (!profileData) return console.log('No profile found');
-
-      const { data: businessData } = await supabase
-        .from('business_profiles')
-        .select('*')
-        .eq('id', profileData.id)
-        .maybeSingle();
-
-      const { data: communityData } = await supabase
-        .from('community_profiles')
-        .select('*')
-        .eq('id', profileData.id)
-        .maybeSingle();
-
-      let profile: Profile;
-      if (businessData) {
-        profile = { ...profileData, type: 'business', ...businessData };
-      } else if (communityData) {
-        profile = { ...profileData, type: 'community', ...communityData };
-      } else return console.error('No business or community profile found');
-
-      setProfile(profile);
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-    }
-  };
-
-  const provisionThenFetch = async (userObj: User) => {
-    try {
-      await ensureUserProvisioned(userObj);
-    } catch (e) {
-      console.error('Provisioning error:', e);
-    }
-    await fetchProfile(userObj.id);
-  };
-
-  const signUp = async (email: string, password: string, type: 'business' | 'community', displayName: string) => {
-    try {
-      setLoading(true);
-      const redirectUrl = `${window.location.origin}/`;
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: redirectUrl,
-          data: { display_name: displayName, type }
-        }
-      });
-      return { error };
-    } catch (error) {
-      console.error('Signup error:', error);
-      return { error };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const signIn = async (email: string, password: string) => {
-    try {
-      setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      return { error };
-    } catch (error) {
-      return { error };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const signOut = async () => {
-    setLoading(true);
-    await supabase.auth.signOut();
-    setProfile(null);
-    setUser(null);
-    setLoading(false);
-  };
-
-  const updateProfile = async (updates: Partial<Profile>) => {
-    if (!user || !profile) return { error: new Error('No user or profile loaded') };
-
-    try {
-      const privateUpdates: any = {};
-      const publicUpdates: any = {};
-
-      if (updates.email !== undefined) privateUpdates.email = updates.email;
-      if (updates.phone_number !== undefined) privateUpdates.phone_number = updates.phone_number;
-      if (updates.name !== undefined) publicUpdates.name = updates.name;
-      if (updates.city !== undefined) publicUpdates.city = updates.city;
-      if (updates.profile_photo !== undefined) publicUpdates.profile_photo = updates.profile_photo;
-      if (updates.website !== undefined) publicUpdates.website = updates.website;
-      if (updates.instagram !== undefined) publicUpdates.instagram = updates.instagram;
-      if (updates.tiktok !== undefined) publicUpdates.tiktok = updates.tiktok;
-      if (updates.business_type !== undefined) publicUpdates.business_type = updates.business_type;
-      if (updates.community_type !== undefined) publicUpdates.community_type = updates.community_type;
-
-      if (Object.keys(privateUpdates).length) {
-        const { error } = await supabase.from('profiles').update(privateUpdates).eq('user_id', user.id);
-        if (error) return { error };
-      }
-
-      if (Object.keys(publicUpdates).length) {
-        const table = profile.type === 'business' ? 'business_profiles' : 'community_profiles';
-        const { error } = await supabase.from(table).update(publicUpdates).eq('id', profile.id);
-        if (error) return { error };
-      }
-
-      setProfile(prev => prev ? { ...prev, ...updates } : null);
-      return { error: null };
-    } catch (error) {
-      return { error };
-    }
-  };
-
-  return (
-    <AuthContext.Provider value={{ user, session, profile, loading, signUp, signIn, signOut, updateProfile }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+DROP TRIGGER IF EXISTS enforce_community_constraint ON community_profiles;
+CREATE TRIGGER enforce_community_constraint
+    BEFORE INSERT ON community_profiles
+    FOR EACH ROW EXECUTE FUNCTION enforce_community_profile_constraint();
