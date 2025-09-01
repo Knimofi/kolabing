@@ -26,8 +26,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiresType 
     return <Navigate to="/auth/sign-in" state={{ from: location }} replace />;
   }
 
-  if (requiresType && profile.type !== requiresType) {
-    const redirectPath = profile.type === 'business' ? '/business' : '/community';
+  if (requiresType && profile.user_type !== requiresType) {
+    const redirectPath = profile.user_type === 'business' ? '/business' : '/community';
     return <Navigate to={redirectPath} replace />;
   }
 

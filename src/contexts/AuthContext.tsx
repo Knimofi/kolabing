@@ -90,15 +90,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return null;
       }
 
+      // Cast profileData to include user_type
+      const typedProfileData = profileData as any;
+
       // Now get the extended profile data based on user_type
       let extendedData = {};
       
-      if (profileData.user_type === 'business') {
-        const { data: businessData } = await supabase
+      if (typedProfileData.user_type === 'business') {
+        const businessQuery = await (supabase as any)
           .from('business_profiles')
           .select('*')
-          .eq('profile_id', profileData.id)
-          .single();
+          .eq('profile_id', typedProfileData.id)
+          .maybeSingle();
+        
+        const businessData = businessQuery.data;
         
         if (businessData) {
           extendedData = {
@@ -110,12 +115,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             business_type: businessData.business_type,
           };
         }
-      } else if (profileData.user_type === 'community') {
-        const { data: communityData } = await supabase
+      } else if (typedProfileData.user_type === 'community') {
+        const communityQuery = await (supabase as any)
           .from('community_profiles')
           .select('*')
-          .eq('profile_id', profileData.id)
-          .single();
+          .eq('profile_id', typedProfileData.id)
+          .maybeSingle();
+        
+        const communityData = communityQuery.data;
         
         if (communityData) {
           extendedData = {
@@ -131,9 +138,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       const profile: Profile = {
-        ...profileData,
+        ...typedProfileData,
         ...extendedData,
-        user_type: profileData.user_type as 'business' | 'community',
+        user_type: typedProfileData.user_type as 'business' | 'community',
       };
 
       setProfile(profile);
@@ -252,7 +259,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (Object.keys(extendedProfileUpdates).length > 0) {
         const table = profile.user_type === 'business' ? 'business_profiles' : 'community_profiles';
         const { error } = await supabase
-          .from(table)
+          .from(table as any)
           .update(extendedProfileUpdates)
           .eq('profile_id', profile.id);
           

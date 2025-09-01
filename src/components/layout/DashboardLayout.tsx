@@ -27,7 +27,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const isBusiness = profile?.type === 'business';
+  const isBusiness = profile?.user_type === 'business';
 
   const businessNavItems = [
     { icon: LayoutDashboard, label: 'Overview', href: '/business' },
@@ -108,7 +108,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   {profile?.name}
                 </p>
                 <p className="text-xs text-muted-foreground capitalize">
-                  {profile?.type} Account
+                  {profile?.user_type} Account
                 </p>
               </div>
             </div>

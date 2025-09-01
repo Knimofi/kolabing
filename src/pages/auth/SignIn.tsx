@@ -26,7 +26,7 @@ const SignIn = () => {
       if (from) {
         navigate(from);
       } else {
-        navigate(profile.type === 'business' ? '/business' : '/community');
+        navigate(profile.user_type === 'business' ? '/business' : '/community');
       }
     }
   }, [user, profile, navigate, location]);
