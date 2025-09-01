@@ -11,7 +11,7 @@ const SignUp = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { signUp, loading, user } = useAuth();
-  
+
   const [formData, setFormData] = useState({
     displayName: '',
     email: '',
@@ -59,11 +59,9 @@ const SignUp = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  
-
-const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     const { error } = await signUp(
@@ -92,11 +90,10 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
   };
 
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
@@ -293,25 +290,4 @@ const handleSubmit = async (e: React.FormEvent) => {
                 </button>
               </div>
               {errors.confirmPassword && (
-                <p id="confirmPassword-error" role="alert" className="text-sm text-destructive mt-1">
-                  {errors.confirmPassword}
-                </p>
-              )}
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full"
-              size="lg"
-              disabled={loading}
-            >
-              {loading ? 'Creating Account...' : 'Create Account'}
-            </Button>
-          </form>
-        </div>
-      </main>
-    </div>
-  );
-};
-
-export default SignUp;
+                <p id="confirmPassword-error
