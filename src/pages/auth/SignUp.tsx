@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +10,7 @@ import { ArrowLeft, Building2, Users, Eye, EyeOff } from 'lucide-react';
 const SignUp = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { signUp, loading, user } = useAuth();
+  const { signUp, loading } = useAuth();
 
   const [formData, setFormData] = useState({
     displayName: '',
@@ -18,18 +18,14 @@ const SignUp = () => {
     password: '',
     confirmPassword: ''
   });
+
   const [userType, setUserType] = useState<'business' | 'community'>(
     (searchParams.get('type') as 'business' | 'community') || 'business'
   );
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    if (user) {
-      navigate(userType === 'business' ? '/business' : '/community');
-    }
-  }, [user, userType, navigate]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -38,24 +34,22 @@ const SignUp = () => {
       newErrors.displayName = userType === 'business' ? 'Business name is required' : 'Community name is required';
     }
 
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
+    if (!formData.email.trim()) newErrors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Please enter a valid email address';
 
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
+    if (!formData.password) newErrors.password = 'Password is required';
+    else if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
 
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
+    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -79,30 +73,23 @@ const SignUp = () => {
           variant: 'destructive'
         });
       }
-    } else {
-      toast({
-        title: 'Account created!',
-        description: 'Please check your email to verify your account.',
-      });
-      navigate(userType === 'business' ? '/business' : '/community');
+      return;
     }
-  };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
+    toast({
+      title: 'Account created!',
+      description: 'Please check your email to verify your account.',
+    });
+
+    // Redirect AFTER successful signup + profile creation
+    navigate(userType === 'business' ? '/business' : '/community');
   };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="p-4 flex items-center justify-between border-b border-border">
-        <Link 
-          to="/"
-          className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors"
-          aria-label="Back to home"
-        >
+        <Link to="/" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors" aria-label="Back to home">
           <ArrowLeft className="w-5 h-5" />
           <span className="hidden sm:inline">Back to Home</span>
         </Link>
@@ -111,10 +98,9 @@ const SignUp = () => {
         </Link>
       </header>
 
-      {/* Main */}
       <main className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-md">
-          {/* Header Info */}
+          {/* Logo & Title */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
@@ -126,19 +112,14 @@ const SignUp = () => {
             <p className="text-muted-foreground">Join the marketplace for meaningful collaborations</p>
           </div>
 
-          {/* Account Type Selector */}
+          {/* Account Type */}
           <div className="mb-6">
             <Label className="text-sm font-medium text-foreground mb-3 block">Account Type</Label>
-            <div className="flex p-1 bg-muted rounded-lg" role="radiogroup" aria-labelledby="account-type-label">
+            <div className="flex p-1 bg-muted rounded-lg">
               <button
                 type="button"
                 onClick={() => setUserType('business')}
-                className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md font-medium transition-all ${
-                  userType === 'business' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
-                }`}
-                role="radio"
-                aria-checked={userType === 'business'}
-                aria-label="Business account"
+                className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md font-medium transition-all ${userType === 'business' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
               >
                 <Building2 className="w-4 h-4" />
                 <span className="text-sm">Business</span>
@@ -146,12 +127,7 @@ const SignUp = () => {
               <button
                 type="button"
                 onClick={() => setUserType('community')}
-                className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md font-medium transition-all ${
-                  userType === 'community' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
-                }`}
-                role="radio"
-                aria-checked={userType === 'community'}
-                aria-label="Community account"
+                className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md font-medium transition-all ${userType === 'community' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
               >
                 <Users className="w-4 h-4" />
                 <span className="text-sm">Community</span>
@@ -163,9 +139,7 @@ const SignUp = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Display Name */}
             <div>
-              <Label htmlFor="displayName" className="text-sm font-medium text-foreground">
-                {userType === 'business' ? 'Business Name' : 'Community Name'}
-              </Label>
+              <Label htmlFor="displayName" className="text-sm font-medium text-foreground">{userType === 'business' ? 'Business Name' : 'Community Name'}</Label>
               <Input
                 id="displayName"
                 name="displayName"
@@ -174,10 +148,8 @@ const SignUp = () => {
                 onChange={handleInputChange}
                 placeholder={userType === 'business' ? 'Enter your business name' : 'Enter your community name'}
                 className={errors.displayName ? 'border-destructive' : ''}
-                aria-describedby={errors.displayName ? 'displayName-error' : undefined}
-                aria-invalid={!!errors.displayName}
               />
-              {errors.displayName && <p id="displayName-error" role="alert" className="text-sm text-destructive mt-1">{errors.displayName}</p>}
+              {errors.displayName && <p className="text-sm text-destructive mt-1">{errors.displayName}</p>}
             </div>
 
             {/* Email */}
@@ -191,10 +163,8 @@ const SignUp = () => {
                 onChange={handleInputChange}
                 placeholder="Enter your email"
                 className={errors.email ? 'border-destructive' : ''}
-                aria-describedby={errors.email ? 'email-error' : undefined}
-                aria-invalid={!!errors.email}
               />
-              {errors.email && <p id="email-error" role="alert" className="text-sm text-destructive mt-1">{errors.email}</p>}
+              {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
             </div>
 
             {/* Password */}
@@ -209,23 +179,16 @@ const SignUp = () => {
                   onChange={handleInputChange}
                   placeholder="Create a password"
                   className={errors.password ? 'border-destructive pr-10' : 'pr-10'}
-                  aria-describedby={errors.password ? 'password-error' : 'password-help'}
-                  aria-invalid={!!errors.password}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              {errors.password ? (
-                <p id="password-error" role="alert" className="text-sm text-destructive mt-1">{errors.password}</p>
-              ) : (
-                <p id="password-help" className="text-sm text-muted-foreground mt-1">Must be at least 6 characters</p>
-              )}
+              {errors.password && <p className="text-sm text-destructive mt-1">{errors.password}</p>}
             </div>
 
             {/* Confirm Password */}
@@ -240,19 +203,16 @@ const SignUp = () => {
                   onChange={handleInputChange}
                   placeholder="Confirm your password"
                   className={errors.confirmPassword ? 'border-destructive pr-10' : 'pr-10'}
-                  aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
-                  aria-invalid={!!errors.confirmPassword}
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  aria-label={showConfirmPassword ? 'Hide password confirmation' : 'Show password confirmation'}
                 >
                   {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              {errors.confirmPassword && <p id="confirmPassword-error" role="alert" className="text-sm text-destructive mt-1">{errors.confirmPassword}</p>}
+              {errors.confirmPassword && <p className="text-sm text-destructive mt-1">{errors.confirmPassword}</p>}
             </div>
 
             <Button type="submit" className="w-full" size="lg" disabled={loading}>
@@ -266,3 +226,4 @@ const SignUp = () => {
 };
 
 export default SignUp;
+
