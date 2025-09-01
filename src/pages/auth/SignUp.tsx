@@ -25,7 +25,6 @@ const SignUp = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Redirect if already authenticated
   useEffect(() => {
     if (user) {
       navigate(userType === 'business' ? '/business' : '/community');
@@ -61,7 +60,6 @@ const SignUp = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
     const { error } = await signUp(
@@ -93,16 +91,11 @@ const SignUp = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
       <header className="p-4 flex items-center justify-between border-b border-border">
         <Link 
           to="/"
@@ -112,7 +105,6 @@ const SignUp = () => {
           <ArrowLeft className="w-5 h-5" />
           <span className="hidden sm:inline">Back to Home</span>
         </Link>
-        
         <Link to="/auth/sign-in" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
           Already have an account? Sign in
         </Link>
@@ -127,32 +119,18 @@ const SignUp = () => {
               </div>
               <span className="text-2xl font-bold text-foreground">Kolabing</span>
             </div>
-            
-            <h1 className="text-3xl font-bold text-foreground mb-2">
-              Create Your Account
-            </h1>
-            <p className="text-muted-foreground">
-              Join the marketplace for meaningful collaborations
-            </p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Create Your Account</h1>
+            <p className="text-muted-foreground">Join the marketplace for meaningful collaborations</p>
           </div>
 
-          {/* User Type Selector */}
           <div className="mb-6">
-            <Label className="text-sm font-medium text-foreground mb-3 block">
-              Account Type
-            </Label>
-            <div 
-              className="flex p-1 bg-muted rounded-lg"
-              role="radiogroup"
-              aria-labelledby="account-type-label"
-            >
+            <Label className="text-sm font-medium text-foreground mb-3 block">Account Type</Label>
+            <div className="flex p-1 bg-muted rounded-lg" role="radiogroup" aria-labelledby="account-type-label">
               <button
                 type="button"
                 onClick={() => setUserType('business')}
                 className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md font-medium transition-all ${
-                  userType === 'business' 
-                    ? 'bg-background text-foreground shadow-sm' 
-                    : 'text-muted-foreground hover:text-foreground'
+                  userType === 'business' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
                 }`}
                 role="radio"
                 aria-checked={userType === 'business'}
@@ -165,9 +143,7 @@ const SignUp = () => {
                 type="button"
                 onClick={() => setUserType('community')}
                 className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md font-medium transition-all ${
-                  userType === 'community' 
-                    ? 'bg-background text-foreground shadow-sm' 
-                    : 'text-muted-foreground hover:text-foreground'
+                  userType === 'community' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
                 }`}
                 role="radio"
                 aria-checked={userType === 'community'}
@@ -197,17 +173,13 @@ const SignUp = () => {
                 aria-invalid={!!errors.displayName}
               />
               {errors.displayName && (
-                <p id="displayName-error" role="alert" className="text-sm text-destructive mt-1">
-                  {errors.displayName}
-                </p>
+                <p id="displayName-error" role="alert" className="text-sm text-destructive mt-1">{errors.displayName}</p>
               )}
             </div>
 
             {/* Email */}
             <div>
-              <Label htmlFor="email" className="text-sm font-medium text-foreground">
-                Email
-              </Label>
+              <Label htmlFor="email" className="text-sm font-medium text-foreground">Email</Label>
               <Input
                 id="email"
                 name="email"
@@ -219,18 +191,12 @@ const SignUp = () => {
                 aria-describedby={errors.email ? 'email-error' : undefined}
                 aria-invalid={!!errors.email}
               />
-              {errors.email && (
-                <p id="email-error" role="alert" className="text-sm text-destructive mt-1">
-                  {errors.email}
-                </p>
-              )}
+              {errors.email && <p id="email-error" role="alert" className="text-sm text-destructive mt-1">{errors.email}</p>}
             </div>
 
             {/* Password */}
             <div>
-              <Label htmlFor="password" className="text-sm font-medium text-foreground">
-                Password
-              </Label>
+              <Label htmlFor="password" className="text-sm font-medium text-foreground">Password</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -253,21 +219,15 @@ const SignUp = () => {
                 </button>
               </div>
               {errors.password ? (
-                <p id="password-error" role="alert" className="text-sm text-destructive mt-1">
-                  {errors.password}
-                </p>
+                <p id="password-error" role="alert" className="text-sm text-destructive mt-1">{errors.password}</p>
               ) : (
-                <p id="password-help" className="text-sm text-muted-foreground mt-1">
-                  Must be at least 6 characters
-                </p>
+                <p id="password-help" className="text-sm text-muted-foreground mt-1">Must be at least 6 characters</p>
               )}
             </div>
 
             {/* Confirm Password */}
             <div>
-              <Label htmlFor="confirmPassword" className="text-sm font-medium text-foreground">
-                Confirm Password
-              </Label>
+              <Label htmlFor="confirmPassword" className="text-sm font-medium text-foreground">Confirm Password</Label>
               <div className="relative">
                 <Input
                   id="confirmPassword"
@@ -289,5 +249,17 @@ const SignUp = () => {
                   {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              {errors.confirmPassword && (
-                <p id="confirmPassword-error
+              {errors.confirmPassword && <p id="confirmPassword-error" role="alert" className="text-sm text-destructive mt-1">{errors.confirmPassword}</p>}
+            </div>
+
+            <Button type="submit" className="w-full" size="lg" disabled={loading}>
+              {loading ? 'Creating Account...' : 'Create Account'}
+            </Button>
+          </form>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default SignUp;
