@@ -280,7 +280,7 @@ export type Database = {
           description: string
           id: string
           no_venue: boolean | null
-          photo_url: string | null
+          offer_photo: string | null
           published_at: string | null
           status: Database["public"]["Enums"]["offer_status"]
           timeline_days: number | null
@@ -299,7 +299,7 @@ export type Database = {
           description: string
           id?: string
           no_venue?: boolean | null
-          photo_url?: string | null
+          offer_photo?: string | null
           published_at?: string | null
           status?: Database["public"]["Enums"]["offer_status"]
           timeline_days?: number | null
@@ -318,7 +318,7 @@ export type Database = {
           description?: string
           id?: string
           no_venue?: boolean | null
-          photo_url?: string | null
+          offer_photo?: string | null
           published_at?: string | null
           status?: Database["public"]["Enums"]["offer_status"]
           timeline_days?: number | null

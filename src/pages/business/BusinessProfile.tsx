@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { FileUpload } from '@/components/ui/file-upload';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
 import { Building2, Save, Loader2 } from 'lucide-react';
@@ -201,17 +202,15 @@ const BusinessProfile: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="profile_photo">Profile Photo URL</Label>
-              <Input
-                id="profile_photo"
-                type="url"
+              <Label htmlFor="profile_photo">Profile Photo</Label>
+              <FileUpload
+                bucket="profile-photos"
                 value={formData.profile_photo}
-                onChange={(e) => handleInputChange('profile_photo', e.target.value)}
-                placeholder="https://example.com/photo.jpg"
+                onChange={(url) => handleInputChange('profile_photo', url || '')}
+                label="Profile Picture"
+                accept="image/*"
+                maxSize={5 * 1024 * 1024}
               />
-              <p className="text-xs text-muted-foreground">
-                Enter a URL to your business logo or photo
-              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

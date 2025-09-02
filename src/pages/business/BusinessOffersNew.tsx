@@ -26,7 +26,7 @@ const offerSchema = z.object({
   availability_end: z.date().optional(),
   address: z.string().optional(),
   no_venue: z.boolean().default(false),
-  photo_url: z.string().optional(),
+  offer_photo: z.string().optional(),
   business_offer: z.object({
     description: z.string().min(1, 'Business offer is required'),
   }),
@@ -59,7 +59,7 @@ const BusinessOffersNew = () => {
       title: '',
       description: '',
       no_venue: false,
-      photo_url: '',
+      offer_photo: '',
       business_offer: {
         description: '',
       },
@@ -108,7 +108,7 @@ const BusinessOffersNew = () => {
         .from('offer-photos')
         .getPublicUrl(fileName);
       
-      form.setValue('photo_url', publicUrl);
+      form.setValue('offer_photo', publicUrl);
       
       toast({
         title: 'Photo uploaded successfully',
@@ -136,7 +136,7 @@ const BusinessOffersNew = () => {
         availability_end: data.availability_end?.toISOString(),
         address: data.no_venue ? null : data.address,
         no_venue: data.no_venue,
-        photo_url: data.photo_url,
+        offer_photo: data.offer_photo,
         business_offer: data.business_offer,
         community_deliverables: data.community_deliverables,
         timeline_days: data.timeline_days,
@@ -403,10 +403,10 @@ const BusinessOffersNew = () => {
                 >
                   Upload Offer Photo
                 </Button>
-                {form.watch('photo_url') && (
+                {form.watch('offer_photo') && (
                   <div className="mt-4">
                     <img 
-                      src={form.watch('photo_url')} 
+                      src={form.watch('offer_photo')} 
                       alt="Offer preview" 
                       className="w-full h-48 object-cover rounded-lg"
                     />
