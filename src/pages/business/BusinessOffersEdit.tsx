@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -47,11 +46,25 @@ const offerSchema = z.object({
 
 type OfferFormData = z.infer<typeof offerSchema>;
 
-const BusinessOffersNew = () => {
+const BusinessOffersEdit = () => {
+  const { offerId } = useParams();
   const navigate = useNavigate();
   const { profile } = useAuth();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const deliverableOptions = [
+    { id: 'tagged_stories', label: 'Tagged Stories', hasAmount: true },
+    { id: 'google_reviews', label: 'Google Reviews', hasAmount: true },
+    { id: 'number_of_attendees', label: 'Number of Attendees', hasAmount: true },
+    { id: 'professional_photography', label: 'Professional Photography', hasAmount: false },
+    { id: 'professional_reel_video', label: 'Professional Reel/Video', hasAmount: false },
+    { id: 'ugc_content', label: 'UGC Content', hasAmount: false },
+    { id: 'collab_reel_post', label: 'Collab Reel/Post', hasAmount: false },
+    { id: 'group_picture', label: 'Group Picture', hasAmount: false },
+    { id: 'loyalty_signups', label: 'Loyalty Sign-ups', hasAmount: true },
+  ] as const;
 
   const form = useForm<OfferFormData>({
     resolver: zodResolver(offerSchema),
@@ -79,17 +92,65 @@ const BusinessOffersNew = () => {
     },
   });
 
-  const deliverableOptions = [
-    { id: 'tagged_stories', label: 'Tagged Stories', hasAmount: true },
-    { id: 'google_reviews', label: 'Google Reviews', hasAmount: true },
-    { id: 'number_of_attendees', label: 'Number of Attendees', hasAmount: true },
-    { id: 'professional_photography', label: 'Professional Photography', hasAmount: false },
-    { id: 'professional_reel_video', label: 'Professional Reel/Video', hasAmount: false },
-    { id: 'ugc_content', label: 'UGC Content', hasAmount: false },
-    { id: 'collab_reel_post', label: 'Collab Reel/Post', hasAmount: false },
-    { id: 'group_picture', label: 'Group Picture', hasAmount: false },
-    { id: 'loyalty_signups', label: 'Loyalty Sign-ups', hasAmount: true },
-  ] as const;
+  useEffect(() => {
+    if (offerId && profile) {
+      fetchOffer();
+    }
+  }, [offerId, profile]);
+
+  const fetchOffer = async () => {
+    if (!offerId || !profile) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('offers')
+        .select('*')
+        .eq('id', offerId)
+        .eq('business_profile_id', profile.id)
+        .single();
+
+      if (error) throw error;
+
+      // Convert data to form format, ensuring proper types
+      const formData: OfferFormData = {
+        title: data.title || '',
+        description: data.description || '',
+        availability_start: data.availability_start ? new Date(data.availability_start) : undefined,
+        availability_end: data.availability_end ? new Date(data.availability_end) : undefined,
+        address: data.address || '',
+        no_venue: data.no_venue || false,
+        photo_url: data.photo_url || '',
+        business_offer: {
+          description: (data.business_offer as any)?.description || '',
+        },
+        community_deliverables: {
+          tagged_stories: (data.community_deliverables as any)?.tagged_stories,
+          google_reviews: (data.community_deliverables as any)?.google_reviews,
+          number_of_attendees: (data.community_deliverables as any)?.number_of_attendees,
+          professional_photography: (data.community_deliverables as any)?.professional_photography || false,
+          professional_reel_video: (data.community_deliverables as any)?.professional_reel_video || false,
+          ugc_content: (data.community_deliverables as any)?.ugc_content || false,
+          collab_reel_post: (data.community_deliverables as any)?.collab_reel_post || false,
+          group_picture: (data.community_deliverables as any)?.group_picture || false,
+          loyalty_signups: (data.community_deliverables as any)?.loyalty_signups,
+          minimum_consumption: (data.community_deliverables as any)?.minimum_consumption,
+        },
+        timeline_days: data.timeline_days || 7,
+      };
+
+      form.reset(formData);
+    } catch (error: any) {
+      console.error('Error fetching offer:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load offer. Please try again.',
+        variant: 'destructive',
+      });
+      navigate('/business/offers');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handlePhotoUpload = async (file: File) => {
     if (!profile) return;
@@ -112,7 +173,7 @@ const BusinessOffersNew = () => {
       
       toast({
         title: 'Photo uploaded successfully',
-        description: 'Your offer photo has been uploaded.',
+        description: 'Your offer photo has been updated.',
       });
     } catch (error: any) {
       console.error('Error uploading photo:', error);
@@ -125,7 +186,7 @@ const BusinessOffersNew = () => {
   };
 
   const handleSubmit = async (data: OfferFormData, status: 'draft' | 'published') => {
-    if (!profile) return;
+    if (!profile || !offerId) return;
 
     setIsSubmitting(true);
     try {
@@ -140,13 +201,13 @@ const BusinessOffersNew = () => {
         business_offer: data.business_offer,
         community_deliverables: data.community_deliverables,
         timeline_days: data.timeline_days,
-        business_profile_id: profile.id,
         status,
       };
 
       const { error } = await supabase
         .from('offers')
-        .insert(offerData);
+        .update(offerData)
+        .eq('id', offerId);
 
       if (error) throw error;
 
@@ -159,16 +220,20 @@ const BusinessOffersNew = () => {
 
       navigate('/business/offers');
     } catch (error: any) {
-      console.error('Error creating offer:', error);
+      console.error('Error updating offer:', error);
       toast({
         title: 'Error',
-        description: error.message || 'Failed to create offer. Please try again.',
+        description: error.message || 'Failed to update offer. Please try again.',
         variant: 'destructive',
       });
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -180,10 +245,10 @@ const BusinessOffersNew = () => {
         </Button>
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-            Create New Offer
+            Edit Offer
           </h1>
           <p className="text-muted-foreground">
-            Design your collaboration opportunity
+            Update your collaboration opportunity
           </p>
         </div>
       </div>
@@ -230,7 +295,6 @@ const BusinessOffersNew = () => {
                   </FormItem>
                 )}
               />
-
             </CardContent>
           </Card>
 
@@ -239,7 +303,7 @@ const BusinessOffersNew = () => {
             <CardHeader>
               <CardTitle>Availability</CardTitle>
               <CardDescription>
-                When are you available for this collaboration?
+                When is this collaboration opportunity available?
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -249,7 +313,7 @@ const BusinessOffersNew = () => {
                   name="availability_start"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Start Date</FormLabel>
+                      <FormLabel>Start Date (Optional)</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -274,6 +338,9 @@ const BusinessOffersNew = () => {
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
+                            disabled={(date) =>
+                              date < new Date(new Date().setHours(0, 0, 0, 0))
+                            }
                             initialFocus
                           />
                         </PopoverContent>
@@ -288,7 +355,7 @@ const BusinessOffersNew = () => {
                   name="availability_end"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>End Date</FormLabel>
+                      <FormLabel>End Date (Optional)</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -313,6 +380,9 @@ const BusinessOffersNew = () => {
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
+                            disabled={(date) =>
+                              date < new Date(new Date().setHours(0, 0, 0, 0))
+                            }
                             initialFocus
                           />
                         </PopoverContent>
@@ -347,10 +417,10 @@ const BusinessOffersNew = () => {
                     </FormControl>
                     <div className="space-y-1 leading-none">
                       <FormLabel>
-                        No physical venue required
+                        No specific venue required
                       </FormLabel>
                       <p className="text-sm text-muted-foreground">
-                        Check this if the collaboration is online or doesn't require a specific location
+                        Check this if the collaboration doesn't require a physical location
                       </p>
                     </div>
                   </FormItem>
@@ -365,7 +435,7 @@ const BusinessOffersNew = () => {
                     <FormItem>
                       <FormLabel>Address</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter the collaboration venue address" {...field} />
+                        <Input placeholder="Enter the venue address" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -564,4 +634,4 @@ const BusinessOffersNew = () => {
   );
 };
 
-export default BusinessOffersNew;
+export default BusinessOffersEdit;
