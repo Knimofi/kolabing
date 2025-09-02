@@ -1,7 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 
 export interface PublicBusinessProfile {
-  id: string;
+  profile_id: string;
   name: string | null;
   business_type: string | null;
   city: string | null;
@@ -13,7 +13,7 @@ export interface PublicBusinessProfile {
 }
 
 export interface PublicCommunityProfile {
-  id: string;
+  profile_id: string;
   name: string | null;
   community_type: string | null;
   city: string | null;
@@ -38,7 +38,7 @@ export async function getBusinessProfile(profileId: string): Promise<PublicBusin
   const { data, error } = await supabase
     .from('business_profiles')
     .select('*')
-    .eq('id', profileId)
+    .eq('profile_id', profileId)
     .maybeSingle();
 
   if (error) {
@@ -56,7 +56,7 @@ export async function getCommunityProfile(profileId: string): Promise<PublicComm
   const { data, error } = await supabase
     .from('community_profiles')
     .select('*')
-    .eq('id', profileId)
+    .eq('profile_id', profileId)
     .maybeSingle();
 
   if (error) {
@@ -128,7 +128,7 @@ export async function updateBusinessProfile(profileId: string, updates: Partial<
   const { error } = await supabase
     .from('business_profiles')
     .update(updates)
-    .eq('id', profileId);
+    .eq('profile_id', profileId);
 
   if (error) {
     console.error('Error updating business profile:', error);
@@ -145,7 +145,7 @@ export async function updateCommunityProfile(profileId: string, updates: Partial
   const { error } = await supabase
     .from('community_profiles')
     .update(updates)
-    .eq('id', profileId);
+    .eq('profile_id', profileId);
 
   if (error) {
     console.error('Error updating community profile:', error);

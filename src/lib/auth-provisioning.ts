@@ -40,19 +40,19 @@ export async function ensureUserProvisioned(user: User) {
 
   // Ensure type-specific table exists based on metadata
   if (metadataType === 'business') {
-    const { data: biz } = await supabase.from('business_profiles').select('id').eq('id', profileId).maybeSingle();
+    const { data: biz } = await supabase.from('business_profiles').select('profile_id').eq('profile_id', profileId).maybeSingle();
     if (!biz) {
       const { error: createBizErr } = await supabase
         .from('business_profiles')
-        .insert({ id: profileId, name: displayName ?? undefined });
+        .insert({ profile_id: profileId, name: displayName ?? undefined });
       if (createBizErr) throw createBizErr;
     }
   } else if (metadataType === 'community') {
-    const { data: com } = await supabase.from('community_profiles').select('id').eq('id', profileId).maybeSingle();
+    const { data: com } = await supabase.from('community_profiles').select('profile_id').eq('profile_id', profileId).maybeSingle();
     if (!com) {
       const { error: createComErr } = await supabase
         .from('community_profiles')
-        .insert({ id: profileId, name: displayName ?? undefined });
+        .insert({ profile_id: profileId, name: displayName ?? undefined });
       if (createComErr) throw createComErr;
     }
   }
