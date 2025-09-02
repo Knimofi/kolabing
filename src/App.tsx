@@ -11,8 +11,10 @@ import SignUp from "./pages/auth/SignUp";
 import SignIn from "./pages/auth/SignIn";
 import BusinessDashboard from "./pages/business/BusinessDashboard";
 import BusinessOffers from "./pages/business/BusinessOffers";
+import BusinessProfile from "./pages/business/BusinessProfile";
 import CommunityDashboard from "./pages/community/CommunityDashboard";
 import CommunityOffers from "./pages/community/CommunityOffers";
+import CommunityProfile from "./pages/community/CommunityProfile";
 import ComingSoon from "./pages/ComingSoon";
 import NotFound from "./pages/NotFound";
 
@@ -92,18 +94,7 @@ const App = () => (
                         ]}
                       />
                     } />
-                    <Route path="/profile" element={
-                      <ComingSoon 
-                        title="Business Profile"
-                        description="Manage your business information"
-                        features={[
-                          "Edit business details",
-                          "Upload profile photos",
-                          "Social media links",
-                          "Contact information"
-                        ]}
-                      />
-                    } />
+                    <Route path="/profile" element={<BusinessProfile />} />
                   </Routes>
                 </DashboardLayout>
               </ProtectedRoute>
@@ -158,18 +149,7 @@ const App = () => (
                         ]}
                       />
                     } />
-                    <Route path="/profile" element={
-                      <ComingSoon 
-                        title="Community Profile"
-                        description="Manage your community information"
-                        features={[
-                          "Edit community details",
-                          "Upload profile photos",
-                          "Social media links",
-                          "Member count and demographics"
-                        ]}
-                      />
-                    } />
+                    <Route path="/profile" element={<CommunityProfile />} />
                   </Routes>
                 </DashboardLayout>
               </ProtectedRoute>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, FileText, Users, TrendingUp, AlertCircle } from 'lucide-react';
+import ProfileSetupAlert from '@/components/ProfileSetupAlert';
 
 const BusinessDashboard = () => {
   return (
@@ -25,6 +26,9 @@ const BusinessDashboard = () => {
           </Button>
         </Link>
       </div>
+
+      {/* Profile Setup Alert */}
+      <ProfileSetupAlert />
 
       {/* Subscription Alert */}
       <Card className="border-amber-200 bg-amber-50">

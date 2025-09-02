@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Search, FileText, Users, TrendingUp, Clock } from 'lucide-react';
+import ProfileSetupAlert from '@/components/ProfileSetupAlert';
 
 const CommunityDashboard = () => {
   return (
@@ -25,6 +26,9 @@ const CommunityDashboard = () => {
           </Button>
         </Link>
       </div>
+
+      {/* Profile Setup Alert */}
+      <ProfileSetupAlert />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
