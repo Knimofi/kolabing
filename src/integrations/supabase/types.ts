@@ -81,9 +81,9 @@ export type Database = {
           business_type: string | null
           city: string | null
           created_at: string
-          id: string
           instagram: string | null
           name: string | null
+          profile_id: string
           profile_photo: string | null
           updated_at: string
           website: string | null
@@ -92,9 +92,9 @@ export type Database = {
           business_type?: string | null
           city?: string | null
           created_at?: string
-          id: string
           instagram?: string | null
           name?: string | null
+          profile_id: string
           profile_photo?: string | null
           updated_at?: string
           website?: string | null
@@ -103,9 +103,9 @@ export type Database = {
           business_type?: string | null
           city?: string | null
           created_at?: string
-          id?: string
           instagram?: string | null
           name?: string | null
+          profile_id?: string
           profile_photo?: string | null
           updated_at?: string
           website?: string | null
@@ -113,7 +113,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "business_profiles_id_fkey"
-            columns: ["id"]
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "business_profiles_profile_id_fkey"
+            columns: ["profile_id"]
             isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -144,11 +151,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "business_subscriptions_id_fkey"
+            foreignKeyName: "business_subscriptions_profile_id_fkey"
             columns: ["id"]
             isOneToOne: true
             referencedRelation: "business_profiles"
-            referencedColumns: ["id"]
+            referencedColumns: ["profile_id"]
           },
         ]
       }
@@ -211,9 +218,9 @@ export type Database = {
           city: string | null
           community_type: string | null
           created_at: string
-          id: string
           instagram: string | null
           name: string | null
+          profile_id: string
           profile_photo: string | null
           tiktok: string | null
           updated_at: string
@@ -223,9 +230,9 @@ export type Database = {
           city?: string | null
           community_type?: string | null
           created_at?: string
-          id: string
           instagram?: string | null
           name?: string | null
+          profile_id: string
           profile_photo?: string | null
           tiktok?: string | null
           updated_at?: string
@@ -235,9 +242,9 @@ export type Database = {
           city?: string | null
           community_type?: string | null
           created_at?: string
-          id?: string
           instagram?: string | null
           name?: string | null
+          profile_id?: string
           profile_photo?: string | null
           tiktok?: string | null
           updated_at?: string
@@ -246,7 +253,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "community_profiles_id_fkey"
-            columns: ["id"]
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_profiles_profile_id_fkey"
+            columns: ["profile_id"]
             isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -261,14 +275,15 @@ export type Database = {
           business_offer: Json
           business_profile_id: string
           categories: Json | null
-          collaboration_goal: Database["public"]["Enums"]["collaboration_goal"]
           community_deliverables: Json
           created_at: string
           description: string
           id: string
           no_venue: boolean | null
+          photo_url: string | null
           published_at: string | null
           status: Database["public"]["Enums"]["offer_status"]
+          timeline_days: number | null
           title: string
           updated_at: string
         }
@@ -279,14 +294,15 @@ export type Database = {
           business_offer?: Json
           business_profile_id: string
           categories?: Json | null
-          collaboration_goal: Database["public"]["Enums"]["collaboration_goal"]
           community_deliverables?: Json
           created_at?: string
           description: string
           id?: string
           no_venue?: boolean | null
+          photo_url?: string | null
           published_at?: string | null
           status?: Database["public"]["Enums"]["offer_status"]
+          timeline_days?: number | null
           title: string
           updated_at?: string
         }
@@ -297,14 +313,15 @@ export type Database = {
           business_offer?: Json
           business_profile_id?: string
           categories?: Json | null
-          collaboration_goal?: Database["public"]["Enums"]["collaboration_goal"]
           community_deliverables?: Json
           created_at?: string
           description?: string
           id?: string
           no_venue?: boolean | null
+          photo_url?: string | null
           published_at?: string | null
           status?: Database["public"]["Enums"]["offer_status"]
+          timeline_days?: number | null
           title?: string
           updated_at?: string
         }
@@ -318,6 +335,7 @@ export type Database = {
           phone_number: string | null
           updated_at: string
           user_id: string
+          user_type: string | null
         }
         Insert: {
           created_at?: string
@@ -325,7 +343,8 @@ export type Database = {
           id?: string
           phone_number?: string | null
           updated_at?: string
-          user_id: string
+          user_id?: string
+          user_type?: string | null
         }
         Update: {
           created_at?: string
@@ -334,6 +353,7 @@ export type Database = {
           phone_number?: string | null
           updated_at?: string
           user_id?: string
+          user_type?: string | null
         }
         Relationships: []
       }
@@ -374,42 +394,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      subscriptions: {
-        Row: {
-          billing_period_end: string | null
-          billing_period_start: string | null
-          business_profile_id: string
-          created_at: string
-          id: string
-          status: Database["public"]["Enums"]["subscription_status"]
-          stripe_customer_id: string
-          stripe_subscription_id: string
-          updated_at: string
-        }
-        Insert: {
-          billing_period_end?: string | null
-          billing_period_start?: string | null
-          business_profile_id: string
-          created_at?: string
-          id?: string
-          status?: Database["public"]["Enums"]["subscription_status"]
-          stripe_customer_id: string
-          stripe_subscription_id: string
-          updated_at?: string
-        }
-        Update: {
-          billing_period_end?: string | null
-          billing_period_start?: string | null
-          business_profile_id?: string
-          created_at?: string
-          id?: string
-          status?: Database["public"]["Enums"]["subscription_status"]
-          stripe_customer_id?: string
-          stripe_subscription_id?: string
-          updated_at?: string
-        }
-        Relationships: []
       }
       surveys: {
         Row: {
