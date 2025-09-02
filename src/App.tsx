@@ -11,6 +11,7 @@ import SignUp from "./pages/auth/SignUp";
 import SignIn from "./pages/auth/SignIn";
 import BusinessDashboard from "./pages/business/BusinessDashboard";
 import BusinessOffers from "./pages/business/BusinessOffers";
+import BusinessOffersNew from "./pages/business/BusinessOffersNew";
 import BusinessProfile from "./pages/business/BusinessProfile";
 import CommunityDashboard from "./pages/community/CommunityDashboard";
 import CommunityOffers from "./pages/community/CommunityOffers";
@@ -40,18 +41,7 @@ const App = () => (
                   <Routes>
                     <Route path="/" element={<BusinessDashboard />} />
                     <Route path="/offers" element={<BusinessOffers />} />
-                    <Route path="/offers/new" element={
-                      <ComingSoon 
-                        title="Create New Offer"
-                        description="Design your collaboration opportunity"
-                        features={[
-                          "Multi-step offer creation wizard",
-                          "Rich text description editor",
-                          "Deliverable specifications",
-                          "Collaboration goal selection"
-                        ]}
-                      />
-                    } />
+                    <Route path="/offers/new" element={<BusinessOffersNew />} />
                     <Route path="/offers/:id" element={
                       <ComingSoon 
                         title="Offer Details"
