@@ -17,7 +17,7 @@ interface Offer {
   availability_start?: string;
   availability_end?: string;
   offer_photo?: string;
-  business_offer: { description: string };
+  business_offer?: any;
   community_deliverables: Record<string, any>;
   categories?: string[];
   business_profiles?: {
@@ -56,7 +56,7 @@ const CommunityOffers = () => {
 
   const fetchOffers = async () => {
     setLoading(true);
-    console.log(data)
+    
     try {
       const { data, error } = await supabase
         .from('offers')
@@ -75,7 +75,7 @@ const CommunityOffers = () => {
 
       if (error) throw error;
 
-      setOffers(Array.isArray(data) ? data : []);
+      setOffers(Array.isArray(data) ? (data as any as Offer[]) : []);
     } catch (error: any) {
       console.error('Error fetching offers:', error);
       toast({
