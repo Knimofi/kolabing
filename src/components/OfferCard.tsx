@@ -1,3 +1,4 @@
+// src/components/OfferCard.tsx
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,9 +14,7 @@ interface OfferCardProps {
     availability_start?: string;
     availability_end?: string;
     offer_photo?: string;
-    business_offer: {
-      description: string;
-    };
+    business_offer: { description: string };
     community_deliverables: {
       tagged_stories?: number;
       google_reviews?: number;
@@ -105,12 +104,18 @@ const OfferCard = ({
     return words.slice(0, maxWords).join(' ') + '...';
   };
 
-  // Compute the photo URL from Supabase storage if needed
-  const photoUrl = offer.offer_photo
-    ? offer.offer_photo.startsWith('http')
-      ? offer.offer_photo
-      : supabase.storage.from('offers').getPublicUrl(offer.offer_photo).publicUrl
-    : businessProfile?.profile_photo || '/placeholder.svg';
+  // ✅ Compute the photo URL correctly
+  let photoUrl = businessProfile?.profile_photo || '/placeholder.svg';
+  if (offer.offer_photo) {
+    if (offer.offer_photo.startsWith('http')) {
+      photoUrl = offer.offer_photo;
+    } else {
+      const { data } = supabase.storage.from('offers').getPublicUrl(offer.offer_photo);
+      if (data?.publicUrl) {
+        photoUrl = data.publicUrl;
+      }
+    }
+  }
 
   return (
     <Card className="group h-full transition-all duration-200 hover:scale-105 hover:shadow-lg rounded-lg">
@@ -137,8 +142,7 @@ const OfferCard = ({
             alt={offer.title}
             className="w-full h-full object-cover"
             onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = '/placeholder.svg';
+              (e.target as HTMLImageElement).src = '/placeholder.svg';
             }}
           />
           {formatAvailability() && (
