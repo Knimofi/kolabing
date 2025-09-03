@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
+import { supabase } from '@/integrations/supabase/client';
 
 interface OfferCardProps {
   offer: {
@@ -11,7 +12,7 @@ interface OfferCardProps {
     description: string;
     availability_start?: string;
     availability_end?: string;
-    photo_url?: string;
+    offer_photo?: string;
     business_offer: {
       description: string;
     };
@@ -29,7 +30,7 @@ interface OfferCardProps {
     };
   };
   businessProfile: {
-    name: string;
+    name?: string;
     business_type?: string;
     city?: string;
     profile_photo?: string;
@@ -39,40 +40,38 @@ interface OfferCardProps {
   onApply?: () => void;
 }
 
-const OfferCard = ({ 
-  offer, 
-  businessProfile, 
-  showActions = true, 
-  onSeeDetails, 
-  onApply 
+const OfferCard = ({
+  offer,
+  businessProfile,
+  showActions = true,
+  onSeeDetails,
+  onApply,
 }: OfferCardProps) => {
   const formatAvailability = () => {
     if (!offer.availability_start && !offer.availability_end) return null;
-    
+
     if (offer.availability_start && offer.availability_end) {
       const start = new Date(offer.availability_start);
       const end = new Date(offer.availability_end);
       return `${format(start, 'MMM d')}–${format(end, 'd')}`;
     }
-    
+
     if (offer.availability_start) {
       return `From ${format(new Date(offer.availability_start), 'MMM d')}`;
     }
-    
+
     return null;
   };
 
-  const renderBusinessOffer = () => {
-    return (
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <span>🎁</span>
-        <span className="truncate">{offer.business_offer.description}</span>
-      </div>
-    );
-  };
+  const renderBusinessOffer = () => (
+    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <span>🎁</span>
+      <span className="truncate">{offer.business_offer.description}</span>
+    </div>
+  );
 
   const renderDeliverables = () => {
-    const deliverables = [];
+    const deliverables: string[] = [];
     const d = offer.community_deliverables;
 
     if (d.tagged_stories) deliverables.push(`📲 ${d.tagged_stories} Stories`);
@@ -102,10 +101,16 @@ const OfferCard = ({
     const words = text.split(' ');
     const approximateWordsPerLine = 8;
     const maxWords = maxLines * approximateWordsPerLine;
-    
     if (words.length <= maxWords) return text;
     return words.slice(0, maxWords).join(' ') + '...';
   };
+
+  // Compute the photo URL from Supabase storage if needed
+  const photoUrl = offer.offer_photo
+    ? offer.offer_photo.startsWith('http')
+      ? offer.offer_photo
+      : supabase.storage.from('offers').getPublicUrl(offer.offer_photo).publicUrl
+    : businessProfile?.profile_photo || '/placeholder.svg';
 
   return (
     <Card className="group h-full transition-all duration-200 hover:scale-105 hover:shadow-lg rounded-lg">
@@ -128,12 +133,12 @@ const OfferCard = ({
         {/* Cover Image */}
         <div className="relative mb-4 rounded-lg overflow-hidden bg-muted aspect-video">
           <img
-            src={offer.photo_url || businessProfile.profile_photo}
+            src={photoUrl}
             alt={offer.title}
             className="w-full h-full object-cover"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
-              target.src = businessProfile.profile_photo || '/placeholder.svg';
+              target.src = '/placeholder.svg';
             }}
           />
           {formatAvailability() && (
@@ -148,10 +153,10 @@ const OfferCard = ({
           <h3 className="font-semibold text-lg leading-tight line-clamp-2">
             {offer.title}
           </h3>
-          
+
           {renderBusinessOffer()}
           {renderDeliverables()}
-          
+
           <p className="text-sm text-muted-foreground leading-relaxed">
             {truncateDescription(offer.description)}
           </p>
@@ -160,12 +165,16 @@ const OfferCard = ({
         {/* Footer Actions */}
         {showActions && (
           <div className="flex gap-2 mt-4 pt-3 border-t">
-            <Button variant="outline" size="sm" className="flex-1" onClick={onSeeDetails}>
-              See Details
-            </Button>
-            <Button size="sm" className="flex-1" onClick={onApply}>
-              Apply
-            </Button>
+            {onSeeDetails && (
+              <Button variant="outline" size="sm" className="flex-1" onClick={onSeeDetails}>
+                See Details
+              </Button>
+            )}
+            {onApply && (
+              <Button size="sm" className="flex-1" onClick={onApply}>
+                Apply
+              </Button>
+            )}
           </div>
         )}
       </CardContent>
