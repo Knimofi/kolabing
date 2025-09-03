@@ -28,13 +28,14 @@ const CommunityOffers = () => {
   }, []);
 
   const fetchOffers = async () => {
+    setLoading(true);
     try {
-      // Fetch published offers with business profile data
+      // Fetch published offers with business profile data (left join)
       const { data: offersData, error: offersError } = await supabase
         .from('offers')
         .select(`
           *,
-          business_profiles!inner(
+          business_profiles(
             profile_id,
             name,
             business_type,
@@ -46,12 +47,21 @@ const CommunityOffers = () => {
         `)
         .eq('status', 'published')
         .order('published_at', { ascending: false });
-
-      if (offersError) throw offersError;
-
-      setOffers(offersData || []);
+  
+      if (offersError) {
+        console.error('Supabase error fetching offers:', offersError);
+        toast({
+          title: 'Error',
+          description: 'Failed to load offers. Please try again.',
+          variant: 'destructive',
+        });
+        return;
+      }
+  
+      // Optional: ensure offersData is an array
+      setOffers(Array.isArray(offersData) ? offersData : []);
     } catch (error: any) {
-      console.error('Error fetching offers:', error);
+      console.error('Unexpected error fetching offers:', error);
       toast({
         title: 'Error',
         description: 'Failed to load offers. Please try again.',
@@ -61,6 +71,7 @@ const CommunityOffers = () => {
       setLoading(false);
     }
   };
+
 
   const handleSeeDetails = (offer: any) => {
     setSelectedOffer(offer);
