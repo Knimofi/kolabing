@@ -114,14 +114,14 @@ const BusinessOffers = () => {
 
   const handleDuplicateOffer = async (offer: any) => {
     try {
+      // Destructure out fields you don’t want to insert
+      const { id, created_at, updated_at, published_at, ...rest } = offer;
+
       const duplicatedOffer = {
-        ...offer,
-        id: undefined, // Let the database generate new ID
+        ...rest,
         title: `${offer.title} (Copy)`,
         status: 'draft',
-        published_at: null,
-        created_at: undefined,
-        updated_at: undefined
+        published_at: null, // explicitly reset published date
       };
 
       const { data, error } = await supabase
