@@ -28,21 +28,30 @@ const CommunityOffers = () => {
   }, []);
 
   const fetchOffers = async () => {
-    setLoading(true);
-    try {
-      // Fetch published offers with business profile data (left join)
-      const { data: offersData, error: offersError } = await supabase
+  setLoading(true);
+
+  try {
+    // Fetch published offers with business profile
+    const { data: offersData, error: offersError } = await supabase
         .from('offers')
         .select(`
-          *,
-          business_profiles(
+          id,
+          title,
+          description,
+          status,
+          published_at,
+          availability_start,
+          availability_end,
+          offer_photo,
+          business_offer,
+          community_deliverables,
+          categories,
+          business_profiles:business_profile_id (
             profile_id,
             name,
             business_type,
             city,
-            profile_photo,
-            website,
-            instagram
+            profile_photo
           )
         `)
         .eq('status', 'published')
@@ -58,8 +67,18 @@ const CommunityOffers = () => {
         return;
       }
   
-      // Optional: ensure offersData is an array
-      setOffers(Array.isArray(offersData) ? offersData : []);
+      // Ensure offersData is an array
+      const offersArray = Array.isArray(offersData) ? offersData : [];
+  
+      // Optional: fetch subscription status for each business (if needed)
+      // Example: fetch active subscriptions to maybe highlight premium offers
+      // const businessIds = offersArray.map(o => o.business_profile_id).filter(Boolean);
+      // const { data: subscriptions } = await supabase
+      //   .from('subscriptions')
+      //   .select('id, subscription_status, billing_info')
+      //   .in('id', businessIds);
+  
+      setOffers(offersArray);
     } catch (error: any) {
       console.error('Unexpected error fetching offers:', error);
       toast({
@@ -71,6 +90,7 @@ const CommunityOffers = () => {
       setLoading(false);
     }
   };
+  ;
 
 
   const handleSeeDetails = (offer: any) => {
