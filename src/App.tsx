@@ -13,6 +13,7 @@ import BusinessDashboard from "./pages/business/BusinessDashboard";
 import BusinessOffers from "./pages/business/BusinessOffers";
 import BusinessOffersNew from "./pages/business/BusinessOffersNew";
 import BusinessOffersEdit from "./pages/business/BusinessOffersEdit";
+import BusinessApplications from "./pages/business/BusinessApplications";
 import BusinessProfile from "./pages/business/BusinessProfile";
 import CommunityDashboard from "./pages/community/CommunityDashboard";
 import CommunityOffers from "./pages/community/CommunityOffers";
@@ -44,6 +45,7 @@ const App = () => (
                     <Route path="/offers" element={<BusinessOffers />} />
                     <Route path="/offers/new" element={<BusinessOffersNew />} />
                     <Route path="/offers/:offerId/edit" element={<BusinessOffersEdit />} />
+                    <Route path="/applications" element={<BusinessApplications />} />
                     <Route path="/offers/:id" element={
                       <ComingSoon 
                         title="Offer Details"

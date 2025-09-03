@@ -1,15 +1,144 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Search, Filter, MapPin, Calendar, Building2, Heart } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import OfferCard from '@/components/OfferCard';
+import OfferDetailsModal from '@/components/modals/OfferDetailsModal';
+import ApplyOfferModal from '@/components/modals/ApplyOfferModal';
 
 const CommunityOffers = () => {
+  const { profile } = useAuth();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
-  
-  // Mock data - will be replaced with real data from Supabase
-  const offers = [];
+  const [offers, setOffers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedOffer, setSelectedOffer] = useState<any>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showApplyModal, setShowApplyModal] = useState(false);
+  const [isSubmittingApplication, setIsSubmittingApplication] = useState(false);
+  const [activeCategory, setActiveCategory] = useState('all');
+
+  useEffect(() => {
+    fetchOffers();
+  }, []);
+
+  const fetchOffers = async () => {
+    try {
+      // Fetch published offers with business profile data
+      const { data: offersData, error: offersError } = await supabase
+        .from('offers')
+        .select(`
+          *,
+          business_profiles!inner(
+            profile_id,
+            name,
+            business_type,
+            city,
+            profile_photo,
+            website,
+            instagram
+          )
+        `)
+        .eq('status', 'published')
+        .order('published_at', { ascending: false });
+
+      if (offersError) throw offersError;
+
+      setOffers(offersData || []);
+    } catch (error: any) {
+      console.error('Error fetching offers:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load offers. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSeeDetails = (offer: any) => {
+    setSelectedOffer(offer);
+    setShowDetailsModal(true);
+  };
+
+  const handleApply = (offer: any) => {
+    setSelectedOffer(offer);
+    setShowApplyModal(true);
+  };
+
+  const handleSubmitApplication = async (applicationData: {
+    availability: string;
+    message: string;
+    availability_date?: Date;
+  }) => {
+    if (!profile || !selectedOffer) return;
+
+    setIsSubmittingApplication(true);
+    try {
+      const { error } = await supabase
+        .from('applications')
+        .insert([{
+          offer_id: selectedOffer.id,
+          community_profile_id: profile.id,
+          message: applicationData.message,
+          availability: applicationData.availability || (applicationData.availability_date ? applicationData.availability_date.toISOString() : null),
+          status: 'pending'
+        }]);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'Your application has been submitted successfully!',
+      });
+
+      // Refresh offers to update application counts
+      fetchOffers();
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to submit application. Please try again.',
+        variant: 'destructive',
+      });
+      throw error; // Re-throw to prevent modal from closing
+    } finally {
+      setIsSubmittingApplication(false);
+    }
+  };
+
+  const categories = [
+    'all',
+    'Brand Awareness',
+    'Content Creation',
+    'Events',
+    'Product Promotion',
+    'Lead Generation'
+  ];
+
+  const filteredOffers = offers.filter(offer => {
+    const matchesSearch = offer.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         offer.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         offer.business_profiles.name.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = activeCategory === 'all' || 
+                           (offer.categories && offer.categories.includes(activeCategory));
+    
+    return matchesSearch && matchesCategory;
+  });
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-48">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -34,100 +163,77 @@ const CommunityOffers = () => {
             className="pl-10"
           />
         </div>
-        <Button variant="outline" className="w-full md:w-auto">
-          <Filter className="w-4 h-4 mr-2" />
-          Filters
-        </Button>
       </div>
 
-      {/* Filter Tags */}
+      {/* Category Filter Tags */}
       <div className="flex flex-wrap gap-2">
-        <Button variant="outline" size="sm">All Categories</Button>
-        <Button variant="outline" size="sm">Brand Awareness</Button>
-        <Button variant="outline" size="sm">Content Creation</Button>
-        <Button variant="outline" size="sm">Events</Button>
-        <Button variant="outline" size="sm">Product Promotion</Button>
-        <Button variant="outline" size="sm">Lead Generation</Button>
+        {categories.map(category => (
+          <Button 
+            key={category}
+            variant={activeCategory === category ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveCategory(category)}
+          >
+            {category === 'all' ? 'All Categories' : category}
+          </Button>
+        ))}
       </div>
 
       {/* Offers Grid */}
-      {offers.length === 0 ? (
+      {filteredOffers.length === 0 ? (
         <Card>
           <CardContent className="py-16">
             <div className="text-center">
               <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-foreground mb-2">
-                No offers available yet
+                {offers.length === 0 ? 'No offers available yet' : 'No matching offers found'}
               </h3>
               <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                New collaboration opportunities will appear here. Check back soon!
+                {offers.length === 0 
+                  ? 'New collaboration opportunities will appear here. Check back soon!'
+                  : 'Try adjusting your search terms or selected category.'
+                }
               </p>
-              <Button variant="outline">
-                Notify Me of New Offers
-              </Button>
+              {searchTerm && (
+                <Button variant="outline" onClick={() => setSearchTerm('')}>
+                  Clear Search
+                </Button>
+              )}
             </div>
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Example offer card structure - will be populated with real data */}
-          <Card className="hover:shadow-md transition-shadow cursor-pointer">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Building2 className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">TechCorp Inc.</span>
-                  </div>
-                  <CardTitle className="text-lg">Sample Collaboration Offer</CardTitle>
-                </div>
-                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-red-500">
-                  <Heart className="w-4 h-4" />
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
-                We're looking for tech communities to help promote our new developer tools...
-              </p>
-              
-              <div className="flex flex-wrap gap-2 mb-4">
-                <Badge variant="secondary">Brand Awareness</Badge>
-                <Badge variant="secondary">Tech</Badge>
-              </div>
-              
-              <div className="space-y-2 mb-4">
-                <div className="flex items-center text-sm text-muted-foreground">
-                  <MapPin className="w-4 h-4 mr-2" />
-                  San Francisco, CA (Remote OK)
-                </div>
-                <div className="flex items-center text-sm text-muted-foreground">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Available: Mar 15 - Apr 15, 2024
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-muted-foreground">
-                  5 applications
-                </div>
-                <Button size="sm">
-                  View Details
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {filteredOffers.map((offer) => (
+            <OfferCard
+              key={offer.id}
+              offer={offer}
+              businessProfile={offer.business_profiles}
+              showActions={true}
+              onSeeDetails={() => handleSeeDetails(offer)}
+              onApply={() => handleApply(offer)}
+            />
+          ))}
         </div>
       )}
 
-      {/* Load More */}
-      {offers.length > 0 && (
-        <div className="text-center">
-          <Button variant="outline">
-            Load More Offers
-          </Button>
-        </div>
-      )}
+      {/* Offer Details Modal */}
+      <OfferDetailsModal
+        open={showDetailsModal}
+        onOpenChange={setShowDetailsModal}
+        offer={selectedOffer}
+        businessProfile={selectedOffer?.business_profiles}
+      />
+
+      {/* Apply Modal */}
+      <ApplyOfferModal
+        open={showApplyModal}
+        onOpenChange={setShowApplyModal}
+        offer={selectedOffer}
+        businessProfile={selectedOffer?.business_profiles}
+        onSubmit={handleSubmitApplication}
+        isSubmitting={isSubmittingApplication}
+      />
     </div>
   );
 };

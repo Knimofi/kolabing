@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import OfferCard from '@/components/OfferCard';
+import OfferDetailsModal from '@/components/modals/OfferDetailsModal';
 
 type OfferStatus = 'all' | 'draft' | 'published' | 'closed' | 'completed';
 
@@ -22,6 +23,9 @@ const BusinessOffers = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [viewMode, setViewMode] = useState<'list' | 'preview'>('list');
   const [businessProfile, setBusinessProfile] = useState<any>(null);
+  const [selectedOffer, setSelectedOffer] = useState<any>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [offerToDelete, setOfferToDelete] = useState<any>(null);
 
   useEffect(() => {
     if (profile) {
@@ -88,6 +92,69 @@ const BusinessOffers = () => {
       toast({
         title: 'Error',
         description: error.message || 'Failed to update offer status',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleViewOffer = (offer: any) => {
+    setSelectedOffer(offer);
+    setShowDetailsModal(true);
+  };
+
+  const handleDuplicateOffer = async (offer: any) => {
+    try {
+      const duplicatedOffer = {
+        ...offer,
+        id: undefined, // Let the database generate new ID
+        title: `${offer.title} (Copy)`,
+        status: 'draft',
+        published_at: null,
+        created_at: undefined,
+        updated_at: undefined
+      };
+
+      const { data, error } = await supabase
+        .from('offers')
+        .insert([duplicatedOffer])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setOffers([data, ...offers]);
+      toast({
+        title: 'Success',
+        description: 'Offer duplicated successfully',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to duplicate offer',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleDeleteOffer = async (offer: any) => {
+    try {
+      const { error } = await supabase
+        .from('offers')
+        .delete()
+        .eq('id', offer.id);
+
+      if (error) throw error;
+
+      setOffers(offers.filter(o => o.id !== offer.id));
+      setOfferToDelete(null);
+      toast({
+        title: 'Success',
+        description: 'Offer deleted successfully',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to delete offer',
         variant: 'destructive',
       });
     }
@@ -217,7 +284,11 @@ const BusinessOffers = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="flex gap-2 flex-wrap">
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleViewOffer(offer)}
+                    >
                       <Eye className="w-4 h-4 mr-2" />
                       View
                     </Button>
@@ -229,6 +300,22 @@ const BusinessOffers = () => {
                     >
                       <Edit className="w-4 h-4 mr-2" />
                       Edit
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleDuplicateOffer(offer)}
+                    >
+                      <Copy className="w-4 h-4 mr-2" />
+                      Duplicate
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      size="sm"
+                      onClick={() => setOfferToDelete(offer)}
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete
                     </Button>
                     {offer.status === 'draft' && (
                       <Button 
@@ -256,6 +343,35 @@ const BusinessOffers = () => {
           </div>
         )
       )}
+
+      {/* Offer Details Modal */}
+      <OfferDetailsModal
+        open={showDetailsModal}
+        onOpenChange={setShowDetailsModal}
+        offer={selectedOffer}
+        businessProfile={businessProfile}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!offerToDelete} onOpenChange={() => setOfferToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Offer</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{offerToDelete?.title}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => handleDeleteOffer(offerToDelete)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
