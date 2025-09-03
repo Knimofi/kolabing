@@ -75,19 +75,35 @@ const CommunityOffers = () => {
   const handleSubmitApplication = async (applicationData: {
     availability: string;
     message: string;
-    availability_date?: Date;
   }) => {
     if (!profile || !selectedOffer) return;
 
     setIsSubmittingApplication(true);
     try {
+      // Check for duplicate applications first
+      const { data: existingApplication, error: checkError } = await supabase
+        .from('applications')
+        .select('id')
+        .eq('offer_id', selectedOffer.id)
+        .eq('community_profile_id', profile.id)
+        .eq('status', 'pending')
+        .single();
+
+      if (checkError && checkError.code !== 'PGRST116') { // PGRST116 is "not found" error
+        throw checkError;
+      }
+
+      if (existingApplication) {
+        throw new Error('You have already applied to this offer');
+      }
+
       const { error } = await supabase
         .from('applications')
         .insert([{
           offer_id: selectedOffer.id,
           community_profile_id: profile.id,
           message: applicationData.message,
-          availability: applicationData.availability || (applicationData.availability_date ? applicationData.availability_date.toISOString() : null),
+          availability: applicationData.availability,
           status: 'pending'
         }]);
 

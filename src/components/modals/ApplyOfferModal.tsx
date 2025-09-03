@@ -18,7 +18,6 @@ interface ApplyOfferModalProps {
   onSubmit: (applicationData: {
     availability: string;
     message: string;
-    availability_date?: Date;
   }) => Promise<void>;
   isSubmitting?: boolean;
 }
@@ -33,7 +32,6 @@ const ApplyOfferModal = ({
 }: ApplyOfferModalProps) => {
   const [availability, setAvailability] = useState('');
   const [message, setMessage] = useState('');
-  const [availabilityDate, setAvailabilityDate] = useState<Date>();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,14 +41,12 @@ const ApplyOfferModal = ({
     try {
       await onSubmit({
         availability,
-        message: message.trim(),
-        availability_date: availabilityDate
+        message: message.trim()
       });
       
       // Reset form
       setAvailability('');
       setMessage('');
-      setAvailabilityDate(undefined);
       onOpenChange(false);
     } catch (error) {
       // Error handling is done in parent component
@@ -65,41 +61,12 @@ const ApplyOfferModal = ({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Availability Date Picker */}
+          {/* Availability */}
           <div className="space-y-2">
-            <Label htmlFor="availability-date">Preferred Date (Optional)</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  id="availability-date"
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !availabilityDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {availabilityDate ? format(availabilityDate, "PPP") : "Select date"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={availabilityDate}
-                  onSelect={setAvailabilityDate}
-                  disabled={(date) => date < new Date()}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-
-          {/* Additional Availability Info */}
-          <div className="space-y-2">
-            <Label htmlFor="availability">Availability Details (Optional)</Label>
+            <Label htmlFor="availability">Availability (Optional)</Label>
             <Input
               id="availability"
-              placeholder="e.g., Weekends preferred, Evening events only..."
+              placeholder="e.g., Weekends preferred, Evening events only, Dec 15-20..."
               value={availability}
               onChange={(e) => setAvailability(e.target.value)}
             />

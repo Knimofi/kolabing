@@ -2,15 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Plus, Eye, Edit, MoreVertical, Calendar, MapPin, Users, Star, Send, ArrowLeft, Trash2, Copy } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import OfferCard from '@/components/OfferCard';
 import OfferDetailsModal from '@/components/modals/OfferDetailsModal';
+
+const SUPABASE_URL = "https://qcmperlkuujhweikoyru.supabase.co";
+
+const getPhotoUrl = (photoPath: string | null) => {
+  if (!photoPath) return null;
+  if (photoPath.startsWith('http')) return photoPath;
+  return `${SUPABASE_URL}/storage/v1/object/public/offer-photos/${photoPath}`;
+};
 
 type OfferStatus = 'all' | 'draft' | 'published' | 'closed' | 'completed';
 
