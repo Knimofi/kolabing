@@ -40,6 +40,13 @@ interface OfferCardProps {
   onApply?: () => void;
 }
 
+// Helper to safely get Supabase public URL
+const getOfferPhotoUrl = (path?: string) => {
+  if (!path) return null;
+  if (path.startsWith('http')) return path;
+  return supabase.storage.from('offers').getPublicUrl(path).data.publicUrl;
+};
+
 const OfferCard = ({
   offer,
   businessProfile,
@@ -105,12 +112,9 @@ const OfferCard = ({
     return words.slice(0, maxWords).join(' ') + '...';
   };
 
-  // Compute the photo URL from Supabase storage if needed
-  const photoUrl = offer.offer_photo
-    ? offer.offer_photo.startsWith('http')
-      ? offer.offer_photo
-      : supabase.storage.from('offers').getPublicUrl(offer.offer_photo).publicUrl
-    : businessProfile?.profile_photo || '/placeholder.svg';
+  const photoUrl = getOfferPhotoUrl(offer.offer_photo)
+    || businessProfile?.profile_photo
+    || '/placeholder.svg';
 
   return (
     <Card className="group h-full transition-all duration-200 hover:scale-105 hover:shadow-lg rounded-lg">
@@ -183,3 +187,4 @@ const OfferCard = ({
 };
 
 export default OfferCard;
+
