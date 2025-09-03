@@ -19,7 +19,7 @@ interface Offer {
   offer_photo?: string;
   business_offer: { description: string };
   community_deliverables: Record<string, any>;
-  categories?: string[];
+  categories: string[];
   business_profiles?: {
     profile_id: string;
     name?: string;
@@ -74,9 +74,24 @@ const CommunityOffers = () => {
 
       if (error) throw error;
 
-      setOffers(Array.isArray(data) ? data : []);
-    } catch (error: any) {
-      console.error('Error fetching offers:', error);
+      if (!data || !Array.isArray(data)) {
+        setOffers([]);
+        return;
+      }
+
+      // Parse JSON fields safely and normalize offers
+      const parsedOffers: Offer[] = data.map((o: any) => ({
+        ...o,
+        business_offer: o.business_offer ? JSON.parse(o.business_offer) : { description: '' },
+        community_deliverables: o.community_deliverables ? JSON.parse(o.community_deliverables) : {},
+        categories: o.categories ? JSON.parse(o.categories) : [],
+        business_profiles: o.business_profiles || {},
+        offer_photo: o.offer_photo || o.business_profiles?.profile_photo || '/placeholder.svg',
+      }));
+
+      setOffers(parsedOffers);
+    } catch (err: any) {
+      console.error('Error fetching offers:', err);
       toast({
         title: 'Error',
         description: 'Failed to load offers. Please try again.',
@@ -97,7 +112,7 @@ const CommunityOffers = () => {
     setShowApplyModal(true);
   };
 
-  const handleSubmitApplication = async (applicationData: { availability: string; message: string; }) => {
+  const handleSubmitApplication = async (applicationData: { availability: string; message: string }) => {
     if (!profile || !selectedOffer) return;
     setIsSubmittingApplication(true);
 
@@ -146,7 +161,11 @@ const CommunityOffers = () => {
     return matchesSearch && matchesCategory;
   });
 
-  if (loading) return <div className="flex items-center justify-center min-h-48"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>;
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-48">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
