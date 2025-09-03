@@ -17,6 +17,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { FileUpload } from '@/components/ui/file-upload';
 
 const offerSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title must be under 100 characters'),
@@ -152,38 +153,6 @@ const BusinessOffersEdit = () => {
     }
   };
 
-  const handlePhotoUpload = async (file: File) => {
-    if (!profile) return;
-    
-    try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${profile.id}/${Date.now()}.${fileExt}`;
-      
-      const { error: uploadError } = await supabase.storage
-        .from('offer-photos')
-        .upload(fileName, file);
-      
-      if (uploadError) throw uploadError;
-      
-      const { data: { publicUrl } } = supabase.storage
-        .from('offer-photos')
-        .getPublicUrl(fileName);
-      
-      form.setValue('offer_photo', publicUrl);
-      
-      toast({
-        title: 'Photo uploaded successfully',
-        description: 'Your offer photo has been updated.',
-      });
-    } catch (error: any) {
-      console.error('Error uploading photo:', error);
-      toast({
-        title: 'Upload failed',
-        description: error.message || 'Failed to upload photo. Please try again.',
-        variant: 'destructive',
-      });
-    }
-  };
 
   const handleSubmit = async (data: OfferFormData, status: 'draft' | 'published') => {
     if (!profile || !offerId) return;
@@ -454,35 +423,13 @@ const BusinessOffersEdit = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-4">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handlePhotoUpload(file);
-                  }}
-                  className="hidden"
-                  id="photo-upload"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => document.getElementById('photo-upload')?.click()}
-                  className="w-full"
-                >
-                  Upload Offer Photo
-                </Button>
-                {form.watch('offer_photo') && (
-                  <div className="mt-4">
-                    <img 
-                      src={form.watch('offer_photo')} 
-                      alt="Offer preview" 
-                      className="w-full h-48 object-cover rounded-lg"
-                    />
-                  </div>
-                )}
-              </div>
+              <FileUpload
+                bucket="offer-photos"
+                value={form.watch('offer_photo')}
+                onChange={(url) => form.setValue('offer_photo', url)}
+                label="Offer Photo"
+                accept="image/*"
+              />
             </CardContent>
           </Card>
 
