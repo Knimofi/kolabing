@@ -43,58 +43,75 @@ const BusinessOffers = () => {
     }
   }, [profile]);
 
+  interface Offer {
+    id: string;
+    title: string;
+    description: string;
+    availability_start?: string;
+    availability_end?: string;
+    address?: string | null;
+    no_venue?: boolean;
+    business_offer: { description: string };
+    community_deliverables: Record<string, any>;
+    categories: string[];
+    offer_photo?: string;
+    business_profiles: {
+      profile_id?: string;
+      name?: string;
+      business_type?: string;
+      city?: string;
+      profile_photo?: string;
+      website?: string;
+      instagram?: string;
+    };
+  }
+  
   const fetchOffers = async () => {
-  setLoading(true);
-  try {
-    const { data: offersData, error: offersError } = await supabase
-      .from('offers')
-      .select(`
-        *,
-        business_profiles:business_profile_id (
-          profile_id,
-          name,
-          business_type,
-          city,
-          profile_photo,
-          website,
-          instagram
-        )
-      `)
-      .eq('status', 'published')
-      .order('published_at', { ascending: false });
-
-    if (offersError) {
-      console.error('Supabase error fetching offers:', offersError);
+    setLoading(true);
+    try {
+      const { data: offersData, error } = await supabase
+        .from('offers')
+        .select(`
+          *,
+          business_profiles:business_profile_id (
+            profile_id,
+            name,
+            business_type,
+            city,
+            profile_photo,
+            website,
+            instagram
+          )
+        `)
+        .eq('status', 'published')
+        .order('published_at', { ascending: false });
+  
+      if (error) throw error;
+  
+      // Parse JSON fields and cast types
+      const parsedOffers: Offer[] = (offersData || []).map((offer: any) => ({
+        ...offer,
+        business_offer: offer.business_offer ? JSON.parse(offer.business_offer) : { description: '' },
+        community_deliverables: offer.community_deliverables
+          ? JSON.parse(offer.community_deliverables)
+          : {},
+        categories: offer.categories ? JSON.parse(offer.categories) : [],
+        business_profiles: offer.business_profiles || {},
+      }));
+  
+      setOffers(parsedOffers);
+    } catch (err: any) {
+      console.error('Error fetching offers:', err);
       toast({
         title: 'Error',
         description: 'Failed to load offers. Please try again.',
         variant: 'destructive',
       });
-      return;
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const parsedOffers = (offersData || []).map((offer: any) => ({
-      ...offer,
-      business_offer: offer.business_offer ? JSON.parse(offer.business_offer) : { description: '' },
-      community_deliverables: offer.community_deliverables
-        ? JSON.parse(offer.community_deliverables)
-        : {},
-      categories: offer.categories ? JSON.parse(offer.categories) : [],
-      business_profiles: offer.business_profiles || {}, // ensure it's always an object
-    }));
-
-    setOffers(parsedOffers);
-  } catch (error: any) {
-    console.error('Unexpected error fetching offers:', error);
-    toast({
-      title: 'Error',
-      description: 'Failed to load offers. Please try again.',
-      variant: 'destructive',
-    });
-  } finally {
-    setLoading(false);
-  }
-};
 
   const filteredOffers = activeFilter === 'all' 
     ? offers 
