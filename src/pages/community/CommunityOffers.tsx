@@ -41,7 +41,6 @@ const categories = [
 const CommunityOffers = () => {
   const { profile } = useAuth();
   const { toast } = useToast();
-
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -57,6 +56,7 @@ const CommunityOffers = () => {
 
   const fetchOffers = async () => {
     setLoading(true);
+    console.log(data)
     try {
       const { data, error } = await supabase
         .from('offers')
@@ -75,31 +75,7 @@ const CommunityOffers = () => {
 
       if (error) throw error;
 
-      if (!Array.isArray(data)) {
-        setOffers([]);
-        return;
-      }
-
-      const parsedOffers: Offer[] = data.map((o: any) => {
-        let business_offer = { description: '' };
-        let community_deliverables = {};
-        let categoriesArr: string[] = [];
-
-        try { business_offer = o.business_offer ? JSON.parse(o.business_offer) : { description: '' }; } catch {}
-        try { community_deliverables = o.community_deliverables ? JSON.parse(o.community_deliverables) : {}; } catch {}
-        try { categoriesArr = o.categories ? JSON.parse(o.categories) : []; } catch {}
-
-        return {
-          ...o,
-          business_offer,
-          community_deliverables,
-          categories: categoriesArr,
-          business_profiles: o.business_profiles || {},
-          offer_photo: o.offer_photo || o.business_profiles?.profile_photo || '/placeholder.svg',
-        };
-      });
-
-      setOffers(parsedOffers);
+      setOffers(Array.isArray(data) ? data : []);
     } catch (error: any) {
       console.error('Error fetching offers:', error);
       toast({
@@ -122,7 +98,7 @@ const CommunityOffers = () => {
     setShowApplyModal(true);
   };
 
-  const handleSubmitApplication = async (applicationData: { availability: string; message: string }) => {
+  const handleSubmitApplication = async (applicationData: { availability: string; message: string; }) => {
     if (!profile || !selectedOffer) return;
     setIsSubmittingApplication(true);
 
@@ -171,21 +147,15 @@ const CommunityOffers = () => {
     return matchesSearch && matchesCategory;
   });
 
-  if (loading) return (
-    <div className="flex items-center justify-center min-h-48">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-    </div>
-  );
+  if (loading) return <div className="flex items-center justify-center min-h-48"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>;
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Browse Offers</h1>
         <p className="text-muted-foreground">Discover collaboration opportunities that match your community</p>
       </div>
 
-      {/* Search */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -198,7 +168,6 @@ const CommunityOffers = () => {
         </div>
       </div>
 
-      {/* Categories */}
       <div className="flex flex-wrap gap-2">
         {categories.map((category) => (
           <Button
@@ -212,13 +181,10 @@ const CommunityOffers = () => {
         ))}
       </div>
 
-      {/* Offers */}
       {filteredOffers.length === 0 ? (
         <Card>
           <CardContent className="py-16 text-center">
-            <p className="text-muted-foreground">
-              {offers.length === 0 ? 'No offers yet' : 'No matching offers found'}
-            </p>
+            <p className="text-muted-foreground">{offers.length === 0 ? 'No offers yet' : 'No matching offers found'}</p>
           </CardContent>
         </Card>
       ) : (
@@ -236,7 +202,6 @@ const CommunityOffers = () => {
         </div>
       )}
 
-      {/* Modals */}
       <OfferDetailsModal
         open={showDetailsModal}
         onOpenChange={setShowDetailsModal}
