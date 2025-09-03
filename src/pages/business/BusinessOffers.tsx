@@ -44,38 +44,57 @@ const BusinessOffers = () => {
   }, [profile]);
 
   const fetchOffers = async () => {
-    if (!profile) return;
+  setLoading(true);
+  try {
+    const { data: offersData, error: offersError } = await supabase
+      .from('offers')
+      .select(`
+        *,
+        business_profiles:business_profile_id (
+          profile_id,
+          name,
+          business_type,
+          city,
+          profile_photo,
+          website,
+          instagram
+        )
+      `)
+      .eq('status', 'published')
+      .order('published_at', { ascending: false });
 
-    try {
-      const [offersResponse, businessProfileResponse] = await Promise.all([
-        supabase
-          .from('offers')
-          .select('*')
-          .eq('business_profile_id', profile.id)
-          .order('created_at', { ascending: false }),
-        supabase
-          .from('business_profiles')
-          .select('*')
-          .eq('profile_id', profile.id)
-          .single()
-      ]);
-
-      if (offersResponse.error) throw offersResponse.error;
-      if (businessProfileResponse.error) throw businessProfileResponse.error;
-
-      setOffers(offersResponse.data || []);
-      setBusinessProfile(businessProfileResponse.data);
-    } catch (error: any) {
-      console.error('Error fetching offers:', error);
+    if (offersError) {
+      console.error('Supabase error fetching offers:', offersError);
       toast({
         title: 'Error',
         description: 'Failed to load offers. Please try again.',
         variant: 'destructive',
       });
-    } finally {
-      setLoading(false);
+      return;
     }
-  };
+
+    const parsedOffers = (offersData || []).map((offer: any) => ({
+      ...offer,
+      business_offer: offer.business_offer ? JSON.parse(offer.business_offer) : { description: '' },
+      community_deliverables: offer.community_deliverables
+        ? JSON.parse(offer.community_deliverables)
+        : {},
+      categories: offer.categories ? JSON.parse(offer.categories) : [],
+      business_profiles: offer.business_profiles || {}, // ensure it's always an object
+    }));
+
+    setOffers(parsedOffers);
+  } catch (error: any) {
+    console.error('Unexpected error fetching offers:', error);
+    toast({
+      title: 'Error',
+      description: 'Failed to load offers. Please try again.',
+      variant: 'destructive',
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const filteredOffers = activeFilter === 'all' 
     ? offers 
