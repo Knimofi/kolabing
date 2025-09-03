@@ -271,7 +271,8 @@ const BusinessOffers = () => {
                 key={offer.id}
                 offer={offer}
                 businessProfile={businessProfile || {}}
-                showActions={false}
+                showActions={true}
+                onSeeDetails={() => handleViewOffer(offer)}
               />
             ))}
           </div>
