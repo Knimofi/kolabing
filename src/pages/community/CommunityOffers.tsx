@@ -28,11 +28,11 @@ const CommunityOffers = () => {
   }, []);
 
   const fetchOffers = async () => {
-  setLoading(true);
-
-  try {
-    // Fetch published offers with business profile
-    const { data: offersData, error: offersError } = await supabase
+    setLoading(true);
+  
+    try {
+      // 1️⃣ Fetch all published offers
+      const { data: offersData, error: offersError } = await supabase
         .from('offers')
         .select(`
           id,
@@ -46,13 +46,7 @@ const CommunityOffers = () => {
           business_offer,
           community_deliverables,
           categories,
-          business_profiles:business_profile_id (
-            profile_id,
-            name,
-            business_type,
-            city,
-            profile_photo
-          )
+          business_profile_id
         `)
         .eq('status', 'published')
         .order('published_at', { ascending: false });
@@ -67,18 +61,42 @@ const CommunityOffers = () => {
         return;
       }
   
-      // Ensure offersData is an array
       const offersArray = Array.isArray(offersData) ? offersData : [];
   
-      // Optional: fetch subscription status for each business (if needed)
-      // Example: fetch active subscriptions to maybe highlight premium offers
-      // const businessIds = offersArray.map(o => o.business_profile_id).filter(Boolean);
-      // const { data: subscriptions } = await supabase
-      //   .from('subscriptions')
-      //   .select('id, subscription_status, billing_info')
-      //   .in('id', businessIds);
+      if (offersArray.length === 0) {
+        setOffers([]);
+        return;
+      }
   
-      setOffers(offersArray);
+      // 2️⃣ Fetch all business profiles corresponding to the offers
+      const businessIds = offersArray
+        .map((o) => o.business_profile_id)
+        .filter(Boolean);
+  
+      const { data: businessProfiles, error: bpError } = await supabase
+        .from('business_profiles')
+        .select('*')
+        .in('profile_id', businessIds);
+  
+      if (bpError) {
+        console.error('Supabase error fetching business profiles:', bpError);
+        toast({
+          title: 'Error',
+          description: 'Failed to load business profiles. Please try again.',
+          variant: 'destructive',
+        });
+        return;
+      }
+  
+      // 3️⃣ Merge offers with their corresponding business profiles
+      const offersWithProfiles = offersArray.map((offer) => ({
+        ...offer,
+        business_profiles: businessProfiles?.find(
+          (bp) => bp.profile_id === offer.business_profile_id
+        ) || null,
+      }));
+  
+      setOffers(offersWithProfiles);
     } catch (error: any) {
       console.error('Unexpected error fetching offers:', error);
       toast({
@@ -90,6 +108,7 @@ const CommunityOffers = () => {
       setLoading(false);
     }
   };
+
   ;
 
 
