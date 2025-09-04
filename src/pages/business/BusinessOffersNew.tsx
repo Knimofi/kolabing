@@ -94,421 +94,67 @@ const BusinessOffersNew = () => {
 
 
   const handleSubmit = async (data: OfferFormData, status: 'draft' | 'published') => {
-    if (!profile) return;
+  if (!profile) return;
+  setIsSubmitting(true);
 
-    setIsSubmitting(true);
-    try {
-      const offerData = {
-        title: data.title,
-        description: data.description,
-        availability_start: data.availability_start?.toISOString(),
-        availability_end: data.availability_end?.toISOString(),
-        address: data.no_venue ? null : data.address,
-        no_venue: data.no_venue,
-        offer_photo: data.offer_photo,
-        business_offer: data.business_offer,
-        community_deliverables: data.community_deliverables,
-        timeline_days: data.timeline_days,
-        business_profile_id: profile.id,
-        status,
-      };
+  try {
+    // Fetch the business_profiles row for this user
+    const { data: businessProfile, error: businessError } = await supabase
+      .from('business_profiles')
+      .select('profile_id')
+      .eq('profile_id', profile.id)
+      .single();
 
-      const { error } = await supabase
-        .from('offers')
-        .insert(offerData);
-
-      if (error) throw error;
-
+    if (businessError || !businessProfile) {
       toast({
-        title: status === 'draft' ? 'Offer saved as draft' : 'Offer published successfully',
-        description: status === 'draft' 
-          ? 'You can publish it later from your offers dashboard.'
-          : 'Your offer is now live and communities can apply.',
+        title: "Error",
+        description: "Business profile missing. Please complete your business profile setup.",
+        variant: "destructive",
       });
-
-      navigate('/business/offers');
-    } catch (error: any) {
-      console.error('Error creating offer:', error);
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to create offer. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
       setIsSubmitting(false);
+      return;
     }
-  };
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/business/offers')}>
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Offers
-        </Button>
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-            Create New Offer
-          </h1>
-          <p className="text-muted-foreground">
-            Design your collaboration opportunity
-          </p>
-        </div>
-      </div>
+    const offerData = {
+      title: data.title,
+      description: data.description,
+      availability_start: data.availability_start?.toISOString(),
+      availability_end: data.availability_end?.toISOString(),
+      address: data.no_venue ? null : data.address,
+      no_venue: data.no_venue,
+      offer_photo: data.offer_photo,
+      business_offer: data.business_offer,
+      community_deliverables: data.community_deliverables,
+      timeline_days: data.timeline_days,
+      business_profile_id: businessProfile.profile_id, // Correct FK assignment
+      status,
+    };
 
-      <Form {...form}>
-        <form className="space-y-6">
-          {/* Basic Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
-              <CardDescription>
-                Provide the essential details about your collaboration offer
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Offer Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., Instagram Partnership for Coffee Shop" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+    const { error } = await supabase
+      .from('offers')
+      .insert(offerData);
 
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Describe your collaboration opportunity in detail..."
-                        className="min-h-[100px]"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+    if (error) throw error;
 
-            </CardContent>
-          </Card>
+    toast({
+      title: status === 'draft' ? 'Offer saved as draft' : 'Offer published successfully',
+      description: status === 'draft' 
+        ? 'You can publish it later from your offers dashboard.'
+        : 'Your offer is now live and communities can apply.',
+    });
 
-          {/* Availability */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Availability</CardTitle>
-              <CardDescription>
-                When are you available for this collaboration?
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="availability_start"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Start Date</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="availability_end"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>End Date</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Location */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Location</CardTitle>
-              <CardDescription>
-                Where will this collaboration take place?
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="no_venue"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        No physical venue required
-                      </FormLabel>
-                      <p className="text-sm text-muted-foreground">
-                        Check this if the collaboration is online or doesn't require a specific location
-                      </p>
-                    </div>
-                  </FormItem>
-                )}
-              />
-
-              {!form.watch('no_venue') && (
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Address</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter the collaboration venue address" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Photo Upload */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Offer Photo</CardTitle>
-              <CardDescription>
-                Upload a photo for your offer (optional)
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FileUpload
-                bucket="offer-photos"
-                value={form.watch('offer_photo')}
-                onChange={(url) => form.setValue('offer_photo', url)}
-                label="Offer Photo"
-                accept="image/*"
-              />
-            </CardContent>
-          </Card>
-
-          {/* Business Offer */}
-          <Card>
-            <CardHeader>
-              <CardTitle>What You're Offering</CardTitle>
-              <CardDescription>
-                Describe what you're providing to the community
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="business_offer.description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Your Offer</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="e.g., Free products, monetary compensation, exclusive access..."
-                        className="min-h-[80px]"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Community Deliverables */}
-          <Card>
-            <CardHeader>
-              <CardTitle>What do you expect from the community?</CardTitle>
-              <CardDescription>
-                Select the deliverables you expect from your community partner
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                {deliverableOptions.map((option) => (
-                  <div key={option.id} className="space-y-2">
-                    <FormField
-                      control={form.control}
-                      name={`community_deliverables.${option.id}` as any}
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            {option.label}
-                          </FormLabel>
-                        </FormItem>
-                      )}
-                    />
-                    {option.hasAmount && form.watch(`community_deliverables.${option.id}` as any) && (
-                      <FormField
-                        control={form.control}
-                        name={`community_deliverables.${option.id}` as any}
-                        render={({ field }) => (
-                          <FormItem className="ml-6">
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder={`How many ${option.label.toLowerCase()}?`}
-                                {...field}
-                                onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    )}
-                  </div>
-                ))}
-                
-                {/* Always show minimum consumption */}
-                <FormField
-                  control={form.control}
-                  name="community_deliverables.minimum_consumption"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Minimum Consumption in Place (€)</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="Enter minimum consumption amount"
-                          {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <FormField
-                control={form.control}
-                name="timeline_days"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Timeline (Days after collaboration)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Number of days to complete deliverables"
-                        {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 7)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-end">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={form.handleSubmit((data) => handleSubmit(data, 'draft'))}
-              disabled={isSubmitting}
-            >
-              <Save className="w-4 h-4 mr-2" />
-              Save as Draft
-            </Button>
-            <Button
-              type="button"
-              onClick={form.handleSubmit((data) => handleSubmit(data, 'published'))}
-              disabled={isSubmitting}
-            >
-              <Send className="w-4 h-4 mr-2" />
-              Publish Offer
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </div>
-  );
+    navigate('/business/offers');
+  } catch (error: any) {
+    console.error('Error creating offer:', error);
+    toast({
+      title: 'Error',
+      description: error.message || 'Failed to create offer. Please try again.',
+      variant: 'destructive',
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
 };
+
 
 export default BusinessOffersNew;
