@@ -32,9 +32,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const businessNavItems = [
     { icon: LayoutDashboard, label: 'Overview', href: '/business' },
     { icon: FileText, label: 'Offers', href: '/business/offers' },
+    { icon: UserCheck, label: 'Applications', href: '/business/applications' },
     { icon: Users, label: 'Collaborations', href: '/business/collaborations' },
-    { icon: BarChart3, label: 'Analytics', href: '/business/analytics' },
-    { icon: CreditCard, label: 'Plans', href: '/business/plans' },
+//    { icon: BarChart3, label: 'Analytics', href: '/business/analytics' },
+//    { icon: CreditCard, label: 'Plans', href: '/business/plans' },
     { icon: Settings, label: 'Profile', href: '/business/profile' },
   ];
 
@@ -43,7 +44,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     { icon: FileText, label: 'Browse Offers', href: '/community/offers' },
     { icon: UserCheck, label: 'My Applications', href: '/community/my-applications' },
     { icon: Users, label: 'Collaborations', href: '/community/collaborations' },
-    { icon: BarChart3, label: 'Analytics', href: '/community/analytics' },
+//    { icon: BarChart3, label: 'Analytics', href: '/community/analytics' },
     { icon: Settings, label: 'Profile', href: '/community/profile' },
   ];
 
