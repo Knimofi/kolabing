@@ -40,6 +40,7 @@ export type Database = {
       }
       applications: {
         Row: {
+          availability: string | null
           community_profile_id: string
           created_at: string
           id: string
@@ -49,6 +50,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          availability?: string | null
           community_profile_id: string
           created_at?: string
           id?: string
@@ -58,6 +60,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          availability?: string | null
           community_profile_id?: string
           created_at?: string
           id?: string
@@ -67,6 +70,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "applications_community_profile_id_fkey"
+            columns: ["community_profile_id"]
+            isOneToOne: false
+            referencedRelation: "community_profiles"
+            referencedColumns: ["profile_id"]
+          },
           {
             foreignKeyName: "applications_offer_id_fkey"
             columns: ["offer_id"]
@@ -325,7 +335,15 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "offers_business_profile_id_fkey"
+            columns: ["business_profile_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["profile_id"]
+          },
+        ]
       }
       profiles: {
         Row: {

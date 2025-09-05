@@ -17,6 +17,7 @@ import BusinessApplications from "./pages/business/BusinessApplications";
 import BusinessProfile from "./pages/business/BusinessProfile";
 import CommunityDashboard from "./pages/community/CommunityDashboard";
 import CommunityOffers from "./pages/community/CommunityOffers";
+import CommunityMyApplications from "./pages/community/CommunityMyApplications";
 import CommunityProfile from "./pages/community/CommunityProfile";
 import ComingSoon from "./pages/ComingSoon";
 import NotFound from "./pages/NotFound";
@@ -107,18 +108,7 @@ const App = () => (
                         description="View offer details and apply"
                       />
                     } />
-                    <Route path="/my-applications" element={
-                      <ComingSoon 
-                        title="My Applications"
-                        description="Track your collaboration applications"
-                        features={[
-                          "View application status",
-                          "Edit pending applications",
-                          "Track response times",
-                          "Application history"
-                        ]}
-                      />
-                    } />
+                    <Route path="/my-applications" element={<CommunityMyApplications />} />
                     <Route path="/collaborations" element={
                       <ComingSoon 
                         title="Collaborations"
