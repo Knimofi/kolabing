@@ -7,18 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { CalendarIcon, ArrowLeft, Save, Send } from 'lucide-react';
-import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
-import { FileUpload } from '@/components/ui/file-upload';
-import { Form } from "@/components/ui/form";
 
 const offerSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100),
@@ -53,18 +46,6 @@ const BusinessOffersEdit = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const deliverableOptions = [
-    { id: 'tagged_stories', label: 'Tagged Stories', hasAmount: true },
-    { id: 'google_reviews', label: 'Google Reviews', hasAmount: true },
-    { id: 'number_of_attendees', label: 'Number of Attendees', hasAmount: true },
-    { id: 'professional_photography', label: 'Professional Photography', hasAmount: false },
-    { id: 'professional_reel_video', label: 'Professional Reel/Video', hasAmount: false },
-    { id: 'ugc_content', label: 'UGC Content', hasAmount: false },
-    { id: 'collab_reel_post', label: 'Collab Reel/Post', hasAmount: false },
-    { id: 'group_picture', label: 'Group Picture', hasAmount: false },
-    { id: 'loyalty_signups', label: 'Loyalty Sign-ups', hasAmount: true },
-  ] as const;
 
   const form = useForm<OfferFormData>({
     resolver: zodResolver(offerSchema),
@@ -170,86 +151,79 @@ const BusinessOffersEdit = () => {
 
   if (loading) return <div>Loading...</div>;
 
-import { Form } from "@/components/ui/form";  // add this import
-
-...
-
-return (
-  <div className="space-y-6">
-    {/* Header */}
-    <div className="flex items-center gap-4">
-      <Button variant="ghost" size="sm" onClick={() => navigate('/business/offers')}>
-        <ArrowLeft className="w-4 h-4 mr-2" /> Back to Offers
-      </Button>
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold">Edit Offer</h1>
-        <p className="text-muted-foreground">Update your collaboration opportunity</p>
-      </div>
-    </div>
-
-    {/* 👇 wrap everything inside Form */}
-    <Form {...form}>
-      <form className="space-y-6">
-        {/* Basic Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Basic Information</CardTitle>
-            <CardDescription>
-              Provide the essential details about your collaboration offer
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Offer Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., Instagram Partnership" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Describe your offer..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </CardContent>
-        </Card>
-
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={form.handleSubmit((data) => handleSubmitOffer(data, 'draft'))}
-            disabled={isSubmitting}
-          >
-            <Save className="w-4 h-4 mr-2" /> Save as Draft
-          </Button>
-          <Button
-            type="button"
-            onClick={form.handleSubmit((data) => handleSubmitOffer(data, 'published'))}
-            disabled={isSubmitting}
-          >
-            <Send className="w-4 h-4 mr-2" /> Publish Offer
-          </Button>
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="sm" onClick={() => navigate('/business/offers')}>
+          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Offers
+        </Button>
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold">Edit Offer</h1>
+          <p className="text-muted-foreground">Update your collaboration opportunity</p>
         </div>
-      </form>
-    </Form>
-  </div>
-);
+      </div>
 
+      <Form {...form}>
+        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+          {/* Basic Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Basic Information</CardTitle>
+              <CardDescription>Provide the essential details about your collaboration offer</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Offer Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Instagram Partnership" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Describe your offer..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={form.handleSubmit((data) => handleSubmitOffer(data, 'draft'))}
+              disabled={isSubmitting}
+            >
+              <Save className="w-4 h-4 mr-2" /> Save as Draft
+            </Button>
+            <Button
+              type="button"
+              onClick={form.handleSubmit((data) => handleSubmitOffer(data, 'published'))}
+              disabled={isSubmitting}
+            >
+              <Send className="w-4 h-4 mr-2" /> Publish Offer
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
+};
 
 export default BusinessOffersEdit;
