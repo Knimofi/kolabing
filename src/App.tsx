@@ -19,6 +19,8 @@ import CommunityDashboard from "./pages/community/CommunityDashboard";
 import CommunityOffers from "./pages/community/CommunityOffers";
 import CommunityMyApplications from "./pages/community/CommunityMyApplications";
 import CommunityProfile from "./pages/community/CommunityProfile";
+import BusinessCollaborations from "./pages/business/BusinessCollaborations";
+import CommunityCollaborations from "./pages/community/CommunityCollaborations";
 import ComingSoon from "./pages/ComingSoon";
 import NotFound from "./pages/NotFound";
 
@@ -53,18 +55,7 @@ const App = () => (
                         description="View and manage your offer"
                       />
                     } />
-                    <Route path="/collaborations" element={
-                      <ComingSoon 
-                        title="Collaborations"
-                        description="Manage your active partnerships"
-                        features={[
-                          "Track collaboration progress",
-                          "Communicate with partners",
-                          "Mark collaborations complete",
-                          "Schedule follow-ups"
-                        ]}
-                      />
-                    } />
+                    <Route path="/collaborations" element={<BusinessCollaborations />} />
                     <Route path="/analytics" element={
                       <ComingSoon 
                         title="Analytics"
@@ -109,18 +100,7 @@ const App = () => (
                       />
                     } />
                     <Route path="/my-applications" element={<CommunityMyApplications />} />
-                    <Route path="/collaborations" element={
-                      <ComingSoon 
-                        title="Collaborations"
-                        description="Manage your active partnerships"
-                        features={[
-                          "Track collaboration progress",
-                          "Communicate with businesses",
-                          "Submit deliverables",
-                          "Complete post-collaboration surveys"
-                        ]}
-                      />
-                    } />
+                    <Route path="/collaborations" element={<CommunityCollaborations />} />
                     <Route path="/analytics" element={
                       <ComingSoon 
                         title="Analytics"

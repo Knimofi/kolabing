@@ -117,6 +117,38 @@ const BusinessOffers = () => {
     }
   };
 
+  const handleDuplicateOffer = async (offer: any) => {
+    try {
+      const { id, created_at, updated_at, published_at, ...offerData } = offer;
+      const duplicatedOffer = {
+        ...offerData,
+        title: `${offer.title} (copy)`,
+        status: 'draft',
+        published_at: null,
+      };
+
+      const { data, error } = await supabase
+        .from('offers')
+        .insert([duplicatedOffer])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setOffers([data, ...offers]);
+      toast({
+        title: 'Success',
+        description: 'Offer duplicated successfully',
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to duplicate offer',
+        variant: 'destructive',
+      });
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
 
   const filteredOffers = activeFilter === 'all'
@@ -176,6 +208,9 @@ const BusinessOffers = () => {
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => navigate(`/business/offers/${offer.id}/edit`)} disabled={!['draft', 'published'].includes(offer.status)}>
                     <Edit className="w-4 h-4 mr-2" /> Edit
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => handleDuplicateOffer(offer)} disabled={!businessProfile}>
+                    <Copy className="w-4 h-4 mr-2" /> Duplicate
                   </Button>
                   <Button variant="destructive" size="sm" onClick={() => setOfferToDelete(offer)}>
                     <Trash2 className="w-4 h-4 mr-2" /> Delete
