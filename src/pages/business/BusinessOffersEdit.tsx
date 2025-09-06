@@ -18,6 +18,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { FileUpload } from '@/components/ui/file-upload';
+import { Form } from "@/components/ui/form";
 
 const offerSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100),
