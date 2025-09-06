@@ -169,25 +169,33 @@ const BusinessOffersEdit = () => {
 
   if (loading) return <div>Loading...</div>;
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/business/offers')}>
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Offers
-        </Button>
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold">Edit Offer</h1>
-          <p className="text-muted-foreground">Update your collaboration opportunity</p>
-        </div>
-      </div>
+import { Form } from "@/components/ui/form";  // add this import
 
+...
+
+return (
+  <div className="space-y-6">
+    {/* Header */}
+    <div className="flex items-center gap-4">
+      <Button variant="ghost" size="sm" onClick={() => navigate('/business/offers')}>
+        <ArrowLeft className="w-4 h-4 mr-2" /> Back to Offers
+      </Button>
+      <div>
+        <h1 className="text-2xl md:text-3xl font-bold">Edit Offer</h1>
+        <p className="text-muted-foreground">Update your collaboration opportunity</p>
+      </div>
+    </div>
+
+    {/* 👇 wrap everything inside Form */}
+    <Form {...form}>
       <form className="space-y-6">
         {/* Basic Information */}
         <Card>
           <CardHeader>
             <CardTitle>Basic Information</CardTitle>
-            <CardDescription>Provide the essential details about your collaboration offer</CardDescription>
+            <CardDescription>
+              Provide the essential details about your collaboration offer
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <FormField
@@ -238,8 +246,9 @@ const BusinessOffersEdit = () => {
           </Button>
         </div>
       </form>
-    </div>
-  );
-};
+    </Form>
+  </div>
+);
+
 
 export default BusinessOffersEdit;
