@@ -199,8 +199,26 @@ const BusinessOffers = () => {
 
       <OfferDetailsModal open={showDetailsModal} onOpenChange={setShowDetailsModal} offer={selectedOffer} businessProfile={businessProfile} />
 
-      {/* Delete confirmation modal/code not included for brevity */}
-
+{offerToDelete && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <Card className="p-6 max-w-sm w-full">
+      <CardHeader>
+        <CardTitle>Delete Offer?</CardTitle>
+        <CardDescription>
+          Are you sure you want to delete "{offerToDelete.title}"?
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="flex justify-end gap-2">
+        <Button variant="outline" onClick={() => setOfferToDelete(null)}>
+          Cancel
+        </Button>
+        <Button variant="destructive" onClick={() => handleDeleteOffer(offerToDelete)}>
+          Confirm Delete
+        </Button>
+      </CardContent>
+    </Card>
+  </div>
+)}
     </div>
   );
 };
