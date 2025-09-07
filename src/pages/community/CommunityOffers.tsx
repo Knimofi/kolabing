@@ -125,7 +125,12 @@ const CommunityOffers = () => {
       }
 
       if (existingApplication) {
-        throw new Error('You have already applied to this offer');
+        toast({
+          title: 'Error',
+          description: 'You already applied to this offer!',
+          });
+        return;
+        //throw new Error('You have already applied to this offer');
       }
 
       const { error } = await supabase
