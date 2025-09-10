@@ -27,6 +27,68 @@ const CommunityOffers = () => {
     fetchOffers();
   }, []);
 
+
+  const fetchOffers = async () => {
+  setLoading(true);
+
+  try {
+    const { data: offersData, error: offersError } = await supabase
+      .from('offers')
+      .select(`
+        id,
+        title,
+        description,
+        status,
+        published_at,
+        availability_start,
+        availability_end,
+        offer_photo,
+        business_offer,
+        community_deliverables,
+        categories,
+        address,
+        timeline_days,
+        business_profiles!inner (
+          name,
+          business_type,
+          city,
+          profile_photo,
+          website,
+          instagram
+        )
+      `)
+      .eq('status', 'published')
+      .order('published_at', { ascending: false });
+
+    if (offersError) {
+      console.error('Supabase error fetching offers:', offersError);
+      toast({
+        title: 'Error',
+        description: 'Failed to load offers. Please try again.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Filter out null records and ensure business_profiles exists
+    const validOffers = (offersData || []).filter(offer => 
+      offer && offer.business_profiles
+    );
+
+    setOffers(validOffers);
+  } catch (error: any) {
+    console.error('Unexpected error fetching offers:', error);
+    toast({
+      title: 'Error',
+      description: 'Failed to load offers. Please try again.',
+      variant: 'destructive',
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
+  /*
   const fetchOffers = async () => {
   setLoading(true);
 
@@ -90,7 +152,7 @@ const CommunityOffers = () => {
       setLoading(false);
     }
   };
-  ;
+  ;*/
 
 
   const handleSeeDetails = (offer: any) => {
@@ -173,6 +235,21 @@ const CommunityOffers = () => {
     'Lead Generation'
   ];
 
+
+  const filteredOffers = offers.filter(offer => {
+  if (!offer.business_profiles) return false;
+  
+  const matchesSearch = (offer.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                       (offer.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                       (offer.business_profiles.name || '').toLowerCase().includes(searchTerm.toLowerCase());
+  
+  const matchesCategory = activeCategory === 'all' || 
+                         (offer.categories && offer.categories.includes(activeCategory));
+  
+  return matchesSearch && matchesCategory;
+});
+
+  /*
   const filteredOffers = offers.filter(offer => {
     const matchesSearch = offer.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          offer.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -183,6 +260,7 @@ const CommunityOffers = () => {
     
     return matchesSearch && matchesCategory;
   });
+  */
 
   if (loading) {
     return (

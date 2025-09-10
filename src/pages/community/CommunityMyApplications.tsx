@@ -28,18 +28,19 @@ interface Application {
     id: string;
     title: string;
     description: string;
-    categories: string[];
-    address: string;
-    timeline_days: number;
+    categories: string[] | null;
+    address: string | null;
+    timeline_days: number | null;
+    offer_photo: string | null;
     business_profiles: {
       name: string;
-      business_type: string;
-      city: string;
-      profile_photo: string;
-      website: string;
-      instagram: string;
+      business_type: string | null;
+      city: string | null;
+      profile_photo: string | null;
+      website: string | null;
+      instagram: string | null;
     };
-  };
+  } | null;
 }
 
 const CommunityMyApplications: React.FC = () => {
@@ -60,6 +61,59 @@ const CommunityMyApplications: React.FC = () => {
     }
   }, [profile]);
 
+const fetchApplications = async () => {
+  try {
+    setLoading(true);
+    
+    const { data, error } = await supabase
+      .from('applications')
+      .select(`
+        id,
+        message,
+        availability,
+        status,
+        created_at,
+        offers!inner (
+          id,
+          title,
+          description,
+          categories,
+          address,
+          timeline_days,
+          offer_photo,
+          business_profiles!inner (
+            name,
+            business_type,
+            city,
+            profile_photo,
+            website,
+            instagram
+          )
+        )
+      `)
+      .eq('community_profile_id', profile?.id)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    
+    // Filter out any records with null offers or business_profiles
+    const validApplications = (data || []).filter(app => 
+      app.offers && app.offers.business_profiles
+    );
+    
+    setApplications(validApplications as Application[]);
+  } catch (error) {
+    console.error('Error fetching applications:', error);
+    toast({
+      title: "Error",
+      description: "Failed to fetch your applications. Please try again.",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+  /*
   const fetchApplications = async () => {
     try {
       setLoading(true);
@@ -102,7 +156,7 @@ const CommunityMyApplications: React.FC = () => {
       setLoading(false);
     }
   };
-
+*/
   const handleViewApplication = (application: Application) => {
     setSelectedApplication(application);
     setShowDetailsModal(true);
@@ -148,10 +202,23 @@ const CommunityMyApplications: React.FC = () => {
   };
 
   // Filter applications based on search term
+
+  const filteredApplications = applications.filter(application => {
+  if (!application.offers || !application.offers.business_profiles) return false;
+  
+  const title = application.offers.title || '';
+  const businessName = application.offers.business_profiles.name || '';
+  
+  return title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+         businessName.toLowerCase().includes(searchTerm.toLowerCase());
+});
+
+  /*
   const filteredApplications = applications.filter(application => 
     application.offers.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     application.offers.business_profiles.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  */
 
   if (loading) {
     return (
