@@ -179,7 +179,7 @@ const CommunityOffers = () => {
         .select('id')
         .eq('offer_id', selectedOffer.id)
         .eq('community_profile_id', profile.id)
-        .eq('status', 'pending')
+       // .eq('status', 'pending')
         .single();
 
       if (checkError && checkError.code !== 'PGRST116') { // PGRST116 is "not found" error
