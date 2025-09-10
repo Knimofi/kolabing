@@ -26,71 +26,6 @@ const CommunityCollaborations = () => {
     }
   }, [profile]);
 
-
-const fetchCollaborations = async () => {
-  try {
-    setLoading(true);
-    
-    const { data, error } = await supabase
-      .from('collaborations')
-      .select(`
-        id,
-        status,
-        scheduled_date,
-        completed_at,
-        created_at,
-        updated_at,
-        applications!inner (
-          id,
-          message,
-          availability,
-          status,
-          offers!inner (
-            id,
-            title,
-            description,
-            categories,
-            address,
-            timeline_days,
-            offer_photo,
-            business_profiles!inner (
-              name,
-              business_type,
-              city,
-              profile_photo,
-              website,
-              instagram
-            )
-          )
-        )
-      `)
-      .eq('community_profile_id', profile?.id)
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    
-    // Filter out any records with null nested data
-    const validCollaborations = (data || []).filter(collab => 
-      collab.applications && 
-      collab.applications.offers && 
-      collab.applications.offers.business_profiles
-    );
-    
-    setCollaborations(validCollaborations);
-  } catch (error) {
-    console.error('Error fetching collaborations:', error);
-    toast({
-      title: "Error",
-      description: "Failed to fetch collaborations. Please try again.",
-      variant: "destructive",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
-
-  /*
-  
   const fetchCollaborations = async () => {
     setLoading(true);
     try {
@@ -98,7 +33,7 @@ const fetchCollaborations = async () => {
         .from('collaborations')
         .select(`
           *,
-          offer:offers(
+          offer:offers!inner(
             id,
             title,
             description,
@@ -108,7 +43,7 @@ const fetchCollaborations = async () => {
             timeline_days,
             address
           ),
-          business_profile:business_profiles(
+          business_profile:business_profiles!inner(
             name,
             business_type,
             city,
@@ -125,8 +60,37 @@ const fetchCollaborations = async () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setCollaborations(data || []);
+      
+      // Filter out any collaborations with missing relationships and add safety checks
+      const validCollaborations = (data || []).filter(collaboration => {
+        return collaboration.offer && collaboration.business_profile;
+      }).map(collaboration => ({
+        ...collaboration,
+        // Add fallback values for potentially missing fields
+        offer: {
+          ...collaboration.offer,
+          offer_photo: collaboration.offer?.offer_photo || null,
+          title: collaboration.offer?.title || 'Untitled Offer',
+          description: collaboration.offer?.description || '',
+          business_offer: collaboration.offer?.business_offer || null,
+          community_deliverables: collaboration.offer?.community_deliverables || null,
+          timeline_days: collaboration.offer?.timeline_days || 0,
+          address: collaboration.offer?.address || ''
+        },
+        business_profile: {
+          ...collaboration.business_profile,
+          name: collaboration.business_profile?.name || 'Unknown Business',
+          business_type: collaboration.business_profile?.business_type || '',
+          city: collaboration.business_profile?.city || '',
+          profile_photo: collaboration.business_profile?.profile_photo || null,
+          website: collaboration.business_profile?.website || '',
+          instagram: collaboration.business_profile?.instagram || ''
+        }
+      }));
+      
+      setCollaborations(validCollaborations);
     } catch (error: any) {
+      console.error('Error fetching collaborations:', error);
       toast({
         title: 'Error',
         description: error.message || 'Failed to load collaborations.',
@@ -136,9 +100,6 @@ const fetchCollaborations = async () => {
       setLoading(false);
     }
   };
-  */
-
-
 
   const handleStatusUpdate = async (collaborationId: string, newStatus: 'completed' | 'cancelled') => {
     try {
