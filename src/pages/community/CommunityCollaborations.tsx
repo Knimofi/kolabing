@@ -27,7 +27,7 @@ const CommunityCollaborations = () => {
   }, [profile]);
 
 
-  const fetchCollaborations = async () => {
+const fetchCollaborations = async () => {
   try {
     setLoading(true);
     
@@ -90,6 +90,7 @@ const CommunityCollaborations = () => {
 };
 
   /*
+  
   const fetchCollaborations = async () => {
     setLoading(true);
     try {
@@ -136,6 +137,8 @@ const CommunityCollaborations = () => {
     }
   };
   */
+
+
 
   const handleStatusUpdate = async (collaborationId: string, newStatus: 'completed' | 'cancelled') => {
     try {
