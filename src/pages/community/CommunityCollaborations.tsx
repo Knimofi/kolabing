@@ -27,13 +27,17 @@ const CommunityCollaborations = () => {
   }, [profile]);
 
 
-  const fetchCollaborations = async () => {
+const fetchCollaborations = async () => {
   setLoading(true);
   try {
     const { data, error } = await supabase
       .from('collaborations')
       .select(`
-        *,
+        id,
+        status,
+        created_at,
+        scheduled_date,
+        completed_at,
         offer:offers(
           id,
           title,
@@ -44,7 +48,7 @@ const CommunityCollaborations = () => {
           timeline_days,
           address
         ),
-        business_profile:business_profiles(
+        bp:business_profiles(
           name,
           business_type,
           city,
@@ -61,7 +65,35 @@ const CommunityCollaborations = () => {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    setCollaborations(data || []);
+
+    const validCollaborations = (data || [])
+      // filter out rows that don't have the essential joins
+      .filter(c => c.offer && c.bp)
+      // normalize keys & add safe fallbacks
+      .map(c => ({
+        ...c,
+        // normalize the aliased bp => business_profile for the rest of your app
+        business_profile: {
+          name: c.bp?.name || 'Unknown Business',
+          business_type: c.bp?.business_type || '',
+          city: c.bp?.city || '',
+          profile_photo: c.bp?.profile_photo || null,
+          website: c.bp?.website || '',
+          instagram: c.bp?.instagram || ''
+        },
+        offer: {
+          ...c.offer,
+          offer_photo: c.offer?.offer_photo || null,
+          title: c.offer?.title || 'Untitled Offer',
+          description: c.offer?.description || '',
+          business_offer: c.offer?.business_offer || null,
+          community_deliverables: c.offer?.community_deliverables || null,
+          timeline_days: c.offer?.timeline_days || 0,
+          address: c.offer?.address || ''
+        }
+      }));
+
+    setCollaborations(validCollaborations);
   } catch (error: any) {
     console.error('Error fetching collaborations:', error);
     toast({
@@ -75,6 +107,7 @@ const CommunityCollaborations = () => {
 };
 
   /*
+  
   const fetchCollaborations = async () => {
     setLoading(true);
     try {
@@ -148,8 +181,8 @@ const CommunityCollaborations = () => {
     } finally {
       setLoading(false);
     }
-  };
-*/
+  };*/
+
   const handleStatusUpdate = async (collaborationId: string, newStatus: 'completed' | 'cancelled') => {
     try {
       const updateData: any = { status: newStatus };
