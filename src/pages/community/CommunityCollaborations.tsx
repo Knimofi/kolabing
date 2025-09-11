@@ -26,6 +26,83 @@ const CommunityCollaborations = () => {
     }
   }, [profile]);
 
+const fetchCollaborations = async () => {
+  setLoading(true);
+  try {
+    const { data, error } = await supabase
+      .from('collaborations')
+      .select(`
+        id,
+        status,
+        created_at,
+        scheduled_date,
+        completed_at,
+        offer:offers!inner(
+          id,
+          title,
+          description,
+          offer_photo,
+          business_offer,
+          community_deliverables,
+          timeline_days,
+          address
+        ),
+        business_profile:business_profiles!inner(
+          id,
+          name,
+          business_type,
+          city,
+          profile_photo,
+          website,
+          instagram
+        )
+      `)
+      .eq('community_profile_id', profile.id)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    const validCollaborations = (data || [])
+      .filter(c => c.offer && c.business_profile)
+      .map(c => ({
+        ...c,
+        offer: {
+          ...c.offer,
+          offer_photo: c.offer?.offer_photo || null,
+          title: c.offer?.title || 'Untitled Offer',
+          description: c.offer?.description || '',
+          business_offer: c.offer?.business_offer || null,
+          community_deliverables: c.offer?.community_deliverables || null,
+          timeline_days: c.offer?.timeline_days || 0,
+          address: c.offer?.address || ''
+        },
+        business_profile: {
+          ...c.business_profile,
+          name: c.business_profile?.name || 'Unknown Business',
+          business_type: c.business_profile?.business_type || '',
+          city: c.business_profile?.city || '',
+          profile_photo: c.business_profile?.profile_photo || null,
+          website: c.business_profile?.website || '',
+          instagram: c.business_profile?.instagram || ''
+        }
+      }));
+
+    setCollaborations(validCollaborations);
+  } catch (error: any) {
+    console.error('Error fetching collaborations:', error);
+    toast({
+      title: 'Error',
+      description: error.message || 'Failed to load collaborations.',
+      variant: 'destructive',
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+  /*
+  
   const fetchCollaborations = async () => {
     setLoading(true);
     try {
@@ -100,7 +177,7 @@ const CommunityCollaborations = () => {
       setLoading(false);
     }
   };
-
+*/
   const handleStatusUpdate = async (collaborationId: string, newStatus: 'completed' | 'cancelled') => {
     try {
       const updateData: any = { status: newStatus };
