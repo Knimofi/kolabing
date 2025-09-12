@@ -48,7 +48,7 @@ const CommunityCollaborations = () => {
       address
     ),
     business_profile:business_profiles(
-  id,
+  profile_id,
   name,
   business_type,
   city,
