@@ -48,7 +48,7 @@ const CommunityCollaborations = () => {
       address
     ),
     business_profile:business_profiles(
-  profile_id,
+  id,
   name,
   business_type,
   city,
@@ -68,31 +68,30 @@ const CommunityCollaborations = () => {
       if (error) throw error;
       
       // Filter out any collaborations with missing relationships and add safety checks
-      const validCollaborations = (data || []).filter(collaboration => {
-        return collaboration.offer && collaboration.business_profile;
-      }).map(collaboration => ({
-        ...collaboration,
-        // Add fallback values for potentially missing fields
-        offer: {
-          ...collaboration.offer,
-          offer_photo: collaboration.offer?.offer_photo || null,
-          title: collaboration.offer?.title || 'Untitled Offer',
-          description: collaboration.offer?.description || '',
-          business_offer: collaboration.offer?.business_offer || null,
-          community_deliverables: collaboration.offer?.community_deliverables || null,
-          timeline_days: collaboration.offer?.timeline_days || 0,
-          address: collaboration.offer?.address || ''
-        },
-        business_profile: {
-          ...collaboration.business_profile,
-          name: collaboration.business_profile?.name || 'Unknown Business',
-          business_type: collaboration.business_profile?.business_type || '',
-          city: collaboration.business_profile?.city || '',
-          profile_photo: collaboration.business_profile?.profile_photo || null,
-          website: collaboration.business_profile?.website || '',
-          instagram: collaboration.business_profile?.instagram || ''
-        }
-      }));
+      const validCollaborations = (data || []).map(collaboration => ({
+  ...collaboration,
+  offer: {
+    ...collaboration.offer,
+    offer_photo: collaboration.offer?.offer_photo || null,
+    title: collaboration.offer?.title || 'Untitled Offer',
+    description: collaboration.offer?.description || '',
+    business_offer: collaboration.offer?.business_offer || null,
+    community_deliverables: collaboration.offer?.community_deliverables || null,
+    timeline_days: collaboration.offer?.timeline_days || 0,
+    address: collaboration.offer?.address || ''
+  },
+  business_profile: collaboration.business_profile
+    ? {
+        ...collaboration.business_profile,
+        name: collaboration.business_profile?.name || 'Unknown Business',
+        business_type: collaboration.business_profile?.business_type || '',
+        city: collaboration.business_profile?.city || '',
+        profile_photo: collaboration.business_profile?.profile_photo || null,
+        website: collaboration.business_profile?.website || '',
+        instagram: collaboration.business_profile?.instagram || ''
+      }
+    : null
+}));
       
       setCollaborations(validCollaborations);
     } catch (error: any) {
