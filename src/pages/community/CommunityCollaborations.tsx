@@ -48,14 +48,14 @@ const CommunityCollaborations = () => {
       address
     ),
     business_profile:business_profiles(
-      profile_id,
-      name,
-      business_type,
-      city,
-      profile_photo,
-      website,
-      instagram
-    ),
+  id,
+  name,
+  business_type,
+  city,
+  profile_photo,
+  website,
+  instagram
+)
     application:applications(
       message,
       availability
