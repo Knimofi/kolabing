@@ -30,66 +30,115 @@ const CommunityCollaborations = () => {
   const fetchCollaborations = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      // 1) Fetch base collaborations without embedded joins
+      const { data: baseRows, error: baseError } = await supabase
         .from('collaborations')
-        .select(`
-          *,
-          offer:offers(
-            id,
-            title,
-            description,
-            offer_photo,
-            business_offer,
-            community_deliverables,
-            timeline_days,
-            address
-          ),
-          business_profile:business_profiles!business_profile_id(
-            profile_id,
-            name,
-            business_type,
-            city,
-            profile_photo,
-            website,
-            instagram
-          ),
-          application:applications(
-            message,
-            availability
-          )
-        `)
+        .select(
+          'id,status,created_at,scheduled_date,completed_at,offer_id,business_profile_id,community_profile_id,application_id'
+        )
         .eq('community_profile_id', profile.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (baseError) throw baseError;
 
-      // Do NOT filter out missing business_profile, just handle null in UI
-      const validCollaborations = (data || []).map(collaboration => ({
-        ...collaboration,
-        offer: {
-          ...collaboration.offer,
-          offer_photo: collaboration.offer?.offer_photo || null,
-          title: collaboration.offer?.title || 'Untitled Offer',
-          description: collaboration.offer?.description || '',
-          business_offer: collaboration.offer?.business_offer || null,
-          community_deliverables: collaboration.offer?.community_deliverables || null,
-          timeline_days: collaboration.offer?.timeline_days || 0,
-          address: collaboration.offer?.address || ''
-        },
-        business_profile: collaboration.business_profile
-          ? {
-              ...collaboration.business_profile,
-              name: collaboration.business_profile?.name || 'Unknown Business',
-              business_type: collaboration.business_profile?.business_type || '',
-              city: collaboration.business_profile?.city || '',
-              profile_photo: collaboration.business_profile?.profile_photo || null,
-              website: collaboration.business_profile?.website || '',
-              instagram: collaboration.business_profile?.instagram || ''
-            }
-          : null
-      }));
+      const offerIds = Array.from(
+        new Set((baseRows || []).map((r: any) => r.offer_id).filter(Boolean))
+      );
+      const businessProfileIds = Array.from(
+        new Set((baseRows || []).map((r: any) => r.business_profile_id).filter(Boolean))
+      );
+      const applicationIds = Array.from(
+        new Set((baseRows || []).map((r: any) => r.application_id).filter(Boolean))
+      );
 
-      setCollaborations(validCollaborations);
+      // 2) Fetch related entities in parallel
+      const [offersRes, businessProfilesRes, applicationsRes] = await Promise.all([
+        offerIds.length
+          ? supabase
+              .from('offers')
+              .select(
+                'id,title,description,offer_photo,business_offer,community_deliverables,timeline_days,address,status'
+              )
+              .in('id', offerIds)
+          : Promise.resolve({ data: [], error: null } as any),
+        businessProfileIds.length
+          ? supabase
+              .from('business_profiles')
+              .select(
+                'profile_id,name,business_type,city,profile_photo,website,instagram'
+              )
+              .in('profile_id', businessProfileIds)
+          : Promise.resolve({ data: [], error: null } as any),
+        applicationIds.length
+          ? supabase
+              .from('applications')
+              .select('id,message,availability')
+              .in('id', applicationIds)
+          : Promise.resolve({ data: [], error: null } as any),
+      ]);
+
+      if (offersRes.error) {
+        // Offers may fail due to RLS when offers are closed; that's OK, we'll fallback
+        console.warn('Offers fetch warning (possibly due to RLS):', offersRes.error);
+      }
+      if (businessProfilesRes.error) throw businessProfilesRes.error;
+      if (applicationsRes.error) throw applicationsRes.error;
+
+      const offersMap = new Map<string, any>(
+        ((offersRes.data as any[]) || []).map((o: any) => [o.id, o])
+      );
+      const businessProfilesMap = new Map<string, any>(
+        ((businessProfilesRes.data as any[]) || []).map((b: any) => [b.profile_id, b])
+      );
+      const applicationsMap = new Map<string, any>(
+        ((applicationsRes.data as any[]) || []).map((a: any) => [a.id, a])
+      );
+
+      // 3) Enrich base rows with related data and safe fallbacks
+      const enriched = (baseRows || []).map((c: any) => {
+        const offer = offersMap.get(c.offer_id);
+        const business = businessProfilesMap.get(c.business_profile_id) || null;
+        const application = applicationsMap.get(c.application_id) || null;
+
+        return {
+          ...c,
+          offer: offer
+            ? {
+                ...offer,
+                offer_photo: offer.offer_photo || null,
+                title: offer.title || 'Untitled Offer',
+                description: offer.description || '',
+                business_offer: offer.business_offer || null,
+                community_deliverables: offer.community_deliverables || null,
+                timeline_days: offer.timeline_days || 0,
+                address: offer.address || '',
+              }
+            : {
+                id: c.offer_id,
+                title: 'Untitled Offer',
+                description: '',
+                offer_photo: null,
+                business_offer: null,
+                community_deliverables: null,
+                timeline_days: 0,
+                address: '',
+              },
+          business_profile: business
+            ? {
+                ...business,
+                name: business.name || 'Unknown Business',
+                business_type: business.business_type || '',
+                city: business.city || '',
+                profile_photo: business.profile_photo || null,
+                website: business.website || '',
+                instagram: business.instagram || '',
+              }
+            : null,
+          application,
+        };
+      });
+
+      setCollaborations(enriched);
     } catch (error: any) {
       console.error('Error fetching collaborations:', error);
       toast({
@@ -101,7 +150,6 @@ const CommunityCollaborations = () => {
       setLoading(false);
     }
   };
-
   const handleStatusUpdate = async (collaborationId: string, newStatus: 'completed' | 'cancelled') => {
     try {
       const updateData: any = { status: newStatus };
