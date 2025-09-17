@@ -1,11 +1,69 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, FileText, Users, TrendingUp, AlertCircle } from 'lucide-react';
 import ProfileSetupAlert from '@/components/ProfileSetupAlert';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 const BusinessDashboard = () => {
+  const { profile } = useAuth();
+  const [stats, setStats] = useState({
+    totalOffers: 0,
+    activeOffers: 0,
+    applications: 0,
+    collaborations: 0
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (profile?.id) {
+      fetchStats();
+    }
+  }, [profile?.id]);
+
+  const fetchStats = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch total offers
+      const { count: totalOffers } = await supabase
+        .from('offers')
+        .select('*', { count: 'exact', head: true })
+        .eq('business_profile_id', profile!.id);
+
+      // Fetch active (published) offers
+      const { count: activeOffers } = await supabase
+        .from('offers')
+        .select('*', { count: 'exact', head: true })
+        .eq('business_profile_id', profile!.id)
+        .eq('status', 'published');
+
+      // Fetch applications
+      const { count: applications } = await supabase
+        .from('applications')
+        .select('offer_id!inner(*)', { count: 'exact', head: true })
+        .eq('offer_id.business_profile_id', profile!.id);
+
+      // Fetch collaborations
+      const { count: collaborations } = await supabase
+        .from('collaborations')
+        .select('*', { count: 'exact', head: true })
+        .eq('business_profile_id', profile!.id);
+
+      setStats({
+        totalOffers: totalOffers || 0,
+        activeOffers: activeOffers || 0,
+        applications: applications || 0,
+        collaborations: collaborations || 0
+      });
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -58,9 +116,11 @@ const BusinessDashboard = () => {
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">
+              {loading ? '...' : stats.totalOffers}
+            </div>
             <p className="text-xs text-muted-foreground">
-              No offers created yet
+              {stats.totalOffers === 0 ? 'No offers created yet' : 'Total created offers'}
             </p>
           </CardContent>
         </Card>
@@ -71,7 +131,9 @@ const BusinessDashboard = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">
+              {loading ? '...' : stats.activeOffers}
+            </div>
             <p className="text-xs text-muted-foreground">
               Published offers
             </p>
@@ -84,7 +146,9 @@ const BusinessDashboard = () => {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">
+              {loading ? '...' : stats.applications}
+            </div>
             <p className="text-xs text-muted-foreground">
               Total applications received
             </p>
@@ -97,7 +161,9 @@ const BusinessDashboard = () => {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">0</div>
+            <div className="text-2xl font-bold">
+              {loading ? '...' : stats.collaborations}
+            </div>
             <p className="text-xs text-muted-foreground">
               Active partnerships
             </p>

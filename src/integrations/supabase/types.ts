@@ -215,6 +215,20 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "collaborations_business_profile_id_fkey"
+            columns: ["business_profile_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "collaborations_community_profile_id_fkey"
+            columns: ["community_profile_id"]
+            isOneToOne: false
+            referencedRelation: "community_profiles"
+            referencedColumns: ["profile_id"]
+          },
+          {
             foreignKeyName: "collaborations_offer_id_fkey"
             columns: ["offer_id"]
             isOneToOne: false
