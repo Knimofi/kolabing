@@ -21,6 +21,7 @@ import CommunityMyApplications from "./pages/community/CommunityMyApplications";
 import CommunityProfile from "./pages/community/CommunityProfile";
 import BusinessCollaborations from "./pages/business/BusinessCollaborations";
 import CommunityCollaborations from "./pages/community/CommunityCollaborations";
+import BusinessPlans from "./pages/business/BusinessPlans";
 import ComingSoon from "./pages/ComingSoon";
 import NotFound from "./pages/NotFound";
 
@@ -68,18 +69,7 @@ const App = () => (
                         ]}
                       />
                     } />
-                    <Route path="/plans" element={
-                      <ComingSoon 
-                        title="Subscription Plans"
-                        description="Manage your subscription"
-                        features={[
-                          "View current plan details",
-                          "Upgrade or downgrade plans",
-                          "Billing history",
-                          "Payment method management"
-                        ]}
-                      />
-                    } />
+                    <Route path="/plans" element={<BusinessPlans />} />
                     <Route path="/profile" element={<BusinessProfile />} />
                   </Routes>
                 </DashboardLayout>

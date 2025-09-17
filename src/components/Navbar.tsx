@@ -2,10 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, profile } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -75,6 +79,27 @@ const Navbar = () => {
           </a>
           <a href="#features" className="nav-link">About</a>
           <a href="#details" className="nav-link">Contact</a>
+          {user ? (
+            <button 
+              className="nav-link"
+              onClick={() => {
+                if (profile?.user_type === 'business') {
+                  navigate('/business');
+                } else if (profile?.user_type === 'community') {
+                  navigate('/community');
+                }
+              }}
+            >
+              Dashboard
+            </button>
+          ) : (
+            <button 
+              className="nav-link"
+              onClick={() => navigate('/auth/sign-in')}
+            >
+              Sign In
+            </button>
+          )}
         </nav>
 
         {/* Mobile menu button - increased touch target */}
@@ -125,6 +150,33 @@ const Navbar = () => {
           >
             Contact
           </a>
+          {user ? (
+            <button 
+              className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100"
+              onClick={() => {
+                if (profile?.user_type === 'business') {
+                  navigate('/business');
+                } else if (profile?.user_type === 'community') {
+                  navigate('/community');
+                }
+                setIsMenuOpen(false);
+                document.body.style.overflow = '';
+              }}
+            >
+              Dashboard
+            </button>
+          ) : (
+            <button 
+              className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100"
+              onClick={() => {
+                navigate('/auth/sign-in');
+                setIsMenuOpen(false);
+                document.body.style.overflow = '';
+              }}
+            >
+              Sign In
+            </button>
+          )}
         </nav>
       </div>
     </header>

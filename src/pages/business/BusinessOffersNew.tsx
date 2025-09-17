@@ -11,13 +11,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Checkbox } from '@/components/ui/checkbox';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, ArrowLeft, Save, Send } from 'lucide-react';
+import { CalendarIcon, ArrowLeft, Save, Send, Info } from 'lucide-react';
 import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { FileUpload } from '@/components/ui/file-upload';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const offerSchema = z.object({
   title: z.string().min(1, 'Title is required').max(100, 'Title must be under 100 characters'),
@@ -474,7 +475,17 @@ const BusinessOffersNew = () => {
                 name="timeline_days"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Timeline (Days after collaboration)</FormLabel>
+                    <div className="flex items-center gap-2">
+                      <FormLabel>Timeline (days after collaboration)</FormLabel>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info size={14} className="text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>How much time a community has to finish all deliverables.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                     <FormControl>
                       <Input
                         type="number"

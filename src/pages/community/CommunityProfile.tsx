@@ -3,11 +3,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FileUpload } from '@/components/ui/file-upload';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
-import { Users, Save, Loader2 } from 'lucide-react';
+import { Users, Save, Loader2, Info } from 'lucide-react';
 
 const communityTypes = [
   'run club',
@@ -37,7 +39,8 @@ const CommunityProfile: React.FC = () => {
     profile_photo: profile?.profile_photo || '',
     website: profile?.website || '',
     instagram: profile?.instagram || '',
-    tiktok: profile?.tiktok || ''
+    tiktok: profile?.tiktok || '',
+    about: (profile as any)?.about || ''
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -59,10 +62,6 @@ const CommunityProfile: React.FC = () => {
     
     if (formData.phone_number && !/^\+?[\d\s\-\(\)]+$/.test(formData.phone_number)) {
       newErrors.phone_number = 'Please enter a valid phone number';
-    }
-    
-    if (formData.website && !formData.website.match(/^https?:\/\/.+/)) {
-      newErrors.website = 'Website must start with http:// or https://';
     }
     
     if (formData.instagram && !formData.instagram.match(/^@?[\w\.]+$/)) {
@@ -90,7 +89,16 @@ const CommunityProfile: React.FC = () => {
     }
 
     setLoading(true);
-    const { error } = await updateProfile(formData);
+    
+    // Auto-add https:// to website if not present
+    const profileData = {
+      ...formData,
+      website: formData.website && !formData.website.startsWith('http') 
+        ? `https://${formData.website}` 
+        : formData.website
+    };
+    
+    const { error } = await updateProfile(profileData);
     
     if (!error) {
       toast({
@@ -132,7 +140,17 @@ const CommunityProfile: React.FC = () => {
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="name">Community Name *</Label>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="name">Community Name *</Label>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info size={14} className="text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>What is the public name of your community?</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
                 <Input
                   id="name"
                   value={formData.name}
@@ -149,7 +167,17 @@ const CommunityProfile: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="city">City *</Label>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="city">City *</Label>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info size={14} className="text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Where is the community located? Add Street, Number, Zip Code, City, Country</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
                 <Input
                   id="city"
                   value={formData.city}
@@ -167,7 +195,17 @@ const CommunityProfile: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="community_type">Community Type *</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="community_type">Community Type *</Label>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info size={14} className="text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Choose the type that's most likely describing your community.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <Select 
                 value={formData.community_type} 
                 onValueChange={(value) => handleInputChange('community_type', value)}
@@ -191,7 +229,17 @@ const CommunityProfile: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone_number">Phone Number</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="phone_number">Phone Number</Label>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Info size={14} className="text-muted-foreground" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Include your country code.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
               <Input
                 id="phone_number"
                 type="tel"
@@ -220,15 +268,36 @@ const CommunityProfile: React.FC = () => {
               />
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="about">About</Label>
+              <Textarea
+                id="about"
+                value={formData.about}
+                onChange={(e) => handleInputChange('about', e.target.value)}
+                placeholder="Describe here your community and mentality."
+                className="min-h-[100px]"
+              />
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="website">Website</Label>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="website">Website</Label>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info size={14} className="text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>What is your community's website?</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
                 <Input
                   id="website"
                   type="url"
                   value={formData.website}
                   onChange={(e) => handleInputChange('website', e.target.value)}
-                  placeholder="https://your-community.com"
+                  placeholder="yourwebsite.com"
                   aria-invalid={!!errors.website}
                   aria-describedby={errors.website ? 'website-error' : undefined}
                 />
@@ -240,12 +309,22 @@ const CommunityProfile: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="instagram">Instagram Handle</Label>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="instagram">Instagram Handle</Label>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Info size={14} className="text-muted-foreground" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Skip the @</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
                 <Input
                   id="instagram"
                   value={formData.instagram}
                   onChange={(e) => handleInputChange('instagram', e.target.value)}
-                  placeholder="@yourcommunity"
+                  placeholder="yourcommunity"
                   aria-invalid={!!errors.instagram}
                   aria-describedby={errors.instagram ? 'instagram-error' : undefined}
                 />
@@ -263,7 +342,7 @@ const CommunityProfile: React.FC = () => {
                 id="tiktok"
                 value={formData.tiktok}
                 onChange={(e) => handleInputChange('tiktok', e.target.value)}
-                placeholder="@yourcommunity"
+                placeholder="yourcommunity"
                 aria-invalid={!!errors.tiktok}
                 aria-describedby={errors.tiktok ? 'tiktok-error' : undefined}
               />

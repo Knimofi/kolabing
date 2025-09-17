@@ -28,12 +28,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon, ArrowLeft, Save, Send } from "lucide-react";
+import { CalendarIcon, ArrowLeft, Save, Send, Info } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const offerSchema = z.object({
   title: z.string().min(1, "Title is required").max(100),
@@ -235,7 +236,17 @@ const BusinessOffersEdit = () => {
             <CardContent>
               <FormField control={form.control} name="timeline_days" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Duration (days)</FormLabel>
+                  <div className="flex items-center gap-2">
+                    <FormLabel>Timeline (days after collaboration)</FormLabel>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Info size={14} className="text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>How much time a community has to finish all deliverables.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
                   <FormControl>
                     <Input type="number" min={1} max={365} {...field} />
                   </FormControl>
