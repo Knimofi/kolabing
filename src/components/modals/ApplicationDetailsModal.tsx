@@ -8,7 +8,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
-import { MapPin, Calendar, Globe, Instagram } from 'lucide-react';
+import { MapPin, Calendar, Globe, Instagram, Music } from 'lucide-react';
 
 interface ApplicationDetailsModalProps {
   open: boolean;
@@ -145,7 +145,13 @@ const ApplicationDetailsModal: React.FC<ApplicationDetailsModalProps> = ({
                   </div>
                 )}
                 
-                <div className="flex gap-3">
+                {businessProfile?.about && (
+                  <div className="text-sm text-muted-foreground">
+                    <p className="whitespace-pre-wrap">{businessProfile.about}</p>
+                  </div>
+                )}
+                
+                <div className="space-y-2">
                   {businessProfile?.website && (
                     <a 
                       href={businessProfile.website} 
@@ -166,6 +172,17 @@ const ApplicationDetailsModal: React.FC<ApplicationDetailsModalProps> = ({
                     >
                       <Instagram className="w-3 h-3" />
                       Instagram
+                    </a>
+                  )}
+                  {businessProfile?.tiktok && (
+                    <a 
+                      href={`https://tiktok.com/@${businessProfile.tiktok}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-sm text-primary hover:underline"
+                    >
+                      <Music className="w-3 h-3" />
+                      TikTok
                     </a>
                   )}
                 </div>

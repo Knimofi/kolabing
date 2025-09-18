@@ -238,14 +238,16 @@ const BusinessOffersEdit = () => {
                 <FormItem>
                   <div className="flex items-center gap-2">
                     <FormLabel>Timeline (days after collaboration)</FormLabel>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info size={14} className="text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>How much time a community has to finish all deliverables.</p>
-                      </TooltipContent>
-                    </Tooltip>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger type="button">
+                          <Info size={14} className="text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>How much time a community has to finish all deliverables.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                   <FormControl>
                     <Input type="number" min={1} max={365} {...field} />
