@@ -6,7 +6,7 @@ import { Check } from 'lucide-react';
 const BusinessPlans = () => {
   const handleStandardPlanClick = () => {
     // Redirect to Stripe (placeholder for now)
-    window.location.href = '#stripe-payment';
+    window.location.href = 'https://buy.stripe.com/3cIfZhf5vfYh1HhgJ8d3i03';
   };
 
   const handleAgencyPlanClick = () => {
