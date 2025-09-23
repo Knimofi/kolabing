@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Users, Building2 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 const Landing = () => {
   const [userType, setUserType] = useState<'business' | 'community'>('business');
   return <div className="min-h-screen background">
@@ -161,20 +162,7 @@ const Landing = () => {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-muted py-12 px-4">
-        <div className="container mx-auto max-w-6xl text-center">
-          <div className="flex items-center justify-center space-x-2 mb-6">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">K</span>
-            </div>
-            <span className="text-xl font-bold text-foreground">Kolabing</span>
-          </div>
-          <p className="text-muted-foreground">
-            Connecting businesses with communities for meaningful collaborations.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>;
 };
 export default Landing;
