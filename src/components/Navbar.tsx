@@ -42,7 +42,7 @@ const Navbar = () => {
           e.preventDefault();
           scrollToTop();
         }}>
-            Home
+            How it Works
           </a>
           <a href="/our-communities" className="text-muted-foreground hover:text-foreground transition-colors">
             Our Communities
