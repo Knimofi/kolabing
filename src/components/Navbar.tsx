@@ -42,13 +42,13 @@ const Navbar = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 py-2 sm:py-3 md:py-4 transition-all duration-300",
+        "fixed top-0 left-0 right-0 z-50 py-3 md:py-4 transition-all duration-300",
         isScrolled 
-          ? "bg-white/80 backdrop-blur-md shadow-sm" 
+          ? "bg-background/90 backdrop-blur-md shadow-lg border-b border-border" 
           : "bg-transparent"
       )}
     >
-      <div className="container flex items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="container flex items-center justify-between px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto">
         <a 
           href="#" 
           className="flex items-center space-x-2"
@@ -61,7 +61,7 @@ const Navbar = () => {
           <img 
             src="/logo.svg" 
             alt="Pulse Robot Logo" 
-            className="h-7 sm:h-8" 
+            className="h-8 sm:h-10" 
           />
         </a>
 
@@ -69,7 +69,7 @@ const Navbar = () => {
         <nav className="hidden md:flex space-x-8">
           <a 
             href="#" 
-            className="nav-link"
+            className="nav-link text-lg"
             onClick={(e) => {
               e.preventDefault();
               scrollToTop();
@@ -77,11 +77,11 @@ const Navbar = () => {
           >
             Home
           </a>
-          <a href="#features" className="nav-link">About</a>
-          <a href="#details" className="nav-link">Contact</a>
+          <a href="#features" className="nav-link text-lg">About</a>
+          <a href="#details" className="nav-link text-lg">Contact</a>
           {user ? (
             <button 
-              className="nav-link"
+              className="button-primary text-sm"
               onClick={() => {
                 if (profile?.user_type === 'business') {
                   navigate('/business');
@@ -94,7 +94,7 @@ const Navbar = () => {
             </button>
           ) : (
             <button 
-              className="nav-link"
+              className="button-primary text-sm"
               onClick={() => navigate('/auth/sign-in')}
             >
               Sign In
@@ -102,9 +102,9 @@ const Navbar = () => {
           )}
         </nav>
 
-        {/* Mobile menu button - increased touch target */}
+        {/* Mobile menu button */}
         <button 
-          className="md:hidden text-gray-700 p-3 focus:outline-none" 
+          className="md:hidden text-foreground p-3 focus:outline-none" 
           onClick={toggleMenu}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         >
@@ -112,15 +112,15 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Navigation - improved for better touch experience */}
+      {/* Mobile Navigation */}
       <div className={cn(
-        "fixed inset-0 z-40 bg-white flex flex-col pt-16 px-6 md:hidden transition-all duration-300 ease-in-out",
+        "fixed inset-0 z-40 bg-background flex flex-col pt-20 px-6 md:hidden transition-all duration-300 ease-in-out",
         isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"
       )}>
-        <nav className="flex flex-col space-y-8 items-center mt-8">
+        <nav className="flex flex-col space-y-6 items-center mt-8">
           <a 
             href="#" 
-            className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
+            className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-card border border-border text-card-foreground hover:bg-primary hover:text-primary-foreground transition-all" 
             onClick={(e) => {
               e.preventDefault();
               scrollToTop();
@@ -132,7 +132,7 @@ const Navbar = () => {
           </a>
           <a 
             href="#features" 
-            className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
+            className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-card border border-border text-card-foreground hover:bg-primary hover:text-primary-foreground transition-all" 
             onClick={() => {
               setIsMenuOpen(false);
               document.body.style.overflow = '';
@@ -142,7 +142,7 @@ const Navbar = () => {
           </a>
           <a 
             href="#details" 
-            className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100" 
+            className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-card border border-border text-card-foreground hover:bg-primary hover:text-primary-foreground transition-all" 
             onClick={() => {
               setIsMenuOpen(false);
               document.body.style.overflow = '';
@@ -152,7 +152,7 @@ const Navbar = () => {
           </a>
           {user ? (
             <button 
-              className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100"
+              className="button-primary text-xl w-full"
               onClick={() => {
                 if (profile?.user_type === 'business') {
                   navigate('/business');
@@ -167,7 +167,7 @@ const Navbar = () => {
             </button>
           ) : (
             <button 
-              className="text-xl font-medium py-3 px-6 w-full text-center rounded-lg hover:bg-gray-100"
+              className="button-primary text-xl w-full"
               onClick={() => {
                 navigate('/auth/sign-in');
                 setIsMenuOpen(false);
