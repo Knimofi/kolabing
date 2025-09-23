@@ -1,24 +1,14 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, profile } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -40,36 +30,24 @@ const Navbar = () => {
   };
 
   return (
-    <header
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 py-3 md:py-4 transition-all duration-300",
-        isScrolled 
-          ? "bg-background/90 backdrop-blur-md shadow-lg border-b border-border" 
-          : "bg-transparent"
-      )}
-    >
-      <div className="container flex items-center justify-between px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto">
-        <a 
-          href="#" 
-          className="flex items-center space-x-2"
-          onClick={(e) => {
-            e.preventDefault();
-            scrollToTop();
-          }}
-          aria-label="Pulse Robot"
+    <header className="fixed top-0 left-0 right-0 z-50 py-4 backdrop-blur-md shadow-sm bg-[slate-805] bg-inherit">
+      <div className="container mx-auto px-4 flex items-center justify-between">
+        <div 
+          onClick={scrollToTop}
+          className="flex items-center space-x-2 cursor-pointer"
+          aria-label="Kolabing"
         >
-          <img 
-            src="/logo.svg" 
-            alt="Pulse Robot Logo" 
-            className="h-8 sm:h-10" 
-          />
-        </a>
-
+          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+            <span className="text-primary-foreground font-bold text-lg">K</span>
+          </div>
+          <span className="text-xl font-bold text-foreground">Kolabing</span>
+        </div>
+        
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-8">
+        <nav className="hidden md:flex space-x-6">
           <a 
             href="#" 
-            className="nav-link text-lg"
+            className="text-muted-foreground hover:text-foreground transition-colors"
             onClick={(e) => {
               e.preventDefault();
               scrollToTop();
@@ -77,13 +55,21 @@ const Navbar = () => {
           >
             Home
           </a>
-          <a href="/our-communities" className="nav-link text-lg">Our Communities</a>
-          <a href="/success-stories" className="nav-link text-lg">Success Stories</a>
-          <a href="#features" className="nav-link text-lg">About</a>
-          <a href="#details" className="nav-link text-lg">Contact</a>
+          <a href="/our-communities" className="text-muted-foreground hover:text-foreground transition-colors">
+            Our Communities
+          </a>
+          <a href="/success-stories" className="text-muted-foreground hover:text-foreground transition-colors">
+            Success Stories
+          </a>
+          <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
+            About
+          </a>
+          <a href="#details" className="text-muted-foreground hover:text-foreground transition-colors">
+            Contact
+          </a>
           {user ? (
             <button 
-              className="button-primary text-sm"
+              className="text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => {
                 if (profile?.user_type === 'business') {
                   navigate('/business');
@@ -96,7 +82,7 @@ const Navbar = () => {
             </button>
           ) : (
             <button 
-              className="button-primary text-sm"
+              className="text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => navigate('/auth/sign-in')}
             >
               Sign In
@@ -106,7 +92,7 @@ const Navbar = () => {
 
         {/* Mobile menu button */}
         <button 
-          className="md:hidden text-foreground p-3 focus:outline-none" 
+          className="md:hidden text-foreground p-2 focus:outline-none" 
           onClick={toggleMenu}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
         >
@@ -174,7 +160,7 @@ const Navbar = () => {
           </a>
           {user ? (
             <button 
-              className="button-primary text-xl w-full"
+              className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-card border border-border text-card-foreground hover:bg-primary hover:text-primary-foreground transition-all"
               onClick={() => {
                 if (profile?.user_type === 'business') {
                   navigate('/business');
@@ -189,7 +175,7 @@ const Navbar = () => {
             </button>
           ) : (
             <button 
-              className="button-primary text-xl w-full"
+              className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-card border border-border text-card-foreground hover:bg-primary hover:text-primary-foreground transition-all"
               onClick={() => {
                 navigate('/auth/sign-in');
                 setIsMenuOpen(false);

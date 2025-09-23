@@ -2,35 +2,11 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Users, Building2 } from 'lucide-react';
+import Navbar from '@/components/Navbar';
 const Landing = () => {
   const [userType, setUserType] = useState<'business' | 'community'>('business');
   return <div className="min-h-screen background">
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 py-4 backdrop-blur-md shadow-sm bg-[slate-805] bg-inherit">
-        <div className="container mx-auto px-4 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">K</span>
-            </div>
-            <span className="text-xl font-bold text-foreground">Kolabing</span>
-          </div>
-          
-          <nav className="hidden md:flex space-x-6">
-            <a href="#how-it-works" className="text-muted-foreground hover:text-foreground transition-colors">
-              How It Works
-            </a>
-            <a href="/success-stories" className="text-muted-foreground hover:text-foreground transition-colors">
-              Success Stories
-            </a>
-              <a href="/our-communities" className="text-muted-foreground hover:text-foreground transition-colors">
-              Our Communities
-            </a>
-            <Link to="/auth/sign-in" className="text-muted-foreground hover:text-foreground transition-colors">
-              Sign In
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Hero Section */}
       <main className="pt-20">
