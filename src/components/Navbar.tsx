@@ -38,7 +38,7 @@ const Navbar = () => {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-6">
-          <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" onClick={e => {
+          <a href="/" className="text-muted-foreground hover:text-foreground transition-colors" onClick={e => {
           e.preventDefault();
           scrollToTop();
         }}>
@@ -80,7 +80,7 @@ const Navbar = () => {
           setIsMenuOpen(false);
           document.body.style.overflow = '';
         }}>
-            Home
+            How it works
           </a>
           <a href="/our-communities" className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-card border border-border text-card-foreground hover:bg-primary hover:text-primary-foreground transition-all" onClick={() => {
           setIsMenuOpen(false);
