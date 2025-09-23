@@ -2,14 +2,11 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Users, Building2 } from 'lucide-react';
-
 const Landing = () => {
   const [userType, setUserType] = useState<'business' | 'community'>('business');
-
-  return (
-    <div className="min-h-screen background">
+  return <div className="min-h-screen background">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 py-4 bg-white/80 backdrop-blur-md shadow-sm">
+      <header className="fixed top-0 left-0 right-0 z-50 py-4 backdrop-blur-md shadow-sm bg-[slate-805] bg-inherit">
         <div className="container mx-auto px-4 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
@@ -46,37 +43,13 @@ const Landing = () => {
 
             {/* User Type Toggle */}
             <div className="mb-12">
-              <div 
-                className="inline-flex p-1 bg-muted rounded-lg mb-8"
-                role="radiogroup"
-                aria-labelledby="user-type-label"
-              >
+              <div className="inline-flex p-1 bg-muted rounded-lg mb-8" role="radiogroup" aria-labelledby="user-type-label">
                 <span id="user-type-label" className="sr-only">Choose your account type</span>
-                <button
-                  onClick={() => setUserType('business')}
-                  className={`flex items-center space-x-2 px-6 py-3 rounded-md font-medium transition-all ${
-                    userType === 'business' 
-                      ? 'bg-background text-foreground shadow-sm' 
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                  role="radio"
-                  aria-checked={userType === 'business'}
-                  aria-label="Business account"
-                >
+                <button onClick={() => setUserType('business')} className={`flex items-center space-x-2 px-6 py-3 rounded-md font-medium transition-all ${userType === 'business' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`} role="radio" aria-checked={userType === 'business'} aria-label="Business account">
                   <Building2 className="w-5 h-5" />
                   <span>I'm a Business</span>
                 </button>
-                <button
-                  onClick={() => setUserType('community')}
-                  className={`flex items-center space-x-2 px-6 py-3 rounded-md font-medium transition-all ${
-                    userType === 'community' 
-                      ? 'bg-background text-foreground shadow-sm' 
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                  role="radio"
-                  aria-checked={userType === 'community'}
-                  aria-label="Community account"
-                >
+                <button onClick={() => setUserType('community')} className={`flex items-center space-x-2 px-6 py-3 rounded-md font-medium transition-all ${userType === 'community' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`} role="radio" aria-checked={userType === 'community'} aria-label="Community account">
                   <Users className="w-5 h-5" />
                   <span>I'm a Community</span>
                 </button>
@@ -84,8 +57,7 @@ const Landing = () => {
 
               {/* Dynamic Content */}
               <div className="min-h-[120px] flex flex-col justify-center">
-                {userType === 'business' ? (
-                  <div>
+                {userType === 'business' ? <div>
                     <h2 className="text-2xl font-semibold text-foreground mb-4">
                       For Businesses
                     </h2>
@@ -93,9 +65,7 @@ const Landing = () => {
                       Create compelling offers, connect with authentic communities, 
                       and build meaningful partnerships that drive real results.
                     </p>
-                  </div>
-                ) : (
-                  <div>
+                  </div> : <div>
                     <h2 className="text-2xl font-semibold text-foreground mb-4">
                       For Communities
                     </h2>
@@ -103,15 +73,11 @@ const Landing = () => {
                       Discover exciting collaboration opportunities, apply to offers that 
                       align with your values, and monetize your community engagement.
                     </p>
-                  </div>
-                )}
+                  </div>}
               </div>
 
               {/* CTA Button */}
-              <Link 
-                to={`/auth/sign-up?type=${userType}`}
-                className="inline-flex"
-              >
+              <Link to={`/auth/sign-up?type=${userType}`} className="inline-flex">
                 <Button size="lg" className="text-lg px-8 py-6">
                   Get Started
                   <ArrowRight className="w-5 h-5 ml-2" />
@@ -230,8 +196,6 @@ const Landing = () => {
           </p>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Landing;
