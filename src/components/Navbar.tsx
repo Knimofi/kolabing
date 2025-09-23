@@ -77,6 +77,7 @@ const Navbar = () => {
           >
             Home
           </a>
+          <a href="/success-stories" className="nav-link text-lg">Success Stories</a>
           <a href="#features" className="nav-link text-lg">About</a>
           <a href="#details" className="nav-link text-lg">Contact</a>
           {user ? (
@@ -129,6 +130,16 @@ const Navbar = () => {
             }}
           >
             Home
+          </a>
+          <a 
+            href="/success-stories" 
+            className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-card border border-border text-card-foreground hover:bg-primary hover:text-primary-foreground transition-all" 
+            onClick={() => {
+              setIsMenuOpen(false);
+              document.body.style.overflow = '';
+            }}
+          >
+            Success Stories
           </a>
           <a 
             href="#features" 

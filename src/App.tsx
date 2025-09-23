@@ -23,6 +23,7 @@ import BusinessCollaborations from "./pages/business/BusinessCollaborations";
 import CommunityCollaborations from "./pages/community/CommunityCollaborations";
 import BusinessPlans from "./pages/business/BusinessPlans";
 import ComingSoon from "./pages/ComingSoon";
+import SuccessStories from "./pages/SuccessStories";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Landing />} />
+            <Route path="/success-stories" element={<SuccessStories />} />
             <Route path="/auth/sign-up" element={<SignUp />} />
             <Route path="/auth/sign-in" element={<SignIn />} />
             

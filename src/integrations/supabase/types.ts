@@ -433,6 +433,39 @@ export type Database = {
           },
         ]
       }
+      success_stories: {
+        Row: {
+          company: string
+          created_at: string
+          id: string
+          image_url: string | null
+          name: string
+          role: string
+          testimonial: string
+          updated_at: string
+        }
+        Insert: {
+          company: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name: string
+          role: string
+          testimonial: string
+          updated_at?: string
+        }
+        Update: {
+          company?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          role?: string
+          testimonial?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       surveys: {
         Row: {
           answers: Json
