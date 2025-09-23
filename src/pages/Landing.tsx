@@ -22,6 +22,9 @@ const Landing = () => {
             <a href="/success-stories" className="text-muted-foreground hover:text-foreground transition-colors">
               Success Stories
             </a>
+              <a href="/our-communities" className="text-muted-foreground hover:text-foreground transition-colors">
+              Our Communities
+            </a>
             <Link to="/auth/sign-in" className="text-muted-foreground hover:text-foreground transition-colors">
               Sign In
             </Link>
