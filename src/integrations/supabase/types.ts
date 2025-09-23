@@ -88,6 +88,7 @@ export type Database = {
       }
       business_profiles: {
         Row: {
+          about: string | null
           business_type: string | null
           city: string | null
           created_at: string
@@ -99,6 +100,7 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          about?: string | null
           business_type?: string | null
           city?: string | null
           created_at?: string
@@ -110,6 +112,7 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          about?: string | null
           business_type?: string | null
           city?: string | null
           created_at?: string
@@ -239,6 +242,7 @@ export type Database = {
       }
       community_profiles: {
         Row: {
+          about: string | null
           city: string | null
           community_type: string | null
           created_at: string
@@ -251,6 +255,7 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          about?: string | null
           city?: string | null
           community_type?: string | null
           created_at?: string
@@ -263,6 +268,7 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          about?: string | null
           city?: string | null
           community_type?: string | null
           created_at?: string
