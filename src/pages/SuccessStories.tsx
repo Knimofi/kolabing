@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 interface SuccessStory {
   id: string;
@@ -80,8 +82,9 @@ const SuccessStories = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Navbar />
       {/* Hero Section */}
-      <section className="py-24 px-4 bg-gradient-to-b from-background to-card">
+      <section className="py-24 px-4 bg-gradient-to-b from-background to-card mt-20">
         <div className="max-w-7xl mx-auto text-center">
           <div className="mb-4">
             <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
@@ -164,6 +167,7 @@ const SuccessStories = () => {
           </button>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };
