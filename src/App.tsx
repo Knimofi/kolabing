@@ -7,6 +7,8 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import Landing from "./pages/Landing";
+import SuccessStories from "./pages/SuccessStories";
+import OurCommunities from "./pages/OurCommunities";
 import SignUp from "./pages/auth/SignUp";
 import SignIn from "./pages/auth/SignIn";
 import BusinessDashboard from "./pages/business/BusinessDashboard";
@@ -23,7 +25,6 @@ import BusinessCollaborations from "./pages/business/BusinessCollaborations";
 import CommunityCollaborations from "./pages/community/CommunityCollaborations";
 import BusinessPlans from "./pages/business/BusinessPlans";
 import ComingSoon from "./pages/ComingSoon";
-import SuccessStories from "./pages/SuccessStories";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => (
             {/* Public Routes */}
             <Route path="/" element={<Landing />} />
             <Route path="/success-stories" element={<SuccessStories />} />
+            <Route path="/our-communities" element={<OurCommunities />} />
             <Route path="/auth/sign-up" element={<SignUp />} />
             <Route path="/auth/sign-in" element={<SignIn />} />
             
