@@ -86,40 +86,43 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col font-sans">
       {/* Header */}
-      <header className="p-4 flex items-center justify-between border-b border-border">
-        <Link to="/" className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors" aria-label="Back to home">
+      <header className="p-6 flex items-center justify-between border-b border-border">
+        <Link to="/" className="flex items-center space-x-2 text-muted-foreground hover:text-primary transition-colors" aria-label="Back to home">
           <ArrowLeft className="w-5 h-5" />
           <span className="hidden sm:inline">Back to Home</span>
         </Link>
-        <Link to="/auth/sign-in" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+        <Link to="/auth/sign-in" className="text-sm text-muted-foreground hover:text-primary transition-colors">
           Already have an account? Sign in
         </Link>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-4 py-8">
-        <div className="w-full max-w-md">
+      <main className="flex-1 flex items-center justify-center px-6 py-12">
+        <div className="w-full max-w-lg">
           {/* Logo & Title */}
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-xl">K</span>
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center space-x-2 mb-6">
+              <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-background font-bold text-2xl">K</span>
               </div>
-              <span className="text-2xl font-bold text-foreground">Kolabing</span>
+              <span className="text-3xl font-bold text-foreground">Kolabing</span>
             </div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Create Your Account</h1>
-            <p className="text-muted-foreground">Join the marketplace for meaningful collaborations</p>
+            <div className="relative inline-block">
+              <h1 className="text-4xl font-bold text-foreground mb-2">Create Your Account</h1>
+              <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-24 h-0.5 bg-primary"></div>
+            </div>
+            <p className="text-muted-foreground mt-4 text-lg">Join the marketplace for meaningful collaborations</p>
           </div>
 
           {/* Account Type */}
-          <div className="mb-6">
-            <Label className="text-sm font-medium text-foreground mb-3 block">Account Type</Label>
-            <div className="flex p-1 bg-muted rounded-lg">
+          <div className="mb-8">
+            <Label className="text-sm font-medium text-muted-foreground mb-4 block">Account Type</Label>
+            <div className="flex p-1.5 bg-muted rounded-2xl">
               <button
                 type="button"
                 onClick={() => setUserType('business')}
-                className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md font-medium transition-all ${userType === 'business' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-xl font-medium transition-all ${userType === 'business' ? 'bg-primary text-background shadow-lg' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}
               >
                 <Building2 className="w-4 h-4" />
                 <span className="text-sm">Business</span>
@@ -127,7 +130,7 @@ const SignUp = () => {
               <button
                 type="button"
                 onClick={() => setUserType('community')}
-                className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md font-medium transition-all ${userType === 'community' ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
+                className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-xl font-medium transition-all ${userType === 'community' ? 'bg-primary text-background shadow-lg' : 'text-muted-foreground hover:text-foreground hover:bg-background/50'}`}
               >
                 <Users className="w-4 h-4" />
                 <span className="text-sm">Community</span>
@@ -136,10 +139,10 @@ const SignUp = () => {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Display Name */}
             <div>
-              <Label htmlFor="displayName" className="text-sm font-medium text-foreground">{userType === 'business' ? 'Business Name' : 'Community Name'}</Label>
+              <Label htmlFor="displayName" className="text-sm font-medium text-muted-foreground mb-2 block">{userType === 'business' ? 'Business Name' : 'Community Name'}</Label>
               <Input
                 id="displayName"
                 name="displayName"
@@ -147,14 +150,14 @@ const SignUp = () => {
                 value={formData.displayName}
                 onChange={handleInputChange}
                 placeholder={userType === 'business' ? 'Enter your business name' : 'Enter your community name'}
-                className={errors.displayName ? 'border-destructive' : ''}
+                className={`rounded-xl bg-muted border-border focus:ring-2 focus:ring-primary focus:border-primary transition-all ${errors.displayName ? 'border-destructive focus:ring-destructive focus:border-destructive' : ''}`}
               />
-              {errors.displayName && <p className="text-sm text-destructive mt-1">{errors.displayName}</p>}
+              {errors.displayName && <p className="text-sm text-destructive mt-2">{errors.displayName}</p>}
             </div>
 
             {/* Email */}
             <div>
-              <Label htmlFor="email" className="text-sm font-medium text-foreground">Email</Label>
+              <Label htmlFor="email" className="text-sm font-medium text-muted-foreground mb-2 block">Email</Label>
               <Input
                 id="email"
                 name="email"
@@ -162,14 +165,14 @@ const SignUp = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="Enter your email"
-                className={errors.email ? 'border-destructive' : ''}
+                className={`rounded-xl bg-muted border-border focus:ring-2 focus:ring-primary focus:border-primary transition-all ${errors.email ? 'border-destructive focus:ring-destructive focus:border-destructive' : ''}`}
               />
-              {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
+              {errors.email && <p className="text-sm text-destructive mt-2">{errors.email}</p>}
             </div>
 
             {/* Password */}
             <div>
-              <Label htmlFor="password" className="text-sm font-medium text-foreground">Password</Label>
+              <Label htmlFor="password" className="text-sm font-medium text-muted-foreground mb-2 block">Password</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -178,22 +181,22 @@ const SignUp = () => {
                   value={formData.password}
                   onChange={handleInputChange}
                   placeholder="Create a password"
-                  className={errors.password ? 'border-destructive pr-10' : 'pr-10'}
+                  className={`rounded-xl bg-muted border-border focus:ring-2 focus:ring-primary focus:border-primary transition-all pr-12 ${errors.password ? 'border-destructive focus:ring-destructive focus:border-destructive' : ''}`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              {errors.password && <p className="text-sm text-destructive mt-1">{errors.password}</p>}
+              {errors.password && <p className="text-sm text-destructive mt-2">{errors.password}</p>}
             </div>
 
             {/* Confirm Password */}
             <div>
-              <Label htmlFor="confirmPassword" className="text-sm font-medium text-foreground">Confirm Password</Label>
+              <Label htmlFor="confirmPassword" className="text-sm font-medium text-muted-foreground mb-2 block">Confirm Password</Label>
               <div className="relative">
                 <Input
                   id="confirmPassword"
@@ -202,20 +205,25 @@ const SignUp = () => {
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   placeholder="Confirm your password"
-                  className={errors.confirmPassword ? 'border-destructive pr-10' : 'pr-10'}
+                  className={`rounded-xl bg-muted border-border focus:ring-2 focus:ring-primary focus:border-primary transition-all pr-12 ${errors.confirmPassword ? 'border-destructive focus:ring-destructive focus:border-destructive' : ''}`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
                 >
                   {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              {errors.confirmPassword && <p className="text-sm text-destructive mt-1">{errors.confirmPassword}</p>}
+              {errors.confirmPassword && <p className="text-sm text-destructive mt-2">{errors.confirmPassword}</p>}
             </div>
 
-            <Button type="submit" className="w-full" size="lg" disabled={loading}>
+            <Button 
+              type="submit" 
+              className="w-full bg-primary hover:bg-primary/90 active:bg-primary/80 text-background font-bold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl active:shadow-md transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background" 
+              size="lg" 
+              disabled={loading}
+            >
               {loading ? 'Creating Account...' : 'Create Account'}
             </Button>
           </form>
