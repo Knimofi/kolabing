@@ -26,6 +26,8 @@ import CommunityCollaborations from "./pages/community/CommunityCollaborations";
 import BusinessPlans from "./pages/business/BusinessPlans";
 import ComingSoon from "./pages/ComingSoon";
 import NotFound from "./pages/NotFound";
+import ForgotPassword from '@/pages/auth/ForgotPassword';
+import ResetPassword from '@/pages/auth/ResetPassword';
 
 const queryClient = new QueryClient();
 
@@ -43,6 +45,8 @@ const App = () => (
             <Route path="/our-communities" element={<OurCommunities />} />
             <Route path="/auth/sign-up" element={<SignUp />} />
             <Route path="/auth/sign-in" element={<SignIn />} />
+            <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+            <Route path="/auth/reset-password" element={<ResetPassword />} />
             
             {/* Business Routes */}
             <Route path="/business/*" element={
