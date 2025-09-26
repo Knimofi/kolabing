@@ -44,13 +44,12 @@ const Navbar = () => {
         }}>
             How it Works
           </a>
-          <a href="/our-communities" className="text-muted-foreground hover:text-foreground transition-colors">
-            Our Communities
-          </a>
           <a href="/success-stories" className="text-muted-foreground hover:text-foreground transition-colors">
             Success Stories
           </a>
-          
+            <a href="/our-communities" className="text-muted-foreground hover:text-foreground transition-colors">
+            For Communities
+          </a>
           
           {user ? <button className="text-muted-foreground hover:text-foreground transition-colors" onClick={() => {
           if (profile?.user_type === 'business') {
