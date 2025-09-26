@@ -54,7 +54,7 @@ const OurCommunities = () => {
       <section className="pt-24 pb-16 px-4 sm:px-8 lg:px-12">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="section-title mb-6">
-            Our Communities
+            Our Featured Communities
           </h1>
           <p className="section-subtitle mx-auto">
             Discover amazing communities that are making a difference and creating impact in their local areas.
