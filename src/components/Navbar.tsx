@@ -38,10 +38,7 @@ const Navbar = () => {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-6">
-          <a href="/" className="text-muted-foreground hover:text-foreground transition-colors" onClick={e => {
-          e.preventDefault();
-          scrollToTop();
-        }}>
+          <a href="/" className="text-muted-foreground hover:text-foreground transition-colors" >
             How it Works
           </a>
           <a href="/success-stories" className="text-muted-foreground hover:text-foreground transition-colors">
