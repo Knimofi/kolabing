@@ -54,8 +54,8 @@ const SuccessStories = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
         
-        <CardContent className="relative z-10 p-8 h-full flex flex-col justify-between text-white">
-          <div className="flex items-start space-x-6 flex-1">
+        <CardContent className="relative z-10 p-8 h-full flex flex-col justify-start text-white">
+          <div className="flex items-start space-x-6">
             {story.image_url && (
               <div className="flex-shrink-0">
                 <img
@@ -82,7 +82,7 @@ const SuccessStories = () => {
           </div>
           
           {story.video_url && (
-            <div className="mt-6 flex justify-center">
+            <div className="mt-4 flex justify-center">
               <Button
                 onClick={() => setSelectedVideo({ url: story.video_url!, author: story.name })}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg"
