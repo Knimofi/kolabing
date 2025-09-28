@@ -24,7 +24,7 @@ const PricingSection = () => {
           {/* Standard Plan */}
           <Card className="flex-1 hover:shadow-lg transition-shadow duration-300 border-2 hover:border-primary relative">
             <CardHeader className="text-center pb-6">
-              <CardTitle className="text-2xl font-bold text-foreground">Standard Plan</CardTitle>
+              <CardTitle className="text-2xl font-bold text-foreground">Basic Plan</CardTitle>
               <CardDescription className="text-muted-foreground">
                 Perfect for growing businesses
               </CardDescription>
@@ -33,7 +33,7 @@ const PricingSection = () => {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-foreground">Broadcast offers to all communities around</span>
+                  <span className="text-foreground">Publish collaboration offers to all communities in your city</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
@@ -45,14 +45,14 @@ const PricingSection = () => {
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-foreground">Verified community partnerships</span>
+                  <span className="text-foreground">Recommendations & Personalised help on community strategy</span>
                 </div>
               </div>
               
               <div className="pt-6 border-t border-border">
                 <div className="text-center">
                   <div className="text-4xl font-bold text-foreground mb-2">280 Euro/month</div>
-                  <p className="text-sm text-muted-foreground mb-6">(discount codes may apply)</p>
+                  <p className="text-sm text-muted-foreground mb-6">(Special offers may apply)</p>
                   <Button 
                     size="lg" 
                     className="w-full text-lg font-semibold"
@@ -75,30 +75,31 @@ const PricingSection = () => {
             <CardHeader className="text-center pb-6">
               <CardTitle className="text-2xl font-bold text-foreground">Agency Plan</CardTitle>
               <CardDescription className="text-muted-foreground">
-                Tailored solutions for agencies
+                Personalised services for businesses already familiar with communities
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-foreground">Exclusive custom solution for agencies</span>
+                  <span className="text-foreground">
+                   We find the collaborations for you and test the best matches </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-foreground">Dedicated account management</span>
+                  <span className="text-foreground">Priority Account Management</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-foreground">Custom integrations available</span>
+                  <span className="text-foreground">Advanced Performance analytics and ROI</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-foreground">White-label solutions</span>
+                  <span className="text-foreground">Consulting on Marketing Strategy (Content, Products & Offers, Communities, More)</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
-                  <span className="text-foreground">Advanced reporting and insights</span>
+                  <span className="text-foreground">Personalised Content Creation</span>
                 </div>
               </div>
               
