@@ -143,7 +143,7 @@ const SuccessStories = () => {
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-primary mb-2">30+</div>
-              <div className="text-muted-foreground">Partner Activations</div>
+              <div className="text-muted-foreground">Partner Events</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-primary mb-2">80%</div>
