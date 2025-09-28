@@ -59,7 +59,7 @@ const VideoCarousel = () => {
         
         @media (max-width: 768px) {
           .carousel-animate {
-            animation-duration: 20s;
+            animation-duration: 18s;
           }
         }
       `}</style>
