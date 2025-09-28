@@ -1,5 +1,5 @@
-import React from 'react';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import React, { useEffect, useCallback } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
 
 const VideoCarousel = () => {
   // Placeholder video data - replace with actual video sources
@@ -36,8 +36,40 @@ const VideoCarousel = () => {
     }
   ];
 
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+    loop: true,
+    dragFree: false,
+    containScroll: 'trimSnaps',
+    slidesToScroll: 1,
+    breakpoints: {
+      '(max-width: 768px)': { slidesToScroll: 1 },
+      '(min-width: 769px)': { slidesToScroll: 1 }
+    }
+  });
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  // Auto-rotate functionality with hover pause
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  useEffect(() => {
+    if (!emblaApi || isHovered) return;
+
+    const autoScroll = setInterval(() => {
+      scrollNext();
+    }, 3000); // Change slide every 3 seconds
+
+    return () => clearInterval(autoScroll);
+  }, [emblaApi, scrollNext, isHovered]);
+
   return (
-    <section className="py-20 px-4 bg-muted/30">
+    <section 
+      className="py-20 px-4 bg-muted/30"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -48,16 +80,16 @@ const VideoCarousel = () => {
           </p>
         </div>
 
-        <Carousel className="w-full max-w-5xl mx-auto">
-          <CarouselContent className="-ml-4">
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex">
             {videos.map((video) => (
-              <CarouselItem key={video.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+              <div key={video.id} className="flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.333%] min-w-0 pl-4">
                 <div className="group cursor-pointer">
                   <div className="relative aspect-[9/16] bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300">
                     <img 
                       src={video.thumbnail} 
                       alt={video.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
                     <div className="absolute bottom-0 left-0 right-0 p-4">
@@ -65,7 +97,7 @@ const VideoCarousel = () => {
                       <p className="text-sm text-muted-foreground">{video.description}</p>
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-16 h-16 bg-primary/80 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:bg-primary transition-colors">
+                      <div className="w-16 h-16 bg-primary/80 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:bg-primary transition-colors duration-300">
                         <svg className="w-8 h-8 text-primary-foreground ml-1" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M8 5v14l11-7z"/>
                         </svg>
@@ -73,12 +105,10 @@ const VideoCarousel = () => {
                     </div>
                   </div>
                 </div>
-              </CarouselItem>
+              </div>
             ))}
-          </CarouselContent>
-          <CarouselPrevious className="left-4" />
-          <CarouselNext className="right-4" />
-        </Carousel>
+          </div>
+        </div>
       </div>
     </section>
   );
