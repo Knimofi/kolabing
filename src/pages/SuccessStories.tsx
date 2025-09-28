@@ -39,23 +39,24 @@ const SuccessStories = () => {
 
   const backgroundImages = [
     '/background-section1.png',
-    '/background-section2.png', 
+    '/background-section2.png',
     '/background-section3.png'
   ];
 
+  // FIXED CARD, no h-[600px], compact layout
   const SuccessStoryCard = ({ story, index }: { story: SuccessStory; index: number }) => {
     const bgImage = backgroundImages[index % backgroundImages.length];
-    
+
     return (
-      <Card className="relative overflow-hidden bg-card border-border hover:shadow-lg transition-all duration-300 group h-[600px]">
-        <div 
+      <Card className="relative overflow-hidden bg-card border-border hover:shadow-lg transition-all duration-300 group">
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${bgImage})` }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
-        
-        <CardContent className="relative z-10 p-8 h-full flex flex-col justify-start text-white">
-          <div className="flex items-start space-x-6">
+
+        <CardContent className="relative z-10 p-8 flex flex-col text-white">
+          <div className="flex items-start space-x-6 mb-4">
             {story.image_url && (
               <div className="flex-shrink-0">
                 <img
@@ -80,9 +81,9 @@ const SuccessStories = () => {
               </div>
             </div>
           </div>
-          
+
           {story.video_url && (
-            <div className="mt-4 flex justify-center">
+            <div className="flex justify-center mt-4">
               <Button
                 onClick={() => setSelectedVideo({ url: story.video_url!, author: story.name })}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg"
@@ -130,7 +131,6 @@ const SuccessStories = () => {
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed">
             Real partnerships that deliver results. Learn from proven strategies and authentic community collaborations that helped businesses make more sales, better content, and more engagement with the local audience.
           </p>
-
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
             <div className="text-center">
@@ -153,7 +153,7 @@ const SuccessStories = () => {
         </div>
       </section>
 
-           <VideoCarousel />
+      <VideoCarousel />
 
       {/* Success Stories Grid */}
       <section className="py-20 px-4">
@@ -193,8 +193,12 @@ const SuccessStories = () => {
             </Carousel>
           ) : (
             <div className="text-center py-20">
-              <h3 className="text-2xl font-semibold text-foreground mb-4">No Success Stories Yet</h3>
-              <p className="text-muted-foreground">Check back soon for inspiring community partnership stories.</p>
+              <h3 className="text-2xl font-semibold text-foreground mb-4">
+                No Success Stories Yet
+              </h3>
+              <p className="text-muted-foreground">
+                Check back soon for inspiring community partnership stories.
+              </p>
             </div>
           )}
         </div>
@@ -215,7 +219,7 @@ const SuccessStories = () => {
         </div>
       </section>
       <Footer />
-      
+
       {selectedVideo && (
         <VideoModal
           isOpen={!!selectedVideo}
