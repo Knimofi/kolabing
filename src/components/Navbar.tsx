@@ -180,13 +180,9 @@ const Navbar = () => {
             {isActivePage('/our-communities') && <div className="ml-auto w-2 h-2 bg-primary rounded-full" />}
           </button>
 
-          <button onClick={() => scrollToSection('features')} className="flex items-center py-4 px-4 text-lg font-medium rounded-xl transition-all duration-200 text-left w-full text-foreground hover:text-primary hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
-            About
-          </button>
+          
 
-          <button onClick={() => scrollToSection('contact')} className="flex items-center py-4 px-4 text-lg font-medium rounded-xl transition-all duration-200 text-left w-full text-foreground hover:text-primary hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background">
-            Contact
-          </button>
+          
 
           {/* Divider */}
           <div className="h-px bg-border my-4" />
