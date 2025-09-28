@@ -83,7 +83,7 @@ const PricingSection = () => {
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                   <span className="text-foreground">
-                   We find the collaborations for you and test the best matches </span>
+                   We find the collaborations for you and select the best matches </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
