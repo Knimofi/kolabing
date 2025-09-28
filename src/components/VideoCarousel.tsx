@@ -3,15 +3,16 @@ import React from 'react';
 const VideoCarousel = () => {
   const videos = [
     {
-      id: 2,
+      id: 1,
       title: 'Community Event Success',
-      videoSrc: '/videos/community-event-success.mp4',
+           videoSrc: '/videos/ugos-node.mp4',
+     
       description: 'Local restaurant partnership with fitness community'
     },
     {
-      id: 1,
+      id: 2,
       title: 'Ugos Corner x Node',
-      videoSrc: '/videos/ugos-node.mp4',
+      videoSrc: '/videos/community-event-success.mp4',
       description: 'Tech startup building developer community'
     },
     {
@@ -22,12 +23,12 @@ const VideoCarousel = () => {
     },
     {
       id: 4,
-      title: 'Local Impact',
-      videoSrc: '/videos/local-impact.mp4',
+      title: 'Hotel Costa Brava x Cafe',
+       videoSrc: '/videos/hotel-costa-brava-cafe.mp4',
       description: 'Small business connecting with neighborhood groups'
     },
     {
-      id: 7,
+      id: 5,
       title: 'Creative Partnership',
       videoSrc: '/videos/creative-partnership.mp4',
       description: 'Art gallery collaborating with creative communities'
@@ -39,9 +40,9 @@ const VideoCarousel = () => {
       description: 'Scaling business through strategic community partnerships'
     },
     {
-      id: 5,
-      title: 'Hotel Costa Brava x Cafe',
-      videoSrc: '/videos/hotel-costa-brava-cafe.mp4',
+      id: 7,
+      title: 'Museum',
+       videoSrc: '/videos/local-impact.mp4',
       description: 'Hospitality and cafe collaboration'
     },
     {
@@ -68,7 +69,7 @@ const VideoCarousel = () => {
         }
         
         .carousel-animate {
-          animation: carousel-scroll 15s linear infinite;
+          animation: carousel-scroll 30s linear infinite;
         }
         
         .carousel-card:hover {
@@ -77,7 +78,7 @@ const VideoCarousel = () => {
         
         @media (max-width: 768px) {
           .carousel-animate {
-            animation-duration: 40s;
+            animation-duration: 10s;
           }
         }
       `}</style>
