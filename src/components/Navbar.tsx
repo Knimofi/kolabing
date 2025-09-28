@@ -27,11 +27,11 @@ const Navbar = () => {
       document.body.style.overflow = '';
     }
   };
-  return <header className="fixed top-0 left-0 right-0 z-50 py-4 backdrop-blur-md shadow-sm bg-[slate-805] bg-inherit">
+  return <header className="fixed top-0 left-0 right-0 z-50 py-4 backdrop-blur-md shadow-sm bg-gradient-to-r from-blue-950/90 to-slate-900/90">
       <div className="container mx-auto px-4 flex items-center justify-between">
         <div onClick={scrollToTop} className="flex items-center space-x-2 cursor-pointer" aria-label="Kolabing">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-lg">K</span>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+            <img src="/logo.svg" alt="Kolabing Logo" className="w-8 h-8" />
           </div>
           <span className="text-xl font-bold text-foreground">Kolabing</span>
         </div>
