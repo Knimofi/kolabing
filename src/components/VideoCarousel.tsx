@@ -59,7 +59,7 @@ const VideoCarousel = () => {
 
     const autoScroll = setInterval(() => {
       scrollNext();
-    }, 600); // Change slide every 3 seconds
+    }, 800); // Change slide every 3 seconds
 
     return () => clearInterval(autoScroll);
   }, [emblaApi, scrollNext, isHovered]);
