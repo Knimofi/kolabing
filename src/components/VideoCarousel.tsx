@@ -53,8 +53,8 @@ const VideoCarousel = () => {
           animation: carousel-scroll 20s linear infinite;
         }
         
-        .carousel-animate:hover {
-          animation-play-state: paused;
+        .carousel-card:hover {
+          transform: scale(1.02);
         }
         
         @media (max-width: 768px) {
@@ -82,12 +82,12 @@ const VideoCarousel = () => {
                   key={`${video.id}-${index}`} 
                   className="flex-[0_0_33.333%] px-2 min-w-0"
                 >
-                  <div className="group cursor-pointer">
+                  <div className="group cursor-pointer carousel-card transition-transform duration-300 ease-out">
                     <div className="relative aspect-[9/16] bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300">
                       <img 
                         src={video.thumbnail} 
                         alt={video.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
                       <div className="absolute bottom-0 left-0 right-0 p-4">
