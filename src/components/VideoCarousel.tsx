@@ -37,6 +37,18 @@ const VideoCarousel = () => {
       title: 'Business Growth',
       videoSrc: '/videos/business-growth.mp4',
       description: 'Scaling business through strategic community partnerships'
+    },
+    {
+      id: 7,
+      title: 'Hotel Costa Brava x Cafe',
+      videoSrc: '/videos/hotel-costa-brava-cafe.mp4',
+      description: 'Hospitality and cafe collaboration'
+    },
+    {
+      id: 8,
+      title: 'Mirador Glories',
+      videoSrc: '/videos/mirador-glories.mp4',
+      description: 'Urban development partnership'
     }
   ];
 
