@@ -5,38 +5,32 @@ const VideoCarousel = () => {
     {
       id: 1,
       title: 'Community Event Success',
-      videoSrc: '/videos/community-event-success.mp4',
+      thumbnail: '/lovable-uploads/22d31f51-c174-40a7-bd95-00e4ad00eaf3.png',
       description: 'Local restaurant partnership with fitness community'
     },
     {
       id: 2,
-      title: 'Tech Collaboration',
-      videoSrc: '/videos/tech-collaboration.mp4',
-      description: 'Tech startup building developer community'
+      title: 'Brand Collaboration',
+      thumbnail: '/lovable-uploads/5663820f-6c97-4492-9210-9eaa1a8dc415.png',
+      description: 'Fashion brand working with lifestyle influencers'
     },
     {
       id: 3,
-      title: 'Brand Partnership',
-      videoSrc: '/videos/brand-partnership.mp4',
-      description: 'Fashion brand working with lifestyle influencers'
+      title: 'Community Growth',
+      thumbnail: '/lovable-uploads/af412c03-21e4-4856-82ff-d1a975dc84a9.png',
+      description: 'Tech startup building developer community'
     },
     {
       id: 4,
       title: 'Local Impact',
-      videoSrc: '/videos/local-impact.mp4',
+      thumbnail: '/lovable-uploads/c3d5522b-6886-4b75-8ffc-d020016bb9c2.png',
       description: 'Small business connecting with neighborhood groups'
     },
     {
       id: 5,
       title: 'Creative Partnership',
-      videoSrc: '/videos/creative-partnership.mp4',
+      thumbnail: '/lovable-uploads/dc13e94f-beeb-4671-8a22-0968498cdb4c.png',
       description: 'Art gallery collaborating with creative communities'
-    },
-    {
-      id: 6,
-      title: 'Business Growth',
-      videoSrc: '/videos/business-growth.mp4',
-      description: 'Scaling business through strategic community partnerships'
     }
   ];
 
@@ -90,20 +84,18 @@ const VideoCarousel = () => {
                 >
                   <div className="group cursor-pointer carousel-card transition-transform duration-300 ease-out">
                     <div className="relative aspect-[9/16] bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300">
-                      <video 
-                        src={video.videoSrc} 
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        preload="metadata"
+                      <img 
+                        src={video.thumbnail} 
+                        alt={video.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        aria-label={video.title}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
-                      <div className="absolute bottom-0 left-0 right-0 p-4">
-                        <h3 className="text-lg font-semibold text-foreground mb-2">{video.title}</h3>
-                        <p className="text-sm text-muted-foreground">{video.description}</p>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-16 h-16 bg-primary/80 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:bg-primary transition-colors duration-300">
+                          <svg className="w-8 h-8 text-primary-foreground ml-1" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </div>
                       </div>
                     </div>
                   </div>
