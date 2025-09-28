@@ -10,13 +10,13 @@ const VideoCarousel = () => {
     },
     {
       id: 2,
-      title: 'Tech Collaboration',
-      videoSrc: '/videos/tech-collaboration.mp4',
+      title: 'Ugos Corner x Node',
+      videoSrc: '/videos/ugos-node.mp4',
       description: 'Tech startup building developer community'
     },
     {
       id: 3,
-      title: 'Brand Partnership',
+      title: 'Casa Seat',
       videoSrc: '/videos/brand-partnership.mp4',
       description: 'Fashion brand working with lifestyle influencers'
     },
