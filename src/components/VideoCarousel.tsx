@@ -68,7 +68,7 @@ const VideoCarousel = () => {
         }
         
         .carousel-animate {
-          animation: carousel-scroll 25s linear infinite;
+          animation: carousel-scroll 15s linear infinite;
         }
         
         .carousel-card:hover {
@@ -77,7 +77,7 @@ const VideoCarousel = () => {
         
         @media (max-width: 768px) {
           .carousel-animate {
-            animation-duration: 25s;
+            animation-duration: 40s;
           }
         }
       `}</style>
