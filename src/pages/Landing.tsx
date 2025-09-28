@@ -26,7 +26,7 @@ const Landing = () => {
             {/* CTA Button */}
             <Link to="/auth/sign-up" className="inline-flex">
               <Button size="lg" className="text-lg px-8 py-6">
-                Get Started
+                 Create your Profile
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
