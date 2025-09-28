@@ -7,12 +7,12 @@ const ComparisonTable = () => {
     {
       feature: 'Community Discovery',
       kolabing: 'verified',
-      ads: 'limited',
-      influencers: 'manual'
+      ads: 'none',
+      influencers: 'none'
     },
     {
       feature: 'Performance Tracking',
-      kolabing: 'comprehensive',
+      kolabing: 'Clear',
       ads: 'basic',
       influencers: 'limited'
     },
@@ -24,15 +24,15 @@ const ComparisonTable = () => {
     },
     {
       feature: 'Direct Revenue',
-      kolabing: 'trackable',
+      kolabing: 'measurable',
       ads: 'unclear',
-      influencers: 'hard to measure'
+      influencers: 'unclear'
     },
     {
       feature: 'Content Impact',
-      kolabing: 'high quality',
-      ads: 'generic',
-      influencers: 'inconsistent'
+      kolabing: 'authentic',
+      ads: 'commercial',
+      influencers: 'performative'
     }
   ];
 
