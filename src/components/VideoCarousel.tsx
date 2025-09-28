@@ -46,7 +46,7 @@ const VideoCarousel = () => {
     }
   });
 
-  const animationFrameRef = useRef();
+  const animationFrameRef = useRef<number>();
 
   useEffect(() => {
     if (!emblaApi) return;
