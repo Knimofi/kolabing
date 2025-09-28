@@ -69,57 +69,60 @@ const Navbar = () => {
 
       {/* Mobile Navigation */}
       <div className={cn("fixed inset-0 z-60 bg-slate-900/95 backdrop-blur-md shadow-2xl flex flex-col pt-20 px-6 md:hidden transition-all duration-300 ease-in-out", isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none")}>
-        <nav className="flex flex-col space-y-6 items-center mt-8">
-          <a href="#" className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-card border border-border text-card-foreground hover:bg-primary hover:text-primary-foreground transition-all" onClick={e => {
-          e.preventDefault();
-          scrollToTop();
-          setIsMenuOpen(false);
-          document.body.style.overflow = '';
-        }}>
-            How it works
-          </a>
-          <a href="/our-communities" className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-card border border-border text-card-foreground hover:bg-primary hover:text-primary-foreground transition-all" onClick={() => {
-          setIsMenuOpen(false);
-          document.body.style.overflow = '';
-        }}>
-            Our Communities
-          </a>
-          <a href="/success-stories" className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-card border border-border text-card-foreground hover:bg-primary hover:text-primary-foreground transition-all" onClick={() => {
-          setIsMenuOpen(false);
-          document.body.style.overflow = '';
-        }}>
-            Success Stories
-          </a>
-          <a href="#features" className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-card border border-border text-card-foreground hover:bg-primary hover:text-primary-foreground transition-all" onClick={() => {
-          setIsMenuOpen(false);
-          document.body.style.overflow = '';
-        }}>
-            About
-          </a>
-          <a href="#details" className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-card border border-border text-card-foreground hover:bg-primary hover:text-primary-foreground transition-all" onClick={() => {
-          setIsMenuOpen(false);
-          document.body.style.overflow = '';
-        }}>
-            Contact
-          </a>
-          {user ? <button className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-card border border-border text-card-foreground hover:bg-primary hover:text-primary-foreground transition-all" onClick={() => {
-          if (profile?.user_type === 'business') {
-            navigate('/business');
-          } else if (profile?.user_type === 'community') {
-            navigate('/community');
-          }
-          setIsMenuOpen(false);
-          document.body.style.overflow = '';
-        }}>
-              Dashboard
-            </button> : <button className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-card border border-border text-card-foreground hover:bg-primary hover:text-primary-foreground transition-all" onClick={() => {
-          navigate('/auth/sign-in');
-          setIsMenuOpen(false);
-          document.body.style.overflow = '';
-        }}>
-              Sign In
-            </button>}
-        </nav>
+        {/* Mobile menu container with explicit spacing and sizing */}
+        <div className="flex flex-col items-center mt-8 gap-6 w-full max-w-sm mx-auto">
+          <nav className="flex flex-col gap-4 w-full">
+            <a href="#" className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-slate-800/90 border border-slate-700 text-white hover:bg-primary hover:text-primary-foreground transition-all min-h-[60px] flex items-center justify-center touch-manipulation" onClick={e => {
+            e.preventDefault();
+            scrollToTop();
+            setIsMenuOpen(false);
+            document.body.style.overflow = '';
+          }}>
+              How it works
+            </a>
+            <a href="/our-communities" className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-slate-800/90 border border-slate-700 text-white hover:bg-primary hover:text-primary-foreground transition-all min-h-[60px] flex items-center justify-center touch-manipulation" onClick={() => {
+            setIsMenuOpen(false);
+            document.body.style.overflow = '';
+          }}>
+              Our Communities
+            </a>
+            <a href="/success-stories" className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-slate-800/90 border border-slate-700 text-white hover:bg-primary hover:text-primary-foreground transition-all min-h-[60px] flex items-center justify-center touch-manipulation" onClick={() => {
+            setIsMenuOpen(false);
+            document.body.style.overflow = '';
+          }}>
+              Success Stories
+            </a>
+            <a href="#features" className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-slate-800/90 border border-slate-700 text-white hover:bg-primary hover:text-primary-foreground transition-all min-h-[60px] flex items-center justify-center touch-manipulation" onClick={() => {
+            setIsMenuOpen(false);
+            document.body.style.overflow = '';
+          }}>
+              About
+            </a>
+            <a href="#details" className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-slate-800/90 border border-slate-700 text-white hover:bg-primary hover:text-primary-foreground transition-all min-h-[60px] flex items-center justify-center touch-manipulation" onClick={() => {
+            setIsMenuOpen(false);
+            document.body.style.overflow = '';
+          }}>
+              Contact
+            </a>
+            {user ? <button className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-slate-800/90 border border-slate-700 text-white hover:bg-primary hover:text-primary-foreground transition-all min-h-[60px] flex items-center justify-center touch-manipulation" onClick={() => {
+            if (profile?.user_type === 'business') {
+              navigate('/business');
+            } else if (profile?.user_type === 'community') {
+              navigate('/community');
+            }
+            setIsMenuOpen(false);
+            document.body.style.overflow = '';
+          }}>
+                Dashboard
+              </button> : <button className="text-xl font-medium py-4 px-8 w-full text-center rounded-xl bg-slate-800/90 border border-slate-700 text-white hover:bg-primary hover:text-primary-foreground transition-all min-h-[60px] flex items-center justify-center touch-manipulation" onClick={() => {
+            navigate('/auth/sign-in');
+            setIsMenuOpen(false);
+            document.body.style.overflow = '';
+          }}>
+                Sign In
+              </button>}
+          </nav>
+        </div>
       </div>
     </header>;
 };
