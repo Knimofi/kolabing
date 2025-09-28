@@ -9,7 +9,6 @@ import { Calendar, ArrowRight } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AnimatedCommunityHeroTitle from '@/components/AnimatedCommunityHeroTitle';
-
 interface Community {
   profile_id: string;
   name: string | null;
@@ -19,30 +18,26 @@ interface Community {
   profile_photo: string | null;
   about: string | null;
 }
-
 const OurCommunities = () => {
   const [communities, setCommunities] = useState<Community[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
   const handleBookCall = () => {
     window.location.href = 'mailto:kolabingbcn@gmail.com?subject=Book a Discovery Call&body=Hi! I\'m interested in learning more about Kolabing\'s services for communities. Please let me know your availability for a discovery call.';
   };
-
   const handleCreateProfile = () => {
     navigate('/auth/sign-up?type=community');
   };
-
   useEffect(() => {
     const fetchFeaturedCommunities = async () => {
       try {
         // Use any to bypass TypeScript issue with Supabase types
-        const { data, error } = await (supabase as any)
-          .from('community_profiles')
-          .select('profile_id, name, community_type, city, instagram, profile_photo, about')
-          .eq('Featured', true)
-          .order('created_at', { ascending: false });
-
+        const {
+          data,
+          error
+        } = await (supabase as any).from('community_profiles').select('profile_id, name, community_type, city, instagram, profile_photo, about').eq('Featured', true).order('created_at', {
+          ascending: false
+        });
         if (error) {
           console.error('Error fetching communities:', error);
           setCommunities([]);
@@ -56,12 +51,9 @@ const OurCommunities = () => {
         setLoading(false);
       }
     };
-
     fetchFeaturedCommunities();
   }, []);
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <Navbar />
       
       {/* Hero Section */}
@@ -76,11 +68,7 @@ const OurCommunities = () => {
             </p>
             
             {/* Community Signup Button */}
-            <Button 
-              size="lg" 
-              className="text-lg font-semibold px-8 py-3"
-              onClick={handleCreateProfile}
-            >
+            <Button size="lg" className="text-lg font-semibold px-8 py-3" onClick={handleCreateProfile}>
               Create Your Community Profile
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
@@ -89,28 +77,7 @@ const OurCommunities = () => {
       </section>
 
       {/* Call to Action Section */}
-      <section className="py-20 px-4 sm:px-8 lg:px-12">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="bg-card border border-border rounded-2xl p-8">
-            <Calendar className="w-12 h-12 text-primary mb-4 mx-auto" />
-            <h2 className="text-2xl font-bold text-foreground mb-4">Need Personalized Help?</h2>
-            <p className="text-muted-foreground mb-6">
-              Book a free discovery call to get personalized guidance and learn how our team can specifically help your community grow.
-            </p>
-            <Button 
-              size="lg" 
-              className="text-lg font-semibold"
-              onClick={handleBookCall}
-            >
-              Book Your Call Now
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-            <p className="text-xs text-muted-foreground mt-3">
-              No commitment required • Free consultation
-            </p>
-          </div>
-        </div>
-      </section>
+      
 
       {/* Featured Communities Section */}
       <section className="py-20 px-4 sm:px-8 lg:px-12">
@@ -124,38 +91,21 @@ const OurCommunities = () => {
             </p>
           </div>
 
-          {loading ? (
-            <div className="flex justify-center items-center py-20">
+          {loading ? <div className="flex justify-center items-center py-20">
               <div className="animate-pulse text-muted-foreground">Loading communities...</div>
-            </div>
-          ) : communities.length === 0 ? (
-            <div className="text-center py-20">
+            </div> : communities.length === 0 ? <div className="text-center py-20">
               <p className="text-muted-foreground text-lg">No featured communities found.</p>
-            </div>
-          ) : (
-            <>
+            </div> : <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                {communities.map((community) => (
-                  <Card 
-                    key={community.profile_id} 
-                    className="premium-card group cursor-pointer hover:scale-[1.05] transition-all duration-300 aspect-square flex flex-col"
-                  >
+                {communities.map(community => <Card key={community.profile_id} className="premium-card group cursor-pointer hover:scale-[1.05] transition-all duration-300 aspect-square flex flex-col">
                     <CardContent className="p-6 flex flex-col items-center text-center h-full justify-between">
                       {/* Profile Photo */}
                       <div className="w-20 h-20 rounded-full overflow-hidden mb-4 bg-muted flex-shrink-0">
-                        {community.profile_photo ? (
-                          <img 
-                            src={community.profile_photo} 
-                            alt={`${community.name} profile`}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-muted flex items-center justify-center">
+                        {community.profile_photo ? <img src={community.profile_photo} alt={`${community.name} profile`} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-muted flex items-center justify-center">
                             <span className="text-2xl font-bold text-muted-foreground">
                               {community.name?.charAt(0) || '?'}
                             </span>
-                          </div>
-                        )}
+                          </div>}
                       </div>
 
                       <div className="flex-grow flex flex-col justify-center space-y-3">
@@ -165,45 +115,32 @@ const OurCommunities = () => {
                         </h3>
 
                         {/* Community Type Badge */}
-                        {community.community_type && (
-                          <Badge variant="default" className="bg-primary text-primary-foreground mx-auto">
+                        {community.community_type && <Badge variant="default" className="bg-primary text-primary-foreground mx-auto">
                             {community.community_type}
-                          </Badge>
-                        )}
+                          </Badge>}
 
                         {/* City */}
-                        {community.city && (
-                          <p className="text-muted-foreground text-sm">
+                        {community.city && <p className="text-muted-foreground text-sm">
                             {community.city}
-                          </p>
-                        )}
+                          </p>}
 
                         {/* Instagram */}
-                        {community.instagram && (
-                          <p className="text-primary font-medium text-sm">
+                        {community.instagram && <p className="text-primary font-medium text-sm">
                             @{community.instagram.replace('@', '')}
-                          </p>
-                        )}
+                          </p>}
                       </div>
                     </CardContent>
-                  </Card>
-                ))}
+                  </Card>)}
               </div>
 
               {/* Create Profile CTA */}
               <div className="text-center">
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="text-lg font-semibold"
-                  onClick={handleCreateProfile}
-                >
+                <Button size="lg" variant="outline" className="text-lg font-semibold" onClick={handleCreateProfile}>
                   Create Your Community Profile
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </div>
-            </>
-          )}
+            </>}
         </div>
       </section>
 
@@ -266,8 +203,6 @@ const OurCommunities = () => {
       </section>
 
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default OurCommunities;
