@@ -166,7 +166,7 @@ const SuccessStories = () => {
             Join hundreds of businesses already creating authentic connections through our platform
           </p>
           <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-10 py-4 rounded-2xl text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-            Start Your First Activation
+            Start Your First Event Kolab
           </button>
         </div>
       </section>
