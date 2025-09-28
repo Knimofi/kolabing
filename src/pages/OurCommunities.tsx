@@ -57,7 +57,7 @@ const OurCommunities = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="pt-24 pb-20 px-4 sm:px-8 lg:px-12">
+      <section className="py-24 px-4 sm:px-8 lg:px-12 mt-20">
         <div className="max-w-7xl mx-auto">
           <AnimatedCommunityHeroTitle />
           
