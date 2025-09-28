@@ -60,13 +60,9 @@ const VideoCarousel = () => {
     <>
       <style>{`
         @keyframes carousel-scroll {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-33.333%);
-          }
-        }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-266.664%); }
+}
         
         .carousel-animate {
           animation: carousel-scroll 30s linear infinite;
