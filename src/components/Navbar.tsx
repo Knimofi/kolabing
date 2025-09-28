@@ -31,7 +31,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 flex items-center justify-between">
         <div onClick={scrollToTop} className="flex items-center space-x-2 cursor-pointer" aria-label="Kolabing">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-            <img src="/logo.svg" alt="Kolabing Logo" className="w-8 h-8" />
+            <img src="/logo-nav-blue.png" alt="Kolabing Logo" className="w-8 h-8" />
           </div>
           <span className="text-xl font-bold text-foreground">Kolabing</span>
         </div>
