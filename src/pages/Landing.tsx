@@ -15,7 +15,7 @@ const Landing = () => {
 
       {/* Hero Section */}
       <main className="pt-20">
-        <section className="py-20 px-4">
+        <section className="px-4 py-[60px]">
           <div className="container mx-auto max-w-4xl text-center">
             <AnimatedHeroTitle />
             
