@@ -40,7 +40,7 @@ const AnimatedHeroTitle = () => {
         <div className="relative">
           <div
             className="text-3xl md:text-5xl font-bold text-primary transition-all duration-500 flex items-center justify-center whitespace-nowrap"
-            style={{ lineHeight: 1.05 }} // for even tighter spacing
+            style={{ lineHeight: 1.02 }} // for even tighter spacing
           >
             {displayedText}
             {/* Optionally add a blinking cursor */}
