@@ -93,14 +93,14 @@ const SuccessStories = () => {
             </h1>
           </div>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-12 leading-relaxed">
-            Real partnerships that delivered results. Learn from proven strategies and authentic community connections that helped businesses thrive.
+            Real partnerships that deliver results. Learn from proven strategies and authentic community collaborations that helped businesses make more sales, better content, and more engagement with the local audience.
           </p>
 
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
             <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">400k+</div>
-              <div className="text-muted-foreground">Locals Reached</div>
+              <div className="text-4xl font-bold text-primary mb-2">500k+</div>
+              <div className="text-muted-foreground">Views on Social Media</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-primary mb-2">2,000+</div>
@@ -108,11 +108,11 @@ const SuccessStories = () => {
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-primary mb-2">30+</div>
-              <div className="text-muted-foreground">Successful Activations</div>
+              <div className="text-muted-foreground">Partner Activations</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">92%</div>
-              <div className="text-muted-foreground">Satisfaction Rate</div>
+              <div className="text-4xl font-bold text-primary mb-2">80%</div>
+              <div className="text-muted-foreground">Returning Partners</div>
             </div>
           </div>
         </div>
@@ -123,10 +123,10 @@ const SuccessStories = () => {
         <div className="max-w-7xl mx-auto">
           <div className="mb-16 text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Real activations, real results
+              Real people, real results
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Discover how our community partnerships delivered measurable impact for local businesses across Barcelona
+              Discover how our community kolabs delivered measurable impact for local businesses across Barcelona
             </p>
           </div>
 
