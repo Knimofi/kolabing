@@ -5,7 +5,7 @@ import { Check } from 'lucide-react';
 
 const PricingSection = () => {
   const handleBookCall = () => {
-    window.location.href = 'mailto:kolabingbcn@gmail.com?subject=Interested in Kolabing Services&body=Hi! I\'m interested in learning more about your pricing plans. Please let me know your availability for a call.';
+    window.location.href = 'https://cal.com/maria-perez/community-platform';
   };
 
   return (
