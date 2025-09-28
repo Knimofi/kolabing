@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const rotatingTexts = ['More Clients', 'Better Content', 'Communities'];
-const typingSpeed = 80; // milliseconds per letter
-const pauseBeforeNext = 10; // milliseconds pause after finishing sentence
+const typingSpeed = 80;
+const pauseBeforeNext = 200;
 
 const AnimatedHeroTitle = () => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
@@ -19,13 +19,16 @@ const AnimatedHeroTitle = () => {
           );
         }, typingSpeed);
       } else {
-        setIsTyping(false);
         timeout = setTimeout(() => {
-          setIsTyping(true);
-          setDisplayedText('');
-          setCurrentTextIndex((prev) => (prev + 1) % rotatingTexts.length);
+          setIsTyping(false);
         }, pauseBeforeNext);
       }
+    } else {
+      timeout = setTimeout(() => {
+        setCurrentTextIndex((prev) => (prev + 1) % rotatingTexts.length);
+        setDisplayedText('');
+        setIsTyping(true);
+      }, 500); // Short pause before new word starts typing
     }
     return () => clearTimeout(timeout);
   }, [isTyping, displayedText, currentTextIndex]);
@@ -35,15 +38,13 @@ const AnimatedHeroTitle = () => {
       <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4 leading-tight">
         What your business needs
       </h1>
-      {/* Tighter space between header & animated text: change mb-6 to mb-4 or mb-2 above */}
       <div className="h-20 flex items-center justify-center overflow-hidden">
         <div className="relative">
           <div
             className="text-3xl md:text-5xl font-bold text-primary transition-all duration-500 flex items-center justify-center whitespace-nowrap"
-            style={{ lineHeight: 1.02 }} // for even tighter spacing
+            style={{ lineHeight: 1.0 }}
           >
             {displayedText}
-            {/* Optionally add a blinking cursor */}
             <span className="animate-pulse">|</span>
           </div>
         </div>
