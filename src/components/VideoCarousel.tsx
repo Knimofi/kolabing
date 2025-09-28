@@ -90,6 +90,8 @@ const VideoCarousel = () => {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
+                      </div>
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="w-16 h-16 bg-primary/80 rounded-full flex items-center justify-center backdrop-blur-sm group-hover:bg-primary transition-colors duration-300">
                           <svg className="w-8 h-8 text-primary-foreground ml-1" fill="currentColor" viewBox="0 0 24 24">
