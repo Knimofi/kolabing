@@ -19,12 +19,12 @@ const AnimatedHeroTitle = () => {
       </h1>
       <div className="h-20 flex items-center justify-center overflow-hidden">
         <div className="relative">
-          <div
-            className="text-3xl md:text-5xl font-bold text-primary transition-all duration-500 absolute inset-0 flex items-center justify-center opacity-100 transform translate-y-0"
-            key={rotatingTexts[currentTextIndex]}
-          >
-            {rotatingTexts[currentTextIndex]}
-          </div>
+         <div
+  className="text-3xl md:text-5xl font-bold text-primary transition-all duration-500 absolute inset-0 flex items-center justify-center opacity-100 transform translate-y-0 whitespace-nowrap"
+  key={rotatingTexts[currentTextIndex]}
+>
+  {rotatingTexts[currentTextIndex]}
+</div>
         </div>
       </div>
     </div>
