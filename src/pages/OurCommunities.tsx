@@ -30,7 +30,7 @@ const OurCommunities = () => {
   };
 
   const handleCreateProfile = () => {
-    navigate('/auth/sign-up');
+    navigate('/auth/sign-up?type=community');
   };
 
   useEffect(() => {
@@ -65,18 +65,26 @@ const OurCommunities = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="pt-24 pb-16 px-4 sm:px-8 lg:px-12">
+      <section className="pt-24 pb-20 px-4 sm:px-8 lg:px-12">
         <div className="max-w-7xl mx-auto">
           <AnimatedCommunityHeroTitle />
-        </div>
-      </section>
-
-      {/* Value Statement Section */}
-      <section className="py-16 px-4 sm:px-8 lg:px-12 bg-gradient-to-br from-primary/5 via-background to-accent/5">
-        <div className="max-w-4xl mx-auto text-center">
-          <p className="text-xl md:text-2xl text-foreground font-medium leading-relaxed">
-            We work for the communities. From recurring venues, to sponsors & deals, we help you grow your community because communities are the future and we are here to stay
-          </p>
+          
+          {/* Value Statement */}
+          <div className="max-w-4xl mx-auto text-center mt-8 mb-10">
+            <p className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed mb-8">
+              We work for the communities. From recurring venues, to sponsors & deals, we help you grow your community because communities are the future and we are here to stay
+            </p>
+            
+            {/* Community Signup Button */}
+            <Button 
+              size="lg" 
+              className="text-lg font-semibold px-8 py-3"
+              onClick={handleCreateProfile}
+            >
+              Create Your Community Profile
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -85,9 +93,9 @@ const OurCommunities = () => {
         <div className="max-w-2xl mx-auto text-center">
           <div className="bg-card border border-border rounded-2xl p-8">
             <Calendar className="w-12 h-12 text-primary mb-4 mx-auto" />
-            <h2 className="text-2xl font-bold text-foreground mb-4">Ready to Grow Your Community?</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-4">Need Personalized Help?</h2>
             <p className="text-muted-foreground mb-6">
-              Book a free discovery call to learn how Kolabing can help you find venues, sponsors, and grow your community.
+              Book a free discovery call to get personalized guidance and learn how our team can specifically help your community grow.
             </p>
             <Button 
               size="lg" 
