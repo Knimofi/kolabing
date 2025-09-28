@@ -70,8 +70,8 @@ const OurCommunities = () => {
           <AnimatedCommunityHeroTitle />
           
           {/* Value Statement */}
-          <div className="max-w-4xl mx-auto text-center mt-8 mb-10">
-            <p className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed mb-8">
+          <div className="max-w-2xl mx-auto text-center mt-8 mb-10">
+            <p className="text-xl text-muted-foreground mb-12">
               We work for the communities. From recurring venues, to sponsors & deals, we help you grow your community because communities are the future and we are here to stay
             </p>
             
