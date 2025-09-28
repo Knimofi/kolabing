@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import VideoCarousel from '@/components/VideoCarousel';
 
 interface SuccessStory {
   id: string;
@@ -117,6 +118,8 @@ const SuccessStories = () => {
           </div>
         </div>
       </section>
+
+           <VideoCarousel />
 
       {/* Success Stories Grid */}
       <section className="py-20 px-4">
