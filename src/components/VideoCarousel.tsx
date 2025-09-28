@@ -50,7 +50,7 @@ const VideoCarousel = () => {
         }
         
         .carousel-animate {
-          animation: carousel-scroll 20s linear infinite;
+          animation: carousel-scroll 15s linear infinite;
         }
         
         .carousel-card:hover {
