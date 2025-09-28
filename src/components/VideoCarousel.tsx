@@ -2,42 +2,11 @@ import React from "react";
 import "keen-slider/keen-slider.min.css";
 import { useKeenSlider } from "keen-slider/react";
 
-const VideoCarousel = () => {
-  // Placeholder video data - replace with actual video sources
-  const videos = [
-    {
-      id: 1,
-      title: 'Community Event Success',
-      thumbnail: '/lovable-uploads/22d31f51-c174-40a7-bd95-00e4ad00eaf3.png',
-      description: 'Local restaurant partnership with fitness community'
-    },
-    {
-      id: 2,
-      title: 'Brand Collaboration',
-      thumbnail: '/lovable-uploads/5663820f-6c97-4492-9210-9eaa1a8dc415.png',
-      description: 'Fashion brand working with lifestyle influencers'
-    },
-    {
-      id: 3,
-      title: 'Community Growth',
-      thumbnail: '/lovable-uploads/af412c03-21e4-4856-82ff-d1a975dc84a9.png',
-      description: 'Tech startup building developer community'
-    },
-    {
-      id: 4,
-      title: 'Local Impact',
-      thumbnail: '/lovable-uploads/c3d5522b-6886-4b75-8ffc-d020016bb9c2.png',
-      description: 'Small business connecting with neighborhood groups'
-    },
-    {
-      id: 5,
-      title: 'Creative Partnership',
-      thumbnail: '/lovable-uploads/dc13e94f-beeb-4671-8a22-0968498cdb4c.png',
-      description: 'Art gallery collaborating with creative communities'
-    }
-  ];
+const videos = [
+  // ...your video data as above
+];
 
-  const VideoCarousel = () => {
+const VideoCarousel = () => {
   const [sliderRef] = useKeenSlider({
     loop: true,
     slides: { perView: 3, spacing: 16 },
@@ -53,8 +22,8 @@ const VideoCarousel = () => {
       stopOnInteraction: true,
     },
   });
-    
-return (
+
+  return (
     <section className="py-20 px-4 bg-muted/30">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-16">
