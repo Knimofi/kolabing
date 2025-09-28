@@ -36,7 +36,7 @@ const AnimatedCommunityHeroTitle = () => {
   return (
     <div className="text-center">
       <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4 leading-tight">
-        The partner to grow your community...
+        To grow your community, you need
       </h1>
       <div className="h-20 flex items-center justify-center overflow-hidden">
         <div className="relative">
