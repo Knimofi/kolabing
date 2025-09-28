@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 const rotatingTexts = ['More Clients', 'Better Content', 'Communities'];
 const typingSpeed = 80; // milliseconds per letter
-const pauseBeforeNext = 100; // milliseconds pause after finishing sentence
+const pauseBeforeNext = 10; // milliseconds pause after finishing sentence
 
 const AnimatedHeroTitle = () => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
