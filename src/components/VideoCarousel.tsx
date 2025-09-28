@@ -3,13 +3,13 @@ import React from 'react';
 const VideoCarousel = () => {
   const videos = [
     {
-      id: 1,
+      id: 2,
       title: 'Community Event Success',
       videoSrc: '/videos/community-event-success.mp4',
       description: 'Local restaurant partnership with fitness community'
     },
     {
-      id: 2,
+      id: 1,
       title: 'Ugos Corner x Node',
       videoSrc: '/videos/ugos-node.mp4',
       description: 'Tech startup building developer community'
@@ -27,7 +27,7 @@ const VideoCarousel = () => {
       description: 'Small business connecting with neighborhood groups'
     },
     {
-      id: 5,
+      id: 7,
       title: 'Creative Partnership',
       videoSrc: '/videos/creative-partnership.mp4',
       description: 'Art gallery collaborating with creative communities'
@@ -39,7 +39,7 @@ const VideoCarousel = () => {
       description: 'Scaling business through strategic community partnerships'
     },
     {
-      id: 7,
+      id: 5,
       title: 'Hotel Costa Brava x Cafe',
       videoSrc: '/videos/hotel-costa-brava-cafe.mp4',
       description: 'Hospitality and cafe collaboration'
