@@ -183,10 +183,11 @@ const Navbar = () => {
       <div 
         ref={menuRef}
         id="mobile-navigation"
-        className={cn(
-          "fixed inset-0 z-60 bg-background md:hidden transition-all duration-300 ease-in-out",
-          isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"
-        )}
+          className={cn(
+    "fixed inset-0 z-60 md:hidden transition-all duration-300 ease-in-out",
+    isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"
+  )}
+  style={{ backgroundColor: "#142148" }}
         role="dialog"
         aria-modal="true"
         aria-label="Mobile navigation menu"
