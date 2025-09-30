@@ -1,6 +1,12 @@
 import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Calendar } from 'lucide-react';
 
 const VideoCarousel = () => {
+  const handleBookCall = () => {
+    window.location.href = 'https://cal.com/maria-perez/community-platform';
+  };
+
   const videos = [
     {
       id: 1,
@@ -115,6 +121,23 @@ const VideoCarousel = () => {
                 </div>
               ))}
             </div>
+          </div>
+
+          <div className="text-center mt-16 max-w-3xl mx-auto">
+            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+              Find out what's the best event for your business
+            </h3>
+            <p className="text-lg text-muted-foreground mb-8">
+              We help businesses create their own community event strategy
+            </p>
+            <Button 
+              onClick={handleBookCall}
+              size="lg"
+              className="group"
+            >
+              <Calendar className="mr-2 h-5 w-5" />
+              Book a Call
+            </Button>
           </div>
         </div>
       </section>

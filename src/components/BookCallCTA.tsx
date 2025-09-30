@@ -5,6 +5,6 @@ const BookCallCTA = () => {
   const handleBookCall = () => {
     window.location.href = 'https://cal.com/maria-perez/community-platform';
   };
-  return;
+  return null;
 };
 export default BookCallCTA;
