@@ -2,14 +2,11 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
-
 const PricingSection = () => {
   const handleBookCall = () => {
     window.location.href = 'https://cal.com/maria-perez/community-platform';
   };
-
-  return (
-    <section className="py-20 px-4 bg-muted/30">
+  return <section className="py-20 px-4 bg-muted/30">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -63,23 +60,17 @@ const PricingSection = () => {
               
               <div className="pt-6 border-t border-border">
                 <div className="text-center">
-                  <button 
-                    onClick={handleBookCall}
-                    className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 text-white cursor-pointer hover:opacity-90 transition-opacity"
-                    style={{ backgroundColor: '#d12419' }}
-                  >
+                  <button onClick={handleBookCall} className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 text-white cursor-pointer hover:opacity-90 transition-opacity" style={{
+                  backgroundColor: '#d12419'
+                }}>
                     Limited time launch offer - 50% OFF
                   </button>
                   <div className="flex items-center justify-center gap-3 mb-2">
                     <span className="text-2xl text-muted-foreground line-through">280 Euro/month</span>
                     <span className="text-4xl font-bold text-foreground">140 Euro/month</span>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-6">(discount codes apply in the next step)</p>
-                  <Button 
-                    size="lg" 
-                    className="w-full text-lg font-semibold"
-                    onClick={handleBookCall}
-                  >
+                  
+                  <Button size="lg" className="w-full text-lg font-semibold" onClick={handleBookCall}>
                     Book a Call
                   </Button>
                 </div>
@@ -129,11 +120,7 @@ const PricingSection = () => {
                 <div className="text-center">
                   <div className="text-2xl font-bold text-foreground mb-2">Custom Pricing</div>
                   <p className="text-sm text-muted-foreground mb-6">Based on your specific needs</p>
-                  <Button 
-                    size="lg" 
-                    className="w-full text-lg font-semibold"
-                    onClick={handleBookCall}
-                  >
+                  <Button size="lg" className="w-full text-lg font-semibold" onClick={handleBookCall}>
                     Book a Call
                   </Button>
                 </div>
@@ -149,8 +136,6 @@ const PricingSection = () => {
           </p>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default PricingSection;
