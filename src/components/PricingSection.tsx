@@ -65,10 +65,10 @@ const PricingSection = () => {
                 }}>
                     Limited time launch offer - 50% OFF
                   </button>
-                  <div className="flex items-center justify-center gap-3 mb-2">
-                    <span className="text-2xl text-muted-foreground line-through">280 Euro/month</span>
-                    <span className="text-4xl font-bold text-foreground">140 Euro/month</span>
-                  </div>
+                <div className="flex flex-col items-center justify-center mb-2">
+                  <span className="text-sm text-muted-foreground line-through">280 Euro/month</span>
+                  <span className="text-4xl font-bold text-foreground">140 Euro/month</span>
+                </div>
                   
                   <Button size="lg" className="w-full text-lg font-semibold" onClick={handleBookCall}>
                     Book a Call
