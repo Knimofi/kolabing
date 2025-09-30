@@ -1,69 +1,55 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from 'lucide-react';
-
 const VideoCarousel = () => {
   const handleBookCall = () => {
     window.location.href = 'https://cal.com/maria-perez/community-platform';
   };
-
-  const videos = [
-    {
-      id: 1,
-      title: 'Community Event Success',
-           videoSrc: '/videos/ugos-node.mp4',
-     
-      description: 'Local restaurant partnership with fitness community'
-    },
-    {
-      id: 2,
-      title: 'Ugos Corner x Node',
-      videoSrc: '/videos/community-event-success.mp4',
-      description: 'Tech startup building developer community'
-    },
-    {
-      id: 3,
-      title: 'Casa Seat',
-      videoSrc: '/videos/brand-partnership.mp4',
-      description: 'Fashion brand working with lifestyle influencers'
-    },
-    {
-      id: 4,
-      title: 'Hotel Costa Brava x Cafe',
-       videoSrc: '/videos/hotel-costa-brava-cafe.mp4',
-      description: 'Small business connecting with neighborhood groups'
-    },
-    {
-      id: 5,
-      title: 'Creative Partnership',
-      videoSrc: '/videos/creative-partnership.mp4',
-      description: 'Art gallery collaborating with creative communities'
-    },
-    {
-      id: 6,
-      title: 'Business Growth',
-      videoSrc: '/videos/business-growth.mp4',
-      description: 'Scaling business through strategic community partnerships'
-    },
-    {
-      id: 7,
-      title: 'Museum',
-       videoSrc: '/videos/local-impact.mp4',
-      description: 'Hospitality and cafe collaboration'
-    },
-    {
-      id: 8,
-      title: 'Mirador Glories',
-      videoSrc: '/videos/mirador-glories.mp4',
-      description: 'Urban development partnership'
-    }
-  ];
+  const videos = [{
+    id: 1,
+    title: 'Community Event Success',
+    videoSrc: '/videos/ugos-node.mp4',
+    description: 'Local restaurant partnership with fitness community'
+  }, {
+    id: 2,
+    title: 'Ugos Corner x Node',
+    videoSrc: '/videos/community-event-success.mp4',
+    description: 'Tech startup building developer community'
+  }, {
+    id: 3,
+    title: 'Casa Seat',
+    videoSrc: '/videos/brand-partnership.mp4',
+    description: 'Fashion brand working with lifestyle influencers'
+  }, {
+    id: 4,
+    title: 'Hotel Costa Brava x Cafe',
+    videoSrc: '/videos/hotel-costa-brava-cafe.mp4',
+    description: 'Small business connecting with neighborhood groups'
+  }, {
+    id: 5,
+    title: 'Creative Partnership',
+    videoSrc: '/videos/creative-partnership.mp4',
+    description: 'Art gallery collaborating with creative communities'
+  }, {
+    id: 6,
+    title: 'Business Growth',
+    videoSrc: '/videos/business-growth.mp4',
+    description: 'Scaling business through strategic community partnerships'
+  }, {
+    id: 7,
+    title: 'Museum',
+    videoSrc: '/videos/local-impact.mp4',
+    description: 'Hospitality and cafe collaboration'
+  }, {
+    id: 8,
+    title: 'Mirador Glories',
+    videoSrc: '/videos/mirador-glories.mp4',
+    description: 'Urban development partnership'
+  }];
 
   // Duplicate videos for seamless infinite scroll
   const duplicatedVideos = [...videos, ...videos, ...videos];
-
-  return (
-    <>
+  return <>
       <style>{`
         @keyframes carousel-scroll {
   0% { transform: translateX(0); }
@@ -98,51 +84,27 @@ const VideoCarousel = () => {
 
           <div className="overflow-hidden">
             <div className="flex carousel-animate">
-              {duplicatedVideos.map((video, index) => (
-                <div 
-                  key={`${video.id}-${index}`} 
-                  className="flex-[0_0_33.333%] px-2 min-w-0"
-                >
+              {duplicatedVideos.map((video, index) => <div key={`${video.id}-${index}`} className="flex-[0_0_33.333%] px-2 min-w-0">
                   <div className="group cursor-pointer carousel-card transition-transform duration-300 ease-out">
                     <div className="relative aspect-[9/16] bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300">
-                      <video 
-                        src={video.videoSrc} 
-                        autoPlay
-                        muted
-                        loop
-                        playsInline
-                        preload="metadata"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        aria-label={video.title}
-                      />
+                      <video src={video.videoSrc} autoPlay muted loop playsInline preload="metadata" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" aria-label={video.title} />
                       <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
                     </div>
                   </div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
 
           <div className="text-center mt-16 max-w-3xl mx-auto">
-            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-              Find out what's the best event for your business
-            </h3>
-            <p className="text-lg text-muted-foreground mb-8">
-              We help businesses create their own community event strategy
-            </p>
-            <Button 
-              onClick={handleBookCall}
-              size="lg"
-              className="group"
-            >
+            <h3 className="text-2xl font-bold text-foreground mb-4 md:text-xs">Find out what's the best event collaboration for your business</h3>
+            
+            <Button onClick={handleBookCall} size="lg" className="group">
               <Calendar className="mr-2 h-5 w-5" />
               Book a Call
             </Button>
           </div>
         </div>
       </section>
-    </>
-  );
+    </>;
 };
-
 export default VideoCarousel;
