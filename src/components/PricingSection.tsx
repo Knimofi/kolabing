@@ -63,9 +63,13 @@ const PricingSection = () => {
               
               <div className="pt-6 border-t border-border">
                 <div className="text-center">
-                  <div className="inline-block bg-success/20 text-success px-3 py-1 rounded-full text-xs font-semibold mb-3">
+                  <button 
+                    onClick={handleBookCall}
+                    className="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3 text-white cursor-pointer hover:opacity-90 transition-opacity"
+                    style={{ backgroundColor: '#d12419' }}
+                  >
                     Limited time launch offer - 50% OFF
-                  </div>
+                  </button>
                   <div className="flex items-center justify-center gap-3 mb-2">
                     <span className="text-2xl text-muted-foreground line-through">280 Euro/month</span>
                     <span className="text-4xl font-bold text-foreground">140 Euro/month</span>
