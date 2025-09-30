@@ -106,7 +106,7 @@ const Navbar = () => {
         {/* Logo */}
         <div onClick={scrollToTop} className="flex items-center space-x-2 cursor-pointer" aria-label="Kolabing">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-            <img src="/logo-nav-blue.png" alt="Kolabing Logo" className="w-8 h-8" />
+            <img src="https://qcmperlkuujhweikoyru.supabase.co/storage/v1/object/sign/media/Logo%20Kolabing.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mOWQ2MzU4NS1iNjc3LTQ1NGYtOTRhZS1iODg3NjU5MWU3OGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9Mb2dvIEtvbGFiaW5nLnBuZyIsImlhdCI6MTc1OTI0NDEyNSwiZXhwIjoxNzkwNzgwMTI1fQ.VF8cudTlK1B-3KPZ8iiL0VqUvo-yYejBgrH_o7X6IJQ" alt="Kolabing Logo" className="w-8 h-8" />
           </div>
           <span className="text-xl font-bold text-foreground">Kolabing</span>
         </div>
