@@ -101,7 +101,7 @@ const Navbar = () => {
       document.body.style.overflow = '';
     };
   }, []);
-  return <header className="fixed top-0 left-0 right-0 z-50 py-4 backdrop-blur-md shadow-sm bg-gradient-to-r from-blue-950/90 to-slate-900/90">
+  return <header className="fixed top-0 left-0 right-0 z-50 py-4 shadow-sm bg-background">
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <div onClick={scrollToTop} className="flex items-center space-x-2 cursor-pointer" aria-label="Kolabing">
