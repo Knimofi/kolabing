@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Menu } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const VideoCarouselBg = () => {
   const videos = [
@@ -47,8 +45,6 @@ const VideoCarouselBg = () => {
 };
 
 const NewHero = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -71,6 +67,8 @@ const NewHero = () => {
         />
       </div>
 
+      {/* Hero Content */}
+      <div className="relative z-10 w-full h-full flex flex-col">
         {/* Main content (Centered) */}
         <div className="flex-1 flex flex-col items-center justify-center px-4">
           <div className="text-white text-center mb-12 max-w-4xl">
@@ -107,3 +105,4 @@ const NewHero = () => {
 };
 
 export default NewHero;
+
