@@ -45,20 +45,21 @@ const VideoCarouselBg = () => {
   );
 };
 
+// Put this above your NewHero function
 const BUTTON_STYLE = {
   background: '#fdd459',
   color: '#232323',
   fontFamily: 'Inter, system-ui, sans-serif',
   textTransform: 'uppercase' as const,
   fontWeight: 400,
-  fontSize: '1.15rem',
+  fontSize: '1rem',
   letterSpacing: '0.06em',
-  borderRadius: '9999px',
-  padding: '1.25rem 2.5rem',
-  minWidth: '190px',
-  minHeight: '56px',
-  boxShadow: '0 2px 12px 0 rgba(253,212,89,0.18)',
-  transition: 'background 0.16s, box-shadow 0.16s, transform 0.16s'
+  borderRadius: '1.7rem',
+  padding: '0.6rem 1.4rem',
+  minWidth: 'unset',
+  minHeight: '2.35rem',
+  boxShadow: '0 2px 10px 0 rgba(253,212,89,0.10)',
+  transition: 'background 0.18s, box-shadow 0.18s, transform 0.18s'
 };
 
 const BUTTON_HOVER = {
