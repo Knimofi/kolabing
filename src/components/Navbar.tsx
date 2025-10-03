@@ -149,7 +149,7 @@ const Navbar = () => {
         {/* Menu header with close button */}
         <div className="flex items-center justify-between p-4 border-b border-border">
           <div className="flex items-center space-x-2">
-            <img src="/logo-nav-blue.png" alt="Kolabing Logo" className="w-8 h-8" />
+            <img src="/logo.svg" alt="Kolabing Logo" className="w-8 h-8" />
             <span className="text-xl font-bold text-foreground">Kolabing</span>
           </div>
           <button onClick={closeMenu} className="p-2 text-foreground hover:text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background rounded-lg" aria-label="Close menu">
