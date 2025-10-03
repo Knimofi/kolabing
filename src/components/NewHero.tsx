@@ -45,7 +45,6 @@ const VideoCarouselBg = () => {
   );
 };
 
-// Put this above your NewHero function
 const BUTTON_STYLE = {
   background: '#fdd459',
   color: '#232323',
@@ -54,7 +53,7 @@ const BUTTON_STYLE = {
   fontWeight: 400,
   fontSize: '1rem',
   letterSpacing: '0.06em',
-  borderRadius: '1.7rem',
+  borderRadius: '0px', // <-- SHARP corners!
   padding: '0.6rem 1.4rem',
   minWidth: 'unset',
   minHeight: '2.35rem',
