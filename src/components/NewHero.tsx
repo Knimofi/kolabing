@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 
+// Inline minimal video carousel component
 const VideoCarouselBg = () => {
   const videos = [
     { id: 1, videoSrc: '/videos/ugos-node.mp4' },
@@ -44,7 +45,29 @@ const VideoCarouselBg = () => {
   );
 };
 
+const BUTTON_STYLE = {
+  background: '#fdd459',
+  color: '#232323',
+  fontFamily: 'Inter, system-ui, sans-serif',
+  textTransform: 'uppercase' as const,
+  fontWeight: 400,
+  fontSize: '1.15rem',
+  letterSpacing: '0.06em',
+  borderRadius: '9999px',
+  padding: '1.25rem 2.5rem',
+  minWidth: '190px',
+  minHeight: '56px',
+  boxShadow: '0 2px 12px 0 rgba(253,212,89,0.18)',
+  transition: 'background 0.16s, box-shadow 0.16s, transform 0.16s'
+};
+
+const BUTTON_HOVER = {
+  background: '#eec700'
+};
+
 const NewHero = () => {
+  const [hoverIndex, setHoverIndex] = React.useState<number | null>(null);
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -63,40 +86,60 @@ const NewHero = () => {
         <VideoCarouselBg />
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ backgroundColor: 'rgba(0,0,0,0.17)' }}
+          style={{ backgroundColor: 'rgba(0,0,0,0.25)' }}
         />
       </div>
 
       {/* Hero Content */}
-      <div className="relative z-10 w-full h-full flex flex-col">
-        {/* Main content (Centered) */}
-        <div className="flex-1 flex flex-col items-center justify-center px-4">
-          <div className="text-white text-center mb-12 max-w-4xl">
-            <span className="block text-5xl md:text-7xl lg:text-8xl font-bold leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
+      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
+        <div className="flex-1 flex flex-col items-center justify-center px-4 w-full">
+          <div
+            className="text-white text-center mb-9 max-w-3xl"
+            style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+          >
+            <span
+              className="block font-bold leading-tight"
+              style={{
+                fontSize: '2.1rem', // Small on mobile
+                fontFamily: 'Inter, system-ui, sans-serif'
+              }}
+            >
               His business. Her community.
             </span>
-            <span className="block text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mt-4" style={{ fontFamily: 'Georgia, serif' }}>
+            <span
+              className="block font-bold leading-tight mt-2"
+              style={{
+                fontSize: '2.1rem',
+                fontFamily: 'Inter, system-ui, sans-serif'
+              }}
+            >
               Kolabing makes the match!
             </span>
           </div>
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 mt-8">
-            <Button
-              style={{ background: '#fdd459', color: '#161616' }}
-              className="rounded-full px-10 py-4 text-lg font-bold"
-              onClick={() => scrollToSection('business-needs')}
-              aria-label="I'm a business/brand"
-            >
-              I'm a business/brand
-            </Button>
-            <Button
-              style={{ background: '#fdd459', color: '#161616' }}
-              className="rounded-full px-10 py-4 text-lg font-bold"
-              onClick={() => scrollToSection('our-communities')}
-              aria-label="I'm a community"
-            >
-              I'm a community
-            </Button>
+          {/* Pill-shaped, uppercase rectangular buttons */}
+          <div className="flex flex-row gap-4 mt-6 justify-center w-full">
+            {[{
+              label: "I'm a business/brand",
+              id: 'business-needs'
+            }, {
+              label: "I'm a community",
+              id: 'our-communities'
+            }].map((btn, idx) => (
+              <Button
+                key={btn.id}
+                style={{
+                  ...BUTTON_STYLE,
+                  ...(hoverIndex === idx ? BUTTON_HOVER : {})
+                }}
+                className="flex-1 flex items-center justify-center select-none"
+                aria-label={btn.label}
+                onClick={() => scrollToSection(btn.id)}
+                onMouseEnter={() => setHoverIndex(idx)}
+                onMouseLeave={() => setHoverIndex(null)}
+              >
+                {btn.label}
+              </Button>
+            ))}
           </div>
         </div>
       </div>
