@@ -109,3 +109,28 @@ const NewHero = () => {
             </span>
           </div>
           {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 mt-8">
+            <Button
+              style={{ background: '#fdd459', color: '#161616' }}
+              className="rounded-full px-10 py-4 text-lg font-bold"
+              onClick={() => scrollToSection('business-needs')}
+              aria-label="I'm a business/brand"
+            >
+              I'm a business/brand
+            </Button>
+            <Button
+              style={{ background: '#fdd459', color: '#161616' }}
+              className="rounded-full px-10 py-4 text-lg font-bold"
+              onClick={() => scrollToSection('our-communities')}
+              aria-label="I'm a community"
+            >
+              I'm a community
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default NewHero;
