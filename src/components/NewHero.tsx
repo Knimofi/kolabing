@@ -53,9 +53,9 @@ const BUTTON_STYLE = {
   fontWeight: 400,
   fontSize: '1rem',
   letterSpacing: '0.06em',
-  borderRadius: '0px', // <-- SHARP corners!
-  padding: '0.6rem 1.4rem',
-  minWidth: 'unset',
+  borderRadius: '0px', // sharp corners!
+  padding: '0.6rem 1.2rem', // less width, keeps touchable height
+  minWidth: 'unset', // remove ALL min width, button fits label
   minHeight: '2.35rem',
   boxShadow: '0 2px 10px 0 rgba(253,212,89,0.10)',
   transition: 'background 0.18s, box-shadow 0.18s, transform 0.18s'
