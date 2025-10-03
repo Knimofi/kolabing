@@ -71,33 +71,6 @@ const NewHero = () => {
         />
       </div>
 
-      {/* Hero Content Overlay */}
-      <div className="relative z-10 w-full h-full flex flex-col">
-        {/* Hamburger Menu */}
-        <div className="absolute top-8 left-8">
-          <Button
-            variant="ghost"
-            className="text-white"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Open menu"
-          >
-            <Menu size={28} />
-            <span className="ml-2 font-semibold">MENU</span>
-          </Button>
-        </div>
-
-        {/* Logo */}
-        <div className="absolute top-8 left-1/2 transform -translate-x-1/2">
-          <Link to="/" className="flex items-center gap-2">
-            <span
-              className="text-white text-2xl font-bold tracking-wide"
-              style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
-            >
-              kolabing
-            </span>
-          </Link>
-        </div>
-
         {/* Main content (Centered) */}
         <div className="flex-1 flex flex-col items-center justify-center px-4">
           <div className="text-white text-center mb-12 max-w-4xl">
