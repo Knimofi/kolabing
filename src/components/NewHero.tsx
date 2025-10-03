@@ -71,6 +71,9 @@ const NewHero = () => {
         />
       </div>
 
+      {/* Hero Content Overlay */}
+
+
         {/* Main content (Centered) */}
         <div className="flex-1 flex flex-col items-center justify-center px-4">
           <div className="text-white text-center mb-12 max-w-4xl">
