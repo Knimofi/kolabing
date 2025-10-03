@@ -22,8 +22,8 @@ const NewHero = () => {
     <section className="relative min-h-screen w-full overflow-hidden flex items-center justify-center">
       {/* Video Carousel Background */}
       <div className="absolute inset-0 w-full h-full z-0">
-        <VideoCarousel hideHeader hideCTA />
-        <div className="absolute inset-0 bg-black/10 pointer-events-none" />
+        <VideoCarousel />
+        <div className="absolute inset-0 pointer-events-none" style={{ backgroundColor: 'rgba(0, 0, 0, 0.17)' }} />
       </div>
 
       {/* Hero Content */}
