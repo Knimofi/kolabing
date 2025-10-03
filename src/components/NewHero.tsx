@@ -53,12 +53,12 @@ const BUTTON_STYLE = {
   fontWeight: 400,
   fontSize: '1rem',
   letterSpacing: '0.06em',
-  borderRadius: '0px', // sharp corners!
-  padding: '0.6rem 1.2rem', // less width, keeps touchable height
-  minWidth: 'unset', // remove ALL min width, button fits label
-  minHeight: '2.35rem',
+  borderRadius: '0px', // perfectly sharp
+  padding: '0.5rem 1.1rem', // small, fits content
+  minWidth: 'unset',
+  minHeight: '2.2rem',
   boxShadow: '0 2px 10px 0 rgba(253,212,89,0.10)',
-  transition: 'background 0.18s, box-shadow 0.18s, transform 0.18s'
+  transition: 'background 0.14s, box-shadow 0.13s, transform 0.13s'
 };
 
 const BUTTON_HOVER = {
@@ -89,7 +89,6 @@ const NewHero = () => {
           style={{ backgroundColor: 'rgba(0,0,0,0.25)' }}
         />
       </div>
-
       {/* Hero Content */}
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
         <div className="flex-1 flex flex-col items-center justify-center px-4 w-full">
@@ -100,7 +99,7 @@ const NewHero = () => {
             <span
               className="block font-bold leading-tight"
               style={{
-                fontSize: '2.1rem', // Small on mobile
+                fontSize: '1.45rem', // smaller headline
                 fontFamily: 'Inter, system-ui, sans-serif'
               }}
             >
@@ -109,15 +108,15 @@ const NewHero = () => {
             <span
               className="block font-bold leading-tight mt-2"
               style={{
-                fontSize: '2.1rem',
+                fontSize: '1.45rem',
                 fontFamily: 'Inter, system-ui, sans-serif'
               }}
             >
               Kolabing makes the match!
             </span>
           </div>
-          {/* Pill-shaped, uppercase rectangular buttons */}
-          <div className="flex flex-row gap-4 mt-6 justify-center w-full">
+          {/* Sharp rectangular, small, centered buttons */}
+          <div className="flex flex-row gap-2 mt-5 justify-center items-center w-full">
             {[{
               label: "I'm a business/brand",
               id: 'business-needs'
@@ -131,7 +130,7 @@ const NewHero = () => {
                   ...BUTTON_STYLE,
                   ...(hoverIndex === idx ? BUTTON_HOVER : {})
                 }}
-                className="flex-1 flex items-center justify-center select-none"
+                className="select-none"
                 aria-label={btn.label}
                 onClick={() => scrollToSection(btn.id)}
                 onMouseEnter={() => setHoverIndex(idx)}
@@ -148,4 +147,3 @@ const NewHero = () => {
 };
 
 export default NewHero;
-
