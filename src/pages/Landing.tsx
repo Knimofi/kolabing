@@ -9,13 +9,17 @@ import VideoCarousel from '@/components/VideoCarousel';
 import ComparisonTable from '@/components/ComparisonTable';
 import BookCallCTA from '@/components/BookCallCTA';
 import PricingSection from '@/components/PricingSection';
+import NewHero from '@/components/NewHero';
 const Landing = () => {
   return <div className="min-h-screen background">
       <Navbar />
 
-      {/* Hero Section */}
-      <main className="pt-20">
-        <section className="px-4 py-[60px]">
+      {/* New Hero Section with Video Background */}
+      <NewHero />
+
+      {/* Featured/Intro Section - What your business needs */}
+      <main>
+        <section id="business-section" className="px-4 py-24 bg-muted/50">
           <div className="container mx-auto max-w-4xl text-center">
             <AnimatedHeroTitle />
             
