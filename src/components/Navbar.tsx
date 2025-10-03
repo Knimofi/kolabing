@@ -176,7 +176,7 @@ const Navbar = () => {
           isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"
         )}
         style={{
-          backgroundColor: 'rgba(0,0,0,0.95)', // darker for mobile
+          backgroundColor: '#000', // solid black
           ...NAV_FONT,
         }}
         role="dialog"
