@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import VideoCarousel from '@/components/VideoCarousel';
 
 const VideoCarouselBg = () => {
   const videos = [
@@ -16,7 +15,6 @@ const VideoCarouselBg = () => {
     { id: 8, videoSrc: '/videos/mirador-glories.mp4' }
   ];
   const duplicatedVideos = [...videos, ...videos, ...videos];
-
   return (
     <>
       <style>{`
@@ -29,9 +27,9 @@ const VideoCarouselBg = () => {
         }
       `}</style>
       <div className="overflow-hidden w-full h-full">
-        <div className="carousel-animate flex gap-4">
+        <div className="carousel-animate flex gap-4 h-full items-center">
           {duplicatedVideos.map((video, index) => (
-            <div key={`${video.id}-${index}`} className="flex-shrink-0 w-[400px] h-[300px]">
+            <div key={`${video.id}-${index}`} className="flex-shrink-0 w-[400px] h-full">
               <video
                 src={video.videoSrc}
                 autoPlay
@@ -48,7 +46,6 @@ const VideoCarouselBg = () => {
   );
 };
 
-
 const NewHero = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -64,70 +61,51 @@ const NewHero = () => {
   };
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden flex items-center justify-center">
-      {/* Video Carousel Background */}
+    <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center">
+      {/* Video Carousel Background Layer */}
       <div className="absolute inset-0 w-full h-full z-0">
         <VideoCarouselBg />
-        <div className="absolute inset-0 pointer-events-none" style={{ backgroundColor: 'rgba(0, 0, 0, 0.17)' }} />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ backgroundColor: 'rgba(0,0,0,0.17)' }}
+        />
       </div>
 
-      {/* Hero Content */}
+      {/* Hero Content Overlay */}
       <div className="relative z-10 w-full h-full flex flex-col">
         {/* Hamburger Menu */}
         <div className="absolute top-8 left-8">
           <Button
             variant="ghost"
-            size="lg"
-            className="text-white hover:bg-white/10 font-medium"
+            className="text-white"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Open menu"
           >
-            <Menu className="mr-2 h-5 w-5" />
-            MENU
+            <Menu size={28} />
+            <span className="ml-2 font-semibold">MENU</span>
           </Button>
         </div>
 
         {/* Logo */}
         <div className="absolute top-8 left-1/2 transform -translate-x-1/2">
           <Link to="/" className="flex items-center gap-2">
-            <span className="text-white text-2xl font-bold tracking-wide" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+            <span
+              className="text-white text-2xl font-bold tracking-wide"
+              style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}
+            >
               kolabing
             </span>
           </Link>
         </div>
 
-        {/* Main Content */}
+        {/* Main content (Centered) */}
         <div className="flex-1 flex flex-col items-center justify-center px-4">
-          {/* Headline */}
-          <h1 className="text-white text-center mb-12 max-w-4xl">
+          <div className="text-white text-center mb-12 max-w-4xl">
             <span className="block text-5xl md:text-7xl lg:text-8xl font-bold leading-tight" style={{ fontFamily: 'Georgia, serif' }}>
               His business. Her community.
             </span>
             <span className="block text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mt-4" style={{ fontFamily: 'Georgia, serif' }}>
               Kolabing makes the match!
             </span>
-          </h1>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 mt-8">
-            <Button
-              size="lg"
-              className="bg-[#fdd459] text-black hover:bg-[#fdd459]/90 font-semibold px-8 py-6 text-lg rounded-full"
-              onClick={() => scrollToSection('business-needs')}
-            >
-              I'm a business/brand
-            </Button>
-            <Button
-              size="lg"
-              className="bg-[#fdd459] text-black hover:bg-[#fdd459]/90 font-semibold px-8 py-6 text-lg rounded-full"
-              onClick={() => scrollToSection('our-communities')}
-            >
-              I'm a community
-            </Button>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-export default NewHero;
+          {/* CTA Buttons */}
