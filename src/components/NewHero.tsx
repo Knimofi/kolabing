@@ -87,11 +87,9 @@ const NewHero = () => {
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(0deg, rgba(253,212,89,0.10), rgba(0,0,0,0.47))'
+            background: 'linear-gradient(0deg, rgba(253,212,89,0.10), rgba(0,0,0,0.49))'
           }}
         />
-
-      </div>
       {/* Hero Content */}
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
         <div className="flex-1 flex flex-col items-center justify-center px-4 w-full">
