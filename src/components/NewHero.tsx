@@ -53,8 +53,8 @@ const BUTTON_STYLE = {
   fontWeight: 400,
   fontSize: '1rem',
   letterSpacing: '0.06em',
-  borderRadius: '0px', // perfectly sharp
-  padding: '0.5rem 1.1rem', // small, fits content
+  borderRadius: '0px',
+  padding: '0.5rem 1.1rem',
   minWidth: 'unset',
   minHeight: '2.2rem',
   boxShadow: '0 2px 10px 0 rgba(253,212,89,0.10)',
@@ -107,15 +107,15 @@ const NewHero = () => {
             >
               His business. Her community.
             </span>
-            {/* Second line: Montserrat Bold, all-caps, ! in italics*/}
+            {/* Second line: Montserrat Black (900), all-caps, ! in italics*/}
             <span
               className="block leading-tight"
               style={{
                 fontFamily: "'Montserrat', Arial, Helvetica, sans-serif",
-                fontWeight: 800,
+                fontWeight: 900, // Extra Extra Bold
                 textTransform: 'uppercase',
                 fontSize: '2.01rem',
-                letterSpacing: '0.04em',
+                letterSpacing: '0.06em',
                 display: "block",
                 lineHeight: 1.12,
               }}
@@ -156,4 +156,3 @@ const NewHero = () => {
 };
 
 export default NewHero;
-
