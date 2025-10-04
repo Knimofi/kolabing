@@ -89,32 +89,39 @@ const NewHero = () => {
           style={{ backgroundColor: 'rgba(0,0,0,0.25)' }}
         />
       </div>
-      {/* Hero Content */}
-      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
-        <div className="flex-1 flex flex-col items-center justify-center px-4 w-full">
-          <div
-            className="text-white text-center mb-9 max-w-3xl"
-            style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
-          >
-            <span
-              className="block font-bold leading-tight"
-              style={{
-                fontSize: '1.45rem', // smaller headline
-                fontFamily: 'Inter, system-ui, sans-serif'
-              }}
-            >
-              His business. Her community.
-            </span>
-            <span
-              className="block font-bold leading-tight mt-2"
-              style={{
-                fontSize: '1.45rem',
-                fontFamily: 'Inter, system-ui, sans-serif'
-              }}
-            >
-              Kolabing makes the match!
-            </span>
-          </div>
+      <div className="text-white text-center mb-9 max-w-3xl">
+        {/* FIRST LINE – Goudy Bookletter 1911 */}
+        <span
+          className="block leading-tight"
+          style={{
+            fontFamily: "'Goudy Bookletter 1911', serif",
+            fontSize: '2.1rem',
+            fontWeight: 500,
+            letterSpacing: '0.01em',
+            marginBottom: '0.55em',
+            lineHeight: 1.12,
+          }}
+        >
+          His business. Her community.
+        </span>
+        {/* SECOND LINE – Montserrat Bold ALL CAPS, ! in italics */}
+        <span
+          className="block leading-tight"
+          style={{
+            fontFamily: "'Montserrat', Arial, Helvetica, sans-serif",
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            fontSize: '2.1rem',
+            letterSpacing: '0.06em',
+            display: "block",
+            lineHeight: 1.1,
+          }}
+        >
+          KOLABING MAKES THE MATCH
+          <span style={{ fontStyle: "italic" }}>!</span>
+        </span>
+      </div>
+
           {/* Sharp rectangular, small, centered buttons */}
           <div className="flex flex-row gap-2 mt-5 justify-center items-center w-full">
             {[{
