@@ -53,8 +53,8 @@ const BUTTON_STYLE = {
   fontWeight: 400,
   fontSize: '1rem',
   letterSpacing: '0.06em',
-  borderRadius: '0px',
-  padding: '0.5rem 1.1rem',
+  borderRadius: '0px', // perfectly sharp
+  padding: '0.5rem 1.1rem', // small, fits content
   minWidth: 'unset',
   minHeight: '2.2rem',
   boxShadow: '0 2px 10px 0 rgba(253,212,89,0.10)',
@@ -86,42 +86,36 @@ const NewHero = () => {
         <VideoCarouselBg />
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ backgroundColor: 'rgba(0,0,0,0.25)' }}
+          style={{
+            background: 'linear-gradient(0deg, rgba(253,212,89,0.10), rgba(0,0,0,0.47))'
+          }}
         />
+
       </div>
       {/* Hero Content */}
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
         <div className="flex-1 flex flex-col items-center justify-center px-4 w-full">
-          <div className="text-white text-center mb-9 max-w-3xl">
-            {/* First line: Goudy Bookletter 1911 */}
+          <div
+            className="text-white text-center mb-9 max-w-3xl"
+            style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+          >
             <span
-              className="block leading-tight"
+              className="block font-bold leading-tight"
               style={{
-                fontFamily: "'Goudy Bookletter 1911', serif",
-                fontSize: '2.05rem',
-                fontWeight: 500,
-                letterSpacing: '0.01em',
-                marginBottom: '0.50em',
-                lineHeight: 1.13
+                fontSize: '1.45rem', // smaller headline
+                fontFamily: 'Inter, system-ui, sans-serif'
               }}
             >
               His business. Her community.
             </span>
-            {/* Second line: Montserrat Black (900), all-caps, ! in italics*/}
             <span
-              className="block leading-tight"
+              className="block font-bold leading-tight mt-2"
               style={{
-                fontFamily: "'Montserrat', Arial, Helvetica, sans-serif",
-                fontWeight: 900, // Extra Extra Bold
-                textTransform: 'uppercase',
-                fontSize: '2.01rem',
-                letterSpacing: '0.06em',
-                display: "block",
-                lineHeight: 1.12,
+                fontSize: '1.45rem',
+                fontFamily: 'Inter, system-ui, sans-serif'
               }}
             >
-              KOLABING MAKES THE MATCH
-              <span style={{ fontStyle: "italic" }}>!</span>
+              Kolabing makes the match!
             </span>
           </div>
           {/* Sharp rectangular, small, centered buttons */}
