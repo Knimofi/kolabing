@@ -112,10 +112,10 @@ const NewHero = () => {
               className="block leading-tight"
               style={{
                 fontFamily: "'Montserrat', Arial, Helvetica, sans-serif",
-                fontWeight: 700,
+                fontWeight: 800,
                 textTransform: 'uppercase',
                 fontSize: '2.01rem',
-                letterSpacing: '0.06em',
+                letterSpacing: '0.04em',
                 display: "block",
                 lineHeight: 1.12,
               }}
