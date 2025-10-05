@@ -246,6 +246,7 @@ export type Database = {
           city: string | null
           community_type: string | null
           created_at: string
+          Featured: boolean
           instagram: string | null
           name: string | null
           profile_id: string
@@ -259,6 +260,7 @@ export type Database = {
           city?: string | null
           community_type?: string | null
           created_at?: string
+          Featured?: boolean
           instagram?: string | null
           name?: string | null
           profile_id: string
@@ -272,6 +274,7 @@ export type Database = {
           city?: string | null
           community_type?: string | null
           created_at?: string
+          Featured?: boolean
           instagram?: string | null
           name?: string | null
           profile_id?: string
@@ -439,30 +442,36 @@ export type Database = {
           created_at: string
           id: string
           image_url: string | null
+          is_active: boolean
           name: string
           role: string
           testimonial: string
           updated_at: string
+          video_url: string | null
         }
         Insert: {
           company: string
           created_at?: string
           id?: string
           image_url?: string | null
+          is_active?: boolean
           name: string
           role: string
           testimonial: string
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
           company?: string
           created_at?: string
           id?: string
           image_url?: string | null
+          is_active?: boolean
           name?: string
           role?: string
           testimonial?: string
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
       }

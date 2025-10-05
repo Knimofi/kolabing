@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Calendar, MapPin, Users, Clock, Package, CheckCircle, XCircle } from 'lucide-react';
 import { format } from 'date-fns';
+import { supabase } from '@/integrations/supabase/client';
+import FeedbackSummary from '@/components/FeedbackSummary';
 
 interface CollaborationDetailsModalProps {
   open: boolean;
@@ -21,6 +23,35 @@ const CollaborationDetailsModal = ({
   onStatusUpdate,
   userType 
 }: CollaborationDetailsModalProps) => {
+  const [surveys, setSurveys] = useState<any[]>([]);
+  const [loadingSurveys, setLoadingSurveys] = useState(false);
+
+  useEffect(() => {
+    if (open && collaboration?.id && collaboration.status === 'completed') {
+      fetchSurveys();
+    }
+  }, [open, collaboration?.id, collaboration?.status]);
+
+  const fetchSurveys = async () => {
+    if (!collaboration?.id) return;
+    
+    setLoadingSurveys(true);
+    try {
+      const { data, error } = await supabase
+        .from('surveys')
+        .select('*')
+        .eq('collaboration_id', collaboration.id)
+        .not('submitted_at', 'is', null);
+
+      if (error) throw error;
+      setSurveys(data || []);
+    } catch (error) {
+      console.error('Error fetching surveys:', error);
+    } finally {
+      setLoadingSurveys(false);
+    }
+  };
+
   if (!collaboration) return null;
 
   const getStatusColor = (status: string) => {
@@ -224,6 +255,18 @@ const CollaborationDetailsModal = ({
               )}
             </div>
           </div>
+
+          {/* Feedback Section */}
+          {collaboration.status === 'completed' && (
+            <div className="border-t pt-4 space-y-3">
+              <h4 className="font-semibold text-sm">Collaboration Feedback</h4>
+              {loadingSurveys ? (
+                <p className="text-sm text-muted-foreground">Loading feedback...</p>
+              ) : (
+                <FeedbackSummary surveys={surveys} userType={userType} />
+              )}
+            </div>
+          )}
 
           {/* Action Buttons */}
           {(collaboration.status === 'scheduled' || collaboration.status === 'active') && (
