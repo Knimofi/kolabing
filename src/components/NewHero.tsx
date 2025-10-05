@@ -94,27 +94,36 @@ const NewHero = () => {
       {/* Hero Content */}
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
         <div className="flex-1 flex flex-col items-center justify-center px-4 w-full">
-          <div
-            className="text-white text-center mb-9 max-w-3xl"
-            style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
-          >
+          <div className="text-white text-center mb-9 max-w-3xl">
+            {/* First line: Goudy Bookletter 1911 */}
             <span
-              className="block font-bold leading-tight"
+              className="block leading-tight"
               style={{
-                fontSize: '1.45rem', // smaller headline
-                fontFamily: 'Inter, system-ui, sans-serif'
+                fontFamily: "'Goudy Bookletter 1911', serif",
+                fontSize: '2.05rem',
+                fontWeight: 500,
+                letterSpacing: '0.01em',
+                marginBottom: '0.50em',
+                lineHeight: 1.13
               }}
             >
               His business. Her community.
             </span>
+            {/* Second line: Montserrat Black (900), all-caps, ! in italics*/}
             <span
-              className="block font-bold leading-tight mt-2"
+              className="block leading-tight"
               style={{
-                fontSize: '1.45rem',
-                fontFamily: 'Inter, system-ui, sans-serif'
+                fontFamily: "'Montserrat', Arial, Helvetica, sans-serif",
+                fontWeight: 900,
+                textTransform: 'uppercase',
+                fontSize: '2.01rem',
+                letterSpacing: '0.06em',
+                display: "block",
+                lineHeight: 1.12,
               }}
             >
-              Kolabing makes the match!
+              KOLABING MAKES THE MATCH
+              <span style={{ fontStyle: "italic" }}>!</span>
             </span>
           </div>
           {/* Sharp rectangular, small, centered buttons */}
@@ -149,3 +158,4 @@ const NewHero = () => {
 };
 
 export default NewHero;
+
