@@ -248,12 +248,35 @@ const BusinessApplications = () => {
                           Applied {format(new Date(application.created_at), 'MMM d, yyyy')}
                         </div>
                         
-                        {application.availability && (
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Clock className="w-4 h-4" />
-                            Availability: {application.availability}
-                          </div>
-                        )}
+                        {application.availability && (() => {
+                          try {
+                            const parsed = JSON.parse(application.availability);
+                            if (parsed.preferred_dates && parsed.preferred_dates.length > 0) {
+                              return (
+                                <div className="space-y-1">
+                                  <p className="text-sm font-medium flex items-center gap-2">
+                                    <Clock className="w-4 h-4" />
+                                    Preferred Dates:
+                                  </p>
+                                  {parsed.preferred_dates.map((dateItem: any, index: number) => (
+                                    <div key={index} className="text-sm text-muted-foreground pl-6">
+                                      • {format(new Date(dateItem.date), 'MMM dd, yyyy')} • {dateItem.start_time} - {dateItem.end_time}
+                                    </div>
+                                  ))}
+                                </div>
+                              );
+                            }
+                          } catch (e) {
+                            // Not JSON, show as plain text
+                            return (
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Clock className="w-4 h-4" />
+                                Availability: {application.availability}
+                              </div>
+                            );
+                          }
+                          return null;
+                        })()}
                       </div>
 
                       {/* Application Message */}

@@ -2,13 +2,9 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, Send } from 'lucide-react';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
+import { Send } from 'lucide-react';
+import PreferredDatesSelector, { PreferredDate } from '@/components/PreferredDatesSelector';
 
 interface ApplyOfferModalProps {
   open: boolean;
@@ -30,7 +26,7 @@ const ApplyOfferModal = ({
   onSubmit, 
   isSubmitting = false 
 }: ApplyOfferModalProps) => {
-  const [availability, setAvailability] = useState('');
+  const [preferredDates, setPreferredDates] = useState<PreferredDate[]>([]);
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,13 +35,18 @@ const ApplyOfferModal = ({
     if (!message.trim()) return;
 
     try {
+      // Convert preferred dates to JSON string for storage
+      const availabilityData = preferredDates.length > 0 
+        ? JSON.stringify({ preferred_dates: preferredDates })
+        : '';
+
       await onSubmit({
-        availability,
+        availability: availabilityData,
         message: message.trim()
       });
       
       // Reset form
-      setAvailability('');
+      setPreferredDates([]);
       setMessage('');
       onOpenChange(false);
     } catch (error) {
@@ -61,16 +62,11 @@ const ApplyOfferModal = ({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Availability */}
-          <div className="space-y-2">
-            <Label htmlFor="availability">Availability (Optional)</Label>
-            <Input
-              id="availability"
-              placeholder="e.g., Weekends preferred, Evening events only, Dec 15-20..."
-              value={availability}
-              onChange={(e) => setAvailability(e.target.value)}
-            />
-          </div>
+          {/* Preferred Dates & Times */}
+          <PreferredDatesSelector
+            value={preferredDates}
+            onChange={setPreferredDates}
+          />
 
           {/* Application Message */}
           <div className="space-y-2">
