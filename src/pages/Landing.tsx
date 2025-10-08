@@ -36,7 +36,7 @@ const Landing = () => {
 
             {/* CTA: Black outlined button */}
             <Link to="/auth/sign-up" className="inline-flex">
-              <Button size="lg" variant="outline" borderColor="#000" textColor="#000" className="px-12 py-5">
+              <Button size="lg" variant="outline" className="px-12 py-5">
                 CREATE YOUR PROFILE
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
