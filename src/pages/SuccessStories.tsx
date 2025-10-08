@@ -46,46 +46,48 @@ const SuccessStories = () => {
   const SuccessStoryCard = ({ story, index }: { story: SuccessStory; index: number }) => {
     const bgImage = backgroundImages[index % backgroundImages.length];
     return (
-      <Card className="relative overflow-hidden bg-card border border-black hover:shadow-lg transition-all duration-300 group rounded-2xl">
+      <Card className="relative overflow-hidden bg-white border border-black hover:shadow-lg transition-all duration-300 group rounded-2xl">
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${bgImage})` }}
+          className="absolute inset-0 pointer-events-none bg-cover bg-center"
+          style={{ backgroundImage: `url(${bgImage})`, opacity: 0.1, zIndex: 0 }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
-        <CardContent className="relative z-10 p-8 flex flex-col text-white font-darker-grotesque">
+        <CardContent className="relative z-10 p-8 flex flex-col">
           <div className="flex items-start space-x-6 mb-4">
             {story.image_url && (
               <div className="flex-shrink-0">
                 <img
                   src={story.image_url}
                   alt={story.name}
-                  className="w-16 h-16 rounded-full object-cover border-2 border-white/30 group-hover:border-white/60 transition-colors"
+                  className="w-16 h-16 rounded-full object-cover border-2 border-black/10 group-hover:border-black/50 transition-colors"
                   onError={(e) => {
                     e.currentTarget.src = "/placeholder.svg";
                   }}
                 />
               </div>
             )}
-            <div className="flex-1">
+            <div className="flex-1 flex flex-col">
+              {/* Testimonial in yellow box */}
               <blockquote
-                className="text-lg leading-relaxed mb-6 italic"
+                className="text-lg leading-relaxed mb-6 font-darker-grotesque rounded-xl px-6 py-4"
                 style={{
+                  backgroundColor: "#FFD861",
+                  color: "#000",
                   fontFamily: "'Darker Grotesque', sans-serif",
-                  color: "#fff",
+                  fontWeight: 500,
                 }}
               >
                 "{story.testimonial}"
               </blockquote>
               <div className="border-l-4 border-[#FFD861] pl-4">
                 <p
-                  className="font-bold text-white text-lg"
+                  className="font-bold text-black text-lg"
                   style={{
                     fontFamily: "'Darker Grotesque', sans-serif",
                   }}
                 >
                   {story.name}
                 </p>
-                <p className="text-white/80" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
+                <p className="text-black/80" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
                   {story.role} at <span style={{ color: "#FFD861", fontWeight: 600 }}>{story.company}</span>
                 </p>
               </div>
@@ -115,7 +117,7 @@ const SuccessStories = () => {
   };
 
   const SkeletonCard = () => (
-    <Card className="bg-card border border-black rounded-2xl">
+    <Card className="bg-white border border-black rounded-2xl">
       <CardContent className="p-8">
         <div className="flex items-start space-x-6">
           <Skeleton className="w-16 h-16 rounded-full" />
@@ -137,27 +139,27 @@ const SuccessStories = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       {/* Hero Section */}
-      <section className="py-24 px-4 bg-gradient-to-b from-background to-card mt-20">
+      <section className="py-24 px-4 bg-[#FFD861]">
         <div className="max-w-7xl mx-auto text-center">
           <div className="mb-4">
             <h1
-              className="text-5xl md:text-6xl font-bold mb-6 leading-tight"
+              className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight"
               style={{
                 fontFamily: "'Rubik', sans-serif",
-                fontWeight: 800,
                 color: "#000",
                 textTransform: "uppercase",
+                letterSpacing: "0.04em",
               }}
             >
               Success Stories
-              <span className="block w-24 h-1 bg-[#FFD861] mx-auto mt-4"></span>
             </h1>
           </div>
           <p
             className="text-xl max-w-3xl mx-auto mb-12 leading-relaxed"
             style={{
               fontFamily: "'Darker Grotesque', sans-serif",
-              color: "#222",
+              color: "#000",
+              fontWeight: 400,
             }}
           >
             Real partnerships that deliver results. Learn from proven strategies and authentic community collaborations
@@ -169,7 +171,7 @@ const SuccessStories = () => {
       <VideoCarousel />
 
       {/* Success Stories Grid */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="mb-16 text-center">
             <h2
@@ -187,7 +189,7 @@ const SuccessStories = () => {
               className="text-lg max-w-2xl mx-auto"
               style={{
                 fontFamily: "'Darker Grotesque', sans-serif",
-                color: "#222",
+                color: "#000",
               }}
             >
               Discover how our community kolabs delivered measurable impact for local businesses across Barcelona
