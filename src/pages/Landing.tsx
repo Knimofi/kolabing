@@ -55,12 +55,11 @@ const Landing = () => {
               your local customers
             </p>
 
-            {/* CTA: White text, turns yellow on hover */}
+            {/* CTA: Black filled button, white text turns yellow on hover */}
             <Link to="/auth/sign-up" className="inline-flex">
               <Button
                 size="lg"
-                variant="outline"
-                className="px-12 py-5 border-black text-white bg-transparent hover:text-[#FFD861] hover:bg-transparent"
+                className="px-12 py-5 bg-black text-white border-black hover:text-[#FFD861] hover:bg-black"
                 style={{
                   fontFamily: "Darker Grotesque, sans-serif",
                   fontWeight: 500,
