@@ -105,14 +105,14 @@ const Landing = () => {
           </div>
         </section>
 
-        {/* HOW IT WORKS SECTION (moved up before any action sections) */}
+        {/* HOW IT WORKS SECTION */}
         <section id="how-it-works" className="py-20 px-4 bg-white">
           <div className="container mx-auto max-w-6xl">
             <h2
               className="text-3xl md:text-5xl text-center mb-16"
               style={{
                 fontFamily: "'Rubik', sans-serif",
-                fontWeight: 800, // Rubik Extra Bold
+                fontWeight: 800,
                 color: "#000",
                 textTransform: "uppercase",
                 letterSpacing: "0.02em",
@@ -121,7 +121,6 @@ const Landing = () => {
               how it works
             </h2>
             <div className="w-full">
-              {/* Responsive grid: 1 column on mobile, 2 on sm, 4 on md+ */}
               <div
                 className="
                   grid gap-6 md:gap-8
@@ -196,7 +195,7 @@ const Landing = () => {
               <span style={{ fontStyle: "italic" }}>?</span>
             </h2>
             <p
-              className="text-xl mb-12"
+              className="text-xl mb-3" // Reduce spacing below paragraph!
               style={{
                 fontFamily: "'Darker Grotesque', sans-serif",
                 fontWeight: 300,
@@ -206,9 +205,8 @@ const Landing = () => {
               Why Kolabing stands out for brands and communities seeking real connections, measurable growth, and
               authentic local engagement.
             </p>
-            {/* Comparison table goes next */}
+            {/* Comparison table goes immediately below, with minimal spacing */}
             <div>
-              {/* Ensure your ComparisonTable uses Darker Grotesque for all its font styling */}
               <ComparisonTable />
             </div>
           </div>
