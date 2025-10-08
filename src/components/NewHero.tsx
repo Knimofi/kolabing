@@ -1,15 +1,16 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 
+// Button styles: less rounded, Darker Grotesque Light, black uppercase
 const BUTTON_STYLE: React.CSSProperties = {
   background: "#FFD861", // Yellow fill
-  color: "#fff", // White text
+  color: "#111", // Black text
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 900,
+  fontWeight: 500,
   fontSize: "1.1rem",
   letterSpacing: "0.05em",
-  borderRadius: "2em", // Rounded pill shape
+  borderRadius: "0.6em", // Less rounded
   border: "none",
   padding: "0.5rem 1.8rem",
   minWidth: "unset",
