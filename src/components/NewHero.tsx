@@ -1,50 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 
-// Inline minimal video carousel component
-const VideoCarouselBg = () => {
-  const videos = [
-    { id: 1, videoSrc: '/videos/ugos-node.mp4' },
-    { id: 2, videoSrc: '/videos/community-event-success.mp4' },
-    { id: 3, videoSrc: '/videos/brand-partnership.mp4' },
-    { id: 4, videoSrc: '/videos/hotel-costa-brava-cafe.mp4' },
-    { id: 5, videoSrc: '/videos/creative-partnership.mp4' },
-    { id: 6, videoSrc: '/videos/business-growth.mp4' },
-    { id: 7, videoSrc: '/videos/local-impact.mp4' },
-    { id: 8, videoSrc: '/videos/mirador-glories.mp4' }
-  ];
-  const duplicatedVideos = [...videos, ...videos, ...videos];
-  return (
-    <>
-      <style>{`
-        @keyframes carousel-scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-266.664%); }
-        }
-        .carousel-animate {
-          animation: carousel-scroll 30s linear infinite;
-        }
-      `}</style>
-      <div className="overflow-hidden w-full h-full">
-        <div className="carousel-animate flex gap-4 h-full items-center">
-          {duplicatedVideos.map((video, index) => (
-            <div key={`${video.id}-${index}`} className="flex-shrink-0 w-[400px] h-full">
-              <video
-                src={video.videoSrc}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover rounded-lg"
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    </>
-  );
-};
-
 const BUTTON_STYLE = {
   background: '#fdd459',
   color: '#232323',
@@ -81,9 +37,16 @@ const NewHero = () => {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center">
-      {/* Video Carousel Background Layer */}
+      {/* Single Fullscreen Video Background Layer */}
       <div className="absolute inset-0 w-full h-full z-0">
-        <VideoCarouselBg />
+        <video
+          src="/videos/ugos-node.mp4" // pick your hero video here!
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+        />
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
