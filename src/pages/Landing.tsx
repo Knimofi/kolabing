@@ -19,7 +19,7 @@ const Landing = () => {
 
       {/* Featured/Intro Section - What your business needs */}
       <main>
-        <section id="business-section" className="px-4 py-24 bg-muted/50">
+        <section id="business-section" className="px-4 py-24 bg-[#fdd459]">
           <div className="container mx-auto max-w-4xl text-center">
             <AnimatedHeroTitle />
             
