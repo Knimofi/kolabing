@@ -16,9 +16,9 @@ const Footer = () => {
             </div>
             <span
               className="text-xl font-extrabold text-white tracking-wide"
-              style={{ fontFamily: "'Rubik', sans-serif" }}
+              style={{ fontFamily: "'Rubik', sans-serif", textTransform: "uppercase" }}
             >
-              Kolabing
+              KOLABING
             </span>
           </div>
 
