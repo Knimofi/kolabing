@@ -17,21 +17,15 @@ const BUTTON_STYLE = {
   transition: 'background 0.14s, box-shadow 0.13s, transform 0.13s'
 };
 
-const BUTTON_HOVER = {
-  background: '#eec700'
-};
+const BUTTON_HOVER = { background: '#eec700' };
 
 const NewHero = () => {
   const [hoverIndex, setHoverIndex] = React.useState<number | null>(null);
-
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
       const offset = 80;
-      window.scrollTo({
-        top: element.offsetTop - offset,
-        behavior: 'smooth'
-      });
+      window.scrollTo({ top: element.offsetTop - offset, behavior: 'smooth' });
     }
   };
 
@@ -40,7 +34,7 @@ const NewHero = () => {
       {/* Single Fullscreen Video Background Layer */}
       <div className="absolute inset-0 w-full h-full z-0">
         <video
-          src="/videos/ugos-node.mp4" // Pick your hero video here!
+          src="/videos/ugos-node.mp4"
           autoPlay
           loop
           muted
@@ -57,68 +51,27 @@ const NewHero = () => {
       {/* Hero Content */}
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
         <div className="flex-1 flex flex-col items-center justify-center px-4 w-full">
-          <div className="text-[#f9f7e8] text-center mb-9 max-w-3xl">
-            {/* First line: Darker Grotesque Light */}
-            <span
-              className="block leading-tight"
+          <div className="mb-9 max-w-3xl">
+            {/* Left-aligned first line */}
+            <div
               style={{
-                fontFamily: "'Darker Grotesque', Arial, Helvetica, sans-serif",
+                color: '#F9F7E8',
+                fontFamily: "'Darker Grotesque', Arial, sans-serif",
                 fontWeight: 300,
                 fontSize: '2.1rem',
                 letterSpacing: '0.01em',
-                marginBottom: '0.95em',
-                lineHeight: 1.14
+                marginBottom: '0.44em',
+                textAlign: 'left',
+                lineHeight: 1.14,
+                paddingLeft: '18px', // visually aligns left inside block
+                width: 'fit-content',
+                marginLeft: 'auto',
+                marginRight: 'auto'
               }}
             >
               His business. Her community.
-            </span>
-            {/* Second line: Rubik Black, all-caps, ! in italics */}
-            <span
-              className="block leading-tight"
+            </div>
+            {/* Bold/block Rubik two-row headline */}
+            <div
               style={{
-                fontFamily: "'Rubik', Arial, Helvetica, sans-serif",
-                fontWeight: 900,
-                textTransform: 'uppercase',
-                fontSize: '2.5rem',
-                letterSpacing: '0.03em',
-                background: 'none',
-                display: 'block',
-                lineHeight: 1.14,
-              }}
-            >
-              KOLABING MAKES THE MATCH
-              <span style={{ fontStyle: 'italic' }}>!</span>
-            </span>
-          </div>
-          {/* Sharp rectangular, small, centered buttons */}
-          <div className="flex flex-row gap-2 mt-5 justify-center items-center w-full">
-            {[{
-              label: "I'm a business/brand",
-              id: 'business-needs'
-            }, {
-              label: "I'm a community",
-              id: 'our-communities'
-            }].map((btn, idx) => (
-              <Button
-                key={btn.id}
-                style={{
-                  ...BUTTON_STYLE,
-                  ...(hoverIndex === idx ? BUTTON_HOVER : {})
-                }}
-                className="select-none"
-                aria-label={btn.label}
-                onClick={() => scrollToSection(btn.id)}
-                onMouseEnter={() => setHoverIndex(idx)}
-                onMouseLeave={() => setHoverIndex(null)}
-              >
-                {btn.label}
-              </Button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default NewHero;
+                color: '#F9F
