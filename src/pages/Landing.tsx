@@ -17,7 +17,7 @@ const howItWorksSteps = [
     step: "1",
     title: (
       <>
-        CREATE A COLLAB <span style={{ fontStyle: "italic" }}>OFFER</span>
+        <span style={{ fontWeight: 800 }}>CREATE A COLLAB OFFER</span>
       </>
     ),
     text: "Businesses or communities post what they offer and what they want in return.",
@@ -27,7 +27,7 @@ const howItWorksSteps = [
     step: "2",
     title: (
       <>
-        RECEIVE <span style={{ fontStyle: "italic" }}>APPLICATIONS</span>
+        <span style={{ fontWeight: 700 }}>RECEIVE</span> <span style={{ fontWeight: 800 }}>APPLICATIONS</span>
       </>
     ),
     text: "Other side applies and suggests a date for the event.",
@@ -37,7 +37,7 @@ const howItWorksSteps = [
     step: "3",
     title: (
       <>
-        CHOOSE & RUN THE <span style={{ fontStyle: "italic" }}>EVENT</span>
+        <span style={{ fontWeight: 700 }}>CHOOSE & RUN THE</span> <span style={{ fontWeight: 800 }}>EVENT</span>
       </>
     ),
     text: "Pick the best fit and host the experience together.",
@@ -47,7 +47,7 @@ const howItWorksSteps = [
     step: "4",
     title: (
       <>
-        RATE & TRACK <span style={{ fontStyle: "italic" }}>RESULTS</span>
+        <span style={{ fontWeight: 700 }}>RATE & TRACK</span> <span style={{ fontWeight: 800 }}>RESULTS</span>
       </>
     ),
     text: "Both rate the collab and see analytics and insights.",
@@ -65,10 +65,10 @@ const Landing = () => {
         <section id="business-section" className="px-4 py-24" style={{ backgroundColor: "#FFD861" }}>
           <div className="container mx-auto max-w-4xl text-center">
             <h1
-              className="text-4xl md:text-6xl mb-4 leading-tight"
+              className="text-2xl md:text-3xl mb-4 leading-tight font-bold"
               style={{
                 fontFamily: "'Darker Grotesque', sans-serif",
-                fontWeight: 300,
+                fontWeight: 700,
                 color: "#000",
                 textTransform: "lowercase",
               }}
@@ -77,15 +77,18 @@ const Landing = () => {
             </h1>
             <AnimatedHeroTitle />
             <p
-              className="text-xl mb-12 max-w-2xl mx-auto"
+              className="text-xl mb-12 max-w-2xl mx-auto text-center"
               style={{
                 fontFamily: "'Darker Grotesque', sans-serif",
                 fontWeight: 300,
                 color: "#000",
+                lineHeight: "1.45",
+                display: "inline-block",
               }}
             >
-              We connect you to the best local communities for events that will bring content, sales and engagement with
-              your local customers
+              We connect you to the best local communities for events that will bring{" "}
+              <span style={{ fontWeight: 700 }}>content</span>, <span style={{ fontWeight: 700 }}>sales</span> and{" "}
+              <span style={{ fontWeight: 700 }}>engagement</span>
             </p>
             <Link to="/auth/sign-up" className="inline-flex">
               <Button
@@ -108,7 +111,7 @@ const Landing = () => {
         <section id="how-it-works" className="py-20 px-4 bg-white">
           <div className="container mx-auto max-w-6xl">
             <h2
-              className="text-3xl md:text-5xl text-center mb-16"
+              className="text-3xl md:text-5xl text-center mb-16 font-bold"
               style={{
                 fontFamily: "'Rubik', sans-serif",
                 fontWeight: 800,
@@ -146,9 +149,6 @@ const Landing = () => {
                       className="text-sm mb-2"
                       style={{
                         fontFamily: "'Rubik', sans-serif",
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.04em",
                         color: "#000",
                         margin: 0,
                       }}
@@ -190,19 +190,23 @@ const Landing = () => {
                 color: "#000",
               }}
             >
-              <span style={{ fontStyle: "italic" }}>why</span> CHOOSE KOLABING
-              <span style={{ fontStyle: "italic" }}>?</span>
+              <span style={{ fontWeight: 800 }}>CHOOSE KOLABING</span>
+              <span style={{ fontWeight: 800 }}>&#63;</span>
             </h2>
             <p
-              className="text-xl mb-3"
+              className="text-xl mb-3 text-center"
               style={{
                 fontFamily: "'Darker Grotesque', sans-serif",
                 fontWeight: 300,
                 color: "#222",
+                lineHeight: "1.45",
+                display: "inline-block",
               }}
             >
-              Why Kolabing stands out for brands and communities seeking real connections, measurable growth, and
-              authentic local engagement.
+              Kolabing stands out for brands and communities seeking{" "}
+              <span style={{ fontWeight: 700 }}>real connections</span>, measurable{" "}
+              <span style={{ fontWeight: 700 }}>growth</span>, and authentic local{" "}
+              <span style={{ fontWeight: 700 }}>engagement</span>.
             </p>
             <div>
               <ComparisonTable />
