@@ -4,16 +4,21 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { format } from "date-fns";
-import { CalendarIcon, MessageCircle, Instagram, Mail } from "lucide-react";
+import { MessageCircle, Instagram, Mail, Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ContactMethods {
   whatsapp?: string;
   instagram?: string;
   email?: string;
+}
+
+interface PreferredDate {
+  date: string;
+  start_time: string;
+  end_time: string;
 }
 
 interface AcceptApplicationModalProps {
@@ -25,6 +30,9 @@ interface AcceptApplicationModalProps {
     instagram?: string;
     email?: string;
   };
+  application: {
+    availability?: string;
+  };
 }
 
 export const AcceptApplicationModal = ({
@@ -33,49 +41,81 @@ export const AcceptApplicationModal = ({
   onConfirm,
   isSubmitting,
   businessProfile,
+  application,
 }: AcceptApplicationModalProps) => {
-  const [selectedDate, setSelectedDate] = useState<Date>();
-  const [selectedTime, setSelectedTime] = useState<string>("");
+  const [selectedDateIndex, setSelectedDateIndex] = useState<string>("");
   const [useWhatsApp, setUseWhatsApp] = useState(false);
   const [useInstagram, setUseInstagram] = useState(false);
   const [useEmail, setUseEmail] = useState(false);
   const [whatsappNumber, setWhatsappNumber] = useState("");
-  const [instagramHandle, setInstagramHandle] = useState(businessProfile.instagram || "");
-  const [emailAddress, setEmailAddress] = useState(businessProfile.email || "");
-  const [useProfileInstagram, setUseProfileInstagram] = useState(true);
-  const [useProfileEmail, setUseProfileEmail] = useState(true);
+  const [instagramHandles, setInstagramHandles] = useState<string[]>([]);
+  const [emailAddresses, setEmailAddresses] = useState<string[]>([]);
+  const [selectedInstagram, setSelectedInstagram] = useState<string[]>([]);
+  const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
+  
+  // Parse preferred dates from application
+  const preferredDates: PreferredDate[] = (() => {
+    try {
+      if (application.availability) {
+        const parsed = JSON.parse(application.availability);
+        return parsed.preferred_dates || [];
+      }
+    } catch (e) {
+      console.error("Failed to parse availability:", e);
+    }
+    return [];
+  })();
 
   useEffect(() => {
+    // Initialize with profile data
+    const initialInstagram = [];
+    const initialEmails = [];
+    
     if (businessProfile.instagram) {
-      setInstagramHandle(businessProfile.instagram);
+      initialInstagram.push(businessProfile.instagram);
     }
     if (businessProfile.email) {
-      setEmailAddress(businessProfile.email);
+      initialEmails.push(businessProfile.email);
+    }
+    
+    setInstagramHandles(initialInstagram);
+    setEmailAddresses(initialEmails);
+    
+    // Auto-select profile defaults
+    if (businessProfile.instagram) {
+      setSelectedInstagram([businessProfile.instagram]);
+    }
+    if (businessProfile.email) {
+      setSelectedEmails([businessProfile.email]);
     }
   }, [businessProfile]);
 
   const handleConfirm = () => {
-    if (!selectedDate || !selectedTime) return;
+    if (!selectedDateIndex) return;
 
     const contactMethods: ContactMethods = {};
     if (useWhatsApp && whatsappNumber) {
       contactMethods.whatsapp = whatsappNumber;
     }
-    if (useInstagram && instagramHandle) {
-      contactMethods.instagram = instagramHandle;
+    if (useInstagram && selectedInstagram.length > 0) {
+      contactMethods.instagram = selectedInstagram.join(", ");
     }
-    if (useEmail && emailAddress) {
-      contactMethods.email = emailAddress;
+    if (useEmail && selectedEmails.length > 0) {
+      contactMethods.email = selectedEmails.join(", ");
     }
 
-    const [hours, minutes] = selectedTime.split(":");
-    const scheduledDateTime = new Date(selectedDate);
+    const selectedDate = preferredDates[parseInt(selectedDateIndex)];
+    const [hours, minutes] = selectedDate.start_time.split(":");
+    const scheduledDateTime = new Date(selectedDate.date);
     scheduledDateTime.setHours(parseInt(hours), parseInt(minutes));
 
     onConfirm(scheduledDateTime, contactMethods);
   };
 
-  const isValid = selectedDate && selectedTime && (useWhatsApp || useInstagram || useEmail);
+  const isValid = selectedDateIndex && (useWhatsApp || useInstagram || useEmail) && 
+    (useWhatsApp ? whatsappNumber : true) &&
+    (useInstagram ? selectedInstagram.length > 0 : true) &&
+    (useEmail ? selectedEmails.length > 0 : true);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -88,45 +128,30 @@ export const AcceptApplicationModal = ({
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Date and Time Selection */}
+          {/* Date Selection from Community Proposals */}
           <div className="space-y-4">
-            <div>
-              <Label className="mb-2 block">Collaboration Date *</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !selectedDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {selectedDate ? format(selectedDate, "PPP") : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={setSelectedDate}
-                    disabled={(date) => date < new Date()}
-                    initialFocus
-                    className="pointer-events-auto"
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div>
-              <Label htmlFor="time" className="mb-2 block">Collaboration Time *</Label>
-              <Input
-                id="time"
-                type="time"
-                value={selectedTime}
-                onChange={(e) => setSelectedTime(e.target.value)}
-              />
-            </div>
+            <Label className="mb-2 block">Select Collaboration Date * (from community's proposals)</Label>
+            {preferredDates.length > 0 ? (
+              <RadioGroup value={selectedDateIndex} onValueChange={setSelectedDateIndex}>
+                <div className="space-y-2">
+                  {preferredDates.map((dateOption, index) => (
+                    <div key={index} className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-accent/50 transition-colors">
+                      <RadioGroupItem value={index.toString()} id={`date-${index}`} />
+                      <Label htmlFor={`date-${index}`} className="flex-1 cursor-pointer">
+                        <div className="font-medium">
+                          {format(new Date(dateOption.date), "EEEE, MMMM d, yyyy")}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {dateOption.start_time} - {dateOption.end_time}
+                        </div>
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </RadioGroup>
+            ) : (
+              <p className="text-sm text-muted-foreground">No preferred dates provided by the community.</p>
+            )}
           </div>
 
           {/* Contact Methods */}
@@ -175,37 +200,54 @@ export const AcceptApplicationModal = ({
                 </Label>
               </div>
               {useInstagram && (
-                <div className="ml-6 space-y-2">
-                  {businessProfile.instagram && (
-                    <div className="flex items-center space-x-2">
+                <div className="ml-6 space-y-3">
+                  {instagramHandles.map((handle, index) => (
+                    <div key={index} className="flex items-center gap-2">
                       <Checkbox
-                        id="use-profile-instagram"
-                        checked={useProfileInstagram}
+                        id={`instagram-${index}`}
+                        checked={selectedInstagram.includes(handle)}
                         onCheckedChange={(checked) => {
-                          setUseProfileInstagram(checked as boolean);
-                          if (checked && businessProfile.instagram) {
-                            setInstagramHandle(businessProfile.instagram);
+                          if (checked) {
+                            setSelectedInstagram([...selectedInstagram, handle]);
+                          } else {
+                            setSelectedInstagram(selectedInstagram.filter(h => h !== handle));
                           }
                         }}
                       />
-                      <Label htmlFor="use-profile-instagram" className="text-sm cursor-pointer">
-                        Use profile Instagram: {businessProfile.instagram}
+                      <Label htmlFor={`instagram-${index}`} className="flex-1 text-sm cursor-pointer">
+                        {handle} {index === 0 && businessProfile.instagram ? "(Profile)" : ""}
                       </Label>
+                      {index > 0 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setInstagramHandles(instagramHandles.filter((_, i) => i !== index));
+                            setSelectedInstagram(selectedInstagram.filter(h => h !== handle));
+                          }}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
                     </div>
-                  )}
-                  {(!businessProfile.instagram || !useProfileInstagram) && (
-                    <div>
-                      <Label htmlFor="instagram-handle" className="text-sm">
-                        Instagram Username
-                      </Label>
-                      <Input
-                        id="instagram-handle"
-                        placeholder="@yourhandle"
-                        value={instagramHandle}
-                        onChange={(e) => setInstagramHandle(e.target.value)}
-                      />
-                    </div>
-                  )}
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const newHandle = prompt("Enter Instagram username (with or without @):");
+                      if (newHandle) {
+                        const cleanHandle = newHandle.startsWith("@") ? newHandle : `@${newHandle}`;
+                        setInstagramHandles([...instagramHandles, cleanHandle]);
+                      }
+                    }}
+                    className="w-full"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Another Instagram
+                  </Button>
                 </div>
               )}
             </div>
@@ -224,38 +266,53 @@ export const AcceptApplicationModal = ({
                 </Label>
               </div>
               {useEmail && (
-                <div className="ml-6 space-y-2">
-                  {businessProfile.email && (
-                    <div className="flex items-center space-x-2">
+                <div className="ml-6 space-y-3">
+                  {emailAddresses.map((email, index) => (
+                    <div key={index} className="flex items-center gap-2">
                       <Checkbox
-                        id="use-profile-email"
-                        checked={useProfileEmail}
+                        id={`email-${index}`}
+                        checked={selectedEmails.includes(email)}
                         onCheckedChange={(checked) => {
-                          setUseProfileEmail(checked as boolean);
-                          if (checked && businessProfile.email) {
-                            setEmailAddress(businessProfile.email);
+                          if (checked) {
+                            setSelectedEmails([...selectedEmails, email]);
+                          } else {
+                            setSelectedEmails(selectedEmails.filter(e => e !== email));
                           }
                         }}
                       />
-                      <Label htmlFor="use-profile-email" className="text-sm cursor-pointer">
-                        Use profile email: {businessProfile.email}
+                      <Label htmlFor={`email-${index}`} className="flex-1 text-sm cursor-pointer">
+                        {email} {index === 0 && businessProfile.email ? "(Profile)" : ""}
                       </Label>
+                      {index > 0 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setEmailAddresses(emailAddresses.filter((_, i) => i !== index));
+                            setSelectedEmails(selectedEmails.filter(e => e !== email));
+                          }}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
                     </div>
-                  )}
-                  {(!businessProfile.email || !useProfileEmail) && (
-                    <div>
-                      <Label htmlFor="email-address" className="text-sm">
-                        Email Address
-                      </Label>
-                      <Input
-                        id="email-address"
-                        type="email"
-                        placeholder="your@email.com"
-                        value={emailAddress}
-                        onChange={(e) => setEmailAddress(e.target.value)}
-                      />
-                    </div>
-                  )}
+                  ))}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const newEmail = prompt("Enter email address:");
+                      if (newEmail && newEmail.includes("@")) {
+                        setEmailAddresses([...emailAddresses, newEmail]);
+                      }
+                    }}
+                    className="w-full"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Another Email
+                  </Button>
                 </div>
               )}
             </div>

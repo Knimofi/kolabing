@@ -115,13 +115,14 @@ const CollaborationCard = ({ collaboration, onView, onStatusUpdate, userType }: 
           </div>
         </div>
 
-        {/* Contact Info for Community Users */}
-        {userType === 'community' && (
-          <ContactInfoCard 
-            scheduledDate={collaboration.scheduled_date}
-            contactMethods={collaboration.contact_methods}
-          />
-        )}
+      {/* Contact Info for Community Users */}
+      {userType === 'community' && (
+        <ContactInfoCard 
+          scheduledDate={collaboration.scheduled_date}
+          contactMethods={collaboration.contact_methods}
+          isCommunityView={true}
+        />
+      )}
 
         {/* Action Buttons */}
         <div className="flex gap-2 pt-2">

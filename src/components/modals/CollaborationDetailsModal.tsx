@@ -181,6 +181,7 @@ const CollaborationDetailsModal = ({
             <ContactInfoCard 
               scheduledDate={collaboration.scheduled_date}
               contactMethods={collaboration.contact_methods}
+              isCommunityView={true}
             />
           )}
 
@@ -214,19 +215,52 @@ const CollaborationDetailsModal = ({
           {renderDeliverables()}
 
           {/* Original Application Details */}
-          {collaboration.application && (
-            <div className="border-t pt-4 space-y-2">
+          {collaboration.applications && (
+            <div className="border-t pt-4 space-y-3">
               <h4 className="font-semibold text-sm">Original Application</h4>
-              {collaboration.application.message && (
+              {(() => {
+                try {
+                  const availability = collaboration.applications.availability;
+                  if (availability) {
+                    const parsed = JSON.parse(availability);
+                    const preferredDates = parsed.preferred_dates || [];
+                    
+                    if (preferredDates.length > 0) {
+                      return (
+                        <div>
+                          <h5 className="text-xs font-medium text-muted-foreground mb-2">Proposed Dates:</h5>
+                          <div className="space-y-2">
+                            {preferredDates.map((dateOption: any, index: number) => (
+                              <div key={index} className="text-sm p-2 bg-muted/50 rounded border">
+                                <div className="font-medium">
+                                  {format(new Date(dateOption.date), "EEEE, MMMM d, yyyy")}
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {dateOption.start_time} - {dateOption.end_time}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    }
+                  }
+                } catch (e) {
+                  // If not JSON, show as text
+                  if (collaboration.applications.availability) {
+                    return (
+                      <div>
+                        <h5 className="text-xs font-medium text-muted-foreground mb-1">Availability:</h5>
+                        <p className="text-sm">{collaboration.applications.availability}</p>
+                      </div>
+                    );
+                  }
+                }
+              })()}
+              {collaboration.applications.message && (
                 <div>
                   <h5 className="text-xs font-medium text-muted-foreground mb-1">Message:</h5>
-                  <p className="text-sm">{collaboration.application.message}</p>
-                </div>
-              )}
-              {collaboration.application.availability && (
-                <div>
-                  <h5 className="text-xs font-medium text-muted-foreground mb-1">Availability:</h5>
-                  <p className="text-sm">{collaboration.application.availability}</p>
+                  <p className="text-sm whitespace-pre-wrap">{collaboration.applications.message}</p>
                 </div>
               )}
             </div>

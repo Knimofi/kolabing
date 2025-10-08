@@ -425,6 +425,7 @@ const BusinessApplications = () => {
             setShowAcceptModal(open);
             if (!open) setApplicationToAccept(null);
           }}
+          application={applicationToAccept}
           onConfirm={handleConfirmAccept}
           isSubmitting={isAccepting}
           businessProfile={businessProfile}
