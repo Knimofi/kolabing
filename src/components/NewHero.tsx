@@ -2,25 +2,27 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 
 const BUTTON_STYLE = {
-  background: "transparent",
-  color: "#F9F7E8",
+  background: "#FFD861", // Yellow fill
+  color: "#fff", // White text
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase" as const,
+  textTransform: "uppercase",
   fontWeight: 700,
   fontSize: "1.1rem",
   letterSpacing: "0.05em",
-  borderRadius: "0px",
-  border: "1px solid #F9F7E8",
-  padding: "0.5rem 1.2rem",
+  borderRadius: "2em", // Rounded pill shape
+  border: "none",
+  padding: "0.5rem 1.8rem",
   minWidth: "unset",
   minHeight: "2.2rem",
-  transition: "all 0.2s ease",
+  transition: "all 0.17s cubic-bezier(.4,1.1,.7,1)",
+  cursor: "pointer",
+  boxShadow: "0 2px 14px 0 rgba(0,0,0,0.05)", // Subtle shadow
 };
 
 const BUTTON_HOVER = {
-  background: "rgba(249, 247, 232, 0.1)",
-  borderColor: "#fdd459",
-  color: "#fdd459",
+  filter: "brightness(0.96)",
+  transform: "scale(1.05)",
+  boxShadow: "0 2px 22px 0 rgba(0,0,0,0.11)",
 };
 
 const NewHero = () => {
@@ -87,7 +89,7 @@ const NewHero = () => {
               <span style={{ fontStyle: "italic" }}>!</span>
             </div>
           </div>
-          {/* Sharp rectangular, small, centered buttons */}
+          {/* Pill-shaped, yellow, centered buttons */}
           <div className="flex flex-row gap-2 mt-5 justify-center items-center w-full">
             {[
               {
