@@ -57,11 +57,11 @@ const OurCommunities = () => {
           <h2
             className="text-2xl md:text-3xl font-semibold mb-1"
             style={{
-              fontFamily: "'Rubik', sans-serif",
+              fontFamily: "'Darker Grotesque', sans-serif",
               color: "#000",
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.03em",
+              fontWeight: 500,
+              textTransform: "none",
+              letterSpacing: "0.01em",
             }}
           >
             We help you grow your community
