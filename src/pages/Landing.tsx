@@ -76,11 +76,61 @@ const Landing = () => {
         <VideoCarousel />
 
         {/* How It Works */}
-        <section id="how-it-works" className="py-20 px-4 bg-muted/50">
-          <div className="container mx-auto max-w-6xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-16">How It Works</h2>
-            {/* ... */}
+        <div className="flex flex-col items-center">
+          <div className="flex flex-col md:flex-row justify-between gap-6 md:gap-8">
+            {[
+              {
+                step: "1",
+                title: "Create a Collab Offer",
+                text: "Businesses or communities post what they offer and what they want in return.",
+                icon: "💡",
+              },
+              {
+                step: "2",
+                title: "Receive Applications",
+                text: "Other side applies and suggests a date for the event.",
+                icon: "💬",
+              },
+              {
+                step: "3",
+                title: "Choose & Run the Event",
+                text: "Pick the best fit and host the experience together.",
+                icon: "🎉",
+              },
+              {
+                step: "4",
+                title: "Rate & Track Results",
+                text: "Both rate the collab and see analytics and insights.",
+                icon: "⭐",
+              },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center justify-center bg-[#FFD861] text-black rounded-2xl shadow-md p-8 flex-1 min-w-[250px] text-center transition-transform hover:scale-105"
+              >
+                <div className="text-4xl mb-3">{item.icon}</div>
+                <h3
+                  className="text-2xl font-semibold mb-2"
+                  style={{ fontFamily: "Darker Grotesque, sans-serif" }}
+                >
+                  {item.title}
+                </h3>
+                <p
+                  className="text-lg leading-snug"
+                  style={{ fontFamily: "Darker Grotesque, sans-serif", fontWeight: 300 }}
+                >
+                  {item.text}
+                </p>
+              </div>
+            ))}
           </div>
+        
+          {/* Decorative arrow line */}
+          <div className="hidden md:flex justify-between items-center w-full mt-8 px-8">
+            <div className="flex-1 border-t-2 border-dashed border-black mx-4" />
+          </div>
+        </div>
+
         </section>
 
         <ComparisonTable />
