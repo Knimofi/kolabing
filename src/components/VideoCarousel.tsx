@@ -1,11 +1,6 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "lucide-react";
 
 const VideoCarousel = () => {
-  const handleBookCall = () => {
-    window.location.href = "https://cal.com/maria-perez/community-platform";
-  };
   const videos = [
     {
       id: 1,
@@ -59,6 +54,7 @@ const VideoCarousel = () => {
 
   // Duplicate videos for seamless infinite scroll
   const duplicatedVideos = [...videos, ...videos, ...videos];
+
   return (
     <>
       <style>{`
@@ -124,15 +120,6 @@ const VideoCarousel = () => {
                 </div>
               ))}
             </div>
-          </div>
-          <div className="text-center mt-16 max-w-3xl mx-auto">
-            <h3 className="text-2xl font-bold text-foreground mb-4 md:text-xs">
-              Find out what's the best event collaboration for your business
-            </h3>
-            <Button onClick={handleBookCall} size="lg" className="group">
-              <Calendar className="mr-2 h-5 w-5" />
-              Book a Call
-            </Button>
           </div>
         </div>
       </section>
