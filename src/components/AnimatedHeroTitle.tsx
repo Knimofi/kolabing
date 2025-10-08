@@ -34,17 +34,7 @@ const AnimatedHeroTitle = () => {
 
   return (
     <div className="text-center">
-      {/* Main headline */}
-      <h1
-        className="text-4xl md:text-6xl font-bold mb-4 leading-tight"
-        style={{
-          fontFamily: "Darker Grotesque, sans-serif",
-          color: "#000",
-        }}
-      >
-        What your business needs
-      </h1>
-      {/* Animated text */}
+      {/* Only animated text, no headline */}
       <div className="h-20 flex items-center justify-center overflow-hidden">
         <div className="relative">
           <div
