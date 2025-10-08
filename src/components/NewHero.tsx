@@ -9,8 +9,8 @@ const BUTTON_STYLE = {
   fontWeight: 400,
   fontSize: '1rem',
   letterSpacing: '0.06em',
-  borderRadius: '0px', // perfectly sharp
-  padding: '0.5rem 1.1rem', // small, fits content
+  borderRadius: '0px',
+  padding: '0.5rem 1.1rem',
   minWidth: 'unset',
   minHeight: '2.2rem',
   boxShadow: '0 2px 10px 0 rgba(253,212,89,0.10)',
@@ -40,7 +40,7 @@ const NewHero = () => {
       {/* Single Fullscreen Video Background Layer */}
       <div className="absolute inset-0 w-full h-full z-0">
         <video
-          src="/videos/ugos-node.mp4" // pick your hero video here!
+          src="/videos/ugos-node.mp4" // Pick your hero video here!
           autoPlay
           loop
           muted
@@ -57,36 +57,37 @@ const NewHero = () => {
       {/* Hero Content */}
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
         <div className="flex-1 flex flex-col items-center justify-center px-4 w-full">
-          <div className="text-white text-center mb-9 max-w-3xl">
-            {/* First line: Goudy Bookletter 1911 */}
+          <div className="text-[#f9f7e8] text-center mb-9 max-w-3xl">
+            {/* First line: Darker Grotesque Light */}
             <span
               className="block leading-tight"
               style={{
-                fontFamily: "'Goudy Bookletter 1911', serif",
-                fontSize: '2.05rem',
-                fontWeight: 500,
+                fontFamily: "'Darker Grotesque', Arial, Helvetica, sans-serif",
+                fontWeight: 300,
+                fontSize: '2.1rem',
                 letterSpacing: '0.01em',
-                marginBottom: '0.50em',
-                lineHeight: 1.13
+                marginBottom: '0.95em',
+                lineHeight: 1.14
               }}
             >
               His business. Her community.
             </span>
-            {/* Second line: Montserrat Black (900), all-caps, ! in italics*/}
+            {/* Second line: Rubik Black, all-caps, ! in italics */}
             <span
               className="block leading-tight"
               style={{
-                fontFamily: "'Montserrat', Arial, Helvetica, sans-serif",
+                fontFamily: "'Rubik', Arial, Helvetica, sans-serif",
                 fontWeight: 900,
                 textTransform: 'uppercase',
-                fontSize: '2.01rem',
-                letterSpacing: '0.06em',
-                display: "block",
-                lineHeight: 1.12,
+                fontSize: '2.5rem',
+                letterSpacing: '0.03em',
+                background: 'none',
+                display: 'block',
+                lineHeight: 1.14,
               }}
             >
               KOLABING MAKES THE MATCH
-              <span style={{ fontStyle: "italic" }}>!</span>
+              <span style={{ fontStyle: 'italic' }}>!</span>
             </span>
           </div>
           {/* Sharp rectangular, small, centered buttons */}
@@ -121,4 +122,3 @@ const NewHero = () => {
 };
 
 export default NewHero;
-
