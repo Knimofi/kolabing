@@ -39,10 +39,11 @@ const Landing = () => {
             >
               what your business needs
             </h1>
+
             {/* Animated rotating text */}
             <AnimatedHeroTitle />
 
-            {/* Subtitle: darker grotesque, light, black */}
+            {/* Subtitle */}
             <p
               className="text-xl mb-12 max-w-2xl mx-auto"
               style={{
@@ -55,7 +56,7 @@ const Landing = () => {
               your local customers
             </p>
 
-            {/* CTA: Black filled button, white text turns yellow on hover */}
+            {/* CTA Button */}
             <Link to="/auth/sign-up" className="inline-flex">
               <Button
                 size="lg"
@@ -75,62 +76,75 @@ const Landing = () => {
 
         <VideoCarousel />
 
-        {/* How It Works */}
-        <div className="flex flex-col items-center">
-          <div className="flex flex-col md:flex-row justify-between gap-6 md:gap-8">
-            {[
-              {
-                step: "1",
-                title: "Create a Collab Offer",
-                text: "Businesses or communities post what they offer and what they want in return.",
-                icon: "💡",
-              },
-              {
-                step: "2",
-                title: "Receive Applications",
-                text: "Other side applies and suggests a date for the event.",
-                icon: "💬",
-              },
-              {
-                step: "3",
-                title: "Choose & Run the Event",
-                text: "Pick the best fit and host the experience together.",
-                icon: "🎉",
-              },
-              {
-                step: "4",
-                title: "Rate & Track Results",
-                text: "Both rate the collab and see analytics and insights.",
-                icon: "⭐",
-              },
-            ].map((item, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center justify-center bg-[#FFD861] text-black rounded-2xl shadow-md p-8 flex-1 min-w-[250px] text-center transition-transform hover:scale-105"
-              >
-                <div className="text-4xl mb-3">{item.icon}</div>
-                <h3
-                  className="text-2xl font-semibold mb-2"
-                  style={{ fontFamily: "Darker Grotesque, sans-serif" }}
-                >
-                  {item.title}
-                </h3>
-                <p
-                  className="text-lg leading-snug"
-                  style={{ fontFamily: "Darker Grotesque, sans-serif", fontWeight: 300 }}
-                >
-                  {item.text}
-                </p>
-              </div>
-            ))}
-          </div>
-        
-          {/* Decorative arrow line */}
-          <div className="hidden md:flex justify-between items-center w-full mt-8 px-8">
-            <div className="flex-1 border-t-2 border-dashed border-black mx-4" />
-          </div>
-        </div>
+        {/* HOW IT WORKS SECTION */}
+        <section id="how-it-works" className="py-20 px-4 bg-white">
+          <div className="container mx-auto max-w-6xl">
+            <h2
+              className="text-3xl md:text-5xl font-bold text-center mb-16"
+              style={{
+                fontFamily: "Darker Grotesque, sans-serif",
+                color: "#000",
+                textTransform: "lowercase",
+              }}
+            >
+              how it works
+            </h2>
 
+            <div className="flex flex-col items-center">
+              <div className="flex flex-col md:flex-row justify-between gap-6 md:gap-8 w-full">
+                {[
+                  {
+                    step: "1",
+                    title: "Create a Collab Offer",
+                    text: "Businesses or communities post what they offer and what they want in return.",
+                    icon: "💡",
+                  },
+                  {
+                    step: "2",
+                    title: "Receive Applications",
+                    text: "Other side applies and suggests a date for the event.",
+                    icon: "💬",
+                  },
+                  {
+                    step: "3",
+                    title: "Choose & Run the Event",
+                    text: "Pick the best fit and host the experience together.",
+                    icon: "🎉",
+                  },
+                  {
+                    step: "4",
+                    title: "Rate & Track Results",
+                    text: "Both rate the collab and see analytics and insights.",
+                    icon: "⭐",
+                  },
+                ].map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col items-center justify-center bg-[#FFD861] text-black rounded-2xl shadow-md p-8 flex-1 min-w-[250px] text-center transition-transform hover:scale-105"
+                  >
+                    <div className="text-4xl mb-3">{item.icon}</div>
+                    <h3 className="text-2xl font-semibold mb-2" style={{ fontFamily: "Darker Grotesque, sans-serif" }}>
+                      {item.title}
+                    </h3>
+                    <p
+                      className="text-lg leading-snug"
+                      style={{
+                        fontFamily: "Darker Grotesque, sans-serif",
+                        fontWeight: 300,
+                      }}
+                    >
+                      {item.text}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Decorative arrow line (optional aesthetic element) */}
+              <div className="hidden md:flex justify-between items-center w-full mt-8 px-8">
+                <div className="flex-1 border-t-2 border-dashed border-black mx-4" />
+              </div>
+            </div>
+          </div>
         </section>
 
         <ComparisonTable />
