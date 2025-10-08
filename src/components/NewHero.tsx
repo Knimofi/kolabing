@@ -1,11 +1,11 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 
-const BUTTON_STYLE = {
+const BUTTON_STYLE: React.CSSProperties = {
   background: "#FFD861", // Yellow fill
   color: "#fff", // White text
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 700,
   fontSize: "1.1rem",
   letterSpacing: "0.05em",

@@ -485,7 +485,7 @@ export type Database = {
           filled_by_profile_id: string
           id: string
           score: number | null
-          submitted_at: string
+          submitted_at: string | null
         }
         Insert: {
           answers?: Json
@@ -493,7 +493,7 @@ export type Database = {
           filled_by_profile_id: string
           id?: string
           score?: number | null
-          submitted_at?: string
+          submitted_at?: string | null
         }
         Update: {
           answers?: Json
@@ -501,7 +501,7 @@ export type Database = {
           filled_by_profile_id?: string
           id?: string
           score?: number | null
-          submitted_at?: string
+          submitted_at?: string | null
         }
         Relationships: [
           {

@@ -49,41 +49,59 @@ const SurveyModal = ({
   const [satisfactionRating, setSatisfactionRating] = useState(0);
   const [communityRating, setCommunityRating] = useState(0);
 
-  // Fetch survey if only collaborationId provided
+  // Fetch survey if only collaborationId provided (with retry for race conditions)
   React.useEffect(() => {
     const fetchSurvey = async () => {
       if (!propSurveyId && collaborationId && currentUserProfileId && open) {
         setLoading(true);
-        try {
-          const { data, error } = await supabase
-            .from('surveys')
-            .select('id')
-            .eq('collaboration_id', collaborationId)
-            .eq('filled_by_profile_id', currentUserProfileId)
-            .is('submitted_at', null)
-            .maybeSingle();
+        let attempts = 0;
+        const maxAttempts = 3;
+        
+        while (attempts < maxAttempts) {
+          try {
+            const { data, error } = await supabase
+              .from('surveys')
+              .select('id')
+              .eq('collaboration_id', collaborationId)
+              .eq('filled_by_profile_id', currentUserProfileId)
+              .is('submitted_at', null)
+              .maybeSingle();
 
-          if (error) throw error;
-          if (data) {
-            setActualSurveyId(data.id);
-          } else {
-            toast({
-              title: 'Error',
-              description: 'No pending survey found for this collaboration',
-              variant: 'destructive',
-            });
-            onOpenChange(false);
+            if (error) throw error;
+            if (data) {
+              setActualSurveyId(data.id);
+              setLoading(false);
+              return;
+            }
+            
+            // If no data found and not last attempt, wait and retry
+            if (attempts < maxAttempts - 1) {
+              await new Promise(resolve => setTimeout(resolve, 400));
+              attempts++;
+            } else {
+              // Last attempt failed
+              toast({
+                title: 'Error',
+                description: 'No pending survey found for this collaboration',
+                variant: 'destructive',
+              });
+              onOpenChange(false);
+              setLoading(false);
+              return;
+            }
+          } catch (error: any) {
+            console.error('Error fetching survey:', error);
+            if (attempts === maxAttempts - 1) {
+              toast({
+                title: 'Error',
+                description: 'Failed to load survey',
+                variant: 'destructive',
+              });
+              onOpenChange(false);
+            }
+            setLoading(false);
+            return;
           }
-        } catch (error: any) {
-          console.error('Error fetching survey:', error);
-          toast({
-            title: 'Error',
-            description: 'Failed to load survey',
-            variant: 'destructive',
-          });
-          onOpenChange(false);
-        } finally {
-          setLoading(false);
         }
       } else if (propSurveyId) {
         setActualSurveyId(propSurveyId);

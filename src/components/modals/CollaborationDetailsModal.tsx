@@ -324,69 +324,81 @@ const CollaborationDetailsModal = ({
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <h5 className="text-sm font-medium">Your Feedback</h5>
-                      {userSurvey?.submitted_at ? (
-                        <Badge variant="default" className="bg-green-600">
-                          ✓ Feedback Sent
-                        </Badge>
-                      ) : (
-                        <Badge variant="secondary" className="bg-orange-100 text-orange-700">
-                          🟠 Pending Feedback
-                        </Badge>
-                      )}
+                      {(() => {
+                        const isSubmitted = userSurvey?.submitted_at && userSurvey?.answers && Object.keys(userSurvey.answers || {}).length > 0;
+                        return isSubmitted ? (
+                          <Badge variant="default" className="bg-green-600">
+                            ✓ Feedback Sent
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="bg-orange-100 text-orange-700">
+                            🟠 Pending Feedback
+                          </Badge>
+                        );
+                      })()}
                     </div>
-                    {userSurvey?.submitted_at ? (
-                      <FeedbackSummary 
-                        surveys={[userSurvey]} 
-                        userType={userType}
-                        isUserFeedback={true}
-                      />
-                    ) : (
-                      <div className="border rounded-lg p-4 text-center">
-                        <p className="text-sm text-muted-foreground mb-3">
-                          You haven't submitted feedback yet
-                        </p>
-                        {onOpenFeedbackModal && (
-                          <Button
-                            size="sm"
-                            onClick={() => {
-                              onOpenFeedbackModal(collaboration.id);
-                              onOpenChange(false);
-                            }}
-                          >
-                            Add Feedback
-                          </Button>
-                        )}
-                      </div>
-                    )}
+                    {(() => {
+                      const isSubmitted = userSurvey?.submitted_at && userSurvey?.answers && Object.keys(userSurvey.answers || {}).length > 0;
+                      return isSubmitted ? (
+                        <FeedbackSummary 
+                          surveys={[userSurvey]} 
+                          userType={userType}
+                          isUserFeedback={true}
+                        />
+                      ) : (
+                        <div className="border rounded-lg p-4 text-center">
+                          <p className="text-sm text-muted-foreground mb-3">
+                            You haven't submitted feedback yet
+                          </p>
+                          {onOpenFeedbackModal && (
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                onOpenFeedbackModal(collaboration.id);
+                                onOpenChange(false);
+                              }}
+                            >
+                              Add Feedback
+                            </Button>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   {/* Partner Feedback */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <h5 className="text-sm font-medium">Partner's Feedback</h5>
-                      {partnerSurvey?.submitted_at ? (
-                        <Badge variant="default" className="bg-green-600">
-                          ✓ Feedback Received
-                        </Badge>
-                      ) : (
-                        <Badge variant="secondary" className="bg-orange-100 text-orange-700">
-                          🟠 Pending
-                        </Badge>
-                      )}
+                      {(() => {
+                        const isPartnerSubmitted = partnerSurvey?.submitted_at && partnerSurvey?.answers && Object.keys(partnerSurvey.answers || {}).length > 0;
+                        return isPartnerSubmitted ? (
+                          <Badge variant="default" className="bg-green-600">
+                            ✓ Feedback Received
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="bg-orange-100 text-orange-700">
+                            🟠 Pending
+                          </Badge>
+                        );
+                      })()}
                     </div>
-                    {partnerSurvey?.submitted_at ? (
-                      <FeedbackSummary 
-                        surveys={[partnerSurvey]} 
-                        userType={userType === 'business' ? 'community' : 'business'}
-                        isUserFeedback={false}
-                      />
-                    ) : (
-                      <div className="border rounded-lg p-4 text-center">
-                        <p className="text-sm text-muted-foreground">
-                          Partner hasn't submitted feedback yet
-                        </p>
-                      </div>
-                    )}
+                    {(() => {
+                      const isPartnerSubmitted = partnerSurvey?.submitted_at && partnerSurvey?.answers && Object.keys(partnerSurvey.answers || {}).length > 0;
+                      return isPartnerSubmitted ? (
+                        <FeedbackSummary 
+                          surveys={[partnerSurvey]} 
+                          userType={userType === 'business' ? 'community' : 'business'}
+                          isUserFeedback={false}
+                        />
+                      ) : (
+                        <div className="border rounded-lg p-4 text-center">
+                          <p className="text-sm text-muted-foreground">
+                            Partner hasn't submitted feedback yet
+                          </p>
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
               )}
