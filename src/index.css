@@ -109,7 +109,27 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground font-darker-grotesque antialiased;
+    font-weight: 300;
+    color: #000;
+  }
+
+  /* Global typography rules */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-rubik;
+    font-weight: 700;
+  }
+
+  p, span, div {
+    @apply font-darker-grotesque;
+    font-weight: 300;
+    color: #000;
+  }
+
+  button {
+    @apply font-darker-grotesque;
+    font-weight: 500;
+    text-transform: uppercase;
   }
 
   /* Smooth scrolling */
