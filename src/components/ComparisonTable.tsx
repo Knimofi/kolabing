@@ -36,11 +36,10 @@ const ComparisonTable = () => {
     },
   ];
 
-  const getIcon = (value: string, isKolabing: boolean = false) => {
+  const getIcon = (value, isKolabing = false) => {
     if (isKolabing) {
-      return <Check className="w-5 h-5 text-green-400" />;
+      return <Check className="w-5 h-5 text-green-600" />;
     }
-
     if (
       value.includes("limited") ||
       value.includes("low") ||
@@ -51,70 +50,114 @@ const ComparisonTable = () => {
       value.includes("hard to measure") ||
       value.includes("inconsistent")
     ) {
-      return <X className="w-5 h-5 text-red-400" />;
+      return <X className="w-5 h-5 text-red-600" />;
     }
-
-    return <Minus className="w-5 h-5 text-yellow-400" />;
+    return <Minus className="w-5 h-5 text-yellow-500" />;
   };
 
-  const formatValue = (value: string) => {
-    return value.charAt(0).toUpperCase() + value.slice(1);
-  };
+  const formatValue = (value) => value.charAt(0).toUpperCase() + value.slice(1);
 
   return (
-    <section className="py-20 px-4">
+    <section className="py-10 px-4">
       <div className="container mx-auto max-w-4xl">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-rubik font-bold text-foreground mb-4">Why Choose Kolabing?</h2>
-          <p className="text-xl font-darker-grotesque text-muted-foreground max-w-2xl mx-auto">
-            Compare us with traditional advertising and influencer marketing
-          </p>
-        </div>
-
         <div className="overflow-x-auto rounded-lg">
-          <Table className="w-full bg-black">
+          <Table className="w-full" style={{ background: "transparent" }}>
             <TableHeader>
-              <TableRow className="border-gray-800 hover:bg-black">
-                <TableHead className="text-left font-rubik font-bold text-lg text-white">Features</TableHead>
-                <TableHead className="text-center font-rubik font-bold text-lg text-white bg-gray-900">
-                  Kolabing
+              <TableRow className="border border-black">
+                <TableHead
+                  className="
+                    text-center
+                    font-darker-grotesque
+                    font-bold
+                    uppercase
+                    text-lg
+                    text-black
+                    border border-black
+                    bg-transparent
+                  "
+                  style={{ letterSpacing: "0.06em" }}
+                >
+                  FEATURES
                 </TableHead>
-                <TableHead className="text-center font-rubik font-bold text-lg text-white">Traditional Ads</TableHead>
-                <TableHead className="text-center font-rubik font-bold text-lg text-white">Influencers</TableHead>
+                <TableHead
+                  className="
+                    text-center
+                    font-darker-grotesque
+                    font-bold
+                    uppercase
+                    text-lg
+                    text-black
+                    border border-black
+                  "
+                  style={{
+                    backgroundColor: "#FFD861",
+                    letterSpacing: "0.06em",
+                  }}
+                >
+                  KOLABING
+                </TableHead>
+                <TableHead
+                  className="
+                    text-center
+                    font-darker-grotesque
+                    font-bold
+                    uppercase
+                    text-lg
+                    text-black
+                    border border-black
+                    bg-transparent
+                  "
+                  style={{ letterSpacing: "0.06em" }}
+                >
+                  TRADITIONAL ADS
+                </TableHead>
+                <TableHead
+                  className="
+                    text-center
+                    font-darker-grotesque
+                    font-bold
+                    uppercase
+                    text-lg
+                    text-black
+                    border border-black
+                    bg-transparent
+                  "
+                  style={{ letterSpacing: "0.06em" }}
+                >
+                  INFLUENCERS
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {comparisonData.map((row, index) => (
-                <TableRow key={index} className="border-gray-800 hover:bg-gray-900">
-                  <TableCell className="font-darker-grotesque font-semibold text-white py-6">{row.feature}</TableCell>
-                  <TableCell className="text-center py-6 bg-gray-900">
+                <TableRow key={index} className="border border-black">
+                  <TableCell className="text-center font-darker-grotesque font-semibold text-black py-6 uppercase border border-black bg-transparent">
+                    {row.feature}
+                  </TableCell>
+                  <TableCell className="text-center py-6 border border-black" style={{ backgroundColor: "#FFD861" }}>
                     <div className="flex items-center justify-center space-x-2">
                       {getIcon(row.kolabing, true)}
-                      <span className="font-darker-grotesque font-medium text-white">{formatValue(row.kolabing)}</span>
+                      <span className="font-darker-grotesque font-bold text-black uppercase">
+                        {formatValue(row.kolabing)}
+                      </span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-center py-6">
+                  <TableCell className="text-center py-6 font-darker-grotesque text-black uppercase border border-black bg-transparent">
                     <div className="flex items-center justify-center space-x-2">
                       {getIcon(row.ads)}
-                      <span className="font-darker-grotesque text-gray-300">{formatValue(row.ads)}</span>
+                      <span className="font-darker-grotesque text-black uppercase">{formatValue(row.ads)}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-center py-6">
+                  <TableCell className="text-center py-6 font-darker-grotesque text-black uppercase border border-black bg-transparent">
                     <div className="flex items-center justify-center space-x-2">
                       {getIcon(row.influencers)}
-                      <span className="font-darker-grotesque text-gray-300">{formatValue(row.influencers)}</span>
+                      <span className="font-darker-grotesque text-black uppercase">{formatValue(row.influencers)}</span>
                     </div>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </div>
-
-        <div className="text-center mt-12">
-          <p className="font-darker-grotesque text-muted-foreground max-w-2xl mx-auto">
-            Get authentic community partnerships with measurable results and transparent performance tracking
-          </p>
         </div>
       </div>
     </section>
