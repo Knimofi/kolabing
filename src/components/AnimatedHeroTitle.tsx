@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
-const rotatingTexts = ['More Clients', 'Better Content', 'Communities'];
+import React, { useState, useEffect } from "react";
+
+// Animated text options
+const rotatingTexts = ["More Clients", "Better Content", "Communities"];
 const typingSpeed = 80;
 const pauseBeforeNext = 300;
+
 const AnimatedHeroTitle = () => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
-  const [displayedText, setDisplayedText] = useState('');
+  const [displayedText, setDisplayedText] = useState("");
   const [isTyping, setIsTyping] = useState(true);
+
   useEffect(() => {
     let timeout;
     if (isTyping) {
@@ -20,27 +24,60 @@ const AnimatedHeroTitle = () => {
       }
     } else {
       timeout = setTimeout(() => {
-        setCurrentTextIndex(prev => (prev + 1) % rotatingTexts.length);
-        setDisplayedText('');
+        setCurrentTextIndex((prev) => (prev + 1) % rotatingTexts.length);
+        setDisplayedText("");
         setIsTyping(true);
-      }, 500); // Short pause before new word starts typing
+      }, 500);
     }
     return () => clearTimeout(timeout);
   }, [isTyping, displayedText, currentTextIndex]);
-  return <div className="text-center">
-      <h1 className="text-4xl md:text-6xl text-foreground mb-4 leading-tight font-bold">
+
+  return (
+    <div className="text-center">
+      {/* Main headline */}
+      <h1
+        className="text-4xl md:text-6xl font-bold mb-4 leading-tight"
+        style={{
+          fontFamily: "Darker Grotesque, sans-serif",
+          color: "#000",
+        }}
+      >
         What your business needs
       </h1>
+      {/* Animated text */}
       <div className="h-20 flex items-center justify-center overflow-hidden">
         <div className="relative">
-          <div className="text-3xl md:text-5xl font-bold text-primary transition-all duration-500 flex items-center justify-center whitespace-nowrap" style={{
-          lineHeight: 1.0
-        }}>
+          <div
+            className="text-3xl md:text-5xl font-bold transition-all duration-500 flex items-center justify-center whitespace-nowrap"
+            style={{
+              lineHeight: 1.0,
+              fontFamily: "Rubik, sans-serif",
+              color: "#fff",
+              textTransform: "uppercase",
+            }}
+          >
             {displayedText}
-            <span className="animate-pulse">|</span>
+            <span className="animate-pulse" style={{ color: "#fff" }}>
+              |
+            </span>
           </div>
         </div>
       </div>
-    </div>;
+      {/* Subtitle example */}
+      <div
+        style={{
+          fontFamily: "Darker Grotesque, sans-serif",
+          color: "#000",
+          fontSize: "1.5rem",
+          marginTop: "24px",
+        }}
+      >
+        {/* Put your subtitle here if needed */}
+        We connect you to the best local communities for events that will bring content, sales and engagement with your
+        local customers
+      </div>
+    </div>
+  );
 };
+
 export default AnimatedHeroTitle;
