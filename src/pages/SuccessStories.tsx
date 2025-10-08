@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import VideoCarousel from '@/components/VideoCarousel';
-import VideoModal from '@/components/VideoModal';
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import VideoCarousel from "@/components/VideoCarousel";
+import VideoModal from "@/components/VideoModal";
 
 interface SuccessStory {
   id: string;
@@ -24,27 +24,26 @@ interface SuccessStory {
 const SuccessStories = () => {
   const [selectedVideo, setSelectedVideo] = useState<{ url: string; author: string } | null>(null);
 
-  const { data: stories, isLoading, error } = useQuery({
-    queryKey: ['success-stories'],
+  const {
+    data: stories,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["success-stories"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('success_stories')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("success_stories")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       return data as SuccessStory[];
     },
   });
 
-  const backgroundImages = [
-    '/background-section1.png',
-    '/background-section2.png',
-    '/background-section3.png'
-  ];
+  const backgroundImages = ["/background-section1.png", "/background-section2.png", "/background-section3.png"];
 
   const SuccessStoryCard = ({ story, index }: { story: SuccessStory; index: number }) => {
-    // Use a faint bg image for a subtle visual effect
     const bgImage = backgroundImages[index % backgroundImages.length];
 
     return (
@@ -63,7 +62,7 @@ const SuccessStories = () => {
                   alt={story.name}
                   className="w-14 h-14 rounded-full object-cover border-2 border-black/10 group-hover:border-black/60 transition-colors"
                   onError={(e) => {
-                    e.currentTarget.src = '/placeholder.svg';
+                    e.currentTarget.src = "/placeholder.svg";
                   }}
                 />
               </div>
@@ -86,10 +85,12 @@ const SuccessStories = () => {
                   <p
                     className="font-bold text-black text-base md:text-lg m-0"
                     style={{
-                      fontFamily: "'Darker Grotesque', sans-serif"
+                      fontFamily: "'Darker Grotesque', sans-serif",
                     }}
-                  >{story.name}</p>
-                  <p className="text-black/80 m-0" style={{ fontFamily: "'Darker Grotesque', sans-serif' }}>
+                  >
+                    {story.name}
+                  </p>
+                  <p className="text-black/80 m-0" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
                     {story.role} at <span style={{ color: "#FFD861", fontWeight: 600 }}>{story.company}</span>
                   </p>
                 </div>
@@ -108,7 +109,7 @@ const SuccessStories = () => {
                       padding: "7px 18px",
                       fontSize: "1rem",
                       marginLeft: 10,
-                      whiteSpace: "nowrap"
+                      whiteSpace: "nowrap",
                     }}
                   >
                     Play Recap
@@ -167,7 +168,8 @@ const SuccessStories = () => {
               fontWeight: 400,
             }}
           >
-            Real partnerships that deliver results. Learn from proven strategies and authentic community collaborations that helped businesses make more sales, better content, and more engagement with the local audience.
+            Real partnerships that deliver results. Learn from proven strategies and authentic community collaborations
+            that helped businesses make more sales, better content, and more engagement with the local audience.
           </p>
         </div>
       </section>
@@ -186,7 +188,7 @@ const SuccessStories = () => {
                 fontFamily: "'Rubik', sans-serif",
                 fontWeight: 800,
                 textTransform: "uppercase",
-                color: "#000"
+                color: "#000",
               }}
             >
               Real people, real results
@@ -195,7 +197,7 @@ const SuccessStories = () => {
               className="text-lg max-w-2xl mx-auto mb-4"
               style={{
                 fontFamily: "'Darker Grotesque', sans-serif",
-                color: "#000"
+                color: "#000",
               }}
             >
               Discover how our community kolabs delivered measurable impact for local businesses across Barcelona
@@ -228,7 +230,10 @@ const SuccessStories = () => {
             </Carousel>
           ) : (
             <div className="text-center py-12">
-              <h3 className="text-2xl font-semibold text-foreground mb-4" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
+              <h3
+                className="text-2xl font-semibold text-foreground mb-4"
+                style={{ fontFamily: "'Darker Grotesque', sans-serif" }}
+              >
                 No Success Stories Yet
               </h3>
               <p className="text-muted-foreground">Check back soon for inspiring community partnership stories.</p>
@@ -246,7 +251,7 @@ const SuccessStories = () => {
               fontFamily: "'Rubik', sans-serif",
               fontWeight: 800,
               color: "#FFD861",
-              textTransform: "uppercase"
+              textTransform: "uppercase",
             }}
           >
             Ready to Create Your Own Success Story?
@@ -255,7 +260,7 @@ const SuccessStories = () => {
             className="text-xl mb-7 leading-relaxed"
             style={{
               fontFamily: "'Darker Grotesque', sans-serif",
-              color: "#fff"
+              color: "#fff",
             }}
           >
             Join hundreds of businesses already creating authentic connections through our platform
@@ -270,7 +275,7 @@ const SuccessStories = () => {
               padding: "18px 56px",
               fontSize: "1.25rem",
               textTransform: "uppercase",
-              border: "none"
+              border: "none",
             }}
           >
             Start Your First Event Kolab
