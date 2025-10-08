@@ -1,17 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Calendar } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AnimatedHeroTitle from "@/components/AnimatedHeroTitle";
 import VideoCarousel from "@/components/VideoCarousel";
 import ComparisonTable from "@/components/ComparisonTable";
-import BookCallCTA from "@/components/BookCallCTA";
 import PricingSection from "@/components/PricingSection";
 import NewHero from "@/components/NewHero";
 
-/* Make sure you load Rubik Bold+ExtraBold and Darker Grotesque in your global CSS or via Tailwind config */
+/* Rubik Bold+ExtraBold and Darker Grotesque should be loaded globally via CSS/Tailwind config */
 
 const howItWorksSteps = [
   {
@@ -85,7 +84,7 @@ const Landing = () => {
                 color: "#000",
               }}
             >
-              we connect you to the best local communities for events that will bring content, sales and engagement with
+              We connect you to the best local communities for events that will bring content, sales and engagement with
               your local customers
             </p>
             <Link to="/auth/sign-up" className="inline-flex">
@@ -195,7 +194,7 @@ const Landing = () => {
               <span style={{ fontStyle: "italic" }}>?</span>
             </h2>
             <p
-              className="text-xl mb-3" // Reduce spacing below paragraph!
+              className="text-xl mb-3"
               style={{
                 fontFamily: "'Darker Grotesque', sans-serif",
                 fontWeight: 300,
@@ -205,15 +204,56 @@ const Landing = () => {
               Why Kolabing stands out for brands and communities seeking real connections, measurable growth, and
               authentic local engagement.
             </p>
-            {/* Comparison table goes immediately below, with minimal spacing */}
             <div>
               <ComparisonTable />
             </div>
           </div>
         </section>
 
+        {/* BOOK A CALL CTA SECTION */}
+        <section className="py-14 px-4 bg-[#FFD861]">
+          <div className="container mx-auto max-w-3xl text-center">
+            <h3
+              className="text-2xl md:text-3xl font-bold mb-6"
+              style={{
+                fontFamily: "'Darker Grotesque', sans-serif",
+                textTransform: "uppercase",
+                letterSpacing: "0.03em",
+                color: "#000",
+              }}
+            >
+              Got any doubts? <span style={{ fontStyle: "italic" }}>Ask away!</span>
+            </h3>
+            <a
+              href="https://cal.com/maria-perez/community-platform"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block"
+            >
+              <Button
+                size="lg"
+                style={{
+                  fontFamily: "'Darker Grotesque', sans-serif",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  background: "#000",
+                  color: "#FFD861",
+                  border: "2px solid #000",
+                  paddingLeft: 32,
+                  paddingRight: 32,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                <Calendar className="mr-2 h-5 w-5" />
+                Book a Call
+              </Button>
+            </a>
+          </div>
+        </section>
+
         <PricingSection />
-        <BookCallCTA />
       </main>
       <Footer />
     </div>
