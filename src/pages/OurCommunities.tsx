@@ -54,6 +54,18 @@ const OurCommunities = () => {
       {/* Community Hero Section */}
       <section className="py-24 px-4 sm:px-8 lg:px-12 bg-[#FFD861]">
         <div className="max-w-7xl mx-auto text-center">
+          <h2
+            className="text-2xl md:text-3xl font-semibold mb-1"
+            style={{
+              fontFamily: "'Rubik', sans-serif",
+              color: "#000",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.03em",
+            }}
+          >
+            We help you grow your community
+          </h2>
           <AnimatedCommunityHeroTitle />
           <div className="max-w-2xl mx-auto mt-2 mb-10">
             <p
@@ -65,11 +77,7 @@ const OurCommunities = () => {
                 lineHeight: "1.4",
               }}
             >
-              We work for the communities.
-              <br />
-              From recurring venues to <span style={{ fontWeight: 700 }}>sponsors</span> &{" "}
-              <span style={{ fontWeight: 700 }}>deals</span>, we help you grow your community because{" "}
-              <span style={{ fontWeight: 700 }}>communities are the future</span> and we are here to stay.
+              From recurring venues to sponsors & deals, we help you grow your community.
             </p>
             <Button
               size="lg"
@@ -118,7 +126,6 @@ const OurCommunities = () => {
               Discover amazing communities making a difference and creating impact!
             </p>
           </div>
-
           {loading ? (
             <div className="flex justify-center items-center py-20">
               <div className="animate-pulse text-muted-foreground">Loading communities...</div>
@@ -206,14 +213,13 @@ const OurCommunities = () => {
               style={{
                 fontFamily: "'Rubik', sans-serif",
                 fontWeight: 800,
-                color: "#000",
+                color: "#FFD861",
                 textTransform: "uppercase",
               }}
             >
               Frequently Asked Questions
             </h2>
           </div>
-
           <Accordion type="single" collapsible className="space-y-4">
             <AccordionItem value="item-1">
               <AccordionTrigger className="text-left text-lg font-semibold">
