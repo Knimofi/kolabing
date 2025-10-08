@@ -11,23 +11,48 @@ import BookCallCTA from "@/components/BookCallCTA";
 import PricingSection from "@/components/PricingSection";
 import NewHero from "@/components/NewHero";
 
+/* 
+  NOTE: Ensure these font-families are loaded in your project:
+    - Rubik Extra Bold and Rubik Bold (for headings and titles)
+    - Darker Grotesque Regular (for subtitles/text)
+*/
+
+const howItWorksSteps = [
+  {
+    step: "1",
+    title: "Create a Collab Offer",
+    text: "Businesses or communities post what they offer and what they want in return.",
+    icon: "💡",
+  },
+  {
+    step: "2",
+    title: "Receive Applications",
+    text: "Other side applies and suggests a date for the event.",
+    icon: "💬",
+  },
+  {
+    step: "3",
+    title: "Choose & Run the Event",
+    text: "Pick the best fit and host the experience together.",
+    icon: "🎉",
+  },
+  {
+    step: "4",
+    title: "Rate & Track Results",
+    text: "Both rate the collab and see analytics and insights.",
+    icon: "⭐",
+  },
+];
+
 const Landing = () => {
   return (
     <div className="min-h-screen background">
       <Navbar />
-
-      {/* New Hero Section with Video Background */}
       <NewHero />
-
-      {/* WHAT YOUR BUSINESS NEEDS - YELLOW SECTION */}
       <main>
-        <section
-          id="business-section"
-          className="px-4 py-24"
-          style={{ backgroundColor: "#FFD861" }} // Yellow background
-        >
+        {/* WHAT YOUR BUSINESS NEEDS */}
+        <section id="business-section" className="px-4 py-24" style={{ backgroundColor: "#FFD861" }}>
           <div className="container mx-auto max-w-4xl text-center">
-            {/* Headline: all lowercase, Darker Grotesque light */}
             <h1
               className="text-4xl md:text-6xl mb-4 leading-tight"
               style={{
@@ -39,11 +64,7 @@ const Landing = () => {
             >
               what your business needs
             </h1>
-
-            {/* Animated rotating text */}
             <AnimatedHeroTitle />
-
-            {/* Subtitle */}
             <p
               className="text-xl mb-12 max-w-2xl mx-auto"
               style={{
@@ -55,8 +76,6 @@ const Landing = () => {
               we connect you to the best local communities for events that will bring content, sales and engagement with
               your local customers
             </p>
-
-            {/* CTA Button */}
             <Link to="/auth/sign-up" className="inline-flex">
               <Button
                 size="lg"
@@ -80,57 +99,62 @@ const Landing = () => {
         <section id="how-it-works" className="py-20 px-4 bg-white">
           <div className="container mx-auto max-w-6xl">
             <h2
-              className="text-3xl md:text-5xl font-bold text-center mb-16"
+              className="text-3xl md:text-5xl text-center mb-16"
               style={{
-                fontFamily: "Darker Grotesque, sans-serif",
+                fontFamily: "'Rubik', sans-serif",
+                fontWeight: 800, // Rubik Extra Bold
                 color: "#000",
-                textTransform: "lowercase",
+                textTransform: "uppercase",
+                letterSpacing: "0.02em",
               }}
             >
               how it works
             </h2>
-
-            <div className="flex flex-col items-center">
-              <div className="flex flex-col md:flex-row justify-between gap-6 md:gap-8 w-full">
-                {[
-                  {
-                    step: "1",
-                    title: "Create a Collab Offer",
-                    text: "Businesses or communities post what they offer and what they want in return.",
-                    icon: "💡",
-                  },
-                  {
-                    step: "2",
-                    title: "Receive Applications",
-                    text: "Other side applies and suggests a date for the event.",
-                    icon: "💬",
-                  },
-                  {
-                    step: "3",
-                    title: "Choose & Run the Event",
-                    text: "Pick the best fit and host the experience together.",
-                    icon: "🎉",
-                  },
-                  {
-                    step: "4",
-                    title: "Rate & Track Results",
-                    text: "Both rate the collab and see analytics and insights.",
-                    icon: "⭐",
-                  },
-                ].map((item, index) => (
+            <div className="w-full">
+              {/* Responsive grid: 1 column on mobile, 2 on sm, 4 on md+ */}
+              <div
+                className="
+                  grid gap-6 md:gap-8
+                  grid-cols-1
+                  sm:grid-cols-2
+                  md:grid-cols-4
+                "
+              >
+                {howItWorksSteps.map((item, index) => (
                   <div
                     key={index}
-                    className="flex flex-col items-center justify-center bg-[#FFD861] text-black rounded-2xl shadow-md p-8 flex-1 min-w-[250px] text-center transition-transform hover:scale-105"
+                    className="
+                      flex flex-col items-center justify-center
+                      bg-[#FFD861] text-black rounded-2xl shadow-md
+                      p-8 min-w-[220px] text-center
+                      transition-transform hover:scale-105
+                    "
+                    style={{
+                      minHeight: 230,
+                    }}
                   >
                     <div className="text-4xl mb-3">{item.icon}</div>
-                    <h3 className="text-2xl font-semibold mb-2" style={{ fontFamily: "Darker Grotesque, sans-serif" }}>
+                    <h3
+                      className="text-xl mb-2"
+                      style={{
+                        fontFamily: "'Rubik', sans-serif",
+                        fontWeight: 700, // Rubik Bold
+                        textTransform: "none",
+                        color: "#000",
+                        margin: 0,
+                      }}
+                    >
                       {item.title}
                     </h3>
                     <p
-                      className="text-lg leading-snug"
+                      className="text-md leading-snug"
                       style={{
-                        fontFamily: "Darker Grotesque, sans-serif",
-                        fontWeight: 300,
+                        fontFamily: "'Darker Grotesque', sans-serif",
+                        fontWeight: 400,
+                        textTransform: "uppercase",
+                        color: "#222",
+                        margin: 0,
+                        marginTop: 2,
                       }}
                     >
                       {item.text}
@@ -138,11 +162,10 @@ const Landing = () => {
                   </div>
                 ))}
               </div>
-
-              {/* Decorative arrow line (optional aesthetic element) */}
-              <div className="hidden md:flex justify-between items-center w-full mt-8 px-8">
-                <div className="flex-1 border-t-2 border-dashed border-black mx-4" />
-              </div>
+            </div>
+            {/* Optionally keep the decorative line */}
+            <div className="hidden md:flex justify-between items-center w-full mt-8 px-8">
+              <div className="flex-1 border-t-2 border-dashed border-black mx-4" />
             </div>
           </div>
         </section>
@@ -151,7 +174,6 @@ const Landing = () => {
         <PricingSection />
         <BookCallCTA />
       </main>
-
       <Footer />
     </div>
   );
