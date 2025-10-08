@@ -6,9 +6,10 @@ import { Star } from 'lucide-react';
 interface FeedbackSummaryProps {
   surveys: any[];
   userType: 'business' | 'community';
+  isUserFeedback?: boolean;
 }
 
-const FeedbackSummary = ({ surveys, userType }: FeedbackSummaryProps) => {
+const FeedbackSummary = ({ surveys, userType, isUserFeedback = false }: FeedbackSummaryProps) => {
   if (!surveys || surveys.length === 0) {
     return (
       <Card>
@@ -40,10 +41,11 @@ const FeedbackSummary = ({ surveys, userType }: FeedbackSummaryProps) => {
         const isCommunity = answers.stories_posted !== undefined;
 
         return (
-          <Card key={survey.id}>
+          <Card key={survey.id} className="border-2">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">
+                <CardTitle className="text-base flex items-center gap-2">
+                  {isUserFeedback && <span className="text-green-600">🔒</span>}
                   {isCommunity ? 'Community' : 'Business'} Feedback
                 </CardTitle>
                 {survey.score && (
@@ -53,6 +55,15 @@ const FeedbackSummary = ({ surveys, userType }: FeedbackSummaryProps) => {
                   </Badge>
                 )}
               </div>
+              {isUserFeedback && (
+                <p className="text-xs text-muted-foreground">
+                  Submitted and locked on {new Date(survey.submitted_at).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}
+                </p>
+              )}
             </CardHeader>
             <CardContent className="space-y-4">
               {isCommunity ? (
@@ -118,9 +129,11 @@ const FeedbackSummary = ({ surveys, userType }: FeedbackSummaryProps) => {
                   </div>
                 </>
               )}
-              <p className="text-xs text-muted-foreground pt-2">
-                Submitted on {new Date(survey.submitted_at).toLocaleDateString()}
-              </p>
+              {!isUserFeedback && (
+                <p className="text-xs text-muted-foreground pt-2 border-t mt-2">
+                  Submitted on {new Date(survey.submitted_at).toLocaleDateString()}
+                </p>
+              )}
             </CardContent>
           </Card>
         );

@@ -39,10 +39,11 @@ interface CollaborationCardProps {
   };
   onView: () => void;
   onStatusUpdate: (status: 'completed' | 'cancelled') => void;
+  onOpenFeedbackModal?: (collaborationId: string) => void;
   userType: 'business' | 'community';
 }
 
-const CollaborationCard = ({ collaboration, onView, onStatusUpdate, userType }: CollaborationCardProps) => {
+const CollaborationCard = ({ collaboration, onView, onStatusUpdate, onOpenFeedbackModal, userType }: CollaborationCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'scheduled': return 'bg-blue-100 text-blue-800';
@@ -136,36 +137,30 @@ const CollaborationCard = ({ collaboration, onView, onStatusUpdate, userType }: 
             View Details
           </Button>
           
-          {collaboration.status === 'scheduled' && (
+          {(collaboration.status === 'scheduled' || collaboration.status === 'active') && (
             <>
               <Button
                 size="sm"
-                variant="default"
-                onClick={() => onStatusUpdate('completed')}
+                className="bg-green-600 hover:bg-green-700 text-white"
+                onClick={() => {
+                  onStatusUpdate('completed');
+                  if (onOpenFeedbackModal) {
+                    setTimeout(() => onOpenFeedbackModal(collaboration.id), 500);
+                  }
+                }}
               >
-                <CheckCircle className="w-4 h-4 mr-2" />
-                Mark as Fulfilled
+                <CheckCircle className="w-4 h-4 mr-1" />
+                Complete
               </Button>
               <Button
                 size="sm"
                 variant="destructive"
                 onClick={() => onStatusUpdate('cancelled')}
               >
-                <XCircle className="w-4 h-4 mr-2" />
+                <XCircle className="w-4 h-4 mr-1" />
                 Cancel
               </Button>
             </>
-          )}
-          
-          {collaboration.status === 'active' && (
-            <Button
-              size="sm"
-              variant="default"
-              onClick={() => onStatusUpdate('completed')}
-            >
-              <CheckCircle className="w-4 h-4 mr-2" />
-              Complete
-            </Button>
           )}
         </div>
       </CardContent>

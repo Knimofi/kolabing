@@ -10,24 +10,28 @@ import { Star } from 'lucide-react';
 interface SurveyModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  surveyId: string;
+  surveyId?: string;
   collaborationId: string;
   userType: 'business' | 'community';
   partnerName: string;
   onSubmitSuccess: () => void;
+  currentUserProfileId?: string;
 }
 
 const SurveyModal = ({ 
   open, 
   onOpenChange, 
-  surveyId, 
+  surveyId: propSurveyId, 
   collaborationId,
   userType, 
   partnerName,
-  onSubmitSuccess 
+  onSubmitSuccess,
+  currentUserProfileId
 }: SurveyModalProps) => {
   const { toast } = useToast();
   const [submitting, setSubmitting] = useState(false);
+  const [actualSurveyId, setActualSurveyId] = useState<string | null>(propSurveyId || null);
+  const [loading, setLoading] = useState(!propSurveyId);
 
   // Community survey fields
   const [storiesPosted, setStoriesPosted] = useState('');
@@ -44,6 +48,51 @@ const SurveyModal = ({
   const [samplesRedeemed, setSamplesRedeemed] = useState('');
   const [satisfactionRating, setSatisfactionRating] = useState(0);
   const [communityRating, setCommunityRating] = useState(0);
+
+  // Fetch survey if only collaborationId provided
+  React.useEffect(() => {
+    const fetchSurvey = async () => {
+      if (!propSurveyId && collaborationId && currentUserProfileId && open) {
+        setLoading(true);
+        try {
+          const { data, error } = await supabase
+            .from('surveys')
+            .select('id')
+            .eq('collaboration_id', collaborationId)
+            .eq('filled_by_profile_id', currentUserProfileId)
+            .is('submitted_at', null)
+            .maybeSingle();
+
+          if (error) throw error;
+          if (data) {
+            setActualSurveyId(data.id);
+          } else {
+            toast({
+              title: 'Error',
+              description: 'No pending survey found for this collaboration',
+              variant: 'destructive',
+            });
+            onOpenChange(false);
+          }
+        } catch (error: any) {
+          console.error('Error fetching survey:', error);
+          toast({
+            title: 'Error',
+            description: 'Failed to load survey',
+            variant: 'destructive',
+          });
+          onOpenChange(false);
+        } finally {
+          setLoading(false);
+        }
+      } else if (propSurveyId) {
+        setActualSurveyId(propSurveyId);
+        setLoading(false);
+      }
+    };
+
+    fetchSurvey();
+  }, [propSurveyId, collaborationId, currentUserProfileId, open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,6 +126,10 @@ const SurveyModal = ({
 
       const averageScore = ratings.reduce((a, b) => a + b, 0) / ratings.length;
 
+      if (!actualSurveyId) {
+        throw new Error('Survey ID not found');
+      }
+
       const { error } = await supabase
         .from('surveys')
         .update({
@@ -84,7 +137,7 @@ const SurveyModal = ({
           score: averageScore,
           submitted_at: new Date().toISOString(),
         })
-        .eq('id', surveyId);
+        .eq('id', actualSurveyId);
 
       if (error) throw error;
 
@@ -124,6 +177,16 @@ const SurveyModal = ({
       ))}
     </div>
   );
+
+  if (loading) {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent>
+          <div className="py-8 text-center">Loading survey...</div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

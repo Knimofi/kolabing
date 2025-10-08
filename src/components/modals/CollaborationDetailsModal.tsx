@@ -14,7 +14,9 @@ interface CollaborationDetailsModalProps {
   onOpenChange: (open: boolean) => void;
   collaboration: any;
   onStatusUpdate: (status: 'completed' | 'cancelled') => void;
+  onOpenFeedbackModal?: (collaborationId: string) => void;
   userType: 'business' | 'community';
+  currentUserProfileId?: string;
 }
 
 const CollaborationDetailsModal = ({ 
@@ -22,9 +24,12 @@ const CollaborationDetailsModal = ({
   onOpenChange, 
   collaboration, 
   onStatusUpdate,
-  userType 
+  onOpenFeedbackModal,
+  userType,
+  currentUserProfileId
 }: CollaborationDetailsModalProps) => {
-  const [surveys, setSurveys] = useState<any[]>([]);
+  const [userSurvey, setUserSurvey] = useState<any>(null);
+  const [partnerSurvey, setPartnerSurvey] = useState<any>(null);
   const [loadingSurveys, setLoadingSurveys] = useState(false);
 
   useEffect(() => {
@@ -34,18 +39,26 @@ const CollaborationDetailsModal = ({
   }, [open, collaboration?.id, collaboration?.status]);
 
   const fetchSurveys = async () => {
-    if (!collaboration?.id) return;
+    if (!collaboration?.id || !currentUserProfileId) return;
     
     setLoadingSurveys(true);
     try {
+      const partnerProfileId = userType === 'business' 
+        ? collaboration.community_profile_id 
+        : collaboration.business_profile_id;
+
       const { data, error } = await supabase
         .from('surveys')
         .select('*')
-        .eq('collaboration_id', collaboration.id)
-        .not('submitted_at', 'is', null);
+        .eq('collaboration_id', collaboration.id);
 
       if (error) throw error;
-      setSurveys(data || []);
+
+      const user = data?.find(s => s.filled_by_profile_id === currentUserProfileId);
+      const partner = data?.find(s => s.filled_by_profile_id === partnerProfileId);
+
+      setUserSurvey(user || null);
+      setPartnerSurvey(partner || null);
     } catch (error) {
       console.error('Error fetching surveys:', error);
     } finally {
@@ -301,12 +314,81 @@ const CollaborationDetailsModal = ({
 
           {/* Feedback Section */}
           {collaboration.status === 'completed' && (
-            <div className="border-t pt-4 space-y-3">
+            <div className="border-t pt-4 space-y-4">
               <h4 className="font-semibold text-sm">Collaboration Feedback</h4>
               {loadingSurveys ? (
                 <p className="text-sm text-muted-foreground">Loading feedback...</p>
               ) : (
-                <FeedbackSummary surveys={surveys} userType={userType} />
+                <div className="space-y-4">
+                  {/* Your Feedback */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <h5 className="text-sm font-medium">Your Feedback</h5>
+                      {userSurvey?.submitted_at ? (
+                        <Badge variant="default" className="bg-green-600">
+                          ✓ Feedback Sent
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary" className="bg-orange-100 text-orange-700">
+                          🟠 Pending Feedback
+                        </Badge>
+                      )}
+                    </div>
+                    {userSurvey?.submitted_at ? (
+                      <FeedbackSummary 
+                        surveys={[userSurvey]} 
+                        userType={userType}
+                        isUserFeedback={true}
+                      />
+                    ) : (
+                      <div className="border rounded-lg p-4 text-center">
+                        <p className="text-sm text-muted-foreground mb-3">
+                          You haven't submitted feedback yet
+                        </p>
+                        {onOpenFeedbackModal && (
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              onOpenFeedbackModal(collaboration.id);
+                              onOpenChange(false);
+                            }}
+                          >
+                            Add Feedback
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Partner Feedback */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <h5 className="text-sm font-medium">Partner's Feedback</h5>
+                      {partnerSurvey?.submitted_at ? (
+                        <Badge variant="default" className="bg-green-600">
+                          ✓ Feedback Received
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary" className="bg-orange-100 text-orange-700">
+                          🟠 Pending
+                        </Badge>
+                      )}
+                    </div>
+                    {partnerSurvey?.submitted_at ? (
+                      <FeedbackSummary 
+                        surveys={[partnerSurvey]} 
+                        userType={userType === 'business' ? 'community' : 'business'}
+                        isUserFeedback={false}
+                      />
+                    ) : (
+                      <div className="border rounded-lg p-4 text-center">
+                        <p className="text-sm text-muted-foreground">
+                          Partner hasn't submitted feedback yet
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
           )}
@@ -319,10 +401,13 @@ const CollaborationDetailsModal = ({
                 onClick={() => {
                   onStatusUpdate('completed');
                   onOpenChange(false);
+                  if (onOpenFeedbackModal) {
+                    setTimeout(() => onOpenFeedbackModal(collaboration.id), 500);
+                  }
                 }}
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
-                Mark as Fulfilled
+                Complete Collaboration
               </Button>
               <Button 
                 variant="destructive" 

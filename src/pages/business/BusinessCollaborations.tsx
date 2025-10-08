@@ -135,15 +135,27 @@ const BusinessCollaborations = () => {
 
       toast({
         title: 'Success',
-        description: `Collaboration ${newStatus === 'completed' ? 'marked as fulfilled' : 'cancelled'} successfully`,
+        description: `Collaboration ${newStatus === 'completed' ? 'completed' : 'cancelled'} successfully`,
       });
+
+      await fetchCollaborations();
+      await fetchPendingSurveys();
     } catch (error: any) {
       toast({
         title: 'Error',
-        description: error.message || `Failed to ${newStatus === 'completed' ? 'fulfill' : 'cancel'} collaboration`,
+        description: error.message || `Failed to ${newStatus === 'completed' ? 'complete' : 'cancel'} collaboration`,
         variant: 'destructive',
       });
     }
+  };
+
+  const handleOpenFeedbackModal = async (collaborationId: string) => {
+    const collab = collaborations.find(c => c.id === collaborationId);
+    if (!collab) return;
+
+    const partnerName = collab.community_profile?.name || 'Partner';
+    setCurrentSurvey({ collaborationId, partnerName });
+    setShowSurveyModal(true);
   };
 
   const handleViewCollaboration = (collaboration: any) => {
@@ -231,6 +243,7 @@ const BusinessCollaborations = () => {
               collaboration={collaboration}
               onView={() => handleViewCollaboration(collaboration)}
               onStatusUpdate={(status) => handleStatusUpdate(collaboration.id, status)}
+              onOpenFeedbackModal={handleOpenFeedbackModal}
               userType="business"
             />
           ))}
@@ -242,7 +255,9 @@ const BusinessCollaborations = () => {
         onOpenChange={setShowDetailsModal}
         collaboration={selectedCollaboration}
         onStatusUpdate={(status) => selectedCollaboration && handleStatusUpdate(selectedCollaboration.id, status)}
+        onOpenFeedbackModal={handleOpenFeedbackModal}
         userType="business"
+        currentUserProfileId={profile?.id}
       />
 
       {currentSurvey && (
@@ -254,6 +269,7 @@ const BusinessCollaborations = () => {
           userType="business"
           partnerName={currentSurvey.partnerName}
           onSubmitSuccess={handleSurveySubmitSuccess}
+          currentUserProfileId={profile?.id}
         />
       )}
     </div>
