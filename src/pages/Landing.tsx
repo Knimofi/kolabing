@@ -27,16 +27,36 @@ const Landing = () => {
           style={{ backgroundColor: "#FFD861" }} // Yellow background
         >
           <div className="container mx-auto max-w-4xl text-center">
+            {/* Headline: all lowercase, Rubik bold */}
+            <h1
+              className="text-4xl md:text-6xl font-bold mb-4 leading-tight"
+              style={{
+                fontFamily: "Rubik, sans-serif",
+                color: "#000",
+                textTransform: "lowercase",
+              }}
+            >
+              what your business needs
+            </h1>
+            {/* Animated rotating text */}
             <AnimatedHeroTitle />
 
-            <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-              We connect you to the best local communities for events that will bring content, sales and engagement with
+            {/* Subtitle: darker grotesque, light, black */}
+            <p
+              className="text-xl mb-12 max-w-2xl mx-auto"
+              style={{
+                fontFamily: "Darker Grotesque, sans-serif",
+                fontWeight: 300,
+                color: "#000",
+              }}
+            >
+              we connect you to the best local communities for events that will bring content, sales and engagement with
               your local customers
             </p>
 
             {/* CTA: Black outlined button */}
             <Link to="/auth/sign-up" className="inline-flex">
-              <Button size="lg" variant="outline" className="px-12 py-5">
+              <Button size="lg" variant="outline" borderColor="#000" textColor="#000" className="px-12 py-5">
                 CREATE YOUR PROFILE
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
@@ -47,7 +67,7 @@ const Landing = () => {
         {/* Other sections remain unchanged */}
         <VideoCarousel />
 
-        {/* How It Works (bg-muted/50 or original background) */}
+        {/* How It Works */}
         <section id="how-it-works" className="py-20 px-4 bg-muted/50">
           <div className="container mx-auto max-w-6xl">
             <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-16">How It Works</h2>
