@@ -19,60 +19,61 @@ const Landing = () => {
       {/* New Hero Section with Video Background */}
       <NewHero />
 
-{/* WHAT YOUR BUSINESS NEEDS - YELLOW SECTION */}
-<main>
-  <section
-    id="business-section"
-    className="px-4 py-24"
-    style={{ backgroundColor: "#FFD861" }} // Yellow background
-  >
-    <div className="container mx-auto max-w-4xl text-center">
-      {/* Headline: all lowercase, Darker Grotesque light */}
-      <h1
-        className="text-4xl md:text-6xl mb-4 leading-tight"
-        style={{
-          fontFamily: "Darker Grotesque, sans-serif",
-          fontWeight: 300, // light
-          color: "#000",
-          textTransform: "lowercase"
-        }}
-      >
-        what your business needs
-      </h1>
-      {/* Animated rotating text */}
-      <AnimatedHeroTitle />
-
-      {/* Subtitle: darker grotesque, light, black */}
-      <p
-        className="text-xl mb-12 max-w-2xl mx-auto"
-        style={{
-          fontFamily: "Darker Grotesque, sans-serif",
-          fontWeight: 300,
-          color: "#000"
-        }}
-      >
-        we connect you to the best local communities for events that will bring content, sales and engagement with
-        your local customers
-      </p>
-
-      {/* CTA: White text, turns yellow on hover */}
-      <Link to="/auth/sign-up" className="inline-flex">
-        <Button
-          size="lg"
-          variant="outline"
-          className="px-12 py-5 border-black text-white bg-transparent hover:text-[#FFD861] hover:bg-transparent"
-          style={{ fontFamily: "Darker Grotesque, sans-serif", fontWeight: 500, textTransform: "uppercase" }}
+      {/* WHAT YOUR BUSINESS NEEDS - YELLOW SECTION */}
+      <main>
+        <section
+          id="business-section"
+          className="px-4 py-24"
+          style={{ backgroundColor: "#FFD861" }} // Yellow background
         >
-          CREATE YOUR PROFILE
-          <ArrowRight className="w-5 h-5 ml-2" />
-        </Button>
-      </Link>
-    </div>
-  </section>
-</main>
+          <div className="container mx-auto max-w-4xl text-center">
+            {/* Headline: all lowercase, Darker Grotesque light */}
+            <h1
+              className="text-4xl md:text-6xl mb-4 leading-tight"
+              style={{
+                fontFamily: "Darker Grotesque, sans-serif",
+                fontWeight: 300,
+                color: "#000",
+                textTransform: "lowercase",
+              }}
+            >
+              what your business needs
+            </h1>
+            {/* Animated rotating text */}
+            <AnimatedHeroTitle />
 
+            {/* Subtitle: darker grotesque, light, black */}
+            <p
+              className="text-xl mb-12 max-w-2xl mx-auto"
+              style={{
+                fontFamily: "Darker Grotesque, sans-serif",
+                fontWeight: 300,
+                color: "#000",
+              }}
+            >
+              we connect you to the best local communities for events that will bring content, sales and engagement with
+              your local customers
+            </p>
 
-        {/* Other sections remain unchanged */}
+            {/* CTA: White text, turns yellow on hover */}
+            <Link to="/auth/sign-up" className="inline-flex">
+              <Button
+                size="lg"
+                variant="outline"
+                className="px-12 py-5 border-black text-white bg-transparent hover:text-[#FFD861] hover:bg-transparent"
+                style={{
+                  fontFamily: "Darker Grotesque, sans-serif",
+                  fontWeight: 500,
+                  textTransform: "uppercase",
+                }}
+              >
+                CREATE YOUR PROFILE
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
+          </div>
+        </section>
+
         <VideoCarousel />
 
         {/* How It Works */}
