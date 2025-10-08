@@ -6,7 +6,7 @@ const BUTTON_STYLE = {
   color: "#F9F7E8",
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 500,
+  fontWeight: 700,
   fontSize: "1.1rem",
   letterSpacing: "0.05em",
   borderRadius: "0px",
