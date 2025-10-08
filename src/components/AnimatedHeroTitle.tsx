@@ -35,7 +35,7 @@ const AnimatedHeroTitle = () => {
   return (
     <div className="text-center">
       {/* Only animated text, no headline */}
-      <div className="h-20 flex items-center justify-center overflow-hidden">
+      <div className="flex items-center justify-center overflow-hidden">
         <div className="relative">
           <div
             className="text-3xl md:text-5xl font-bold transition-all duration-500 flex items-center justify-center whitespace-nowrap"
