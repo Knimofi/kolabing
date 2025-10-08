@@ -178,6 +178,7 @@ export type Database = {
           business_profile_id: string
           community_profile_id: string
           completed_at: string | null
+          contact_methods: Json | null
           created_at: string
           id: string
           offer_id: string
@@ -190,6 +191,7 @@ export type Database = {
           business_profile_id: string
           community_profile_id: string
           completed_at?: string | null
+          contact_methods?: Json | null
           created_at?: string
           id?: string
           offer_id: string
@@ -202,6 +204,7 @@ export type Database = {
           business_profile_id?: string
           community_profile_id?: string
           completed_at?: string | null
+          contact_methods?: Json | null
           created_at?: string
           id?: string
           offer_id?: string

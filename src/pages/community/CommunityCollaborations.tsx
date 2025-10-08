@@ -74,7 +74,7 @@ const CommunityCollaborations = () => {
       const { data: baseRows, error: baseError } = await supabase
         .from('collaborations')
         .select(
-          'id,status,created_at,scheduled_date,completed_at,offer_id,business_profile_id,community_profile_id,application_id'
+          'id,status,created_at,scheduled_date,completed_at,offer_id,business_profile_id,community_profile_id,application_id,contact_methods'
         )
         .eq('community_profile_id', profile.id)
         .order('created_at', { ascending: false });

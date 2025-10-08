@@ -7,6 +7,7 @@ import { Calendar, MapPin, Users, Clock, Package, CheckCircle, XCircle } from 'l
 import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import FeedbackSummary from '@/components/FeedbackSummary';
+import { ContactInfoCard } from '@/components/ContactInfoCard';
 
 interface CollaborationDetailsModalProps {
   open: boolean;
@@ -174,6 +175,14 @@ const CollaborationDetailsModal = ({
               </div>
             )}
           </div>
+
+          {/* Contact Info for Community Users */}
+          {userType === 'community' && (
+            <ContactInfoCard 
+              scheduledDate={collaboration.scheduled_date}
+              contactMethods={collaboration.contact_methods}
+            />
+          )}
 
           {/* Description */}
           <div className="space-y-2">
