@@ -63,7 +63,7 @@ const AnimatedHeroTitle = () => {
           </div>
         </div>
       </div>
-      {/* Subtitle example */}
+      {/* Subtitle (only one, delete the duplicate) */}
       <div
         style={{
           fontFamily: "Darker Grotesque, sans-serif",
@@ -72,9 +72,21 @@ const AnimatedHeroTitle = () => {
           marginTop: "24px",
         }}
       >
-        {/* Put your subtitle here if needed */}
         We connect you to the best local communities for events that will bring content, sales and engagement with your
         local customers
+      </div>
+      {/* Button */}
+      <div style={{ marginTop: "40px", display: "flex", justifyContent: "center" }}>
+        <a
+          href="https://00e81e6d-06a6-49dc-89c8-bcb1efbb16df.lovableproject.com/auth/sign-up"
+          className="px-8 py-3 rounded-full font-bold text-white bg-black transition duration-200 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-opacity-50"
+          style={{
+            fontSize: "1.25rem",
+            fontFamily: "Rubik, sans-serif",
+          }}
+        >
+          Create your Profile &rarr;
+        </a>
       </div>
     </div>
   );
