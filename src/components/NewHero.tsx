@@ -2,22 +2,26 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 
 const BUTTON_STYLE = {
-  background: "#fdd459",
-  color: "#232323",
-  fontFamily: "Inter, system-ui, sans-serif",
+  background: "transparent",
+  color: "#F9F7E8",
+  fontFamily: "'Darker Grotesque', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 400,
-  fontSize: "1rem",
-  letterSpacing: "0.06em",
+  fontWeight: 300,
+  fontSize: "1.1rem",
+  letterSpacing: "0.05em",
   borderRadius: "0px",
-  padding: "0.5rem 1.1rem",
+  border: "1px solid #F9F7E8",
+  padding: "0.5rem 1.2rem",
   minWidth: "unset",
   minHeight: "2.2rem",
-  boxShadow: "0 2px 10px 0 rgba(253,212,89,0.10)",
-  transition: "background 0.14s, box-shadow 0.13s, transform 0.13s",
+  transition: "all 0.2s ease",
 };
 
-const BUTTON_HOVER = { background: "#eec700" };
+const BUTTON_HOVER = {
+  background: "rgba(249, 247, 232, 0.1)",
+  borderColor: "#fdd459",
+  color: "#fdd459",
+};
 
 const NewHero = () => {
   const [hoverIndex, setHoverIndex] = React.useState<number | null>(null);
@@ -37,7 +41,7 @@ const NewHero = () => {
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: "linear-gradient(0deg, rgba(253,212,89,0.10), rgba(0,0,0,0.47))",
+            background: "linear-gradient(0deg, rgba(0,0,0,0.25), rgba(0,0,0,0.65))",
           }}
         />
       </div>
