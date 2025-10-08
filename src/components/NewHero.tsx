@@ -37,7 +37,7 @@ const NewHero = () => {
     <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center">
       {/* Single Fullscreen Video Background Layer */}
       <div className="absolute inset-0 w-full h-full z-0">
-        <video src="/videos/ugos-node.mp4" autoPlay loop muted playsInline className="w-full h-full object-cover" />
+        <video src="/videos/ugosnotext.MOV" autoPlay loop muted playsInline className="w-full h-full object-cover" />
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
