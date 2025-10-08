@@ -1,56 +1,92 @@
-import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
 
-import { cn } from "@/lib/utils"
+export type ButtonVariant = "outline" | "filled" | "ghost" | "link";
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 font-darker-grotesque",
-  {
-    variants: {
-      variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-      },
-      size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-)
-
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  asChild?: boolean;
+  variant?: ButtonVariant;
+  borderColor?: string;
+  textColor?: string;
+  backgroundColor?: string;
 }
 
+const getVariantStyles = ({
+  variant = "outline",
+  borderColor = "#000",
+  textColor = "#000",
+  backgroundColor = "transparent",
+}: {
+  variant?: ButtonVariant;
+  borderColor?: string;
+  textColor?: string;
+  backgroundColor?: string;
+}) => {
+  switch (variant) {
+    case "filled":
+      return {
+        border: `2px solid ${borderColor}`,
+        color: "#fff",
+        background: borderColor,
+      };
+    case "ghost":
+      return {
+        border: "none",
+        color: textColor,
+        background: "transparent",
+      };
+    case "link":
+      return {
+        border: "none",
+        color: borderColor,
+        background: "transparent",
+        textDecoration: "underline",
+        padding: 0,
+      };
+    case "outline":
+    default:
+      return {
+        border: `2px solid ${borderColor}`,
+        color: textColor,
+        background: backgroundColor,
+      };
+  }
+};
+
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"
+  (
+    {
+      className,
+      asChild = false,
+      variant = "outline",
+      borderColor = "#000",
+      textColor = "#000",
+      backgroundColor = "transparent",
+      style,
+      children,
+      ...props
+    },
+    ref,
+  ) => {
+    const Comp = asChild ? Slot : "button";
+    const variantStyles = getVariantStyles({ variant, borderColor, textColor, backgroundColor });
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        className={`inline-flex items-center justify-center px-12 py-5 whitespace-nowrap rounded-md text-lg uppercase transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 font-medium ${className || ""}`}
+        style={{
+          fontFamily: "Darker Grotesque, sans-serif",
+          letterSpacing: "1px",
+          ...variantStyles,
+          ...style,
+        }}
         {...props}
-      />
-    )
-  }
-)
-Button.displayName = "Button"
+      >
+        {children}
+      </Comp>
+    );
+  },
+);
+Button.displayName = "Button";
 
-export { Button, buttonVariants }
+export { Button };
