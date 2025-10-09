@@ -63,7 +63,7 @@ const Landing = () => {
       <NewHero />
       <main>
         {/* WHAT YOUR BUSINESS NEEDS */}
-        <section id="business-section" className="px-4 py-24" style={{ backgroundColor: "#FFD861" }}>
+        <section id="business-needs" className="px-4 py-24" style={{ backgroundColor: "#FFD861" }}>
           <div className="container mx-auto max-w-4xl text-center">
             <h1
               className="text-3xl md:text-5xl mb-2 leading-tight"
