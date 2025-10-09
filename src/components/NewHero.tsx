@@ -1,5 +1,8 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+
+const navigate = useNavigate();
 
 // Button styles: less rounded, Darker Grotesque Light, black uppercase
 const BUTTON_STYLE: React.CSSProperties = {
