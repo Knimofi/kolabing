@@ -7,6 +7,11 @@ import ProfileSetupAlert from "@/components/ProfileSetupAlert";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
+const DG_FONT = {
+  fontFamily: "'Darker Grotesque', Arial, sans-serif",
+  textTransform: "uppercase" as const,
+};
+
 const BusinessDashboard = () => {
   const { profile } = useAuth();
   const [stats, setStats] = useState({
@@ -66,211 +71,198 @@ const BusinessDashboard = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
-      {/* Header Section with action */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-        <div>
-          <h1
-            className="text-3xl md:text-4xl font-extrabold mb-1"
-            style={{ fontFamily: "'Rubik', sans-serif", color: "#000" }}
-          >
-            Business Dashboard
-          </h1>
-          <p className="text-lg" style={{ fontFamily: "'Darker Grotesque', sans-serif", color: "#444" }}>
-            Manage your offers and track partnership success
-          </p>
-        </div>
-        <Link to="/business/offers/new">
-          <Button
-            size="lg"
-            className="bg-[#FFD861] hover:bg-yellow-300 border-2 border-[#FFD861] text-black font-bold text-lg uppercase"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            Create New Offer
-          </Button>
-        </Link>
-      </div>
-
-      {/* Important Setup Alert */}
-      <ProfileSetupAlert />
-
-      {/* Subscription Alert */}
-      <Card className="border-[#FFD861] bg-[#FFF7E0]">
-        <CardContent className="pt-6">
-          <div className="flex items-start space-x-3">
-            <AlertCircle className="w-5 h-5 text-[#FFD861] mt-0.5 flex-shrink-0" />
-            <div className="flex-1">
-              <h3 className="font-bold text-black mb-1" style={{ fontFamily: "'Rubik', sans-serif" }}>
-                Subscription Required
-              </h3>
-              <p className="text-black text-sm mb-3">
-                You need an active subscription to publish offers and connect with communities.
-              </p>
-              <Link to="/business/plans">
-                <Button variant="outline" size="sm" className="border-[#FFD861] text-black hover:bg-[#FFD861]/30">
-                  View Plans
-                </Button>
-              </Link>
-            </div>
+    <div className="min-h-screen" style={{ background: "#F1F0EC" }}>
+      <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
+        {/* Header Section with action */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+          <div>
+            <h1
+              className="text-3xl md:text-4xl font-extrabold mb-1"
+              style={{
+                ...DG_FONT,
+                color: "#000",
+                letterSpacing: "0.04em",
+              }}
+            >
+              BUSINESS DASHBOARD
+            </h1>
+            <p className="text-lg" style={{ fontFamily: "'Darker Grotesque', sans-serif", color: "#444" }}>
+              Manage your offers and track partnership success
+            </p>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Stats Panel */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="border-black">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle
-              className="text-sm font-bold text-black"
-              style={{ fontFamily: "'Darker Grotesque', sans-serif" }}
+          <Link to="/business/offers/new">
+            <Button
+              size="lg"
+              className="bg-[#FFD861] hover:bg-yellow-300 border-2 border-[#FFD861] text-black font-bold text-lg uppercase"
             >
-              Total Offers
-            </CardTitle>
-            <FileText className="h-5 w-5 text-black" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-black mb-1" style={{ fontFamily: "'Rubik', sans-serif" }}>
-              {loading ? "..." : stats.totalOffers}
-            </div>
-            <p className="text-xs text-gray-600" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
-              {stats.totalOffers === 0 ? "No offers created yet" : "Total created offers"}
-            </p>
-          </CardContent>
-        </Card>
+              <Plus className="w-5 h-5 mr-2" />
+              CREATE NEW OFFER
+            </Button>
+          </Link>
+        </div>
 
-        <Card className="border-black">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle
-              className="text-sm font-bold text-black"
-              style={{ fontFamily: "'Darker Grotesque', sans-serif" }}
-            >
-              Active Offers
-            </CardTitle>
-            <TrendingUp className="h-5 w-5 text-black" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-black mb-1" style={{ fontFamily: "'Rubik', sans-serif" }}>
-              {loading ? "..." : stats.activeOffers}
-            </div>
-            <p className="text-xs text-gray-600" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
-              Published offers
-            </p>
-          </CardContent>
-        </Card>
+        <ProfileSetupAlert />
 
-        <Card className="border-black">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle
-              className="text-sm font-bold text-black"
-              style={{ fontFamily: "'Darker Grotesque', sans-serif" }}
-            >
-              Applications
-            </CardTitle>
-            <Users className="h-5 w-5 text-black" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-black mb-1" style={{ fontFamily: "'Rubik', sans-serif" }}>
-              {loading ? "..." : stats.applications}
-            </div>
-            <p className="text-xs text-gray-600" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
-              Total applications received
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card className="border-black">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle
-              className="text-sm font-bold text-black"
-              style={{ fontFamily: "'Darker Grotesque', sans-serif" }}
-            >
-              Collaborations
-            </CardTitle>
-            <Users className="h-5 w-5 text-black" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-extrabold text-black mb-1" style={{ fontFamily: "'Rubik', sans-serif" }}>
-              {loading ? "..." : stats.collaborations}
-            </div>
-            <p className="text-xs text-gray-600" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
-              Active partnerships
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Getting Started Block */}
-        <Card className="border-black">
-          <CardHeader>
-            <CardTitle style={{ fontFamily: "'Rubik', sans-serif", color: "#000" }}>Getting Started</CardTitle>
-            <CardDescription style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
-              Complete these steps to start connecting with communities
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-lg font-bold">
-                ✓
+        {/* Subscription Alert */}
+        <Card className="border-[#FFD861] bg-[#FFF7E0]">
+          <CardContent className="pt-6">
+            <div className="flex items-start space-x-3">
+              <AlertCircle className="w-5 h-5 text-[#FFD861] mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <h3 className="font-extrabold text-black mb-1" style={DG_FONT}>
+                  SUBSCRIPTION REQUIRED
+                </h3>
+                <p className="text-black text-sm mb-3" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
+                  You need an active subscription to publish offers and connect with communities.
+                </p>
+                <Link to="/business/plans">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-[#FFD861] text-black hover:bg-[#FFD861]/30"
+                    style={DG_FONT}
+                  >
+                    VIEW PLANS
+                  </Button>
+                </Link>
               </div>
-              <span className="text-base text-black" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
-                Set up your business profile
-              </span>
             </div>
-            <div className="flex items-center justify-between">
+          </CardContent>
+        </Card>
+
+        {/* Stats Panel */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            {
+              title: "TOTAL OFFERS",
+              icon: <FileText className="h-5 w-5 text-black" />,
+              value: stats.totalOffers,
+              desc: stats.totalOffers === 0 ? "No offers created yet" : "Total created offers",
+            },
+            {
+              title: "ACTIVE OFFERS",
+              icon: <TrendingUp className="h-5 w-5 text-black" />,
+              value: stats.activeOffers,
+              desc: "Published offers",
+            },
+            {
+              title: "APPLICATIONS",
+              icon: <Users className="h-5 w-5 text-black" />,
+              value: stats.applications,
+              desc: "Total applications received",
+            },
+            {
+              title: "COLLABORATIONS",
+              icon: <Users className="h-5 w-5 text-black" />,
+              value: stats.collaborations,
+              desc: "Active partnerships",
+            },
+          ].map(({ title, icon, value, desc }, idx) => (
+            <Card key={idx} className="border-black bg-white">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-extrabold text-black" style={DG_FONT}>
+                  {title}
+                </CardTitle>
+                {icon}
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-extrabold text-black mb-1" style={DG_FONT}>
+                  {loading ? "..." : String(value).toUpperCase()}
+                </div>
+                <p className="text-xs text-gray-600" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
+                  {desc}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Getting Started Block */}
+          <Card className="border-black bg-white">
+            <CardHeader>
+              <CardTitle className="font-extrabold text-black" style={DG_FONT}>
+                GETTING STARTED
+              </CardTitle>
+              <CardDescription style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
+                Complete these steps to start connecting with communities
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-[#FFD861] text-black rounded-full flex items-center justify-center text-base font-bold">
-                  2
+                <div
+                  className="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-lg font-extrabold"
+                  style={DG_FONT}
+                >
+                  ✓
                 </div>
                 <span className="text-base text-black" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
-                  Choose a subscription plan
+                  Set up your business profile
                 </span>
               </div>
-              <Link to="/business/plans">
-                <Button variant="outline" size="sm" className="border-[#FFD861] text-black">
-                  Choose Plan
-                </Button>
-              </Link>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-[#FFD861] text-black rounded-full flex items-center justify-center text-base font-bold">
-                  3
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div
+                    className="w-8 h-8 bg-[#FFD861] text-black rounded-full flex items-center justify-center text-base font-extrabold"
+                    style={DG_FONT}
+                  >
+                    2
+                  </div>
+                  <span className="text-base text-black" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
+                    Choose a subscription plan
+                  </span>
                 </div>
-                <span className="text-base text-black" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
-                  Create your first offer
-                </span>
+                <Link to="/business/plans">
+                  <Button variant="outline" size="sm" className="border-[#FFD861] text-black" style={DG_FONT}>
+                    CHOOSE PLAN
+                  </Button>
+                </Link>
               </div>
-              <Link to="/business/offers/new">
-                <Button variant="outline" size="sm" className="border-[#FFD861] text-black">
-                  Create Offer
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div
+                    className="w-8 h-8 bg-[#FFD861] text-black rounded-full flex items-center justify-center text-base font-extrabold"
+                    style={DG_FONT}
+                  >
+                    3
+                  </div>
+                  <span className="text-base text-black" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
+                    Create your first offer
+                  </span>
+                </div>
+                <Link to="/business/offers/new">
+                  <Button variant="outline" size="sm" className="border-[#FFD861] text-black" style={DG_FONT}>
+                    CREATE OFFER
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Recent Activity Block */}
-        <Card className="border-black">
-          <CardHeader>
-            <CardTitle style={{ fontFamily: "'Rubik', sans-serif", color: "#000" }}>Recent Activity</CardTitle>
-            <CardDescription style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
-              Your latest collaboration updates
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center py-8">
-              <Users className="w-12 h-12 text-[#FFD861] mx-auto mb-4" />
-              <p className="text-base text-black" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
-                No recent activity
-              </p>
-              <p className="text-xs text-gray-600 mt-2" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
-                Create an offer to start seeing activity here
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+          {/* Recent Activity Block */}
+          <Card className="border-black bg-white">
+            <CardHeader>
+              <CardTitle className="font-extrabold text-black" style={DG_FONT}>
+                RECENT ACTIVITY
+              </CardTitle>
+              <CardDescription style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
+                Your latest collaboration updates
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-8">
+                <Users className="w-12 h-12 text-[#FFD861] mx-auto mb-4" />
+                <p className="text-base text-black" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
+                  No recent activity
+                </p>
+                <p className="text-xs text-gray-600 mt-2" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
+                  Create an offer to start seeing activity here
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
