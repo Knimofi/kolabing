@@ -19,10 +19,6 @@ const LOGO_FONT = {
   letterSpacing: "0.06em",
 };
 
-// Use this logo URL (from the second code)
-const LOGO_URL =
-  "https://qcmperlkuujhweikoyru.supabase.co/storage/v1/object/sign/media/Logo_Kolabing-removebg-preview.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mOWQ2MzU4NS1iNjc3LTQ1NGYtOTRhZS1iODg3NjU5MWU3OGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9Mb2dvX0tvbGFiaW5nLXJlbW92ZWJnLXByZXZpZXcucG5nIiwiaWF0IjoxNzU5OTk4NzAxLCJleHAiOjE3OTE1MzQ3MDF9.CH3or8O3VNDxzdh8xEir7xHPqqj6u-mgnXyXPyrnIIw";
-
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
@@ -31,25 +27,20 @@ const Navbar = () => {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
 
-  // Close menu with enhanced UX features
   const closeMenu = () => {
     setIsMenuOpen(false);
     document.body.style.overflow = "";
     menuButtonRef.current?.focus();
   };
-
   const toggleMenu = () => {
-    setIsMenuOpen((prev) => {
-      document.body.style.overflow = !prev ? "hidden" : "";
-      return !prev;
+    setIsMenuOpen((x) => {
+      if (!x) document.body.style.overflow = "hidden";
+      else document.body.style.overflow = "";
+      return !x;
     });
   };
-
-  // Enhanced scroll to top with proper navigation
   const scrollToTop = () => {
-    if (location.pathname !== "/") {
-      navigate("/");
-    }
+    if (location.pathname !== "/") navigate("/");
     setTimeout(
       () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -58,26 +49,8 @@ const Navbar = () => {
     );
     if (isMenuOpen) closeMenu();
   };
-
-  // Handle section scrolling for anchors (optional if using anchors)
-  const scrollToSection = (sectionId: string) => {
-    if (location.pathname !== "/") {
-      navigate("/");
-      setTimeout(() => {
-        const element = document.getElementById(sectionId);
-        element?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
-    } else {
-      const element = document.getElementById(sectionId);
-      element?.scrollIntoView({ behavior: "smooth" });
-    }
-    if (isMenuOpen) closeMenu();
-  };
-
-  // Check if current page is active
   const isActivePage = (path: string) => location.pathname === path;
 
-  // Click outside to close
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -87,27 +60,19 @@ const Navbar = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMenuOpen]);
-
-  // Escape key to close
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && isMenuOpen) {
-        closeMenu();
-      }
+      if (event.key === "Escape" && isMenuOpen) closeMenu();
     };
     document.addEventListener("keydown", handleEscapeKey);
     return () => document.removeEventListener("keydown", handleEscapeKey);
   }, [isMenuOpen]);
-
-  // Focus management for accessibility
   useEffect(() => {
     if (isMenuOpen) {
       const firstMenuItem = menuRef.current?.querySelector("a, button");
       (firstMenuItem as HTMLElement)?.focus();
     }
   }, [isMenuOpen]);
-
-  // Prevent background scroll when menu is open
   useEffect(() => {
     return () => {
       document.body.style.overflow = "";
@@ -126,7 +91,11 @@ const Navbar = () => {
         {/* Logo */}
         <div onClick={scrollToTop} className="flex items-center space-x-2 cursor-pointer" aria-label="Kolabing">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-            <img src={LOGO_URL} alt="Kolabing Logo" className="w-8 h-8" />
+            <img
+              src="https://qcmperlkuujhweikoyru.supabase.co/storage/v1/object/sign/media/Logo_Kolabing-removebg-preview.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mOWQ2MzU4NS1iNjc3LTQ1NGYtOTRhZS1iODg3NjU5MWU3OGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9Mb2dvX0tvbGFiaW5nLXJlbW92ZWJnLXByZXZpZXcucG5nIiwiaWF0IjoxNzU5OTk4NzAxLCJleHAiOjE3OTE1MzQ3MDF9.CH3or8O3VNDxzdh8xEir7xHPqqj6u-mgnXyXPyrnIIw"
+              alt="Kolabing Logo"
+              className="w-8 h-8"
+            />
           </div>
           <span style={LOGO_FONT} className="text-[1.28rem] select-none tracking-wide text-white">
             KOLABING
@@ -211,7 +180,7 @@ const Navbar = () => {
             : "opacity-0 translate-x-full pointer-events-none",
         )}
         style={{
-          backgroundColor: "#000",
+          backgroundColor: "#000", // solid black overlay for mobile
         }}
         role="dialog"
         aria-modal="true"
@@ -220,7 +189,11 @@ const Navbar = () => {
         {/* Menu header with close button */}
         <div className="flex items-center justify-between p-4 border-b border-[#222]">
           <div className="flex items-center space-x-2">
-            <img src={LOGO_URL} alt="Kolabing Logo" className="w-8 h-8" />
+            <img
+              src="https://qcmperlkuujhweikoyru.supabase.co/storage/v1/object/sign/media/Logo%20Kolabing.png"
+              alt="Kolabing Logo"
+              className="w-8 h-8"
+            />
             <span style={LOGO_FONT} className="text-[1.28rem] text-white">
               KOLABING
             </span>
