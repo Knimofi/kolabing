@@ -27,20 +27,17 @@ const Navbar = () => {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
 
-  // Close menu with enhanced UX features
   const closeMenu = () => {
     setIsMenuOpen(false);
     document.body.style.overflow = "";
     menuButtonRef.current?.focus();
   };
 
-  // Toggle menu open/closed with scroll lock
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
     document.body.style.overflow = !isMenuOpen ? "hidden" : "";
   };
 
-  // Enhanced scroll to top
   const scrollToTop = () => {
     if (location.pathname !== "/") {
       navigate("/");
@@ -57,7 +54,6 @@ const Navbar = () => {
     if (isMenuOpen) closeMenu();
   };
 
-  // Section anchor scroll
   const scrollToSection = (sectionId: string) => {
     if (location.pathname !== "/") {
       navigate("/");
@@ -76,7 +72,6 @@ const Navbar = () => {
     if (isMenuOpen) closeMenu();
   };
 
-  // Click outside to close menu
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -87,7 +82,6 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMenuOpen]);
 
-  // Escape key to close
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isMenuOpen) {
@@ -98,7 +92,6 @@ const Navbar = () => {
     return () => document.removeEventListener("keydown", handleEscapeKey);
   }, [isMenuOpen]);
 
-  // Focus first menu item on mobile open
   useEffect(() => {
     if (isMenuOpen) {
       const firstMenuItem = menuRef.current?.querySelector("a, button");
@@ -106,18 +99,16 @@ const Navbar = () => {
     }
   }, [isMenuOpen]);
 
-  // Restore scroll after unmount
   useEffect(() => {
     return () => {
       document.body.style.overflow = "";
     };
   }, []);
 
-  // Page active helper
   const isActivePage = (path: string) => location.pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 py-4 shadow-sm bg-background">
+    <header className="fixed top-0 left-0 right-0 z-50 py-4 shadow-sm" style={{ backgroundColor: "#000" }}>
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <div onClick={scrollToTop} className="flex items-center space-x-2 cursor-pointer" aria-label="Kolabing">
@@ -128,7 +119,7 @@ const Navbar = () => {
               className="w-8 h-8"
             />
           </div>
-          <span style={LOGO_FONT} className="text-xl font-bold text-foreground">
+          <span style={LOGO_FONT} className="text-xl font-bold text-white">
             Kolabing
           </span>
         </div>
@@ -139,8 +130,8 @@ const Navbar = () => {
             onClick={scrollToTop}
             style={NAV_FONT}
             className={cn(
-              "text-muted-foreground hover:text-foreground transition-colors duration-300",
-              isActivePage("/") && "text-primary font-medium",
+              "text-muted-foreground hover:text-white transition-colors duration-300",
+              isActivePage("/") && "text-[#FFD861] font-bold",
             )}
           >
             How it Works
@@ -149,8 +140,8 @@ const Navbar = () => {
             onClick={() => navigate("/success-stories")}
             style={NAV_FONT}
             className={cn(
-              "text-muted-foreground hover:text-foreground transition-colors duration-300",
-              isActivePage("/success-stories") && "text-primary font-medium",
+              "text-muted-foreground hover:text-white transition-colors duration-300",
+              isActivePage("/success-stories") && "text-[#FFD861] font-bold",
             )}
           >
             Success Stories
@@ -159,8 +150,8 @@ const Navbar = () => {
             onClick={() => navigate("/our-communities")}
             style={NAV_FONT}
             className={cn(
-              "text-muted-foreground hover:text-foreground transition-colors duration-300",
-              isActivePage("/our-communities") && "text-primary font-medium",
+              "text-muted-foreground hover:text-white transition-colors duration-300",
+              isActivePage("/our-communities") && "text-[#FFD861] font-bold",
             )}
           >
             For Communities
@@ -168,7 +159,7 @@ const Navbar = () => {
           {user ? (
             <button
               style={NAV_FONT}
-              className="text-muted-foreground hover:text-foreground transition-colors duration-300"
+              className="text-muted-foreground hover:text-white transition-colors duration-300"
               onClick={() => {
                 if (profile?.user_type === "business") {
                   navigate("/business");
@@ -182,7 +173,7 @@ const Navbar = () => {
           ) : (
             <button
               style={NAV_FONT}
-              className="text-muted-foreground hover:text-foreground transition-colors duration-300"
+              className="text-muted-foreground hover:text-white transition-colors duration-300"
               onClick={() => navigate("/auth/sign-in")}
             >
               Sign In
@@ -193,7 +184,7 @@ const Navbar = () => {
         {/* Mobile hamburger button */}
         <button
           ref={menuButtonRef}
-          className="md:hidden text-foreground p-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background rounded-lg transition-colors duration-200"
+          className="md:hidden text-white p-2 focus:outline-none focus:ring-2 focus:ring-[#FFD861] focus:ring-offset-2 focus:ring-offset-black rounded-lg transition-colors duration-200"
           onClick={toggleMenu}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMenuOpen}
@@ -203,7 +194,7 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Modern Mobile Navigation Overlay */}
+      {/* Mobile Navigation Overlay */}
       <div
         ref={menuRef}
         id="mobile-navigation"
@@ -211,7 +202,7 @@ const Navbar = () => {
           "fixed inset-0 z-60 md:hidden transition-all duration-300 ease-in-out",
           isMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none",
         )}
-        style={{ backgroundColor: "#142148" }}
+        style={{ backgroundColor: "#000" }}
         role="dialog"
         aria-modal="true"
         aria-label="Mobile navigation menu"
@@ -224,13 +215,13 @@ const Navbar = () => {
               alt="Kolabing Logo"
               className="w-8 h-8"
             />
-            <span style={LOGO_FONT} className="text-xl font-bold text-foreground">
+            <span style={LOGO_FONT} className="text-xl font-bold text-white">
               Kolabing
             </span>
           </div>
           <button
             onClick={closeMenu}
-            className="p-2 text-foreground hover:text-primary transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background rounded-lg"
+            className="p-2 text-white hover:text-[#FFD861] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#FFD861] focus:ring-offset-2 focus:ring-offset-black rounded-lg"
             aria-label="Close menu"
           >
             <X size={24} />
@@ -243,17 +234,13 @@ const Navbar = () => {
             onClick={scrollToTop}
             style={NAV_FONT}
             className={cn(
-              "flex items-center py-4 px-4 text-lg font-medium rounded-xl transition-all duration-200 text-left w-full",
-              "hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background",
-              isActivePage("/")
-                ? "bg-primary/10 text-primary border-l-4 border-primary"
-                : "text-foreground hover:text-primary",
+              "flex items-center py-4 px-4 text-lg font-medium text-white rounded-xl transition-all duration-200 text-left w-full",
+              "hover:bg-[#FFD861] hover:text-black focus:outline-none focus:ring-2 focus:ring-[#FFD861] focus:ring-offset-2 focus:ring-offset-black",
+              isActivePage("/") ? "bg-[#FFD861] text-black border-l-4 border-[#FFD861] font-bold" : "",
             )}
           >
             How it Works
-            {isActivePage("/") && <div className="ml-auto w-2 h-2 bg-primary rounded-full" />}
           </button>
-
           <button
             onClick={() => {
               navigate("/success-stories");
@@ -261,17 +248,13 @@ const Navbar = () => {
             }}
             style={NAV_FONT}
             className={cn(
-              "flex items-center py-4 px-4 text-lg font-medium rounded-xl transition-all duration-200 text-left w-full",
-              "hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background",
-              isActivePage("/success-stories")
-                ? "bg-primary/10 text-primary border-l-4 border-primary"
-                : "text-foreground hover:text-primary",
+              "flex items-center py-4 px-4 text-lg font-medium text-white rounded-xl transition-all duration-200 text-left w-full",
+              "hover:bg-[#FFD861] hover:text-black focus:outline-none focus:ring-2 focus:ring-[#FFD861] focus:ring-offset-2 focus:ring-offset-black",
+              isActivePage("/success-stories") ? "bg-[#FFD861] text-black border-l-4 border-[#FFD861] font-bold" : "",
             )}
           >
             Success Stories
-            {isActivePage("/success-stories") && <div className="ml-auto w-2 h-2 bg-primary rounded-full" />}
           </button>
-
           <button
             onClick={() => {
               navigate("/our-communities");
@@ -279,32 +262,24 @@ const Navbar = () => {
             }}
             style={NAV_FONT}
             className={cn(
-              "flex items-center py-4 px-4 text-lg font-medium rounded-xl transition-all duration-200 text-left w-full",
-              "hover:bg-muted focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background",
-              isActivePage("/our-communities")
-                ? "bg-primary/10 text-primary border-l-4 border-primary"
-                : "text-foreground hover:text-primary",
+              "flex items-center py-4 px-4 text-lg font-medium text-white rounded-xl transition-all duration-200 text-left w-full",
+              "hover:bg-[#FFD861] hover:text-black focus:outline-none focus:ring-2 focus:ring-[#FFD861] focus:ring-offset-2 focus:ring-offset-black",
+              isActivePage("/our-communities") ? "bg-[#FFD861] text-black border-l-4 border-[#FFD861] font-bold" : "",
             )}
           >
             Our Communities
-            {isActivePage("/our-communities") && <div className="ml-auto w-2 h-2 bg-primary rounded-full" />}
           </button>
-
           {/* Divider */}
           <div className="h-px bg-border my-4" />
-
           {user ? (
             <button
               onClick={() => {
-                if (profile?.user_type === "business") {
-                  navigate("/business");
-                } else if (profile?.user_type === "community") {
-                  navigate("/community");
-                }
+                if (profile?.user_type === "business") navigate("/business");
+                else if (profile?.user_type === "community") navigate("/community");
                 closeMenu();
               }}
               style={NAV_FONT}
-              className="flex items-center py-4 px-4 text-lg font-medium rounded-xl transition-all duration-200 text-left w-full bg-primary/10 text-primary hover:bg-primary/20 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+              className="flex items-center py-4 px-4 text-lg font-medium text-white rounded-xl transition-all duration-200 text-left w-full bg-[#FFD861] hover:bg-[#FFD861]/90 hover:text-black font-bold"
             >
               Dashboard
             </button>
@@ -315,7 +290,7 @@ const Navbar = () => {
                 closeMenu();
               }}
               style={NAV_FONT}
-              className="flex items-center py-4 px-4 text-lg font-medium rounded-xl transition-all duration-200 text-left w-full bg-primary text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+              className="flex items-center py-4 px-4 text-lg font-medium text-white rounded-xl transition-all duration-200 text-left w-full bg-[#FFD861] hover:bg-[#FFD861]/90 hover:text-black font-bold"
             >
               Sign In
             </button>

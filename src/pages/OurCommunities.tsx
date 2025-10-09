@@ -77,7 +77,7 @@ const OurCommunities = () => {
                 lineHeight: "1.4",
               }}
             >
-              From recurring venues to sponsors & deals, we help you grow your community.
+              From recurring venues to sponsors & deals for your community!
             </p>
             <Button
               size="lg"
