@@ -2,23 +2,28 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
-// Button styles: less rounded, Darker Grotesque Light, black uppercase
-const BUTTON_STYLE: React.CSSProperties = {
-  background: "#FFD861", // Yellow fill
-  color: "#111", // Black text
-  fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase" as const,
-  fontWeight: 500,
-  fontSize: "1.1rem",
-  letterSpacing: "0.05em",
-  borderRadius: "0.6em", // Less rounded
-  border: "none",
-  padding: "0.5rem 1.8rem",
-  minWidth: "unset",
-  minHeight: "2.2rem",
-  transition: "all 0.17s cubic-bezier(.4,1.1,.7,1)",
-  cursor: "pointer",
-  boxShadow: "0 2px 14px 0 rgba(0,0,0,0.05)", // Subtle shadow
+// Responsive button styles
+const getButtonStyle = (): React.CSSProperties => {
+  const isMobile = window.innerWidth < 640;
+  const isTablet = window.innerWidth >= 640 && window.innerWidth < 1024;
+  
+  return {
+    background: "#FFD861",
+    color: "#111",
+    fontFamily: "'Darker Grotesque', Arial, sans-serif",
+    textTransform: "uppercase" as const,
+    fontWeight: 500,
+    fontSize: isMobile ? "0.9rem" : isTablet ? "1rem" : "1.1rem",
+    letterSpacing: "0.05em",
+    borderRadius: "0.6em",
+    border: "none",
+    padding: isMobile ? "0.4rem 1.2rem" : isTablet ? "0.45rem 1.5rem" : "0.5rem 1.8rem",
+    minWidth: isMobile ? "100%" : "unset",
+    minHeight: isMobile ? "2rem" : "2.2rem",
+    transition: "all 0.17s cubic-bezier(.4,1.1,.7,1)",
+    cursor: "pointer",
+    boxShadow: "0 2px 14px 0 rgba(0,0,0,0.05)",
+  };
 };
 
 const BUTTON_HOVER = {
@@ -29,7 +34,14 @@ const BUTTON_HOVER = {
 
 const NewHero = () => {
   const [hoverIndex, setHoverIndex] = React.useState<number | null>(null);
-  const navigate = useNavigate(); // <-- MUST be inside your component!
+  const [buttonStyle, setButtonStyle] = React.useState(getButtonStyle());
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    const handleResize = () => setButtonStyle(getButtonStyle());
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -54,33 +66,28 @@ const NewHero = () => {
       {/* Hero Content */}
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
         <div className="flex-1 flex flex-col items-center justify-center px-4 w-full">
-          <div className="mb-9 max-w-3xl">
-            {/* Left-aligned first line */}
+          <div className="mb-6 md:mb-9 max-w-3xl px-4">
+            {/* Centered responsive first line */}
             <div
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl mb-2 md:mb-3"
               style={{
                 color: "#F9F7E8",
                 fontFamily: "'Darker Grotesque', Arial, sans-serif",
                 fontWeight: 300,
-                fontSize: "2.1rem",
                 letterSpacing: "0.01em",
-                marginBottom: "0.44em",
-                textAlign: "left",
+                textAlign: "center",
                 lineHeight: 1.14,
-                paddingLeft: "18px", // visually aligns left inside block
-                width: "fit-content",
-                marginLeft: "auto",
-                marginRight: "auto",
               }}
             >
               His business. Her community.
             </div>
-            {/* Bold/block Rubik two-row headline */}
+            {/* Bold/block Rubik responsive headline */}
             <div
+              className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl"
               style={{
                 color: "#F9F7E8",
                 fontFamily: "'Rubik', Arial, sans-serif",
                 fontWeight: 900,
-                fontSize: "2.6rem",
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
                 textAlign: "center",
@@ -93,8 +100,8 @@ const NewHero = () => {
               <span style={{ fontStyle: "italic" }}>!</span>
             </div>
           </div>
-          {/* Pill-shaped, yellow, centered buttons */}
-          <div className="flex flex-row gap-2 mt-5 justify-center items-center w-full">
+          {/* Responsive buttons - stack on mobile, horizontal on larger screens */}
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-4 md:mt-5 justify-center items-center w-full px-4">
             {[
               {
                 label: "I'm a business/brand",
@@ -107,8 +114,11 @@ const NewHero = () => {
             ].map((btn, idx) => (
               <Button
                 key={btn.id}
-                style={BUTTON_STYLE}
-                onMouseEnter={() => setHoverIndex(idx)} // <-- Corrected from 'index'
+                style={{
+                  ...buttonStyle,
+                  ...(hoverIndex === idx ? BUTTON_HOVER : {}),
+                }}
+                onMouseEnter={() => setHoverIndex(idx)}
                 onMouseLeave={() => setHoverIndex(null)}
                 onClick={() => {
                   if (btn.id === "our-communities") {
