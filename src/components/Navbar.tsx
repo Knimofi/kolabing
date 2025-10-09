@@ -190,7 +190,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between p-4 border-b border-[#222]">
           <div className="flex items-center space-x-2">
             <img
-              src="https://qcmperlkuujhweikoyru.supabase.co/storage/v1/object/sign/media/Logo%20Kolabing.png"
+              src="https://qcmperlkuujhweikoyru.supabase.co/storage/v1/object/sign/media/Logo_Kolabing-removebg-preview.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mOWQ2MzU4NS1iNjc3LTQ1NGYtOTRhZS1iODg3NjU5MWU3OGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9Mb2dvX0tvbGFiaW5nLXJlbW92ZWJnLXByZXZpZXcucG5nIiwiaWF0IjoxNzU5OTk4NzAxLCJleHAiOjE3OTE1MzQ3MDF9.CH3or8O3VNDxzdh8xEir7xHPqqj6u-mgnXyXPyrnIIw"
               alt="Kolabing Logo"
               className="w-8 h-8"
             />
