@@ -103,16 +103,16 @@ const NewHero = () => {
               },
             ].map((btn, idx) => (
               <Button
-                key={btn.id}
-                style={{
-                  ...BUTTON_STYLE,
-                  ...(hoverIndex === idx ? BUTTON_HOVER : {}),
-                }}
-                className="select-none"
-                aria-label={btn.label}
-                onClick={() => scrollToSection(btn.id)}
-                onMouseEnter={() => setHoverIndex(idx)}
+                style={BUTTON_STYLE}
+                onMouseEnter={() => setHoverIndex(index)}
                 onMouseLeave={() => setHoverIndex(null)}
+                onClick={() => {
+                  if (btn.id === "our-communities") {
+                    navigate("/our-communities");
+                  } else {
+                    scrollToSection(btn.id);
+                  }
+                }}
               >
                 {btn.label}
               </Button>
