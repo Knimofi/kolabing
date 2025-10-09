@@ -7,6 +7,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import CollaborationCard from '@/components/CollaborationCard';
 import CollaborationDetailsModal from '@/components/modals/CollaborationDetailsModal';
+import SurveyModal from '@/components/modals/SurveyModal';
+import PendingFeedbackCard from '@/components/PendingFeedbackCard';
 import { Search } from 'lucide-react';
 
 const BusinessCollaborations = () => {
@@ -19,12 +21,50 @@ const BusinessCollaborations = () => {
   const [selectedCollaboration, setSelectedCollaboration] = useState<any>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [activeFilter, setActiveFilter] = useState<'all' | 'scheduled' | 'active' | 'completed' | 'cancelled'>('all');
+  const [pendingSurveys, setPendingSurveys] = useState<any[]>([]);
+  const [showSurveyModal, setShowSurveyModal] = useState(false);
+  const [currentSurvey, setCurrentSurvey] = useState<any>(null);
 
   useEffect(() => {
     if (profile) {
       fetchCollaborations();
+      fetchPendingSurveys();
     }
   }, [profile]);
+
+  const fetchPendingSurveys = async () => {
+    try {
+      const { data: surveys, error } = await supabase
+        .from('surveys')
+        .select(`
+          id,
+          collaboration_id,
+          submitted_at,
+          collaborations!inner(
+            id,
+            offer_id,
+            community_profile_id,
+            offers(title),
+            community_profiles(name)
+          )
+        `)
+        .eq('filled_by_profile_id', profile.id)
+        .is('submitted_at', null);
+
+      if (error) throw error;
+
+      const pending = (surveys || []).map((s: any) => ({
+        id: s.id,
+        collaboration_id: s.collaboration_id,
+        partnerName: s.collaborations?.community_profiles?.name || 'Unknown Partner',
+        offerTitle: s.collaborations?.offers?.title || 'Untitled Offer',
+      }));
+
+      setPendingSurveys(pending);
+    } catch (error: any) {
+      console.error('Error fetching pending surveys:', error);
+    }
+  };
 
   const fetchCollaborations = async () => {
     setLoading(true);
@@ -95,20 +135,42 @@ const BusinessCollaborations = () => {
 
       toast({
         title: 'Success',
-        description: `Collaboration ${newStatus === 'completed' ? 'marked as fulfilled' : 'cancelled'} successfully`,
+        description: `Collaboration ${newStatus === 'completed' ? 'completed' : 'cancelled'} successfully`,
       });
+
+      await fetchCollaborations();
+      await fetchPendingSurveys();
     } catch (error: any) {
       toast({
         title: 'Error',
-        description: error.message || `Failed to ${newStatus === 'completed' ? 'fulfill' : 'cancel'} collaboration`,
+        description: error.message || `Failed to ${newStatus === 'completed' ? 'complete' : 'cancel'} collaboration`,
         variant: 'destructive',
       });
     }
   };
 
+  const handleOpenFeedbackModal = async (collaborationId: string) => {
+    const collab = collaborations.find(c => c.id === collaborationId);
+    if (!collab) return;
+
+    const partnerName = collab.community_profile?.name || 'Partner';
+    setCurrentSurvey({ collaborationId, partnerName });
+    setShowSurveyModal(true);
+  };
+
   const handleViewCollaboration = (collaboration: any) => {
     setSelectedCollaboration(collaboration);
     setShowDetailsModal(true);
+  };
+
+  const handleFillFeedback = (surveyId: string, collaborationId: string, partnerName: string) => {
+    setCurrentSurvey({ surveyId, collaborationId, partnerName });
+    setShowSurveyModal(true);
+  };
+
+  const handleSurveySubmitSuccess = () => {
+    fetchPendingSurveys();
+    fetchCollaborations();
   };
 
   if (loading) return <div>Loading...</div>;
@@ -131,6 +193,12 @@ const BusinessCollaborations = () => {
           <p className="text-muted-foreground">View and manage your active collaborations</p>
         </div>
       </header>
+
+      {/* Pending Feedback */}
+      <PendingFeedbackCard 
+        pendingSurveys={pendingSurveys}
+        onFillFeedback={handleFillFeedback}
+      />
 
       {/* Filters */}
       <div className="flex gap-2 flex-wrap">
@@ -175,6 +243,7 @@ const BusinessCollaborations = () => {
               collaboration={collaboration}
               onView={() => handleViewCollaboration(collaboration)}
               onStatusUpdate={(status) => handleStatusUpdate(collaboration.id, status)}
+              onOpenFeedbackModal={handleOpenFeedbackModal}
               userType="business"
             />
           ))}
@@ -186,8 +255,23 @@ const BusinessCollaborations = () => {
         onOpenChange={setShowDetailsModal}
         collaboration={selectedCollaboration}
         onStatusUpdate={(status) => selectedCollaboration && handleStatusUpdate(selectedCollaboration.id, status)}
+        onOpenFeedbackModal={handleOpenFeedbackModal}
         userType="business"
+        currentUserProfileId={profile?.id}
       />
+
+      {currentSurvey && (
+        <SurveyModal
+          open={showSurveyModal}
+          onOpenChange={setShowSurveyModal}
+          surveyId={currentSurvey.surveyId}
+          collaborationId={currentSurvey.collaborationId}
+          userType="business"
+          partnerName={currentSurvey.partnerName}
+          onSubmitSuccess={handleSurveySubmitSuccess}
+          currentUserProfileId={profile?.id}
+        />
+      )}
     </div>
   );
 };

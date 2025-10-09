@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
+import { AcceptApplicationModal } from '@/components/modals/AcceptApplicationModal';
 
 const BusinessApplications = () => {
   const { profile } = useAuth();
@@ -21,6 +22,9 @@ const BusinessApplications = () => {
   const [applicationToAccept, setApplicationToAccept] = useState<any>(null);
   const [applicationToDecline, setApplicationToDecline] = useState<any>(null);
   const [processingApplication, setProcessingApplication] = useState<string | null>(null);
+  const [businessProfile, setBusinessProfile] = useState<any>(null);
+  const [showAcceptModal, setShowAcceptModal] = useState(false);
+  const [isAccepting, setIsAccepting] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -32,6 +36,20 @@ const BusinessApplications = () => {
     if (!profile) return;
 
     try {
+      // Fetch business profile for contact info
+      const { data: bizProfile } = await supabase
+        .from('business_profiles')
+        .select('instagram')
+        .eq('profile_id', profile.id)
+        .single();
+
+      if (bizProfile) {
+        setBusinessProfile({
+          instagram: bizProfile.instagram,
+          email: profile.email
+        });
+      }
+
       const { data: applicationsData, error } = await supabase
         .from('applications')
         .select(`
@@ -77,14 +95,32 @@ const BusinessApplications = () => {
     setShowProfileModal(true);
   };
 
-  const handleAcceptApplication = async (application: any) => {
-    setProcessingApplication(application.id);
+  const handleShowAcceptModal = (application: any) => {
+    setApplicationToAccept(application);
+    setShowAcceptModal(true);
+  };
+
+  const handleConfirmAccept = async (scheduledDate: Date, contactMethods: any) => {
+    if (!applicationToAccept) return;
+
+    setIsAccepting(true);
     try {
       const { data, error } = await supabase.rpc('accept_application', {
-        p_application_id: application.id
+        p_application_id: applicationToAccept.id
       });
 
       if (error) throw error;
+
+      // Update the collaboration with scheduled date and contact methods
+      const { error: updateError } = await supabase
+        .from('collaborations')
+        .update({
+          scheduled_date: scheduledDate.toISOString(),
+          contact_methods: contactMethods
+        })
+        .eq('id', data);
+
+      if (updateError) throw updateError;
 
       toast({
         title: 'Success',
@@ -93,8 +129,10 @@ const BusinessApplications = () => {
 
       // Remove from pending applications list
       setApplications(applications.filter(app => 
-        app.offer_id !== application.offer_id || app.id === application.id
+        app.offer_id !== applicationToAccept.offer_id || app.id === applicationToAccept.id
       ));
+      
+      setShowAcceptModal(false);
       setApplicationToAccept(null);
     } catch (error: any) {
       toast({
@@ -103,7 +141,7 @@ const BusinessApplications = () => {
         variant: 'destructive',
       });
     } finally {
-      setProcessingApplication(null);
+      setIsAccepting(false);
     }
   };
 
@@ -248,12 +286,35 @@ const BusinessApplications = () => {
                           Applied {format(new Date(application.created_at), 'MMM d, yyyy')}
                         </div>
                         
-                        {application.availability && (
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Clock className="w-4 h-4" />
-                            Availability: {application.availability}
-                          </div>
-                        )}
+                        {application.availability && (() => {
+                          try {
+                            const parsed = JSON.parse(application.availability);
+                            if (parsed.preferred_dates && parsed.preferred_dates.length > 0) {
+                              return (
+                                <div className="space-y-1">
+                                  <p className="text-sm font-medium flex items-center gap-2">
+                                    <Clock className="w-4 h-4" />
+                                    Preferred Dates:
+                                  </p>
+                                  {parsed.preferred_dates.map((dateItem: any, index: number) => (
+                                    <div key={index} className="text-sm text-muted-foreground pl-6">
+                                      • {format(new Date(dateItem.date), 'MMM dd, yyyy')} • {dateItem.start_time} - {dateItem.end_time}
+                                    </div>
+                                  ))}
+                                </div>
+                              );
+                            }
+                          } catch (e) {
+                            // Not JSON, show as plain text
+                            return (
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Clock className="w-4 h-4" />
+                                Availability: {application.availability}
+                              </div>
+                            );
+                          }
+                          return null;
+                        })()}
                       </div>
 
                       {/* Application Message */}
@@ -274,7 +335,7 @@ const BusinessApplications = () => {
                         </Button>
                         <Button
                           size="sm"
-                          onClick={() => setApplicationToAccept(application)}
+                          onClick={() => handleShowAcceptModal(application)}
                           disabled={processingApplication === application.id}
                         >
                           <CheckCircle className="w-4 h-4 mr-2" />
@@ -356,27 +417,20 @@ const BusinessApplications = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Accept Application Dialog */}
-      <AlertDialog open={!!applicationToAccept} onOpenChange={() => setApplicationToAccept(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Accept Application</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to accept this application from {applicationToAccept?.community_profiles.name}? 
-              This will create a collaboration and decline all other applications for this offer.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => handleAcceptApplication(applicationToAccept)}
-              disabled={processingApplication === applicationToAccept?.id}
-            >
-              {processingApplication === applicationToAccept?.id ? 'Processing...' : 'Accept Application'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Accept Application Modal */}
+      {applicationToAccept && businessProfile && (
+        <AcceptApplicationModal
+          open={showAcceptModal}
+          onOpenChange={(open) => {
+            setShowAcceptModal(open);
+            if (!open) setApplicationToAccept(null);
+          }}
+          application={applicationToAccept}
+          onConfirm={handleConfirmAccept}
+          isSubmitting={isAccepting}
+          businessProfile={businessProfile}
+        />
+      )}
 
       {/* Decline Application Dialog */}
       <AlertDialog open={!!applicationToDecline} onOpenChange={() => setApplicationToDecline(null)}>

@@ -1,17 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Calendar, MapPin, Users, Clock, Package, CheckCircle, XCircle } from 'lucide-react';
 import { format } from 'date-fns';
+import { supabase } from '@/integrations/supabase/client';
+import FeedbackSummary from '@/components/FeedbackSummary';
+import { ContactInfoCard } from '@/components/ContactInfoCard';
 
 interface CollaborationDetailsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   collaboration: any;
   onStatusUpdate: (status: 'completed' | 'cancelled') => void;
+  onOpenFeedbackModal?: (collaborationId: string) => void;
   userType: 'business' | 'community';
+  currentUserProfileId?: string;
 }
 
 const CollaborationDetailsModal = ({ 
@@ -19,8 +24,48 @@ const CollaborationDetailsModal = ({
   onOpenChange, 
   collaboration, 
   onStatusUpdate,
-  userType 
+  onOpenFeedbackModal,
+  userType,
+  currentUserProfileId
 }: CollaborationDetailsModalProps) => {
+  const [userSurvey, setUserSurvey] = useState<any>(null);
+  const [partnerSurvey, setPartnerSurvey] = useState<any>(null);
+  const [loadingSurveys, setLoadingSurveys] = useState(false);
+
+  useEffect(() => {
+    if (open && collaboration?.id && collaboration.status === 'completed') {
+      fetchSurveys();
+    }
+  }, [open, collaboration?.id, collaboration?.status]);
+
+  const fetchSurveys = async () => {
+    if (!collaboration?.id || !currentUserProfileId) return;
+    
+    setLoadingSurveys(true);
+    try {
+      const partnerProfileId = userType === 'business' 
+        ? collaboration.community_profile_id 
+        : collaboration.business_profile_id;
+
+      const { data, error } = await supabase
+        .from('surveys')
+        .select('*')
+        .eq('collaboration_id', collaboration.id);
+
+      if (error) throw error;
+
+      const user = data?.find(s => s.filled_by_profile_id === currentUserProfileId);
+      const partner = data?.find(s => s.filled_by_profile_id === partnerProfileId);
+
+      setUserSurvey(user || null);
+      setPartnerSurvey(partner || null);
+    } catch (error) {
+      console.error('Error fetching surveys:', error);
+    } finally {
+      setLoadingSurveys(false);
+    }
+  };
+
   if (!collaboration) return null;
 
   const getStatusColor = (status: string) => {
@@ -144,6 +189,15 @@ const CollaborationDetailsModal = ({
             )}
           </div>
 
+          {/* Contact Info for Community Users */}
+          {userType === 'community' && (
+            <ContactInfoCard 
+              scheduledDate={collaboration.scheduled_date}
+              contactMethods={collaboration.contact_methods}
+              isCommunityView={true}
+            />
+          )}
+
           {/* Description */}
           <div className="space-y-2">
             <h4 className="font-semibold text-sm">Collaboration Description</h4>
@@ -174,19 +228,52 @@ const CollaborationDetailsModal = ({
           {renderDeliverables()}
 
           {/* Original Application Details */}
-          {collaboration.application && (
-            <div className="border-t pt-4 space-y-2">
+          {collaboration.applications && (
+            <div className="border-t pt-4 space-y-3">
               <h4 className="font-semibold text-sm">Original Application</h4>
-              {collaboration.application.message && (
+              {(() => {
+                try {
+                  const availability = collaboration.applications.availability;
+                  if (availability) {
+                    const parsed = JSON.parse(availability);
+                    const preferredDates = parsed.preferred_dates || [];
+                    
+                    if (preferredDates.length > 0) {
+                      return (
+                        <div>
+                          <h5 className="text-xs font-medium text-muted-foreground mb-2">Proposed Dates:</h5>
+                          <div className="space-y-2">
+                            {preferredDates.map((dateOption: any, index: number) => (
+                              <div key={index} className="text-sm p-2 bg-muted/50 rounded border">
+                                <div className="font-medium">
+                                  {format(new Date(dateOption.date), "EEEE, MMMM d, yyyy")}
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {dateOption.start_time} - {dateOption.end_time}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    }
+                  }
+                } catch (e) {
+                  // If not JSON, show as text
+                  if (collaboration.applications.availability) {
+                    return (
+                      <div>
+                        <h5 className="text-xs font-medium text-muted-foreground mb-1">Availability:</h5>
+                        <p className="text-sm">{collaboration.applications.availability}</p>
+                      </div>
+                    );
+                  }
+                }
+              })()}
+              {collaboration.applications.message && (
                 <div>
                   <h5 className="text-xs font-medium text-muted-foreground mb-1">Message:</h5>
-                  <p className="text-sm">{collaboration.application.message}</p>
-                </div>
-              )}
-              {collaboration.application.availability && (
-                <div>
-                  <h5 className="text-xs font-medium text-muted-foreground mb-1">Availability:</h5>
-                  <p className="text-sm">{collaboration.application.availability}</p>
+                  <p className="text-sm whitespace-pre-wrap">{collaboration.applications.message}</p>
                 </div>
               )}
             </div>
@@ -225,6 +312,99 @@ const CollaborationDetailsModal = ({
             </div>
           </div>
 
+          {/* Feedback Section */}
+          {collaboration.status === 'completed' && (
+            <div className="border-t pt-4 space-y-4">
+              <h4 className="font-semibold text-sm">Collaboration Feedback</h4>
+              {loadingSurveys ? (
+                <p className="text-sm text-muted-foreground">Loading feedback...</p>
+              ) : (
+                <div className="space-y-4">
+                  {/* Your Feedback */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <h5 className="text-sm font-medium">Your Feedback</h5>
+                      {(() => {
+                        const isSubmitted = userSurvey?.submitted_at && userSurvey?.answers && Object.keys(userSurvey.answers || {}).length > 0;
+                        return isSubmitted ? (
+                          <Badge variant="default" className="bg-green-600">
+                            ✓ Feedback Sent
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="bg-orange-100 text-orange-700">
+                            🟠 Pending Feedback
+                          </Badge>
+                        );
+                      })()}
+                    </div>
+                    {(() => {
+                      const isSubmitted = userSurvey?.submitted_at && userSurvey?.answers && Object.keys(userSurvey.answers || {}).length > 0;
+                      return isSubmitted ? (
+                        <FeedbackSummary 
+                          surveys={[userSurvey]} 
+                          userType={userType}
+                          isUserFeedback={true}
+                        />
+                      ) : (
+                        <div className="border rounded-lg p-4 text-center">
+                          <p className="text-sm text-muted-foreground mb-3">
+                            You haven't submitted feedback yet
+                          </p>
+                          {onOpenFeedbackModal && (
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                onOpenFeedbackModal(collaboration.id);
+                                onOpenChange(false);
+                              }}
+                            >
+                              Add Feedback
+                            </Button>
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </div>
+
+                  {/* Partner Feedback */}
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <h5 className="text-sm font-medium">Partner's Feedback</h5>
+                      {(() => {
+                        const isPartnerSubmitted = partnerSurvey?.submitted_at && partnerSurvey?.answers && Object.keys(partnerSurvey.answers || {}).length > 0;
+                        return isPartnerSubmitted ? (
+                          <Badge variant="default" className="bg-green-600">
+                            ✓ Feedback Received
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="bg-orange-100 text-orange-700">
+                            🟠 Pending
+                          </Badge>
+                        );
+                      })()}
+                    </div>
+                    {(() => {
+                      const isPartnerSubmitted = partnerSurvey?.submitted_at && partnerSurvey?.answers && Object.keys(partnerSurvey.answers || {}).length > 0;
+                      return isPartnerSubmitted ? (
+                        <FeedbackSummary 
+                          surveys={[partnerSurvey]} 
+                          userType={userType === 'business' ? 'community' : 'business'}
+                          isUserFeedback={false}
+                        />
+                      ) : (
+                        <div className="border rounded-lg p-4 text-center">
+                          <p className="text-sm text-muted-foreground">
+                            Partner hasn't submitted feedback yet
+                          </p>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Action Buttons */}
           {(collaboration.status === 'scheduled' || collaboration.status === 'active') && (
             <div className="flex gap-2 pt-4 border-t">
@@ -233,10 +413,13 @@ const CollaborationDetailsModal = ({
                 onClick={() => {
                   onStatusUpdate('completed');
                   onOpenChange(false);
+                  if (onOpenFeedbackModal) {
+                    setTimeout(() => onOpenFeedbackModal(collaboration.id), 500);
+                  }
                 }}
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
-                Mark as Fulfilled
+                Complete Collaboration
               </Button>
               <Button 
                 variant="destructive" 

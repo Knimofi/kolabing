@@ -5,12 +5,19 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format } from 'date-fns';
 import { Eye, CheckCircle, XCircle } from 'lucide-react';
+import { ContactInfoCard } from '@/components/ContactInfoCard';
 
 interface CollaborationCardProps {
   collaboration: {
     id: string;
     created_at: string;
     status: 'scheduled' | 'active' | 'completed' | 'cancelled';
+    scheduled_date?: string;
+    contact_methods?: {
+      whatsapp?: string;
+      instagram?: string;
+      email?: string;
+    };
     offer: {
       id: string;
       title: string;
@@ -32,10 +39,11 @@ interface CollaborationCardProps {
   };
   onView: () => void;
   onStatusUpdate: (status: 'completed' | 'cancelled') => void;
+  onOpenFeedbackModal?: (collaborationId: string) => void;
   userType: 'business' | 'community';
 }
 
-const CollaborationCard = ({ collaboration, onView, onStatusUpdate, userType }: CollaborationCardProps) => {
+const CollaborationCard = ({ collaboration, onView, onStatusUpdate, onOpenFeedbackModal, userType }: CollaborationCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'scheduled': return 'bg-blue-100 text-blue-800';
@@ -108,32 +116,52 @@ const CollaborationCard = ({ collaboration, onView, onStatusUpdate, userType }: 
           </div>
         </div>
 
-        {/* Footer Actions */}
-        <div className="flex gap-2 mt-4 pt-3 border-t">
-          <Button variant="outline" size="sm" onClick={onView}>
+      {/* Contact Info for Community Users */}
+      {userType === 'community' && (
+        <ContactInfoCard 
+          scheduledDate={collaboration.scheduled_date}
+          contactMethods={collaboration.contact_methods}
+          isCommunityView={true}
+        />
+      )}
+
+        {/* Action Buttons */}
+        <div className="flex gap-2 pt-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex-1"
+            onClick={onView}
+          >
             <Eye className="w-4 h-4 mr-2" />
-            View
+            View Details
           </Button>
-          {collaboration.status === 'scheduled' || collaboration.status === 'active' ? (
+          
+          {(collaboration.status === 'scheduled' || collaboration.status === 'active') && (
             <>
-              <Button 
-                size="sm" 
-                className="bg-green-600 hover:bg-green-700 text-white"
-                onClick={() => onStatusUpdate('completed')}
-              >
-                <CheckCircle className="w-4 h-4 mr-2" />
-                Fulfilled
-              </Button>
-              <Button 
-                variant="destructive" 
+              <Button
                 size="sm"
+                className="bg-green-600 hover:bg-green-700 text-white"
+                onClick={() => {
+                  onStatusUpdate('completed');
+                  if (onOpenFeedbackModal) {
+                    setTimeout(() => onOpenFeedbackModal(collaboration.id), 500);
+                  }
+                }}
+              >
+                <CheckCircle className="w-4 h-4 mr-1" />
+                Complete
+              </Button>
+              <Button
+                size="sm"
+                variant="destructive"
                 onClick={() => onStatusUpdate('cancelled')}
               >
-                <XCircle className="w-4 h-4 mr-2" />
+                <XCircle className="w-4 h-4 mr-1" />
                 Cancel
               </Button>
             </>
-          ) : null}
+          )}
         </div>
       </CardContent>
     </Card>

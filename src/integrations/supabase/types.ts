@@ -178,6 +178,7 @@ export type Database = {
           business_profile_id: string
           community_profile_id: string
           completed_at: string | null
+          contact_methods: Json | null
           created_at: string
           id: string
           offer_id: string
@@ -190,6 +191,7 @@ export type Database = {
           business_profile_id: string
           community_profile_id: string
           completed_at?: string | null
+          contact_methods?: Json | null
           created_at?: string
           id?: string
           offer_id: string
@@ -202,6 +204,7 @@ export type Database = {
           business_profile_id?: string
           community_profile_id?: string
           completed_at?: string | null
+          contact_methods?: Json | null
           created_at?: string
           id?: string
           offer_id?: string
@@ -246,6 +249,7 @@ export type Database = {
           city: string | null
           community_type: string | null
           created_at: string
+          Featured: boolean
           instagram: string | null
           name: string | null
           profile_id: string
@@ -259,6 +263,7 @@ export type Database = {
           city?: string | null
           community_type?: string | null
           created_at?: string
+          Featured?: boolean
           instagram?: string | null
           name?: string | null
           profile_id: string
@@ -272,6 +277,7 @@ export type Database = {
           city?: string | null
           community_type?: string | null
           created_at?: string
+          Featured?: boolean
           instagram?: string | null
           name?: string | null
           profile_id?: string
@@ -439,30 +445,36 @@ export type Database = {
           created_at: string
           id: string
           image_url: string | null
+          is_active: boolean
           name: string
           role: string
           testimonial: string
           updated_at: string
+          video_url: string | null
         }
         Insert: {
           company: string
           created_at?: string
           id?: string
           image_url?: string | null
+          is_active?: boolean
           name: string
           role: string
           testimonial: string
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
           company?: string
           created_at?: string
           id?: string
           image_url?: string | null
+          is_active?: boolean
           name?: string
           role?: string
           testimonial?: string
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
       }
@@ -473,7 +485,7 @@ export type Database = {
           filled_by_profile_id: string
           id: string
           score: number | null
-          submitted_at: string
+          submitted_at: string | null
         }
         Insert: {
           answers?: Json
@@ -481,7 +493,7 @@ export type Database = {
           filled_by_profile_id: string
           id?: string
           score?: number | null
-          submitted_at?: string
+          submitted_at?: string | null
         }
         Update: {
           answers?: Json
@@ -489,7 +501,7 @@ export type Database = {
           filled_by_profile_id?: string
           id?: string
           score?: number | null
-          submitted_at?: string
+          submitted_at?: string | null
         }
         Relationships: [
           {

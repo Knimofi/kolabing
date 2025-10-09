@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
+import { Calendar, Clock } from 'lucide-react';
 
 interface Application {
   id: string;
@@ -46,6 +47,17 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
 
   const canWithdraw = application.status === 'pending';
 
+  // Parse preferred dates if available
+  let preferredDates = null;
+  try {
+    if (application.availability) {
+      const parsed = JSON.parse(application.availability);
+      preferredDates = parsed.preferred_dates;
+    }
+  } catch (e) {
+    // Not JSON, ignore
+  }
+
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
@@ -62,6 +74,22 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           <Badge className={getStatusColor(application.status)}>
             {application.status.charAt(0).toUpperCase() + application.status.slice(1)}
           </Badge>
+          
+          {/* Show Preferred Dates */}
+          {preferredDates && preferredDates.length > 0 && (
+            <div className="pt-2 space-y-1">
+              <p className="text-xs font-medium flex items-center gap-1">
+                <Calendar className="w-3 h-3" />
+                Preferred Dates:
+              </p>
+              {preferredDates.map((dateItem: any, index: number) => (
+                <div key={index} className="text-xs text-muted-foreground flex items-center gap-1 pl-4">
+                  <Clock className="w-3 h-3" />
+                  {format(new Date(dateItem.date), 'MMM dd, yyyy')} • {dateItem.start_time} - {dateItem.end_time}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </CardHeader>
       

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Plus, FileText, Users, TrendingUp, AlertCircle } from 'lucide-react';
-import ProfileSetupAlert from '@/components/ProfileSetupAlert';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Plus, FileText, Users, TrendingUp, AlertCircle } from "lucide-react";
+import ProfileSetupAlert from "@/components/ProfileSetupAlert";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const BusinessDashboard = () => {
   const { profile } = useAuth();
@@ -13,7 +13,7 @@ const BusinessDashboard = () => {
     totalOffers: 0,
     activeOffers: 0,
     applications: 0,
-    collaborations: 0
+    collaborations: 0,
   });
   const [loading, setLoading] = useState(true);
 
@@ -26,40 +26,40 @@ const BusinessDashboard = () => {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch total offers
       const { count: totalOffers } = await supabase
-        .from('offers')
-        .select('*', { count: 'exact', head: true })
-        .eq('business_profile_id', profile!.id);
+        .from("offers")
+        .select("*", { count: "exact", head: true })
+        .eq("business_profile_id", profile!.id);
 
       // Fetch active (published) offers
       const { count: activeOffers } = await supabase
-        .from('offers')
-        .select('*', { count: 'exact', head: true })
-        .eq('business_profile_id', profile!.id)
-        .eq('status', 'published');
+        .from("offers")
+        .select("*", { count: "exact", head: true })
+        .eq("business_profile_id", profile!.id)
+        .eq("status", "published");
 
       // Fetch applications
       const { count: applications } = await supabase
-        .from('applications')
-        .select('offer_id!inner(*)', { count: 'exact', head: true })
-        .eq('offer_id.business_profile_id', profile!.id);
+        .from("applications")
+        .select("offer_id!inner(*)", { count: "exact", head: true })
+        .eq("offer_id.business_profile_id", profile!.id);
 
       // Fetch collaborations
       const { count: collaborations } = await supabase
-        .from('collaborations')
-        .select('*', { count: 'exact', head: true })
-        .eq('business_profile_id', profile!.id);
+        .from("collaborations")
+        .select("*", { count: "exact", head: true })
+        .eq("business_profile_id", profile!.id);
 
       setStats({
         totalOffers: totalOffers || 0,
         activeOffers: activeOffers || 0,
         applications: applications || 0,
-        collaborations: collaborations || 0
+        collaborations: collaborations || 0,
       });
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      console.error("Error fetching stats:", error);
     } finally {
       setLoading(false);
     }
@@ -69,14 +69,10 @@ const BusinessDashboard = () => {
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-            Business Dashboard
-          </h1>
-          <p className="text-muted-foreground">
-            Manage your offers and track collaboration performance
-          </p>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Business Dashboard</h1>
+          <p className="text-muted-foreground">Manage your offers and track collaboration performance</p>
         </div>
-        
+
         <Link to="/business/offers/new">
           <Button size="lg" className="w-full md:w-auto">
             <Plus className="w-5 h-5 mr-2" />
@@ -116,11 +112,9 @@ const BusinessDashboard = () => {
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {loading ? '...' : stats.totalOffers}
-            </div>
+            <div className="text-2xl font-bold">{loading ? "..." : stats.totalOffers}</div>
             <p className="text-xs text-muted-foreground">
-              {stats.totalOffers === 0 ? 'No offers created yet' : 'Total created offers'}
+              {stats.totalOffers === 0 ? "No offers created yet" : "Total created offers"}
             </p>
           </CardContent>
         </Card>
@@ -131,12 +125,8 @@ const BusinessDashboard = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {loading ? '...' : stats.activeOffers}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Published offers
-            </p>
+            <div className="text-2xl font-bold">{loading ? "..." : stats.activeOffers}</div>
+            <p className="text-xs text-muted-foreground">Published offers</p>
           </CardContent>
         </Card>
 
@@ -146,12 +136,8 @@ const BusinessDashboard = () => {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {loading ? '...' : stats.applications}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Total applications received
-            </p>
+            <div className="text-2xl font-bold">{loading ? "..." : stats.applications}</div>
+            <p className="text-xs text-muted-foreground">Total applications received</p>
           </CardContent>
         </Card>
 
@@ -161,12 +147,8 @@ const BusinessDashboard = () => {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {loading ? '...' : stats.collaborations}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Active partnerships
-            </p>
+            <div className="text-2xl font-bold">{loading ? "..." : stats.collaborations}</div>
+            <p className="text-xs text-muted-foreground">Active partnerships</p>
           </CardContent>
         </Card>
       </div>
@@ -176,9 +158,7 @@ const BusinessDashboard = () => {
         <Card>
           <CardHeader>
             <CardTitle>Getting Started</CardTitle>
-            <CardDescription>
-              Complete these steps to start connecting with communities
-            </CardDescription>
+            <CardDescription>Complete these steps to start connecting with communities</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
@@ -189,7 +169,7 @@ const BusinessDashboard = () => {
                 <span className="text-sm">Set up your business profile</span>
               </div>
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-muted text-muted-foreground rounded-full flex items-center justify-center text-sm font-medium">
@@ -203,7 +183,7 @@ const BusinessDashboard = () => {
                 </Button>
               </Link>
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-muted text-muted-foreground rounded-full flex items-center justify-center text-sm font-medium">
@@ -223,19 +203,13 @@ const BusinessDashboard = () => {
         <Card>
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>
-              Your latest collaboration updates
-            </CardDescription>
+            <CardDescription>Your latest collaboration updates</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-center py-8">
               <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-sm text-muted-foreground">
-                No recent activity
-              </p>
-              <p className="text-xs text-muted-foreground mt-2">
-                Create an offer to start seeing activity here
-              </p>
+              <p className="text-sm text-muted-foreground">No recent activity</p>
+              <p className="text-xs text-muted-foreground mt-2">Create an offer to start seeing activity here</p>
             </div>
           </CardContent>
         </Card>
