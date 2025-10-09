@@ -7,9 +7,16 @@ import ProfileSetupAlert from "@/components/ProfileSetupAlert";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
-const DG_FONT = {
-  fontFamily: "'Darker Grotesque', Arial, sans-serif",
+const RUBIK_BOLD = {
+  fontFamily: "'Rubik', Arial, sans-serif",
   textTransform: "uppercase" as const,
+  fontWeight: 700,
+};
+
+const RUBIK_MEDIUM = {
+  fontFamily: "'Rubik', Arial, sans-serif",
+  textTransform: "uppercase" as const,
+  fontWeight: 500,
 };
 
 const BusinessDashboard = () => {
@@ -71,29 +78,30 @@ const BusinessDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#F1F0EC" }}>
+    <div className="min-h-screen" style={{ background: "#000" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
-        {/* Header Section with action */}
+        {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
           <div>
             <h1
-              className="text-3xl md:text-4xl font-extrabold mb-1"
+              className="text-3xl md:text-4xl mb-1"
               style={{
-                ...DG_FONT,
-                color: "#000",
+                ...RUBIK_BOLD,
+                color: "#fff",
                 letterSpacing: "0.04em",
               }}
             >
               BUSINESS DASHBOARD
             </h1>
-            <p className="text-lg" style={{ fontFamily: "'Darker Grotesque', sans-serif", color: "#444" }}>
+            <p className="text-lg" style={{ fontFamily: "'Darker Grotesque', sans-serif", color: "#aaa" }}>
               Manage your offers and track partnership success
             </p>
           </div>
           <Link to="/business/offers/new">
             <Button
               size="lg"
-              className="bg-[#FFD861] hover:bg-yellow-300 border-2 border-[#FFD861] text-black font-bold text-lg uppercase"
+              className="bg-[#FFD861] hover:bg-yellow-400 border-2 border-[#FFD861] text-white font-bold text-lg uppercase"
+              style={RUBIK_BOLD}
             >
               <Plus className="w-5 h-5 mr-2" />
               CREATE NEW OFFER
@@ -109,7 +117,7 @@ const BusinessDashboard = () => {
             <div className="flex items-start space-x-3">
               <AlertCircle className="w-5 h-5 text-[#FFD861] mt-0.5 flex-shrink-0" />
               <div className="flex-1">
-                <h3 className="font-extrabold text-black mb-1" style={DG_FONT}>
+                <h3 className="mb-1" style={{ ...RUBIK_MEDIUM, color: "#000" }}>
                   SUBSCRIPTION REQUIRED
                 </h3>
                 <p className="text-black text-sm mb-3" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
@@ -119,8 +127,8 @@ const BusinessDashboard = () => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="border-[#FFD861] text-black hover:bg-[#FFD861]/30"
-                    style={DG_FONT}
+                    className="border-[#FFD861] bg-[#FFD861] text-white hover:bg-yellow-400"
+                    style={RUBIK_MEDIUM}
                   >
                     VIEW PLANS
                   </Button>
@@ -160,13 +168,13 @@ const BusinessDashboard = () => {
           ].map(({ title, icon, value, desc }, idx) => (
             <Card key={idx} className="border-black bg-white">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-extrabold text-black" style={DG_FONT}>
+                <CardTitle className="text-sm" style={{ ...RUBIK_MEDIUM, color: "#000" }}>
                   {title}
                 </CardTitle>
                 {icon}
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-extrabold text-black mb-1" style={DG_FONT}>
+                <div className="text-3xl font-extrabold text-black mb-1" style={{ ...RUBIK_BOLD, color: "#000" }}>
                   {loading ? "..." : String(value).toUpperCase()}
                 </div>
                 <p className="text-xs text-gray-600" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
@@ -182,7 +190,7 @@ const BusinessDashboard = () => {
           {/* Getting Started Block */}
           <Card className="border-black bg-white">
             <CardHeader>
-              <CardTitle className="font-extrabold text-black" style={DG_FONT}>
+              <CardTitle className="mb-1" style={{ ...RUBIK_MEDIUM, color: "#000" }}>
                 GETTING STARTED
               </CardTitle>
               <CardDescription style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
@@ -192,8 +200,8 @@ const BusinessDashboard = () => {
             <CardContent className="space-y-5">
               <div className="flex items-center space-x-3">
                 <div
-                  className="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-lg font-extrabold"
-                  style={DG_FONT}
+                  className="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-lg"
+                  style={RUBIK_BOLD}
                 >
                   ✓
                 </div>
@@ -204,8 +212,8 @@ const BusinessDashboard = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div
-                    className="w-8 h-8 bg-[#FFD861] text-black rounded-full flex items-center justify-center text-base font-extrabold"
-                    style={DG_FONT}
+                    className="w-8 h-8 bg-[#FFD861] text-black rounded-full flex items-center justify-center text-base"
+                    style={RUBIK_BOLD}
                   >
                     2
                   </div>
@@ -214,7 +222,12 @@ const BusinessDashboard = () => {
                   </span>
                 </div>
                 <Link to="/business/plans">
-                  <Button variant="outline" size="sm" className="border-[#FFD861] text-black" style={DG_FONT}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-[#FFD861] bg-[#FFD861] text-white"
+                    style={RUBIK_MEDIUM}
+                  >
                     CHOOSE PLAN
                   </Button>
                 </Link>
@@ -222,8 +235,8 @@ const BusinessDashboard = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div
-                    className="w-8 h-8 bg-[#FFD861] text-black rounded-full flex items-center justify-center text-base font-extrabold"
-                    style={DG_FONT}
+                    className="w-8 h-8 bg-[#FFD861] text-black rounded-full flex items-center justify-center text-base"
+                    style={RUBIK_BOLD}
                   >
                     3
                   </div>
@@ -232,7 +245,12 @@ const BusinessDashboard = () => {
                   </span>
                 </div>
                 <Link to="/business/offers/new">
-                  <Button variant="outline" size="sm" className="border-[#FFD861] text-black" style={DG_FONT}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-[#FFD861] bg-[#FFD861] text-white"
+                    style={RUBIK_MEDIUM}
+                  >
                     CREATE OFFER
                   </Button>
                 </Link>
@@ -243,9 +261,8 @@ const BusinessDashboard = () => {
           {/* Recent Activity Block */}
           <Card className="border-black bg-white">
             <CardHeader>
-              <CardTitle className="font-extrabold text-black" style={DG_FONT}>
-                RECENT ACTIVITY
-              </CardTitle>
+              <CardTitle style={{ ...RUBIK_MEDIUM, color: "#000" }}>RECENT ACTIVITY</CardTitle> className="text-3xl
+              md:text-4xl mb-1"
               <CardDescription style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
                 Your latest collaboration updates
               </CardDescription>
