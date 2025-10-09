@@ -40,49 +40,62 @@ export type Database = {
       }
       applications: {
         Row: {
+          applicant_profile_id: string
+          applicant_profile_type: string
           availability: string | null
+          collab_opportunity_id: string
           community_profile_id: string
           created_at: string
           id: string
           message: string | null
-          offer_id: string
           status: Database["public"]["Enums"]["application_status"]
           updated_at: string
         }
         Insert: {
+          applicant_profile_id: string
+          applicant_profile_type: string
           availability?: string | null
+          collab_opportunity_id: string
           community_profile_id: string
           created_at?: string
           id?: string
           message?: string | null
-          offer_id: string
           status?: Database["public"]["Enums"]["application_status"]
           updated_at?: string
         }
         Update: {
+          applicant_profile_id?: string
+          applicant_profile_type?: string
           availability?: string | null
+          collab_opportunity_id?: string
           community_profile_id?: string
           created_at?: string
           id?: string
           message?: string | null
-          offer_id?: string
           status?: Database["public"]["Enums"]["application_status"]
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "applications_applicant_profile_id_fkey"
+            columns: ["applicant_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_collab_opportunity_id_fkey"
+            columns: ["collab_opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "collab_opportunities"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "applications_community_profile_id_fkey"
             columns: ["community_profile_id"]
             isOneToOne: false
             referencedRelation: "community_profiles"
             referencedColumns: ["profile_id"]
-          },
-          {
-            foreignKeyName: "applications_offer_id_fkey"
-            columns: ["offer_id"]
-            isOneToOne: false
-            referencedRelation: "offers"
-            referencedColumns: ["id"]
           },
         ]
       }
@@ -172,14 +185,98 @@ export type Database = {
           },
         ]
       }
+      collab_opportunities: {
+        Row: {
+          address: string | null
+          availability_end: string | null
+          availability_start: string | null
+          business_offer: Json
+          business_profile_id: string
+          categories: Json | null
+          community_deliverables: Json
+          created_at: string
+          creator_profile_id: string
+          creator_profile_type: string
+          description: string
+          id: string
+          no_venue: boolean | null
+          offer_photo: string | null
+          published_at: string | null
+          status: Database["public"]["Enums"]["offer_status"]
+          timeline_days: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          availability_end?: string | null
+          availability_start?: string | null
+          business_offer?: Json
+          business_profile_id: string
+          categories?: Json | null
+          community_deliverables?: Json
+          created_at?: string
+          creator_profile_id: string
+          creator_profile_type: string
+          description: string
+          id?: string
+          no_venue?: boolean | null
+          offer_photo?: string | null
+          published_at?: string | null
+          status?: Database["public"]["Enums"]["offer_status"]
+          timeline_days?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          availability_end?: string | null
+          availability_start?: string | null
+          business_offer?: Json
+          business_profile_id?: string
+          categories?: Json | null
+          community_deliverables?: Json
+          created_at?: string
+          creator_profile_id?: string
+          creator_profile_type?: string
+          description?: string
+          id?: string
+          no_venue?: boolean | null
+          offer_photo?: string | null
+          published_at?: string | null
+          status?: Database["public"]["Enums"]["offer_status"]
+          timeline_days?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collab_opportunities_creator_profile_id_fkey"
+            columns: ["creator_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offers_business_profile_id_fkey"
+            columns: ["business_profile_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["profile_id"]
+          },
+        ]
+      }
       collaborations: {
         Row: {
+          applicant_profile_id: string
           application_id: string
           business_profile_id: string
+          collab_opportunity_id: string
           community_profile_id: string
           completed_at: string | null
           contact_methods: Json | null
           created_at: string
+          creator_profile_id: string
           id: string
           offer_id: string
           scheduled_date: string | null
@@ -187,12 +284,15 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          applicant_profile_id: string
           application_id: string
           business_profile_id: string
+          collab_opportunity_id: string
           community_profile_id: string
           completed_at?: string | null
           contact_methods?: Json | null
           created_at?: string
+          creator_profile_id: string
           id?: string
           offer_id: string
           scheduled_date?: string | null
@@ -200,12 +300,15 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          applicant_profile_id?: string
           application_id?: string
           business_profile_id?: string
+          collab_opportunity_id?: string
           community_profile_id?: string
           completed_at?: string | null
           contact_methods?: Json | null
           created_at?: string
+          creator_profile_id?: string
           id?: string
           offer_id?: string
           scheduled_date?: string | null
@@ -213,6 +316,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "collaborations_applicant_profile_id_fkey"
+            columns: ["applicant_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "collaborations_application_id_fkey"
             columns: ["application_id"]
@@ -228,6 +338,13 @@ export type Database = {
             referencedColumns: ["profile_id"]
           },
           {
+            foreignKeyName: "collaborations_collab_opportunity_id_fkey"
+            columns: ["collab_opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "collab_opportunities"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "collaborations_community_profile_id_fkey"
             columns: ["community_profile_id"]
             isOneToOne: false
@@ -235,10 +352,10 @@ export type Database = {
             referencedColumns: ["profile_id"]
           },
           {
-            foreignKeyName: "collaborations_offer_id_fkey"
-            columns: ["offer_id"]
+            foreignKeyName: "collaborations_creator_profile_id_fkey"
+            columns: ["creator_profile_id"]
             isOneToOne: false
-            referencedRelation: "offers"
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -300,74 +417,6 @@ export type Database = {
             isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
-          },
-        ]
-      }
-      offers: {
-        Row: {
-          address: string | null
-          availability_end: string | null
-          availability_start: string | null
-          business_offer: Json
-          business_profile_id: string
-          categories: Json | null
-          community_deliverables: Json
-          created_at: string
-          description: string
-          id: string
-          no_venue: boolean | null
-          offer_photo: string | null
-          published_at: string | null
-          status: Database["public"]["Enums"]["offer_status"]
-          timeline_days: number | null
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          address?: string | null
-          availability_end?: string | null
-          availability_start?: string | null
-          business_offer?: Json
-          business_profile_id: string
-          categories?: Json | null
-          community_deliverables?: Json
-          created_at?: string
-          description: string
-          id?: string
-          no_venue?: boolean | null
-          offer_photo?: string | null
-          published_at?: string | null
-          status?: Database["public"]["Enums"]["offer_status"]
-          timeline_days?: number | null
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          address?: string | null
-          availability_end?: string | null
-          availability_start?: string | null
-          business_offer?: Json
-          business_profile_id?: string
-          categories?: Json | null
-          community_deliverables?: Json
-          created_at?: string
-          description?: string
-          id?: string
-          no_venue?: boolean | null
-          offer_photo?: string | null
-          published_at?: string | null
-          status?: Database["public"]["Enums"]["offer_status"]
-          timeline_days?: number | null
-          title?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "offers_business_profile_id_fkey"
-            columns: ["business_profile_id"]
-            isOneToOne: false
-            referencedRelation: "business_profiles"
-            referencedColumns: ["profile_id"]
           },
         ]
       }
@@ -543,12 +592,20 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      is_applicant_of_application: {
+        Args: { application_id: string }
+        Returns: boolean
+      }
       is_business_owner_of_offer: {
         Args: { offer_id: string }
         Returns: boolean
       }
       is_community_of_application: {
         Args: { application_id: string }
+        Returns: boolean
+      }
+      is_creator_of_opportunity: {
+        Args: { opportunity_id: string }
         Returns: boolean
       }
       is_participant_of_collaboration: {
