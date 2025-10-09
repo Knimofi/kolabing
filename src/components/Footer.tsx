@@ -9,11 +9,11 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0">
           {/* Logo and Brand */}
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-[#FFD861] rounded-lg flex items-center justify-center">
-              <span className="text-black font-extrabold text-lg" style={{ fontFamily: "'Rubik', sans-serif" }}>
-                K
-              </span>
-            </div>
+            <img
+              src="https://qcmperlkuujhweikoyru.supabase.co/storage/v1/object/sign/media/Logo_Kolabing-removebg-preview.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mOWQ2MzU4NS1iNjc3LTQ1NGYtOTRhZS1iODg3NjU5MWU3OGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9Mb2dvX0tvbGFiaW5nLXJlbW92ZWJnLXByZXZpZXcucG5nIiwiaWF0IjoxNzYwMDAwMjY3LCJleHAiOjE3OTE1MzYyNjd9.WlXIWFEuiQztblbyF1mWhhOva8mD5hcjKghi55y3jRo"
+              alt="Kolabing Logo"
+              className="w-8 h-8"
+            />
             <span
               className="text-xl font-extrabold text-white tracking-wide"
               style={{ fontFamily: "'Rubik', sans-serif", textTransform: "uppercase" }}
