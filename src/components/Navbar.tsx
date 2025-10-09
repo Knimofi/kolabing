@@ -123,7 +123,7 @@ const Navbar = () => {
         <div onClick={scrollToTop} className="flex items-center space-x-2 cursor-pointer" aria-label="Kolabing">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center">
             <img
-              src="https://qcmperlkuujhweikoyru.supabase.co/storage/v1/object/sign/media/Logo%20Kolabing.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mOWQ2MzU4NS1iNjc3LTQ1NGYtOTRhZS1iODg3NjU5MWU3OGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9Mb2dvIEtvbGFiaW5nLnBuZyIsImlhdCI6MTc1OTI0NDEyNSwiZXhwIjoxNzkwNzgwMTI1fQ.VF8cudTlK1B-3KPZ8iiL0VqUvo-yYejBgrH_o7X6IJQ"
+              src="https://qcmperlkuujhweikoyru.supabase.co/storage/v1/object/sign/media/Logo_Kolabing-removebg-preview.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mOWQ2MzU4NS1iNjc3LTQ1NGYtOTRhZS1iODg3NjU5MWU3OGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9Mb2dvX0tvbGFiaW5nLXJlbW92ZWJnLXByZXZpZXcucG5nIiwiaWF0IjoxNzYwMDAwMjY3LCJleHAiOjE3OTE1MzYyNjd9.WlXIWFEuiQztblbyF1mWhhOva8mD5hcjKghi55y3jRo"
               alt="Kolabing Logo"
               className="w-8 h-8"
             />
@@ -220,7 +220,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between p-4 border-b border-border">
           <div className="flex items-center space-x-2">
             <img
-              src="https://qcmperlkuujhweikoyru.supabase.co/storage/v1/object/sign/media/Logo%20Kolabing.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mOWQ2MzU4NS1iNjc3LTQ1NGYtOTRhZS1iODg3NjU5MWU3OGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9Mb2dvIEtvbGFiaW5nLnBuZyIsImlhdCI6MTc1OTI0NDEyNSwiZXhwIjoxNzkwNzgwMTI1fQ.VF8cudTlK1B-3KPZ8iiL0VqUvo-yYejBgrH_o7X6IJQ"
+              src="https://qcmperlkuujhweikoyru.supabase.co/storage/v1/object/sign/media/Logo_Kolabing-removebg-preview.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9mOWQ2MzU4NS1iNjc3LTQ1NGYtOTRhZS1iODg3NjU5MWU3OGIiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJtZWRpYS9Mb2dvX0tvbGFiaW5nLXJlbW92ZWJnLXByZXZpZXcucG5nIiwiaWF0IjoxNzYwMDAwMjY3LCJleHAiOjE3OTE1MzYyNjd9.WlXIWFEuiQztblbyF1mWhhOva8mD5hcjKghi55y3jRo"
               alt="Kolabing Logo"
               className="w-8 h-8"
             />
