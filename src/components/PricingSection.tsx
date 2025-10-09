@@ -52,7 +52,7 @@ const PricingSection = () => {
                 <div className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-500 mt-1" />
                   <span className="font-medium text-black" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
-                    Publish unlimited campaign offers
+                    Publish unlimited collaboration offers
                     <span className="ml-1 text-gray-500 text-sm font-normal">
                       — reach as many communities as you want
                     </span>
