@@ -217,7 +217,7 @@ const BusinessApplications = () => {
       {/* Page Header */}
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-          Review Applications
+          Applications Received
         </h1>
         <p className="text-muted-foreground">
           Review and manage applications for your collaboration offers

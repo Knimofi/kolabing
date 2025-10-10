@@ -27,15 +27,15 @@ const BusinessDashboard = () => {
     try {
       setLoading(true);
 
-      // Fetch total offers
+      // Fetch total opportunities
       const { count: totalOffers } = await supabase
-        .from("offers")
+        .from("collab_opportunities")
         .select("*", { count: "exact", head: true })
         .eq("business_profile_id", profile!.id);
 
-      // Fetch active (published) offers
+      // Fetch active (published) opportunities
       const { count: activeOffers } = await supabase
-        .from("offers")
+        .from("collab_opportunities")
         .select("*", { count: "exact", head: true })
         .eq("business_profile_id", profile!.id)
         .eq("status", "published");
@@ -189,11 +189,11 @@ const BusinessDashboard = () => {
                 <div className="w-8 h-8 bg-muted text-muted-foreground rounded-full flex items-center justify-center text-sm font-medium">
                   3
                 </div>
-                <span className="text-sm">Create your first offer</span>
+                <span className="text-sm">Create your first collab opportunity</span>
               </div>
-              <Link to="/business/offers/new">
+              <Link to="/business/opportunities/new">
                 <Button variant="outline" size="sm">
-                  Create Offer
+                  Create Collab Opportunity
                 </Button>
               </Link>
             </div>

@@ -95,7 +95,7 @@ const CommunityCollaborations = () => {
       const [offersRes, businessProfilesRes, applicationsRes] = await Promise.all([
         offerIds.length
           ? supabase
-              .from('offers')
+              .from('collab_opportunities')
               .select(
                 'id,title,description,offer_photo,business_offer,community_deliverables,timeline_days,address,status'
               )

@@ -24,7 +24,7 @@ interface Application {
   availability: string;
   status: 'pending' | 'accepted' | 'declined' | 'withdrawn';
   created_at: string;
-  offers: {
+  collab_opportunities: {
     id: string;
     title: string;
     description: string;
@@ -73,7 +73,7 @@ const fetchApplications = async () => {
         availability,
         status,
         created_at,
-        offers!inner (
+        collab_opportunities!inner (
           id,
           title,
           description,
@@ -96,9 +96,9 @@ const fetchApplications = async () => {
 
     if (error) throw error;
     
-    // Filter out any records with null offers or business_profiles
+    // Filter out any records with null collab_opportunities or business_profiles
     const validApplications = (data || []).filter(app => 
-      app.offers && app.offers.business_profiles
+      app.collab_opportunities && app.collab_opportunities.business_profiles
     );
     
     setApplications(validApplications as Application[]);
@@ -204,10 +204,10 @@ const fetchApplications = async () => {
   // Filter applications based on search term
 
   const filteredApplications = applications.filter(application => {
-  if (!application.offers || !application.offers.business_profiles) return false;
+  if (!application.collab_opportunities || !application.collab_opportunities.business_profiles) return false;
   
-  const title = application.offers.title || '';
-  const businessName = application.offers.business_profiles.name || '';
+  const title = application.collab_opportunities.title || '';
+  const businessName = application.collab_opportunities.business_profiles.name || '';
   
   return title.toLowerCase().includes(searchTerm.toLowerCase()) ||
          businessName.toLowerCase().includes(searchTerm.toLowerCase());
@@ -215,8 +215,8 @@ const fetchApplications = async () => {
 
   /*
   const filteredApplications = applications.filter(application => 
-    application.offers.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    application.offers.business_profiles.name.toLowerCase().includes(searchTerm.toLowerCase())
+    application.collab_opportunities.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    application.collab_opportunities.business_profiles.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   */
 
@@ -237,7 +237,7 @@ const fetchApplications = async () => {
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-foreground">My Applications</h1>
+        <h1 className="text-3xl font-bold text-foreground">Applications Submitted</h1>
         <p className="text-muted-foreground">
           View and manage your collaboration applications
         </p>
@@ -261,7 +261,7 @@ const fetchApplications = async () => {
             {applications.length === 0 ? (
               <div>
                 <h3 className="text-lg font-medium mb-2">No applications yet</h3>
-                <p>You haven't applied to any offers yet. Browse offers to get started!</p>
+                <p>You haven't applied to any opportunities yet. Browse opportunities to get started!</p>
               </div>
             ) : (
               <div>
@@ -297,7 +297,7 @@ const fetchApplications = async () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Withdraw Application</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to withdraw your application for "{selectedApplication?.offers.title}"? 
+              Are you sure you want to withdraw your application for "{selectedApplication?.collab_opportunities.title}"? 
               This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>

@@ -114,7 +114,7 @@ const BusinessOffersEdit = () => {
     if (!offerId || !profile) return;
     try {
       const { data, error } = await supabase
-        .from("offers")
+        .from("collab_opportunities")
         .select("*")
         .eq("id", offerId)
         .eq("business_profile_id", profile.id)
@@ -145,8 +145,8 @@ const BusinessOffersEdit = () => {
         timeline_days: data.timeline_days || 7,
       });
     } catch (error: any) {
-      toast({ title: "Error", description: "Failed to load offer", variant: "destructive" });
-      navigate("/business/offers");
+      toast({ title: "Error", description: "Failed to load opportunity", variant: "destructive" });
+      navigate("/business/opportunities");
     } finally {
       setLoading(false);
     }
@@ -157,7 +157,7 @@ const BusinessOffersEdit = () => {
     setIsSubmitting(true);
     try {
       const { error } = await supabase
-        .from("offers")
+        .from("collab_opportunities")
         .update({
           ...data,
           availability_start: data.availability_start?.toISOString() || null,
@@ -176,7 +176,7 @@ const BusinessOffersEdit = () => {
           : "Your offer is live.",
       });
 
-      navigate("/business/offers");
+      navigate("/business/opportunities");
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to update offer", variant: "destructive" });
     } finally {

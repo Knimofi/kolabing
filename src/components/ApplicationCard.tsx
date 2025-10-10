@@ -11,7 +11,7 @@ interface Application {
   availability: string;
   status: 'pending' | 'accepted' | 'declined' | 'withdrawn';
   created_at: string;
-  offers: {
+  collab_opportunities: {
     title: string;
     business_profiles: {
       name: string;
@@ -62,11 +62,11 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
     <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle className="text-lg line-clamp-2">
-          {application.offers.title}
+          {application.collab_opportunities.title}
         </CardTitle>
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground">
-            Applied to: {application.offers.business_profiles.name}
+            Applied to: {application.collab_opportunities.business_profiles.name}
           </p>
           <p className="text-sm text-muted-foreground">
             Sent: {format(new Date(application.created_at), 'MMM dd, yyyy')}

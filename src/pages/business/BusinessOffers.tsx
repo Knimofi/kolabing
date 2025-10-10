@@ -44,7 +44,7 @@ const BusinessOffers = () => {
 
       // Fetch offers using correct business_profile_id
       const { data: offersData, error: offersError } = await supabase
-        .from('offers')
+        .from('collab_opportunities')
         .select('*')
         .eq('business_profile_id', bpData.profile_id)
         .order('created_at', { ascending: false });
@@ -66,7 +66,7 @@ const BusinessOffers = () => {
   const updateOfferStatus = async (offerId: string, newStatus: 'draft' | 'published' | 'closed' | 'completed') => {
     try {
       const { error } = await supabase
-        .from('offers')
+        .from('collab_opportunities')
         .update({ status: newStatus })
         .eq('id', offerId);
       if (error) throw error;
@@ -96,7 +96,7 @@ const BusinessOffers = () => {
   const handleDeleteOffer = async (offer: any) => {
     try {
       const { error } = await supabase
-        .from('offers')
+        .from('collab_opportunities')
         .delete()
         .eq('id', offer.id);
       if (error) throw error;
@@ -128,7 +128,7 @@ const BusinessOffers = () => {
       };
 
       const { data, error } = await supabase
-        .from('offers')
+        .from('collab_opportunities')
         .insert([duplicatedOffer])
         .select()
         .single();
@@ -159,13 +159,13 @@ const BusinessOffers = () => {
     <div className="space-y-6">
       <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">My Offers</h1>
-          <p className="text-muted-foreground">Create and manage your collaboration offers</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-foreground">My Collab Opportunities</h1>
+          <p className="text-muted-foreground">Create and manage your collaboration opportunities</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={() => navigate('/business/offers/new')}>
+          <Button onClick={() => navigate('/business/opportunities/new')}>
             <Plus className="w-4 h-4 mr-2" />
-            Create Offer
+            Create Collab Opportunity
           </Button>
           {/* Filter buttons etc can go here */}
         </div>
@@ -187,9 +187,9 @@ const BusinessOffers = () => {
       {filteredOffers.length === 0 ? (
         <Card>
           <CardContent className="py-16 text-center">
-            <p className="text-lg font-semibold">No offers found</p>
-            <Button onClick={() => navigate('/business/offers/new')} className="mt-4">
-              <Plus className="w-4 h-4 mr-2" /> Create Offer
+            <p className="text-lg font-semibold">No opportunities found</p>
+            <Button onClick={() => navigate('/business/opportunities/new')} className="mt-4">
+              <Plus className="w-4 h-4 mr-2" /> Create Collab Opportunity
             </Button>
           </CardContent>
         </Card>
@@ -206,7 +206,7 @@ const BusinessOffers = () => {
                   <Button variant="outline" size="sm" onClick={() => handleViewOffer(offer)}>
                     <Eye className="w-4 h-4 mr-2" /> View
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => navigate(`/business/offers/${offer.id}/edit`)} disabled={!['draft', 'published'].includes(offer.status)}>
+                  <Button variant="outline" size="sm" onClick={() => navigate(`/business/opportunities/${offer.id}/edit`)} disabled={!['draft', 'published'].includes(offer.status)}>
                     <Edit className="w-4 h-4 mr-2" /> Edit
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => handleDuplicateOffer(offer)} disabled={!businessProfile}>

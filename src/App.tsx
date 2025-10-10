@@ -54,14 +54,14 @@ const App = () => (
                 <DashboardLayout>
                   <Routes>
                     <Route path="/" element={<BusinessDashboard />} />
-                    <Route path="/offers" element={<BusinessOffers />} />
-                    <Route path="/offers/new" element={<BusinessOffersNew />} />
-                    <Route path="/offers/:offerId/edit" element={<BusinessOffersEdit />} />
+                    <Route path="/opportunities" element={<BusinessOffers />} />
+                    <Route path="/opportunities/new" element={<BusinessOffersNew />} />
+                    <Route path="/opportunities/:offerId/edit" element={<BusinessOffersEdit />} />
                     <Route path="/applications" element={<BusinessApplications />} />
-                    <Route path="/offers/:id" element={
+                    <Route path="/opportunities/:id" element={
                       <ComingSoon 
-                        title="Offer Details"
-                        description="View and manage your offer"
+                        title="Opportunity Details"
+                        description="View and manage your opportunity"
                       />
                     } />
                     <Route path="/collaborations" element={<BusinessCollaborations />} />
@@ -90,11 +90,11 @@ const App = () => (
                 <DashboardLayout>
                   <Routes>
                     <Route path="/" element={<CommunityDashboard />} />
-                    <Route path="/offers" element={<CommunityOffers />} />
-                    <Route path="/offers/:id" element={
+                    <Route path="/opportunities" element={<CommunityOffers />} />
+                    <Route path="/opportunities/:id" element={
                       <ComingSoon 
-                        title="Offer Details"
-                        description="View offer details and apply"
+                        title="Opportunity Details"
+                        description="View opportunity details and apply"
                       />
                     } />
                     <Route path="/my-applications" element={<CommunityMyApplications />} />

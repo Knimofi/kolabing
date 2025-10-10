@@ -33,7 +33,7 @@ const CommunityOffers = () => {
 
   try {
     const { data: offersData, error: offersError } = await supabase
-      .from('offers')
+      .from('collab_opportunities')
       .select(`
         id,
         title,
@@ -177,7 +177,7 @@ const CommunityOffers = () => {
       const { data: existingApplication, error: checkError } = await supabase
         .from('applications')
         .select('id')
-        .eq('offer_id', selectedOffer.id)
+        .eq('collab_opportunity_id', selectedOffer.id)
         .eq('community_profile_id', profile.id)
        // .eq('status', 'pending')
         .single();
@@ -198,8 +198,10 @@ const CommunityOffers = () => {
       const { error } = await supabase
         .from('applications')
         .insert([{
-          offer_id: selectedOffer.id,
+          collab_opportunity_id: selectedOffer.id,
           community_profile_id: profile.id,
+          applicant_profile_id: profile.id,
+          applicant_profile_type: 'community',
           message: applicationData.message,
           availability: applicationData.availability,
           status: 'pending'
@@ -275,7 +277,7 @@ const CommunityOffers = () => {
       {/* Page Header */}
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-          Browse Offers
+          Browse Opportunities
         </h1>
         <p className="text-muted-foreground">
           Discover collaboration opportunities that match your community

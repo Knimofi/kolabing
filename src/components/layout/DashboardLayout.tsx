@@ -31,8 +31,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
   const businessNavItems = [
     { icon: LayoutDashboard, label: 'Overview', href: '/business' },
-    { icon: FileText, label: 'Offers', href: '/business/offers' },
-    { icon: UserCheck, label: 'Applications', href: '/business/applications' },
+    { icon: FileText, label: 'My Opportunities', href: '/business/opportunities' },
+    { icon: UserCheck, label: 'Applications Received', href: '/business/applications' },
     { icon: Users, label: 'Collaborations', href: '/business/collaborations' },
 //    { icon: BarChart3, label: 'Analytics', href: '/business/analytics' },
 //    { icon: CreditCard, label: 'Plans', href: '/business/plans' },
@@ -41,8 +41,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
   const communityNavItems = [
     { icon: LayoutDashboard, label: 'Overview', href: '/community' },
-    { icon: FileText, label: 'Browse Offers', href: '/community/offers' },
-    { icon: UserCheck, label: 'My Applications', href: '/community/my-applications' },
+    { icon: FileText, label: 'Browse Opportunities', href: '/community/opportunities' },
+    { icon: UserCheck, label: 'Applications Submitted', href: '/community/my-applications' },
     { icon: Users, label: 'Collaborations', href: '/community/collaborations' },
 //    { icon: BarChart3, label: 'Analytics', href: '/community/analytics' },
     { icon: Settings, label: 'Profile', href: '/community/profile' },

@@ -45,14 +45,14 @@ const CommunityDashboard = () => {
               DISCOVER OPPORTUNITIES AND MANAGE YOUR COLLABORATIONS
             </p>
           </div>
-          <Link to="/community/offers">
+          <Link to="/community/opportunities">
             <Button
               size="lg"
               className="bg-[#FFD861] hover:bg-yellow-300 border-2 border-[#FFD861] text-white font-bold text-lg uppercase"
               style={RUBIK_BOLD}
             >
               <Search className="w-5 h-5 mr-2" />
-              BROWSE OFFERS
+              BROWSE OPPORTUNITIES
             </Button>
           </Link>
         </div>
@@ -133,20 +133,20 @@ const CommunityDashboard = () => {
                   >
                     2
                   </div>
-                  <span className="text-base text-black" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
-                    Browse available offers
-                  </span>
-                </div>
-                <Link to="/community/offers">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-[#FFD861] bg-[#FFD861] text-white"
-                    style={RUBIK_MEDIUM}
-                  >
-                    BROWSE OFFERS
-                  </Button>
-                </Link>
+                <span className="text-base text-black" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
+                  Browse available opportunities
+                </span>
+              </div>
+              <Link to="/community/opportunities">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-[#FFD861] bg-[#FFD861] text-white"
+                  style={RUBIK_MEDIUM}
+                >
+                  BROWSE OPPORTUNITIES
+                </Button>
+              </Link>
               </div>
               <div className="flex items-center space-x-3">
                 <div

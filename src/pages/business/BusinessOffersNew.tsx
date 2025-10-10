@@ -127,12 +127,14 @@ const BusinessOffersNew = () => {
         community_deliverables: data.community_deliverables,
         timeline_days: data.timeline_days,
         business_profile_id: businessProfile.profile_id,
+        creator_profile_id: businessProfile.profile_id,
+        creator_profile_type: 'business',
         status,
       };
 
       const { error } = await supabase
-        .from('offers')
-        .insert(offerData);
+        .from('collab_opportunities')
+        .insert([offerData]);
 
       if (error) throw error;
 
@@ -143,7 +145,7 @@ const BusinessOffersNew = () => {
           : 'Your offer is now live and communities can apply.',
       });
 
-      navigate('/business/offers');
+      navigate('/business/opportunities');
     } catch (error: any) {
       console.error('Error creating offer:', error);
       toast({

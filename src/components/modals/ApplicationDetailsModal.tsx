@@ -23,8 +23,8 @@ const ApplicationDetailsModal: React.FC<ApplicationDetailsModalProps> = ({
 }) => {
   if (!application) return null;
 
-  const { offers, message, availability, status, created_at } = application;
-  const businessProfile = offers.business_profiles;
+  const { collab_opportunities, message, availability, status, created_at } = application;
+  const businessProfile = collab_opportunities.business_profiles;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -62,19 +62,19 @@ const ApplicationDetailsModal: React.FC<ApplicationDetailsModalProps> = ({
             </div>
           </div>
 
-          {/* Offer Details */}
+          {/* Opportunity Details */}
           <div>
-            <h3 className="text-lg font-semibold mb-3">Offer Applied To</h3>
+            <h3 className="text-lg font-semibold mb-3">Opportunity Applied To</h3>
             <div className="bg-muted/50 rounded-lg p-4 space-y-3">
-              <h4 className="font-medium text-xl">{offers.title}</h4>
-              <p className="text-muted-foreground">{offers.description}</p>
+              <h4 className="font-medium text-xl">{collab_opportunities.title}</h4>
+              <p className="text-muted-foreground">{collab_opportunities.description}</p>
               
               {/* Categories */}
-              {offers.categories && Array.isArray(offers.categories) && offers.categories.length > 0 && (
+              {collab_opportunities.categories && Array.isArray(collab_opportunities.categories) && collab_opportunities.categories.length > 0 && (
                 <div>
                   <span className="text-sm font-medium">Categories: </span>
                   <div className="flex flex-wrap gap-1 mt-1">
-                    {offers.categories.map((category: string, index: number) => (
+                    {collab_opportunities.categories.map((category: string, index: number) => (
                       <Badge key={index} variant="secondary" className="text-xs">
                         {category}
                       </Badge>
@@ -84,18 +84,18 @@ const ApplicationDetailsModal: React.FC<ApplicationDetailsModalProps> = ({
               )}
 
               {/* Location */}
-              {offers.address && (
+              {collab_opportunities.address && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <MapPin className="w-4 h-4" />
-                  {offers.address}
+                  {collab_opportunities.address}
                 </div>
               )}
 
               {/* Timeline */}
-              {offers.timeline_days && (
+              {collab_opportunities.timeline_days && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="w-4 h-4" />
-                  {offers.timeline_days} days timeline
+                  {collab_opportunities.timeline_days} days timeline
                 </div>
               )}
             </div>
