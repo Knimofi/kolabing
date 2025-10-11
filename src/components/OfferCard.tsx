@@ -1,10 +1,10 @@
 // src/components/OfferCard.tsx
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { format } from 'date-fns';
-import { supabase } from '@/integrations/supabase/client';
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 interface OfferCardProps {
   offer: {
@@ -39,24 +39,18 @@ interface OfferCardProps {
   onApply?: () => void;
 }
 
-const OfferCard = ({
-  offer,
-  businessProfile,
-  showActions = true,
-  onSeeDetails,
-  onApply,
-}: OfferCardProps) => {
+const OfferCard = ({ offer, businessProfile, showActions = true, onSeeDetails, onApply }: OfferCardProps) => {
   const formatAvailability = () => {
     if (!offer.availability_start && !offer.availability_end) return null;
 
     if (offer.availability_start && offer.availability_end) {
       const start = new Date(offer.availability_start);
       const end = new Date(offer.availability_end);
-      return `${format(start, 'MMM d')}–${format(end, 'd')}`;
+      return `${format(start, "MMM d")}–${format(end, "d")}`;
     }
 
     if (offer.availability_start) {
-      return `From ${format(new Date(offer.availability_start), 'MMM d')}`;
+      return `From ${format(new Date(offer.availability_start), "MMM d")}`;
     }
 
     return null;
@@ -76,11 +70,11 @@ const OfferCard = ({
     if (d.tagged_stories) deliverables.push(`📲 ${d.tagged_stories} Stories`);
     if (d.google_reviews) deliverables.push(`⭐ ${d.google_reviews} Reviews`);
     if (d.number_of_attendees) deliverables.push(`👥 ${d.number_of_attendees} Attendees`);
-    if (d.professional_photography) deliverables.push('📸 Photography');
-    if (d.professional_reel_video) deliverables.push('🎥 Reel/Video');
-    if (d.ugc_content) deliverables.push('✍️ UGC Content');
-    if (d.collab_reel_post) deliverables.push('🤝 Collab Post');
-    if (d.group_picture) deliverables.push('🖼️ Group Picture');
+    if (d.professional_photography) deliverables.push("📸 Photography");
+    if (d.professional_reel_video) deliverables.push("🎥 Reel/Video");
+    if (d.ugc_content) deliverables.push("✍️ UGC Content");
+    if (d.collab_reel_post) deliverables.push("🤝 Collab Post");
+    if (d.group_picture) deliverables.push("🖼️ Group Picture");
     if (d.loyalty_signups) deliverables.push(`📝 ${d.loyalty_signups} Sign-ups`);
     if (d.minimum_consumption) deliverables.push(`💶 Min. €${d.minimum_consumption}`);
 
@@ -97,20 +91,20 @@ const OfferCard = ({
   };
 
   const truncateDescription = (text: string, maxLines = 2) => {
-    const words = text.split(' ');
+    const words = text.split(" ");
     const approximateWordsPerLine = 8;
     const maxWords = maxLines * approximateWordsPerLine;
     if (words.length <= maxWords) return text;
-    return words.slice(0, maxWords).join(' ') + '...';
+    return words.slice(0, maxWords).join(" ") + "...";
   };
 
   // ✅ Compute the photo URL correctly
-  let photoUrl = businessProfile?.profile_photo || '/placeholder.svg';
+  let photoUrl = businessProfile?.profile_photo || "/placeholder.svg";
   if (offer.offer_photo) {
-    if (offer.offer_photo.startsWith('http')) {
+    if (offer.offer_photo.startsWith("http")) {
       photoUrl = offer.offer_photo;
     } else {
-      const { data } = supabase.storage.from('offers').getPublicUrl(offer.offer_photo);
+      const { data } = supabase.storage.from("collab_opportunities").getPublicUrl(offer.offer_photo);
       if (data?.publicUrl) {
         photoUrl = data.publicUrl;
       }
@@ -123,15 +117,13 @@ const OfferCard = ({
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>{businessProfile.business_type || 'Business'}</span>
+            <span>{businessProfile.business_type || "Business"}</span>
             <span>•</span>
-            <span>{businessProfile.city || 'Location'}</span>
+            <span>{businessProfile.city || "Location"}</span>
           </div>
           <Avatar className="w-6 h-6">
             <AvatarImage src={businessProfile.profile_photo} />
-            <AvatarFallback className="text-xs">
-              {businessProfile.name?.[0] || 'B'}
-            </AvatarFallback>
+            <AvatarFallback className="text-xs">{businessProfile.name?.[0] || "B"}</AvatarFallback>
           </Avatar>
         </div>
 
@@ -142,7 +134,7 @@ const OfferCard = ({
             alt={offer.title}
             className="w-full h-full object-cover"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = '/placeholder.svg';
+              (e.target as HTMLImageElement).src = "/placeholder.svg";
             }}
           />
           {formatAvailability() && (
@@ -154,16 +146,12 @@ const OfferCard = ({
 
         {/* Main Content */}
         <div className="flex-1 space-y-3">
-          <h3 className="font-semibold text-lg leading-tight line-clamp-2">
-            {offer.title}
-          </h3>
+          <h3 className="font-semibold text-lg leading-tight line-clamp-2">{offer.title}</h3>
 
           {renderBusinessOffer()}
           {renderDeliverables()}
 
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            {truncateDescription(offer.description)}
-          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">{truncateDescription(offer.description)}</p>
         </div>
 
         {/* Footer Actions */}
