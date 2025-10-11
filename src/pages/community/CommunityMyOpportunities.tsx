@@ -9,13 +9,13 @@ import OfferCard from '@/components/OfferCard';
 import OfferDetailsModal from '@/components/modals/OfferDetailsModal';
 import { Plus, Eye, Edit, Send, ArrowLeft, Trash2, Copy } from 'lucide-react';
 
-const BusinessOffers = () => {
+const CommunityMyOpportunities = () => {
   const { profile } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const [offers, setOffers] = useState<any[]>([]);
-  const [businessProfile, setBusinessProfile] = useState<any>(null);
+  const [communityProfile, setCommunityProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedOffer, setSelectedOffer] = useState<any>(null);
@@ -29,24 +29,25 @@ const BusinessOffers = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Fetch business_profile for current user
-      const { data: bpData, error: bpError } = await supabase
-        .from('business_profiles')
+      // Fetch community_profile for current user
+      const { data: cpData, error: cpError } = await supabase
+        .from('community_profiles')
         .select('*')
         .eq('profile_id', profile.id)
         .single();
 
-      if (bpError || !bpData) {
-        throw new Error('Business profile not found. Please complete your business profile setup.');
+      if (cpError || !cpData) {
+        throw new Error('Community profile not found. Please complete your profile setup.');
       }
 
-      setBusinessProfile(bpData);
+      setCommunityProfile(cpData);
 
-      // Fetch offers using creator_profile_id
+      // Fetch opportunities created by this community
       const { data: offersData, error: offersError } = await supabase
         .from('collab_opportunities')
         .select('*')
-        .eq('creator_profile_id', bpData.profile_id)
+        .eq('creator_profile_id', cpData.profile_id)
+        .eq('creator_profile_type', 'community')
         .order('created_at', { ascending: false });
 
       if (offersError) throw offersError;
@@ -55,7 +56,7 @@ const BusinessOffers = () => {
     } catch (error: any) {
       toast({
         title: 'Error',
-        description: error.message || 'Failed to load offers.',
+        description: error.message || 'Failed to load opportunities.',
         variant: 'destructive',
       });
     } finally {
@@ -77,12 +78,12 @@ const BusinessOffers = () => {
 
       toast({
         title: 'Success',
-        description: `Offer ${newStatus === 'published' ? 'published' : 'updated'} successfully`,
+        description: `Opportunity ${newStatus === 'published' ? 'published' : 'updated'} successfully`,
       });
     } catch (error: any) {
       toast({
         title: 'Error',
-        description: error.message || 'Failed to update offer status',
+        description: error.message || 'Failed to update opportunity status',
         variant: 'destructive',
       });
     }
@@ -106,12 +107,12 @@ const BusinessOffers = () => {
 
       toast({
         title: 'Success',
-        description: 'Offer deleted successfully',
+        description: 'Opportunity deleted successfully',
       });
     } catch (error: any) {
       toast({
         title: 'Error',
-        description: error.message || 'Failed to delete offer',
+        description: error.message || 'Failed to delete opportunity',
         variant: 'destructive',
       });
     }
@@ -125,6 +126,7 @@ const BusinessOffers = () => {
         title: `${offer.title} (copy)`,
         status: 'draft',
         published_at: null,
+        creator_profile_type: 'community',
       };
 
       const { data, error } = await supabase
@@ -138,12 +140,12 @@ const BusinessOffers = () => {
       setOffers([data, ...offers]);
       toast({
         title: 'Success',
-        description: 'Offer duplicated successfully',
+        description: 'Opportunity duplicated successfully',
       });
     } catch (error: any) {
       toast({
         title: 'Error',
-        description: error.message || 'Failed to duplicate offer',
+        description: error.message || 'Failed to duplicate opportunity',
         variant: 'destructive',
       });
     }
@@ -164,7 +166,7 @@ const BusinessOffers = () => {
         </div>
         <div className="flex items-center gap-2">
           <Button 
-            onClick={() => navigate('/business/opportunities/new')}
+            onClick={() => navigate('/community/my-opportunities/new')}
             className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold shadow-md"
             size="lg"
           >
@@ -192,7 +194,7 @@ const BusinessOffers = () => {
           <CardContent className="py-16 text-center">
             <p className="text-lg font-semibold">No opportunities found</p>
             <Button 
-              onClick={() => navigate('/business/opportunities/new')} 
+              onClick={() => navigate('/community/my-opportunities/new')} 
               className="mt-4 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold"
               size="lg"
             >
@@ -213,10 +215,10 @@ const BusinessOffers = () => {
                   <Button variant="outline" size="sm" onClick={() => handleViewOffer(offer)}>
                     <Eye className="w-4 h-4 mr-2" /> View
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => navigate(`/business/opportunities/${offer.id}/edit`)} disabled={!['draft', 'published'].includes(offer.status)}>
+                  <Button variant="outline" size="sm" onClick={() => navigate(`/community/my-opportunities/${offer.id}/edit`)} disabled={!['draft', 'published'].includes(offer.status)}>
                     <Edit className="w-4 h-4 mr-2" /> Edit
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => handleDuplicateOffer(offer)} disabled={!businessProfile}>
+                  <Button variant="outline" size="sm" onClick={() => handleDuplicateOffer(offer)} disabled={!communityProfile}>
                     <Copy className="w-4 h-4 mr-2" /> Duplicate
                   </Button>
                   <Button variant="destructive" size="sm" onClick={() => setOfferToDelete(offer)}>
@@ -239,30 +241,30 @@ const BusinessOffers = () => {
         </div>
       )}
 
-      <OfferDetailsModal open={showDetailsModal} onOpenChange={setShowDetailsModal} offer={selectedOffer} businessProfile={businessProfile} />
+      <OfferDetailsModal open={showDetailsModal} onOpenChange={setShowDetailsModal} offer={selectedOffer} creatorProfile={communityProfile} />
 
-{offerToDelete && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <Card className="p-6 max-w-sm w-full">
-      <CardHeader>
-        <CardTitle>Delete Offer?</CardTitle>
-        <CardDescription>
-          Are you sure you want to delete "{offerToDelete.title}"?
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex justify-end gap-2">
-        <Button variant="outline" onClick={() => setOfferToDelete(null)}>
-          Cancel
-        </Button>
-        <Button variant="destructive" onClick={() => handleDeleteOffer(offerToDelete)}>
-          Confirm Delete
-        </Button>
-      </CardContent>
-    </Card>
-  </div>
-)}
+      {offerToDelete && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <Card className="p-6 max-w-sm w-full">
+            <CardHeader>
+              <CardTitle>Delete Opportunity?</CardTitle>
+              <CardDescription>
+                Are you sure you want to delete "{offerToDelete.title}"?
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setOfferToDelete(null)}>
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={() => handleDeleteOffer(offerToDelete)}>
+                Confirm Delete
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };
 
-export default BusinessOffers;
+export default CommunityMyOpportunities;

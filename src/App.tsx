@@ -22,6 +22,7 @@ import CommunityOffers from "./pages/community/CommunityOffers";
 import CommunityMyApplications from "./pages/community/CommunityMyApplications";
 import CommunityOpportunitiesNew from "./pages/community/CommunityOpportunitiesNew";
 import CommunityOpportunitiesEdit from "./pages/community/CommunityOpportunitiesEdit";
+import CommunityMyOpportunities from "./pages/community/CommunityMyOpportunities";
 import CommunityProfile from "./pages/community/CommunityProfile";
 import BusinessCollaborations from "./pages/business/BusinessCollaborations";
 import CommunityCollaborations from "./pages/community/CommunityCollaborations";
@@ -92,7 +93,7 @@ const App = () => (
                 <DashboardLayout>
                   <Routes>
                     <Route path="/" element={<CommunityDashboard />} />
-                    <Route path="/my-opportunities" element={<ComingSoon title="My Collab Requests" description="Manage your opportunities" />} />
+                    <Route path="/my-opportunities" element={<CommunityMyOpportunities />} />
                     <Route path="/my-opportunities/new" element={<CommunityOpportunitiesNew />} />
                     <Route path="/my-opportunities/:offerId/edit" element={<CommunityOpportunitiesEdit />} />
                     <Route path="/opportunities" element={<CommunityOffers />} />
