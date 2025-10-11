@@ -42,11 +42,11 @@ const BusinessOffers = () => {
 
       setBusinessProfile(bpData);
 
-      // Fetch offers using correct business_profile_id
+      // Fetch offers using creator_profile_id
       const { data: offersData, error: offersError } = await supabase
         .from('collab_opportunities')
         .select('*')
-        .eq('business_profile_id', bpData.profile_id)
+        .eq('creator_profile_id', bpData.profile_id)
         .order('created_at', { ascending: false });
 
       if (offersError) throw offersError;

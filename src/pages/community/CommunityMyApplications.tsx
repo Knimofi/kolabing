@@ -81,27 +81,34 @@ const fetchApplications = async () => {
           address,
           timeline_days,
           offer_photo,
-          business_profiles!inner (
-            name,
-            business_type,
-            city,
-            profile_photo,
-            website,
-            instagram
-          )
+          creator_profile_id
         )
       `)
-      .eq('community_profile_id', profile?.id)
+      .eq('applicant_profile_id', profile?.id)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
     
-    // Filter out any records with null collab_opportunities or business_profiles
-    const validApplications = (data || []).filter(app => 
-      app.collab_opportunities && app.collab_opportunities.business_profiles
+    // Fetch creator profiles for each opportunity
+    const applicationsWithProfiles = await Promise.all(
+      (data || []).map(async (app) => {
+        const { data: creatorProfile } = await supabase
+          .from('business_profiles')
+          .select('name, business_type, city, profile_photo, website, instagram')
+          .eq('profile_id', app.collab_opportunities.creator_profile_id)
+          .single();
+        
+        return {
+          ...app,
+          collab_opportunities: {
+            ...app.collab_opportunities,
+            business_profiles: creatorProfile
+          }
+        };
+      })
     );
     
-    setApplications(validApplications as Application[]);
+    setApplications(applicationsWithProfiles as Application[]);
   } catch (error) {
     console.error('Error fetching applications:', error);
     toast({

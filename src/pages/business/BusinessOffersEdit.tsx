@@ -117,7 +117,7 @@ const BusinessOffersEdit = () => {
         .from("collab_opportunities")
         .select("*")
         .eq("id", offerId)
-        .eq("business_profile_id", profile.id)
+        .eq("creator_profile_id", profile.id)
         .single();
       if (error) throw error;
 

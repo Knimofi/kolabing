@@ -31,26 +31,26 @@ const BusinessDashboard = () => {
       const { count: totalOffers } = await supabase
         .from("collab_opportunities")
         .select("*", { count: "exact", head: true })
-        .eq("business_profile_id", profile!.id);
+        .eq("creator_profile_id", profile!.id);
 
       // Fetch active (published) opportunities
       const { count: activeOffers } = await supabase
         .from("collab_opportunities")
         .select("*", { count: "exact", head: true })
-        .eq("business_profile_id", profile!.id)
+        .eq("creator_profile_id", profile!.id)
         .eq("status", "published");
 
-      // Fetch applications
+      // Fetch applications on user's opportunities
       const { count: applications } = await supabase
         .from("applications")
-        .select("offer_id!inner(*)", { count: "exact", head: true })
-        .eq("offer_id.business_profile_id", profile!.id);
+        .select("collab_opportunity_id!inner(*)", { count: "exact", head: true })
+        .eq("collab_opportunity_id.creator_profile_id", profile!.id);
 
-      // Fetch collaborations
+      // Fetch collaborations where user is creator
       const { count: collaborations } = await supabase
         .from("collaborations")
         .select("*", { count: "exact", head: true })
-        .eq("business_profile_id", profile!.id);
+        .eq("creator_profile_id", profile!.id);
 
       setStats({
         totalOffers: totalOffers || 0,

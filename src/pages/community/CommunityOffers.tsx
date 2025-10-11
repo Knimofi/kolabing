@@ -178,9 +178,8 @@ const CommunityOffers = () => {
         .from('applications')
         .select('id')
         .eq('collab_opportunity_id', selectedOffer.id)
-        .eq('community_profile_id', profile.id)
-       // .eq('status', 'pending')
-        .single();
+        .eq('applicant_profile_id', profile.id)
+        .maybeSingle();
 
       if (checkError && checkError.code !== 'PGRST116') { // PGRST116 is "not found" error
         throw checkError;
