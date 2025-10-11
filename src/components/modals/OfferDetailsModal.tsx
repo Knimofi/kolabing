@@ -9,11 +9,15 @@ interface OfferDetailsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   offer: any;
-  businessProfile: any;
+  creatorProfile?: any;
+  businessProfile?: any;
 }
 
-const OfferDetailsModal = ({ open, onOpenChange, offer, businessProfile }: OfferDetailsModalProps) => {
+const OfferDetailsModal = ({ open, onOpenChange, offer, creatorProfile, businessProfile }: OfferDetailsModalProps) => {
   if (!offer) return null;
+
+  // Use creatorProfile if available, otherwise fall back to businessProfile for backward compatibility
+  const profile = creatorProfile || businessProfile;
 
   const formatDate = (dateString: string) => {
     return format(new Date(dateString), 'MMM d, yyyy');
@@ -76,13 +80,13 @@ const OfferDetailsModal = ({ open, onOpenChange, offer, businessProfile }: Offer
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             <Avatar className="w-8 h-8">
-              <AvatarImage src={businessProfile?.profile_photo} />
-              <AvatarFallback>{businessProfile?.name?.[0] || 'B'}</AvatarFallback>
+              <AvatarImage src={profile?.profile_photo} />
+              <AvatarFallback>{profile?.name?.[0] || 'C'}</AvatarFallback>
             </Avatar>
             <div>
               <div className="font-semibold">{offer.title}</div>
               <div className="text-sm text-muted-foreground font-normal">
-                {businessProfile?.name} • {businessProfile?.business_type}
+                {profile?.name} • {profile?.business_type || profile?.community_type || 'Creator'}
               </div>
             </div>
           </DialogTitle>
@@ -159,17 +163,17 @@ const OfferDetailsModal = ({ open, onOpenChange, offer, businessProfile }: Offer
 
           {/* Business Profile Details */}
           <div className="border-t pt-4 space-y-2">
-            <h4 className="font-semibold text-sm">About {businessProfile?.name}</h4>
+            <h4 className="font-semibold text-sm">About {profile?.name}</h4>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              {businessProfile?.city && (
+              {profile?.city && (
                 <div className="flex items-center gap-1">
                   <MapPin className="w-3 h-3" />
-                  {businessProfile.city}
+                  {profile.city}
                 </div>
               )}
-              {businessProfile?.website && (
+              {profile?.website && (
                 <a 
-                  href={businessProfile.website} 
+                  href={profile.website} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="hover:text-primary transition-colors"
@@ -177,9 +181,9 @@ const OfferDetailsModal = ({ open, onOpenChange, offer, businessProfile }: Offer
                   Website
                 </a>
               )}
-              {businessProfile?.instagram && (
+              {profile?.instagram && (
                 <a 
-                  href={`https://instagram.com/${businessProfile.instagram}`} 
+                  href={`https://instagram.com/${profile.instagram}`} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="hover:text-primary transition-colors"

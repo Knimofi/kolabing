@@ -20,6 +20,8 @@ import BusinessProfile from "./pages/business/BusinessProfile";
 import CommunityDashboard from "./pages/community/CommunityDashboard";
 import CommunityOffers from "./pages/community/CommunityOffers";
 import CommunityMyApplications from "./pages/community/CommunityMyApplications";
+import CommunityOpportunitiesNew from "./pages/community/CommunityOpportunitiesNew";
+import CommunityOpportunitiesEdit from "./pages/community/CommunityOpportunitiesEdit";
 import CommunityProfile from "./pages/community/CommunityProfile";
 import BusinessCollaborations from "./pages/business/BusinessCollaborations";
 import CommunityCollaborations from "./pages/community/CommunityCollaborations";
@@ -90,27 +92,13 @@ const App = () => (
                 <DashboardLayout>
                   <Routes>
                     <Route path="/" element={<CommunityDashboard />} />
+                    <Route path="/my-opportunities" element={<ComingSoon title="My Collab Requests" description="Manage your opportunities" />} />
+                    <Route path="/my-opportunities/new" element={<CommunityOpportunitiesNew />} />
+                    <Route path="/my-opportunities/:offerId/edit" element={<CommunityOpportunitiesEdit />} />
                     <Route path="/opportunities" element={<CommunityOffers />} />
-                    <Route path="/opportunities/:id" element={
-                      <ComingSoon 
-                        title="Opportunity Details"
-                        description="View opportunity details and apply"
-                      />
-                    } />
                     <Route path="/my-applications" element={<CommunityMyApplications />} />
+                    <Route path="/applications-received" element={<ComingSoon title="Applications Received" description="Review applications to your opportunities" />} />
                     <Route path="/collaborations" element={<CommunityCollaborations />} />
-                    <Route path="/analytics" element={
-                      <ComingSoon 
-                        title="Analytics"
-                        description="Track your community performance"
-                        features={[
-                          "Application success rates",
-                          "Collaboration completion stats",
-                          "Trust score tracking",
-                          "Earnings overview"
-                        ]}
-                      />
-                    } />
                     <Route path="/profile" element={<CommunityProfile />} />
                   </Routes>
                 </DashboardLayout>

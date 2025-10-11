@@ -41,10 +41,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
   const communityNavItems = [
     { icon: LayoutDashboard, label: 'Overview', href: '/community' },
-    { icon: FileText, label: 'Browse Opportunities', href: '/community/opportunities' },
-    { icon: UserCheck, label: 'Applications Submitted', href: '/community/my-applications' },
+    { icon: FileText, label: 'My Collab Requests', href: '/community/my-opportunities' },
+    { icon: Building2, label: 'Find a Collab', href: '/community/opportunities' },
+    { icon: FileText, label: 'Applications Submitted', href: '/community/my-applications' },
+    { icon: UserCheck, label: 'Applications Received', href: '/community/applications-received' },
     { icon: Users, label: 'Collaborations', href: '/community/collaborations' },
-//    { icon: BarChart3, label: 'Analytics', href: '/community/analytics' },
     { icon: Settings, label: 'Profile', href: '/community/profile' },
   ];
 

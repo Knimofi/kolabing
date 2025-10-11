@@ -28,7 +28,15 @@ interface OfferCardProps {
       minimum_consumption?: number;
     };
   };
-  businessProfile: {
+  creatorProfile?: {
+    name?: string;
+    business_type?: string;
+    community_type?: string;
+    city?: string;
+    profile_photo?: string;
+    profile_type?: string;
+  };
+  businessProfile?: {
     name?: string;
     business_type?: string;
     city?: string;
@@ -39,7 +47,9 @@ interface OfferCardProps {
   onApply?: () => void;
 }
 
-const OfferCard = ({ offer, businessProfile, showActions = true, onSeeDetails, onApply }: OfferCardProps) => {
+const OfferCard = ({ offer, creatorProfile, businessProfile, showActions = true, onSeeDetails, onApply }: OfferCardProps) => {
+  // Use creatorProfile if available, otherwise fall back to businessProfile for backward compatibility
+  const profile = creatorProfile || businessProfile;
   const formatAvailability = () => {
     if (!offer.availability_start && !offer.availability_end) return null;
 
@@ -99,7 +109,7 @@ const OfferCard = ({ offer, businessProfile, showActions = true, onSeeDetails, o
   };
 
   // ✅ Compute the photo URL correctly
-  let photoUrl = businessProfile?.profile_photo || "/placeholder.svg";
+  let photoUrl = profile?.profile_photo || "/placeholder.svg";
   if (offer.offer_photo) {
     if (offer.offer_photo.startsWith("http")) {
       photoUrl = offer.offer_photo;
@@ -111,19 +121,22 @@ const OfferCard = ({ offer, businessProfile, showActions = true, onSeeDetails, o
     }
   }
 
+  const displayType = (creatorProfile?.business_type || creatorProfile?.community_type || businessProfile?.business_type) || "Creator";
+  const displayBadge = creatorProfile?.profile_type === 'community' ? 'Community' : 'Business';
+
   return (
     <Card className="group h-full transition-all duration-200 hover:scale-105 hover:shadow-lg rounded-lg">
       <CardContent className="p-4 h-full flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>{businessProfile.business_type || "Business"}</span>
+            <span>{displayType}</span>
             <span>•</span>
-            <span>{businessProfile.city || "Location"}</span>
+            <span>{profile?.city || "Location"}</span>
           </div>
           <Avatar className="w-6 h-6">
-            <AvatarImage src={businessProfile.profile_photo} />
-            <AvatarFallback className="text-xs">{businessProfile.name?.[0] || "B"}</AvatarFallback>
+            <AvatarImage src={profile?.profile_photo} />
+            <AvatarFallback className="text-xs">{profile?.name?.[0] || "C"}</AvatarFallback>
           </Avatar>
         </div>
 

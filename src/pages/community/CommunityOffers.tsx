@@ -29,80 +29,97 @@ const CommunityOffers = () => {
 
 
   const fetchOffers = async () => {
-  setLoading(true);
+    setLoading(true);
 
-  try {
-    // Fetch published offers
-    const { data: offersData, error: offersError } = await supabase
-      .from('collab_opportunities')
-      .select(`
-        id,
-        title,
-        description,
-        status,
-        published_at,
-        availability_start,
-        availability_end,
-        offer_photo,
-        business_offer,
-        community_deliverables,
-        categories,
-        address,
-        timeline_days,
-        creator_profile_id,
-        creator_profile_type
-      `)
-      .eq('status', 'published')
-      .order('published_at', { ascending: false });
+    try {
+      // Fetch published offers (both business and community created)
+      const { data: offersData, error: offersError } = await supabase
+        .from('collab_opportunities')
+        .select(`
+          id,
+          title,
+          description,
+          status,
+          published_at,
+          availability_start,
+          availability_end,
+          offer_photo,
+          business_offer,
+          community_deliverables,
+          categories,
+          address,
+          timeline_days,
+          creator_profile_id,
+          creator_profile_type
+        `)
+        .eq('status', 'published')
+        .order('published_at', { ascending: false });
 
-    if (offersError) {
-      console.error('Supabase error fetching offers:', offersError);
+      if (offersError) {
+        console.error('Supabase error fetching offers:', offersError);
+        toast({
+          title: 'Error',
+          description: 'Failed to load offers. Please try again.',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      // Separate offers by creator type
+      const businessCreatedOffers = (offersData || []).filter(o => o.creator_profile_type === 'business');
+      const communityCreatedOffers = (offersData || []).filter(o => o.creator_profile_type === 'community');
+
+      // Fetch business profiles
+      const businessIds = [...new Set(businessCreatedOffers.map(o => o.creator_profile_id))];
+      const { data: businessProfilesData } = await supabase
+        .from('business_profiles')
+        .select('profile_id, name, business_type, city, profile_photo, website, instagram')
+        .in('profile_id', businessIds);
+
+      // Fetch community profiles
+      const communityIds = [...new Set(communityCreatedOffers.map(o => o.creator_profile_id))];
+      const { data: communityProfilesData } = await supabase
+        .from('community_profiles')
+        .select('profile_id, name, community_type, city, profile_photo, website, instagram')
+        .in('profile_id', communityIds);
+
+      // Create maps for quick lookup
+      const businessProfilesMap = new Map(
+        (businessProfilesData || []).map(bp => [bp.profile_id, { ...bp, profile_type: 'business' }])
+      );
+      const communityProfilesMap = new Map(
+        (communityProfilesData || []).map(cp => [cp.profile_id, { ...cp, profile_type: 'community' }])
+      );
+
+      // Enrich offers with creator profiles
+      const enrichedOffers = (offersData || []).map(offer => {
+        const creatorProfile = offer.creator_profile_type === 'business'
+          ? businessProfilesMap.get(offer.creator_profile_id)
+          : communityProfilesMap.get(offer.creator_profile_id);
+
+        return {
+          ...offer,
+          creator_profile: creatorProfile || null,
+          // Keep business_profiles for backward compatibility
+          business_profiles: creatorProfile || null
+        };
+      });
+
+      // Filter out offers without creator profiles
+      const validOffers = enrichedOffers.filter(offer => offer.creator_profile);
+
+      setOffers(validOffers);
+    } catch (error: any) {
+      console.error('Unexpected error fetching offers:', error);
       toast({
         title: 'Error',
         description: 'Failed to load offers. Please try again.',
         variant: 'destructive',
       });
-      return;
+    } finally {
+      setLoading(false);
     }
-
-    // Fetch business profiles for all creator_profile_ids
-    const creatorIds = [...new Set((offersData || []).map(o => o.creator_profile_id).filter(Boolean))];
-    
-    const { data: businessProfilesData, error: businessError } = await supabase
-      .from('business_profiles')
-      .select('profile_id, name, business_type, city, profile_photo, website, instagram')
-      .in('profile_id', creatorIds);
-
-    if (businessError) {
-      console.error('Error fetching business profiles:', businessError);
-    }
-
-    // Create a map of business profiles
-    const businessProfilesMap = new Map(
-      (businessProfilesData || []).map(bp => [bp.profile_id, bp])
-    );
-
-    // Merge offers with business profiles
-    const enrichedOffers = (offersData || []).map(offer => ({
-      ...offer,
-      business_profiles: businessProfilesMap.get(offer.creator_profile_id) || null
-    }));
-
-    // Filter out offers without business profiles
-    const validOffers = enrichedOffers.filter(offer => offer.business_profiles);
-
-    setOffers(validOffers);
-  } catch (error: any) {
-    console.error('Unexpected error fetching offers:', error);
-    toast({
-      title: 'Error',
-      description: 'Failed to load offers. Please try again.',
-      variant: 'destructive',
-    });
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   /*
   const fetchOffers = async () => {
@@ -247,17 +264,17 @@ const CommunityOffers = () => {
 
 
   const filteredOffers = offers.filter(offer => {
-  if (!offer.business_profiles) return false;
-  
-  const matchesSearch = (offer.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                       (offer.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                       (offer.business_profiles.name || '').toLowerCase().includes(searchTerm.toLowerCase());
-  
-  const matchesCategory = activeCategory === 'all' || 
-                         (offer.categories && offer.categories.includes(activeCategory));
-  
-  return matchesSearch && matchesCategory;
-});
+    if (!offer.creator_profile) return false;
+    
+    const matchesSearch = (offer.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (offer.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (offer.creator_profile.name || '').toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = activeCategory === 'all' || 
+                           (offer.categories && offer.categories.includes(activeCategory));
+    
+    return matchesSearch && matchesCategory;
+  });
 
   /*
   const filteredOffers = offers.filter(offer => {
@@ -285,10 +302,10 @@ const CommunityOffers = () => {
       {/* Page Header */}
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-          Browse Opportunities
+          Find a Collab
         </h1>
         <p className="text-muted-foreground">
-          Discover collaboration opportunities that match your community
+          Discover collaboration opportunities from businesses and communities
         </p>
       </div>
 
@@ -348,7 +365,7 @@ const CommunityOffers = () => {
             <OfferCard
               key={offer.id}
               offer={offer}
-              businessProfile={offer.business_profiles}
+              creatorProfile={offer.creator_profile}
               showActions={true}
               onSeeDetails={() => handleSeeDetails(offer)}
               onApply={() => handleApply(offer)}
@@ -362,7 +379,7 @@ const CommunityOffers = () => {
         open={showDetailsModal}
         onOpenChange={setShowDetailsModal}
         offer={selectedOffer}
-        businessProfile={selectedOffer?.business_profiles}
+        creatorProfile={selectedOffer?.creator_profile}
       />
 
       {/* Apply Modal */}
@@ -370,7 +387,7 @@ const CommunityOffers = () => {
         open={showApplyModal}
         onOpenChange={setShowApplyModal}
         offer={selectedOffer}
-        businessProfile={selectedOffer?.business_profiles}
+        businessProfile={selectedOffer?.creator_profile}
         onSubmit={handleSubmitApplication}
         isSubmitting={isSubmittingApplication}
       />
