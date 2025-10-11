@@ -1,66 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Calendar, MapPin, Users, Clock, Package, CheckCircle, XCircle } from 'lucide-react';
-import { format } from 'date-fns';
-import { supabase } from '@/integrations/supabase/client';
-import FeedbackSummary from '@/components/FeedbackSummary';
-import { ContactInfoCard } from '@/components/ContactInfoCard';
+import React, { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Calendar, MapPin, Users, Clock, Package, CheckCircle, XCircle } from "lucide-react";
+import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
+import FeedbackSummary from "@/components/FeedbackSummary";
+import { ContactInfoCard } from "@/components/ContactInfoCard";
 
 interface CollaborationDetailsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   collaboration: any;
-  onStatusUpdate: (status: 'completed' | 'cancelled') => void;
+  onStatusUpdate: (status: "completed" | "cancelled") => void;
   onOpenFeedbackModal?: (collaborationId: string) => void;
-  userType: 'business' | 'community';
+  userType: "business" | "community";
   currentUserProfileId?: string;
 }
 
-const CollaborationDetailsModal = ({ 
-  open, 
-  onOpenChange, 
-  collaboration, 
+const CollaborationDetailsModal = ({
+  open,
+  onOpenChange,
+  collaboration,
   onStatusUpdate,
   onOpenFeedbackModal,
   userType,
-  currentUserProfileId
+  currentUserProfileId,
 }: CollaborationDetailsModalProps) => {
   const [userSurvey, setUserSurvey] = useState<any>(null);
   const [partnerSurvey, setPartnerSurvey] = useState<any>(null);
   const [loadingSurveys, setLoadingSurveys] = useState(false);
 
   useEffect(() => {
-    if (open && collaboration?.id && collaboration.status === 'completed') {
+    if (open && collaboration?.id && collaboration.status === "completed") {
       fetchSurveys();
     }
   }, [open, collaboration?.id, collaboration?.status]);
 
   const fetchSurveys = async () => {
     if (!collaboration?.id || !currentUserProfileId) return;
-    
+
     setLoadingSurveys(true);
     try {
-      const partnerProfileId = userType === 'business' 
-        ? collaboration.community_profile_id 
-        : collaboration.business_profile_id;
+      const partnerProfileId =
+        userType === "business" ? collaboration.applicant_profile_id : collaboration.creator_profile_id;
 
-      const { data, error } = await supabase
-        .from('surveys')
-        .select('*')
-        .eq('collaboration_id', collaboration.id);
+      const { data, error } = await supabase.from("surveys").select("*").eq("collaboration_id", collaboration.id);
 
       if (error) throw error;
 
-      const user = data?.find(s => s.filled_by_profile_id === currentUserProfileId);
-      const partner = data?.find(s => s.filled_by_profile_id === partnerProfileId);
+      const user = data?.find((s) => s.filled_by_profile_id === currentUserProfileId);
+      const partner = data?.find((s) => s.filled_by_profile_id === partnerProfileId);
 
       setUserSurvey(user || null);
       setPartnerSurvey(partner || null);
     } catch (error) {
-      console.error('Error fetching surveys:', error);
+      console.error("Error fetching surveys:", error);
     } finally {
       setLoadingSurveys(false);
     }
@@ -70,20 +66,25 @@ const CollaborationDetailsModal = ({
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'scheduled': return 'bg-blue-100 text-blue-800';
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'completed': return 'bg-emerald-100 text-emerald-800';
-      case 'cancelled': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "scheduled":
+        return "bg-blue-100 text-blue-800";
+      case "active":
+        return "bg-green-100 text-green-800";
+      case "completed":
+        return "bg-emerald-100 text-emerald-800";
+      case "cancelled":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const formatDate = (dateString: string) => {
-    return format(new Date(dateString), 'MMM d, yyyy');
+    return format(new Date(dateString), "MMM d, yyyy");
   };
 
-  const partner = userType === 'business' ? collaboration.community_profile : collaboration.business_profile;
-  const partnerType = userType === 'business' ? 'Community' : 'Business';
+  const partner = userType === "business" ? collaboration.community_profile : collaboration.business_profile;
+  const partnerType = userType === "business" ? "Community" : "Business";
 
   const renderBusinessOffer = () => {
     const businessOffer = collaboration.offer.business_offer;
@@ -108,11 +109,11 @@ const CollaborationDetailsModal = ({
     if (deliverables.tagged_stories) items.push(`${deliverables.tagged_stories} Tagged Stories`);
     if (deliverables.google_reviews) items.push(`${deliverables.google_reviews} Google Reviews`);
     if (deliverables.number_of_attendees) items.push(`${deliverables.number_of_attendees} Event Attendees`);
-    if (deliverables.professional_photography) items.push('Professional Photography');
-    if (deliverables.professional_reel_video) items.push('Professional Reel/Video');
-    if (deliverables.ugc_content) items.push('UGC Content Creation');
-    if (deliverables.collab_reel_post) items.push('Collaborative Reel/Post');
-    if (deliverables.group_picture) items.push('Group Picture');
+    if (deliverables.professional_photography) items.push("Professional Photography");
+    if (deliverables.professional_reel_video) items.push("Professional Reel/Video");
+    if (deliverables.ugc_content) items.push("UGC Content Creation");
+    if (deliverables.collab_reel_post) items.push("Collaborative Reel/Post");
+    if (deliverables.group_picture) items.push("Group Picture");
     if (deliverables.loyalty_signups) items.push(`${deliverables.loyalty_signups} Loyalty Sign-ups`);
     if (deliverables.minimum_consumption) items.push(`Minimum €${deliverables.minimum_consumption} Consumption`);
 
@@ -159,14 +160,15 @@ const CollaborationDetailsModal = ({
           {collaboration.offer.offer_photo && (
             <div className="rounded-lg overflow-hidden">
               <img
-                src={collaboration.offer.offer_photo.startsWith('http') 
-                  ? collaboration.offer.offer_photo 
-                  : `https://qcmperlkuujhweikoyru.supabase.co/storage/v1/object/public/offer-photos/${collaboration.offer.offer_photo}`
+                src={
+                  collaboration.offer.offer_photo.startsWith("http")
+                    ? collaboration.offer.offer_photo
+                    : `https://qcmperlkuujhweikoyru.supabase.co/storage/v1/object/public/offer-photos/${collaboration.offer.offer_photo}`
                 }
                 alt={collaboration.offer.title}
                 className="w-full h-48 object-cover"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/placeholder.svg';
+                  (e.target as HTMLImageElement).src = "/placeholder.svg";
                 }}
               />
             </div>
@@ -190,8 +192,8 @@ const CollaborationDetailsModal = ({
           </div>
 
           {/* Contact Info for Community Users */}
-          {userType === 'community' && (
-            <ContactInfoCard 
+          {userType === "community" && (
+            <ContactInfoCard
               scheduledDate={collaboration.scheduled_date}
               contactMethods={collaboration.contact_methods}
               isCommunityView={true}
@@ -237,7 +239,7 @@ const CollaborationDetailsModal = ({
                   if (availability) {
                     const parsed = JSON.parse(availability);
                     const preferredDates = parsed.preferred_dates || [];
-                    
+
                     if (preferredDates.length > 0) {
                       return (
                         <div>
@@ -290,9 +292,9 @@ const CollaborationDetailsModal = ({
                 </div>
               )}
               {partner?.website && (
-                <a 
-                  href={partner.website} 
-                  target="_blank" 
+                <a
+                  href={partner.website}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-primary transition-colors"
                 >
@@ -300,9 +302,9 @@ const CollaborationDetailsModal = ({
                 </a>
               )}
               {partner?.instagram && (
-                <a 
-                  href={`https://instagram.com/${partner.instagram}`} 
-                  target="_blank" 
+                <a
+                  href={`https://instagram.com/${partner.instagram}`}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-primary transition-colors"
                 >
@@ -313,7 +315,7 @@ const CollaborationDetailsModal = ({
           </div>
 
           {/* Feedback Section */}
-          {collaboration.status === 'completed' && (
+          {collaboration.status === "completed" && (
             <div className="border-t pt-4 space-y-4">
               <h4 className="font-semibold text-sm">Collaboration Feedback</h4>
               {loadingSurveys ? (
@@ -325,7 +327,10 @@ const CollaborationDetailsModal = ({
                     <div className="flex items-center justify-between mb-2">
                       <h5 className="text-sm font-medium">Your Feedback</h5>
                       {(() => {
-                        const isSubmitted = userSurvey?.submitted_at && userSurvey?.answers && Object.keys(userSurvey.answers || {}).length > 0;
+                        const isSubmitted =
+                          userSurvey?.submitted_at &&
+                          userSurvey?.answers &&
+                          Object.keys(userSurvey.answers || {}).length > 0;
                         return isSubmitted ? (
                           <Badge variant="default" className="bg-green-600">
                             ✓ Feedback Sent
@@ -338,18 +343,15 @@ const CollaborationDetailsModal = ({
                       })()}
                     </div>
                     {(() => {
-                      const isSubmitted = userSurvey?.submitted_at && userSurvey?.answers && Object.keys(userSurvey.answers || {}).length > 0;
+                      const isSubmitted =
+                        userSurvey?.submitted_at &&
+                        userSurvey?.answers &&
+                        Object.keys(userSurvey.answers || {}).length > 0;
                       return isSubmitted ? (
-                        <FeedbackSummary 
-                          surveys={[userSurvey]} 
-                          userType={userType}
-                          isUserFeedback={true}
-                        />
+                        <FeedbackSummary surveys={[userSurvey]} userType={userType} isUserFeedback={true} />
                       ) : (
                         <div className="border rounded-lg p-4 text-center">
-                          <p className="text-sm text-muted-foreground mb-3">
-                            You haven't submitted feedback yet
-                          </p>
+                          <p className="text-sm text-muted-foreground mb-3">You haven't submitted feedback yet</p>
                           {onOpenFeedbackModal && (
                             <Button
                               size="sm"
@@ -371,7 +373,10 @@ const CollaborationDetailsModal = ({
                     <div className="flex items-center justify-between mb-2">
                       <h5 className="text-sm font-medium">Partner's Feedback</h5>
                       {(() => {
-                        const isPartnerSubmitted = partnerSurvey?.submitted_at && partnerSurvey?.answers && Object.keys(partnerSurvey.answers || {}).length > 0;
+                        const isPartnerSubmitted =
+                          partnerSurvey?.submitted_at &&
+                          partnerSurvey?.answers &&
+                          Object.keys(partnerSurvey.answers || {}).length > 0;
                         return isPartnerSubmitted ? (
                           <Badge variant="default" className="bg-green-600">
                             ✓ Feedback Received
@@ -384,18 +389,19 @@ const CollaborationDetailsModal = ({
                       })()}
                     </div>
                     {(() => {
-                      const isPartnerSubmitted = partnerSurvey?.submitted_at && partnerSurvey?.answers && Object.keys(partnerSurvey.answers || {}).length > 0;
+                      const isPartnerSubmitted =
+                        partnerSurvey?.submitted_at &&
+                        partnerSurvey?.answers &&
+                        Object.keys(partnerSurvey.answers || {}).length > 0;
                       return isPartnerSubmitted ? (
-                        <FeedbackSummary 
-                          surveys={[partnerSurvey]} 
-                          userType={userType === 'business' ? 'community' : 'business'}
+                        <FeedbackSummary
+                          surveys={[partnerSurvey]}
+                          userType={userType === "business" ? "community" : "business"}
                           isUserFeedback={false}
                         />
                       ) : (
                         <div className="border rounded-lg p-4 text-center">
-                          <p className="text-sm text-muted-foreground">
-                            Partner hasn't submitted feedback yet
-                          </p>
+                          <p className="text-sm text-muted-foreground">Partner hasn't submitted feedback yet</p>
                         </div>
                       );
                     })()}
@@ -406,12 +412,12 @@ const CollaborationDetailsModal = ({
           )}
 
           {/* Action Buttons */}
-          {(collaboration.status === 'scheduled' || collaboration.status === 'active') && (
+          {(collaboration.status === "scheduled" || collaboration.status === "active") && (
             <div className="flex gap-2 pt-4 border-t">
-              <Button 
+              <Button
                 className="flex-1 bg-green-600 hover:bg-green-700 text-white"
                 onClick={() => {
-                  onStatusUpdate('completed');
+                  onStatusUpdate("completed");
                   onOpenChange(false);
                   if (onOpenFeedbackModal) {
                     setTimeout(() => onOpenFeedbackModal(collaboration.id), 500);
@@ -421,11 +427,11 @@ const CollaborationDetailsModal = ({
                 <CheckCircle className="w-4 h-4 mr-2" />
                 Complete Collaboration
               </Button>
-              <Button 
-                variant="destructive" 
+              <Button
+                variant="destructive"
                 className="flex-1"
                 onClick={() => {
-                  onStatusUpdate('cancelled');
+                  onStatusUpdate("cancelled");
                   onOpenChange(false);
                 }}
               >
