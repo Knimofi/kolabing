@@ -126,7 +126,6 @@ const BusinessOffersNew = () => {
         business_offer: data.business_offer,
         community_deliverables: data.community_deliverables,
         timeline_days: data.timeline_days,
-        business_profile_id: businessProfile.profile_id,
         creator_profile_id: businessProfile.profile_id,
         creator_profile_type: 'business',
         status,

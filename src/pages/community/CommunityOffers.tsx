@@ -32,6 +32,7 @@ const CommunityOffers = () => {
   setLoading(true);
 
   try {
+    // Fetch published offers
     const { data: offersData, error: offersError } = await supabase
       .from('collab_opportunities')
       .select(`
@@ -48,14 +49,8 @@ const CommunityOffers = () => {
         categories,
         address,
         timeline_days,
-        business_profiles!inner (
-          name,
-          business_type,
-          city,
-          profile_photo,
-          website,
-          instagram
-        )
+        creator_profile_id,
+        creator_profile_type
       `)
       .eq('status', 'published')
       .order('published_at', { ascending: false });
@@ -70,10 +65,31 @@ const CommunityOffers = () => {
       return;
     }
 
-    // Filter out null records and ensure business_profiles exists
-    const validOffers = (offersData || []).filter(offer => 
-      offer && offer.business_profiles
+    // Fetch business profiles for all creator_profile_ids
+    const creatorIds = [...new Set((offersData || []).map(o => o.creator_profile_id).filter(Boolean))];
+    
+    const { data: businessProfilesData, error: businessError } = await supabase
+      .from('business_profiles')
+      .select('profile_id, name, business_type, city, profile_photo, website, instagram')
+      .in('profile_id', creatorIds);
+
+    if (businessError) {
+      console.error('Error fetching business profiles:', businessError);
+    }
+
+    // Create a map of business profiles
+    const businessProfilesMap = new Map(
+      (businessProfilesData || []).map(bp => [bp.profile_id, bp])
     );
+
+    // Merge offers with business profiles
+    const enrichedOffers = (offersData || []).map(offer => ({
+      ...offer,
+      business_profiles: businessProfilesMap.get(offer.creator_profile_id) || null
+    }));
+
+    // Filter out offers without business profiles
+    const validOffers = enrichedOffers.filter(offer => offer.business_profiles);
 
     setOffers(validOffers);
   } catch (error: any) {
@@ -108,13 +124,7 @@ const CommunityOffers = () => {
           business_offer,
           community_deliverables,
           categories,
-          business_profiles:business_profile_id (
-            profile_id,
-            name,
-            business_type,
-            city,
-            profile_photo
-          )
+          creator_profile_id
         `)
         .eq('status', 'published')
         .order('published_at', { ascending: false });
@@ -198,7 +208,6 @@ const CommunityOffers = () => {
         .from('applications')
         .insert([{
           collab_opportunity_id: selectedOffer.id,
-          community_profile_id: profile.id,
           applicant_profile_id: profile.id,
           applicant_profile_type: 'community',
           message: applicationData.message,

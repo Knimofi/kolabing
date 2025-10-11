@@ -43,9 +43,9 @@ const CommunityCollaborations = () => {
           submitted_at,
           collaborations!inner(
             id,
-            offer_id,
-            business_profile_id,
-            offers(title),
+            collab_opportunity_id,
+            creator_profile_id,
+            collab_opportunities(title),
             business_profiles(name)
           )
         `)
@@ -58,7 +58,7 @@ const CommunityCollaborations = () => {
         id: s.id,
         collaboration_id: s.collaboration_id,
         partnerName: s.collaborations?.business_profiles?.name || 'Unknown Partner',
-        offerTitle: s.collaborations?.offers?.title || 'Untitled Offer',
+        offerTitle: s.collaborations?.collab_opportunities?.title || 'Untitled Offer',
       }));
 
       setPendingSurveys(pending);
@@ -82,10 +82,10 @@ const CommunityCollaborations = () => {
       if (baseError) throw baseError;
 
       const offerIds = Array.from(
-        new Set((baseRows || []).map((r: any) => r.offer_id).filter(Boolean))
+        new Set((baseRows || []).map((r: any) => r.collab_opportunity_id).filter(Boolean))
       );
       const businessProfileIds = Array.from(
-        new Set((baseRows || []).map((r: any) => r.business_profile_id).filter(Boolean))
+        new Set((baseRows || []).map((r: any) => r.creator_profile_id).filter(Boolean))
       );
       const applicationIds = Array.from(
         new Set((baseRows || []).map((r: any) => r.application_id).filter(Boolean))
@@ -136,8 +136,8 @@ const CommunityCollaborations = () => {
 
       // 3) Enrich base rows with related data and safe fallbacks
       const enriched = (baseRows || []).map((c: any) => {
-        const offer = offersMap.get(c.offer_id);
-        const business = businessProfilesMap.get(c.business_profile_id) || null;
+        const offer = offersMap.get(c.collab_opportunity_id);
+        const business = businessProfilesMap.get(c.creator_profile_id) || null;
         const application = applicationsMap.get(c.application_id) || null;
 
         return {
@@ -154,7 +154,7 @@ const CommunityCollaborations = () => {
                 address: offer.address || '',
               }
             : {
-                id: c.offer_id,
+                id: c.collab_opportunity_id,
                 title: 'Untitled Offer',
                 description: '',
                 offer_photo: null,

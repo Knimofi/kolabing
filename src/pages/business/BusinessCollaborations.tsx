@@ -43,8 +43,8 @@ const BusinessCollaborations = () => {
           submitted_at,
           collaborations!inner(
             id,
-            offer_id,
-            community_profile_id,
+            collab_opportunity_id,
+            applicant_profile_id,
             collab_opportunities(title),
             community_profiles(name)
           )
@@ -101,7 +101,7 @@ const BusinessCollaborations = () => {
           )
         `,
         )
-        .eq("business_profile_id", profile.id)
+        .eq("creator_profile_id", profile.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
