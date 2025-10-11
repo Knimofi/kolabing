@@ -14,7 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Eye, CheckCircle, XCircle, Calendar, MessageSquare, Users, Instagram, Globe, Clock } from "lucide-react";
+import { Eye, CheckCircle, XCircle, Calendar, MessageSquare, Instagram, Globe, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -64,11 +64,12 @@ const BusinessApplications = () => {
         .select(
           `
           *,
-          offers!inner(
+          collab_opportunities!inner(
             id,
             title,
             description,
-            business_profile_id
+            creator_profile_id,
+            creator_profile_type
           ),
           community_profiles!inner(
             profile_id,
@@ -82,7 +83,8 @@ const BusinessApplications = () => {
           )
         `,
         )
-        .eq("offers.business_profile_id", profile.id)
+        .eq("collab_opportunities.creator_profile_id", profile.id)
+        .eq("collab_opportunities.creator_profile_type", "business")
         .eq("status", "pending")
         .order("created_at", { ascending: false });
 
@@ -113,7 +115,6 @@ const BusinessApplications = () => {
 
   const handleConfirmAccept = async (scheduledDate: Date, contactMethods: any) => {
     if (!applicationToAccept) return;
-
     setIsAccepting(true);
     try {
       const { data, error } = await supabase.rpc("accept_application", {
@@ -138,10 +139,11 @@ const BusinessApplications = () => {
         description: "Application accepted! Collaboration has been created.",
       });
 
-      // Remove from pending applications list
       setApplications(
         applications.filter(
-          (app) => app.offer_id !== applicationToAccept.offer_id || app.id === applicationToAccept.id,
+          (app) =>
+            app.collab_opportunity_id !== applicationToAccept.collab_opportunity_id ||
+            app.id === applicationToAccept.id,
         ),
       );
 
@@ -170,7 +172,6 @@ const BusinessApplications = () => {
         description: "The application has been declined.",
       });
 
-      // Remove from list
       setApplications(applications.filter((app) => app.id !== application.id));
       setApplicationToDecline(null);
     } catch (error: any) {
@@ -197,20 +198,20 @@ const BusinessApplications = () => {
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
-  // Group applications by offer
-  const applicationsByOffer = applications.reduce(
+  // Group applications by opportunity
+  const applicationsByOpportunity = applications.reduce(
     (acc, app) => {
-      const offerId = app.offers.id;
-      if (!acc[offerId]) {
-        acc[offerId] = {
-          offer: app.offers,
+      const oppId = app.collab_opportunities.id;
+      if (!acc[oppId]) {
+        acc[oppId] = {
+          opportunity: app.collab_opportunities,
           applications: [],
         };
       }
-      acc[offerId].applications.push(app);
+      acc[oppId].applications.push(app);
       return acc;
     },
-    {} as Record<string, { offer: any; applications: any[] }>,
+    {} as Record<string, { opportunity: any; applications: any[] }>,
   );
 
   if (loading) {
@@ -223,43 +224,41 @@ const BusinessApplications = () => {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
       <div>
         <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Applications Received</h1>
-        <p className="text-muted-foreground">Review and manage applications for your collaboration offers</p>
+        <p className="text-muted-foreground">Review and manage applications for your collaboration opportunities</p>
       </div>
 
-      {/* Applications by Offer */}
-      {Object.keys(applicationsByOffer).length === 0 ? (
+      {Object.keys(applicationsByOpportunity).length === 0 ? (
         <Card>
           <CardContent className="py-16">
             <div className="text-center">
               <MessageSquare className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-foreground mb-2">No pending applications</h3>
               <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                When communities apply to your offers, they'll appear here for review.
+                When communities apply to your collaboration opportunities, they'll appear here for review.
               </p>
             </div>
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-6">
-          {Object.entries(applicationsByOffer).map(([offerId, offerData]) => {
-            const { offer, applications: offerApplications } = offerData as { offer: any; applications: any[] };
+          {Object.entries(applicationsByOpportunity).map(([oppId, oppData]) => {
+            const { opportunity, applications: oppApplications } = oppData as { opportunity: any; applications: any[] };
             return (
-              <Card key={offerId}>
+              <Card key={oppId}>
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
-                    <span>{offer.title}</span>
+                    <span>{opportunity.title}</span>
                     <Badge variant="outline">
-                      {offerApplications.length} {offerApplications.length === 1 ? "Application" : "Applications"}
+                      {oppApplications.length} {oppApplications.length === 1 ? "Application" : "Applications"}
                     </Badge>
                   </CardTitle>
-                  <CardDescription>{offer.description.substring(0, 150)}...</CardDescription>
+                  <CardDescription>{opportunity.description.substring(0, 150)}...</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {offerApplications.map((application) => (
+                    {oppApplications.map((application) => (
                       <div key={application.id} className="border rounded-lg p-4 space-y-3">
                         {/* Community Profile Header */}
                         <div className="flex items-center justify-between">
@@ -383,8 +382,6 @@ const BusinessApplications = () => {
                   )}
                 </div>
               </div>
-
-              {/* Social Links */}
               <div className="space-y-2">
                 {selectedCommunityProfile.website && (
                   <a
