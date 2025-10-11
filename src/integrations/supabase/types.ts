@@ -1,10 +1,4 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
   __InternalSupabase: {
@@ -85,7 +79,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "collab_opportunities";
             referencedColumns: ["id"];
-          }
+          },
         ];
       };
 
@@ -157,7 +151,7 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "profiles";
             referencedColumns: ["id"];
-          }
+          },
         ];
       };
 
@@ -233,13 +227,12 @@ export type Database = {
         ];
       };
 
-      // Legacy or unchanged tables omitted for brevity...
+      // Add any other unchanged or additional tables here...
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
-      // Only update function names/args if the migration changed them
       accept_application: {
         Args: { p_application_id: string };
         Returns: string;
@@ -315,36 +308,34 @@ export type Database = {
 };
 
 type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
-
 type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">];
 
-export type Tables<
-  DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"] & DefaultSchema["Views"]
-    | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"]
-    : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends { Row: infer R }
-    ? R
-    : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"] & DefaultSchema["Views"]
-    ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends { Row: infer R }
-      ? R
-      : never
-    : never;
+// --- GENERIC TABLE/ENUM/COMPOSITE HELPERS ---
 
-export type TablesInsert<...> = ... //unchanged logic for Inserts
+export type Tables<TableName extends keyof DefaultSchema["Tables"]> = DefaultSchema["Tables"][TableName] extends {
+  Row: infer R;
+}
+  ? R
+  : never;
 
-export type TablesUpdate<...> = ... //unchanged logic for Updates
+export type TablesInsert<TableName extends keyof DefaultSchema["Tables"]> = DefaultSchema["Tables"][TableName] extends {
+  Insert: infer I;
+}
+  ? I
+  : never;
 
-export type Enums<...> = ... //unchanged logic for Enums
+export type TablesUpdate<TableName extends keyof DefaultSchema["Tables"]> = DefaultSchema["Tables"][TableName] extends {
+  Update: infer U;
+}
+  ? U
+  : never;
 
-export type CompositeTypes<...> = ... //unchanged logic for CompositeTypes
+export type Enums<EnumName extends keyof DefaultSchema["Enums"]> = DefaultSchema["Enums"][EnumName];
 
+export type CompositeTypes<CompositeTypeName extends keyof DefaultSchema["CompositeTypes"]> =
+  DefaultSchema["CompositeTypes"][CompositeTypeName];
+
+// --- CONSTANTS ---
 export const Constants = {
   public: {
     Enums: {
