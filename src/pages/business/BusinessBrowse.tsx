@@ -1,0 +1,305 @@
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Search, Filter, MapPin, Calendar, Users, Heart } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import OfferCard from '@/components/OfferCard';
+import OfferDetailsModal from '@/components/modals/OfferDetailsModal';
+import ApplyOfferModal from '@/components/modals/ApplyOfferModal';
+
+const RUBIK_BOLD = {
+  fontFamily: "'Rubik', Arial, sans-serif",
+  textTransform: "uppercase" as const,
+  fontWeight: 700,
+};
+
+const RUBIK_MEDIUM = {
+  fontFamily: "'Rubik', Arial, sans-serif",
+  textTransform: "uppercase" as const,
+  fontWeight: 500,
+};
+
+const BusinessBrowse = () => {
+  const { profile } = useAuth();
+  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [offers, setOffers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedOffer, setSelectedOffer] = useState<any>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showApplyModal, setShowApplyModal] = useState(false);
+  const [isSubmittingApplication, setIsSubmittingApplication] = useState(false);
+
+  useEffect(() => {
+    fetchOffers();
+  }, []);
+
+  const fetchOffers = async () => {
+    setLoading(true);
+
+    try {
+      // Fetch published offers from COMMUNITIES (businesses browse community-created requests)
+      const { data: offersData, error: offersError } = await supabase
+        .from('collab_opportunities')
+        .select(`
+          id,
+          title,
+          description,
+          status,
+          published_at,
+          availability_start,
+          availability_end,
+          offer_photo,
+          business_offer,
+          community_deliverables,
+          categories,
+          address,
+          timeline_days,
+          creator_profile_id,
+          creator_profile_type
+        `)
+        .eq('status', 'published')
+        .eq('creator_profile_type', 'community')
+        .order('published_at', { ascending: false });
+
+      if (offersError) {
+        console.error('Supabase error fetching offers:', offersError);
+        toast({
+          title: 'Error',
+          description: 'Failed to load collab requests. Please try again.',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      // Fetch community profiles
+      const communityIds = [...new Set((offersData || []).map(o => o.creator_profile_id))];
+      const { data: communityProfilesData } = await supabase
+        .from('community_profiles')
+        .select('profile_id, name, community_type, city, profile_photo, website, instagram')
+        .in('profile_id', communityIds);
+
+      // Create map for quick lookup
+      const communityProfilesMap = new Map(
+        (communityProfilesData || []).map(cp => [cp.profile_id, { ...cp, profile_type: 'community' }])
+      );
+
+      // Enrich offers with creator profiles
+      const enrichedOffers = (offersData || []).map(offer => {
+        const creatorProfile = communityProfilesMap.get(offer.creator_profile_id);
+
+        return {
+          ...offer,
+          creator_profile: creatorProfile || null,
+        };
+      });
+
+      // Filter out offers without creator profiles
+      const validOffers = enrichedOffers.filter(offer => offer.creator_profile);
+
+      setOffers(validOffers);
+    } catch (error: any) {
+      console.error('Unexpected error fetching offers:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load collab requests. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSeeDetails = (offer: any) => {
+    setSelectedOffer(offer);
+    setShowDetailsModal(true);
+  };
+
+  const handleApply = (offer: any) => {
+    setSelectedOffer(offer);
+    setShowApplyModal(true);
+  };
+
+  const handleSubmitApplication = async (applicationData: {
+    availability: string;
+    message: string;
+  }) => {
+    if (!profile || !selectedOffer) return;
+
+    setIsSubmittingApplication(true);
+    try {
+      // Check for duplicate applications first
+      const { data: existingApplication, error: checkError } = await supabase
+        .from('applications')
+        .select('id')
+        .eq('collab_opportunity_id', selectedOffer.id)
+        .eq('applicant_profile_id', profile.id)
+        .maybeSingle();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        throw checkError;
+      }
+
+      if (existingApplication) {
+        toast({
+          title: 'Error',
+          description: 'You already applied to this collab request!',
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('applications')
+        .insert([{
+          collab_opportunity_id: selectedOffer.id,
+          applicant_profile_id: profile.id,
+          community_profile_id: selectedOffer.creator_profile_id, // The community being applied to
+          applicant_profile_type: 'business',
+          message: applicationData.message,
+          availability: applicationData.availability,
+          status: 'pending'
+        }]);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'Your application has been submitted successfully!',
+      });
+
+      fetchOffers();
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to submit application. Please try again.',
+        variant: 'destructive',
+      });
+      throw error;
+    } finally {
+      setIsSubmittingApplication(false);
+    }
+  };
+
+  const filteredOffers = offers.filter(offer => {
+    if (!offer.creator_profile) return false;
+    
+    const matchesSearch = (offer.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (offer.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (offer.creator_profile.name || '').toLowerCase().includes(searchTerm.toLowerCase());
+    
+    return matchesSearch;
+  });
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-48">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen" style={{ background: "#000" }}>
+      <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
+        {/* Page Header */}
+        <div>
+          <h1 
+            className="text-3xl md:text-4xl mb-1"
+            style={{
+              ...RUBIK_BOLD,
+              color: "#fff",
+              letterSpacing: "0.04em",
+            }}
+          >
+            FIND A COLLAB
+          </h1>
+          <p
+            className="text-lg mb-1"
+            style={{
+              ...RUBIK_MEDIUM,
+              color: "#fff",
+              fontFamily: "'Rubik', Arial, sans-serif",
+            }}
+          >
+            DISCOVER COLLABORATION OPPORTUNITIES FROM COMMUNITIES
+          </p>
+        </div>
+
+        {/* Search */}
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+            <Input
+              placeholder="Search collabs by title, community, or keywords..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+
+        {/* Offers Grid */}
+        {filteredOffers.length === 0 ? (
+          <Card className="border-black bg-white">
+            <CardContent className="py-16">
+              <div className="text-center">
+                <Search className="w-12 h-12 text-[#FFD861] mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">
+                  {offers.length === 0 ? 'No community collab requests available yet' : 'No matching collab requests found'}
+                </h3>
+                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                  {offers.length === 0 
+                    ? 'New collab requests will appear here. Check back soon!'
+                    : 'Try adjusting your search terms.'
+                  }
+                </p>
+                {searchTerm && (
+                  <Button variant="outline" onClick={() => setSearchTerm('')}>
+                    Clear Search
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {filteredOffers.map((offer) => (
+              <OfferCard
+                key={offer.id}
+                offer={offer}
+                creatorProfile={offer.creator_profile}
+                showActions={true}
+                onSeeDetails={() => handleSeeDetails(offer)}
+                onApply={() => handleApply(offer)}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Offer Details Modal */}
+        <OfferDetailsModal
+          open={showDetailsModal}
+          onOpenChange={setShowDetailsModal}
+          offer={selectedOffer}
+          creatorProfile={selectedOffer?.creator_profile}
+        />
+
+        {/* Apply Modal */}
+        <ApplyOfferModal
+          open={showApplyModal}
+          onOpenChange={setShowApplyModal}
+          offer={selectedOffer}
+          businessProfile={selectedOffer?.creator_profile}
+          onSubmit={handleSubmitApplication}
+          isSubmitting={isSubmittingApplication}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default BusinessBrowse;

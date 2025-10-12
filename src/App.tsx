@@ -16,6 +16,8 @@ import BusinessOffers from "./pages/business/BusinessOffers";
 import BusinessOffersNew from "./pages/business/BusinessOffersNew";
 import BusinessOffersEdit from "./pages/business/BusinessOffersEdit";
 import BusinessApplications from "./pages/business/BusinessApplications";
+import BusinessBrowse from "./pages/business/BusinessBrowse";
+import BusinessMyApplications from "./pages/business/BusinessMyApplications";
 import BusinessProfile from "./pages/business/BusinessProfile";
 import CommunityDashboard from "./pages/community/CommunityDashboard";
 import CommunityOffers from "./pages/community/CommunityOffers";
@@ -60,6 +62,8 @@ const App = () => (
                     <Route path="/opportunities" element={<BusinessOffers />} />
                     <Route path="/opportunities/new" element={<BusinessOffersNew />} />
                     <Route path="/opportunities/:offerId/edit" element={<BusinessOffersEdit />} />
+                    <Route path="/browse" element={<BusinessBrowse />} />
+                    <Route path="/my-applications" element={<BusinessMyApplications />} />
                     <Route path="/applications" element={<BusinessApplications />} />
                     <Route path="/opportunities/:id" element={
                       <ComingSoon 

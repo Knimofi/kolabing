@@ -13,7 +13,10 @@ interface Application {
   created_at: string;
   collab_opportunities: {
     title: string;
-    business_profiles: {
+    business_profiles?: {
+      name: string;
+    };
+    community_profiles?: {
       name: string;
     };
   };
@@ -66,7 +69,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
         </CardTitle>
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground">
-            Applied to: {application.collab_opportunities.business_profiles.name}
+            Applied to: {application.collab_opportunities.business_profiles?.name || application.collab_opportunities.community_profiles?.name}
           </p>
           <p className="text-sm text-muted-foreground">
             Sent: {format(new Date(application.created_at), 'MMM dd, yyyy')}

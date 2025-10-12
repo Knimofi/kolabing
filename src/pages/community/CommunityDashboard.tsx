@@ -8,13 +8,13 @@ import CollaborationCalendar from "@/components/CollaborationCalendar"; // <-- c
 
 const RUBIK_BOLD = {
   fontFamily: "'Rubik', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 700,
 };
 
 const RUBIK_MEDIUM = {
   fontFamily: "'Rubik', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 500,
 };
 

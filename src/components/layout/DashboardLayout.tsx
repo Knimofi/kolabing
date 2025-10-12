@@ -32,10 +32,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const businessNavItems = [
     { icon: LayoutDashboard, label: 'Overview', href: '/business' },
     { icon: FileText, label: 'My Collab Requests', href: '/business/opportunities' },
+    { icon: Building2, label: 'Find a Collab', href: '/business/browse' },
+    { icon: FileText, label: 'Applications Submitted', href: '/business/my-applications' },
     { icon: UserCheck, label: 'Applications Received', href: '/business/applications' },
     { icon: Users, label: 'Collaborations', href: '/business/collaborations' },
-//    { icon: BarChart3, label: 'Analytics', href: '/business/analytics' },
-//    { icon: CreditCard, label: 'Plans', href: '/business/plans' },
     { icon: Settings, label: 'Profile', href: '/business/profile' },
   ];
 

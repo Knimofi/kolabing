@@ -4,8 +4,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Plus, FileText, Users, TrendingUp, AlertCircle } from "lucide-react";
 import ProfileSetupAlert from "@/components/ProfileSetupAlert";
+import CollaborationCalendar from "@/components/CollaborationCalendar";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+
+const RUBIK_BOLD = {
+  fontFamily: "'Rubik', Arial, sans-serif",
+  textTransform: "uppercase" as const,
+  fontWeight: 700,
+};
+
+const RUBIK_MEDIUM = {
+  fontFamily: "'Rubik', Arial, sans-serif",
+  textTransform: "uppercase" as const,
+  fontWeight: 500,
+};
 
 const BusinessDashboard = () => {
   const { profile } = useAuth();
@@ -65,44 +78,50 @@ const BusinessDashboard = () => {
     }
   };
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Business Dashboard</h1>
-          <p className="text-muted-foreground">Manage your offers and track collaboration performance</p>
+    <div className="min-h-screen" style={{ background: "#000" }}>
+      <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
+        {/* Page Header */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 
+              className="text-3xl md:text-4xl mb-1"
+              style={{
+                ...RUBIK_BOLD,
+                color: "#fff",
+                letterSpacing: "0.04em",
+              }}
+            >
+              BUSINESS DASHBOARD
+            </h1>
+            <p
+              className="text-lg mb-1"
+              style={{
+                ...RUBIK_MEDIUM,
+                color: "#fff",
+                fontFamily: "'Rubik', Arial, sans-serif",
+              }}
+            >
+              MANAGE YOUR OFFERS AND TRACK COLLABORATION PERFORMANCE
+            </p>
+          </div>
+
+          <Link to="/business/opportunities/new">
+            <Button 
+              size="lg" 
+              className="bg-[#FFD861] hover:bg-yellow-300 border-2 border-[#FFD861] text-white font-bold text-lg uppercase"
+              style={RUBIK_BOLD}
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              CREATE COLLAB REQUEST
+            </Button>
+          </Link>
         </div>
 
-        <Link to="/business/offers/new">
-          <Button size="lg" className="w-full md:w-auto">
-            <Plus className="w-5 h-5 mr-2" />
-            Create New Offer
-          </Button>
-        </Link>
-      </div>
+        {/* Profile Setup Alert */}
+        <ProfileSetupAlert />
 
-      {/* Profile Setup Alert */}
-      <ProfileSetupAlert />
-
-      {/* Subscription Alert */}
-      <Card className="border-amber-200 bg-amber-50">
-        <CardContent className="pt-6">
-          <div className="flex items-start space-x-3">
-            <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
-            <div className="flex-1">
-              <h3 className="font-semibold text-amber-900">Subscription Required</h3>
-              <p className="text-amber-800 text-sm mb-3">
-                You need an active subscription to publish offers and connect with communities.
-              </p>
-              <Link to="/business/plans">
-                <Button variant="outline" size="sm" className="border-amber-300 text-amber-900 hover:bg-amber-100">
-                  View Plans
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        {/* Collaboration Calendar */}
+        <CollaborationCalendar userType="business" />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -213,6 +232,7 @@ const BusinessDashboard = () => {
             </div>
           </CardContent>
         </Card>
+      </div>
       </div>
     </div>
   );
