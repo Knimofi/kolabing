@@ -32,7 +32,7 @@ const CommunityOffers = () => {
     setLoading(true);
 
     try {
-      // Fetch published offers (both business and community created)
+      // Fetch published offers ONLY from businesses (communities only see business-created collabs)
       const { data: offersData, error: offersError } = await supabase
         .from('collab_opportunities')
         .select(`
@@ -53,6 +53,7 @@ const CommunityOffers = () => {
           creator_profile_type
         `)
         .eq('status', 'published')
+        .eq('creator_profile_type', 'business')
         .order('published_at', { ascending: false });
 
       if (offersError) {
@@ -226,6 +227,7 @@ const CommunityOffers = () => {
         .insert([{
           collab_opportunity_id: selectedOffer.id,
           applicant_profile_id: profile.id,
+          community_profile_id: profile.id,
           applicant_profile_type: 'community',
           message: applicationData.message,
           availability: applicationData.availability,
@@ -253,16 +255,6 @@ const CommunityOffers = () => {
     }
   };
 
-  const categories = [
-    'all',
-    'Brand Awareness',
-    'Content Creation',
-    'Events',
-    'Product Promotion',
-    'Lead Generation'
-  ];
-
-
   const filteredOffers = offers.filter(offer => {
     if (!offer.creator_profile) return false;
     
@@ -270,10 +262,7 @@ const CommunityOffers = () => {
                          (offer.description || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                          (offer.creator_profile.name || '').toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesCategory = activeCategory === 'all' || 
-                           (offer.categories && offer.categories.includes(activeCategory));
-    
-    return matchesSearch && matchesCategory;
+    return matchesSearch;
   });
 
   /*
@@ -305,35 +294,21 @@ const CommunityOffers = () => {
           Find a Collab
         </h1>
         <p className="text-muted-foreground">
-          Discover collaboration opportunities from businesses and communities
+          Discover collaboration opportunities from businesses
         </p>
       </div>
 
-      {/* Search and Filters */}
+      {/* Search */}
       <div className="flex flex-col md:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
-            placeholder="Search offers by title, business, or keywords..."
+            placeholder="Search collabs by title, business, or keywords..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
           />
         </div>
-      </div>
-
-      {/* Category Filter Tags */}
-      <div className="flex flex-wrap gap-2">
-        {categories.map(category => (
-          <Button 
-            key={category}
-            variant={activeCategory === category ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setActiveCategory(category)}
-          >
-            {category === 'all' ? 'All Categories' : category}
-          </Button>
-        ))}
       </div>
 
       {/* Offers Grid */}
@@ -343,12 +318,12 @@ const CommunityOffers = () => {
             <div className="text-center">
               <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-foreground mb-2">
-                {offers.length === 0 ? 'No offers available yet' : 'No matching offers found'}
+                {offers.length === 0 ? 'No collabs available yet' : 'No matching collabs found'}
               </h3>
               <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                 {offers.length === 0 
-                  ? 'New collaboration opportunities will appear here. Check back soon!'
-                  : 'Try adjusting your search terms or selected category.'
+                  ? 'New collabs will appear here. Check back soon!'
+                  : 'Try adjusting your search terms.'
                 }
               </p>
               {searchTerm && (

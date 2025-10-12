@@ -56,7 +56,7 @@ const CommunityMyOpportunities = () => {
     } catch (error: any) {
       toast({
         title: 'Error',
-        description: error.message || 'Failed to load opportunities.',
+        description: error.message || 'Failed to load collab requests.',
         variant: 'destructive',
       });
     } finally {
@@ -78,7 +78,7 @@ const CommunityMyOpportunities = () => {
 
       toast({
         title: 'Success',
-        description: `Opportunity ${newStatus === 'published' ? 'published' : 'updated'} successfully`,
+        description: `Collab request ${newStatus === 'published' ? 'published' : 'updated'} successfully`,
       });
     } catch (error: any) {
       toast({
@@ -107,7 +107,7 @@ const CommunityMyOpportunities = () => {
 
       toast({
         title: 'Success',
-        description: 'Opportunity deleted successfully',
+        description: 'Collab request deleted successfully',
       });
     } catch (error: any) {
       toast({
@@ -140,7 +140,7 @@ const CommunityMyOpportunities = () => {
       setOffers([data, ...offers]);
       toast({
         title: 'Success',
-        description: 'Opportunity duplicated successfully',
+        description: 'Collab request duplicated successfully',
       });
     } catch (error: any) {
       toast({
@@ -171,34 +171,40 @@ const CommunityMyOpportunities = () => {
             size="lg"
           >
             <Plus className="w-5 h-5 mr-2" />
-            Create Collab Opportunity
+            Create a Collab Request
           </Button>
         </div>
       </header>
 
       <div className="flex gap-2 flex-wrap">
-        {['all', 'draft', 'published', 'closed', 'completed'].map((filter) => (
+        {['all', 'draft', 'published'].map((filter) => (
           <Button
             key={filter}
             variant={activeFilter === filter ? 'default' : 'outline'}
             size="sm"
             onClick={() => setActiveFilter(filter as any)}
           >
-            {filter === 'all' ? 'All Offers' : filter.charAt(0).toUpperCase() + filter.slice(1)} ({filter === 'all' ? offers.length : offers.filter(o => o.status === filter).length})
+            {filter === 'all' ? 'All my collab requests' : filter.charAt(0).toUpperCase() + filter.slice(1)} ({filter === 'all' ? offers.length : offers.filter(o => o.status === filter).length})
           </Button>
         ))}
+      </div>
+
+      <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
+        <p className="text-sm text-blue-900 dark:text-blue-100">
+          <strong>Note:</strong> Collab requests in 'Draft' mode are only visible to you. Published collab requests are visible to businesses. You can switch between draft and published at any time.
+        </p>
       </div>
 
       {filteredOffers.length === 0 ? (
         <Card>
           <CardContent className="py-16 text-center">
-            <p className="text-lg font-semibold">No opportunities found</p>
+            <p className="text-lg font-semibold">No collab requests found</p>
             <Button 
               onClick={() => navigate('/community/my-opportunities/new')} 
               className="mt-4 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold"
               size="lg"
             >
-              <Plus className="w-5 h-5 mr-2" /> Create Collab Opportunity
+              <Plus className="w-5 h-5 mr-2" /> Create a Collab Request
             </Button>
           </CardContent>
         </Card>
@@ -247,7 +253,7 @@ const CommunityMyOpportunities = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <Card className="p-6 max-w-sm w-full">
             <CardHeader>
-              <CardTitle>Delete Opportunity?</CardTitle>
+              <CardTitle>Delete Collab Request?</CardTitle>
               <CardDescription>
                 Are you sure you want to delete "{offerToDelete.title}"?
               </CardDescription>
