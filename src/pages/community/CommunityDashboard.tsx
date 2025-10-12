@@ -4,16 +4,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Search, FileText, Users, TrendingUp, Clock } from "lucide-react";
 import ProfileSetupAlert from "@/components/ProfileSetupAlert";
+import CollaborationCalendar from "@/components/CollaborationCalendar"; // <-- calendar import
 
 const RUBIK_BOLD = {
   fontFamily: "'Rubik', Arial, sans-serif",
-  textTransform: "uppercase" as const,
+  textTransform: "uppercase",
   fontWeight: 700,
 };
 
 const RUBIK_MEDIUM = {
   fontFamily: "'Rubik', Arial, sans-serif",
-  textTransform: "uppercase" as const,
+  textTransform: "uppercase",
   fontWeight: 500,
 };
 
@@ -59,6 +60,9 @@ const CommunityDashboard = () => {
 
         {/* Profile Setup Alert */}
         <ProfileSetupAlert />
+
+        {/* Collaboration Calendar (NEW) */}
+        <CollaborationCalendar userType="community" />
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -133,20 +137,20 @@ const CommunityDashboard = () => {
                   >
                     2
                   </div>
-                <span className="text-base text-black" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
-                  Browse available opportunities
-                </span>
-              </div>
-              <Link to="/community/opportunities">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-[#FFD861] bg-[#FFD861] text-white"
-                  style={RUBIK_MEDIUM}
-                >
-                  BROWSE OPPORTUNITIES
-                </Button>
-              </Link>
+                  <span className="text-base text-black" style={{ fontFamily: "'Darker Grotesque', sans-serif" }}>
+                    Browse available opportunities
+                  </span>
+                </div>
+                <Link to="/community/opportunities">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-[#FFD861] bg-[#FFD861] text-white"
+                    style={RUBIK_MEDIUM}
+                  >
+                    BROWSE OPPORTUNITIES
+                  </Button>
+                </Link>
               </div>
               <div className="flex items-center space-x-3">
                 <div
