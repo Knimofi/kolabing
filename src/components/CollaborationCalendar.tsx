@@ -13,14 +13,14 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 // Font/style constants
 const RUBIK_MEDIUM_MAYUS = {
   fontFamily: "'Rubik', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 500,
   color: "#000",
   letterSpacing: "0.04em",
 };
 const DARKER_GROTESQUE_BUTTON = {
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 400,
   color: "#111",
   fontSize: 13,
@@ -33,7 +33,7 @@ const OPEN_SANS = {
 };
 const DARKER_GROTESQUE = {
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 400,
   color: "#000",
 };

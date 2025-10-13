@@ -186,14 +186,39 @@ const BusinessMyApplications: React.FC = () => {
            communityName.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
+  const RUBIK_EXTRA_BOLD_TITLE = {
+    fontFamily: "'Rubik', Arial, sans-serif",
+    textTransform: "uppercase" as const,
+    fontWeight: 800,
+    color: "#000",
+    fontSize: 26,
+    letterSpacing: 0.03,
+    margin: 0,
+  };
+  const OPEN_SANS_SUBTITLE = {
+    fontFamily: "'Open Sans', Arial, sans-serif",
+    fontWeight: 400,
+    fontSize: 15,
+    color: "#222",
+    letterSpacing: 0,
+    textTransform: "none" as const,
+    margin: 0,
+  };
+  const OPEN_SANS = {
+    fontFamily: "'Open Sans', Arial, sans-serif",
+    fontWeight: 400,
+    fontSize: 14,
+    color: "#222",
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen" style={{ background: "#000" }}>
+      <div className="min-h-screen" style={{ background: "#fff" }}>
         <div className="max-w-6xl mx-auto py-10 px-4">
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-muted-foreground">Loading your applications...</p>
+              <p style={OPEN_SANS}>Loading your applications...</p>
             </div>
           </div>
         </div>
@@ -202,30 +227,12 @@ const BusinessMyApplications: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#000" }}>
+    <div className="min-h-screen" style={{ background: "#fff" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         {/* Header */}
         <div>
-          <h1 
-            className="text-3xl md:text-4xl mb-1"
-            style={{
-              ...RUBIK_BOLD,
-              color: "#fff",
-              letterSpacing: "0.04em",
-            }}
-          >
-            APPLICATIONS SUBMITTED
-          </h1>
-          <p
-            className="text-lg mb-1"
-            style={{
-              ...RUBIK_MEDIUM,
-              color: "#fff",
-              fontFamily: "'Rubik', Arial, sans-serif",
-            }}
-          >
-            VIEW AND MANAGE YOUR COLLABORATION APPLICATIONS
-          </p>
+          <h1 style={RUBIK_EXTRA_BOLD_TITLE}>APPLICATIONS SUBMITTED</h1>
+          <p style={OPEN_SANS_SUBTITLE}>View and manage your collaboration applications</p>
         </div>
 
         {/* Search */}
@@ -241,17 +248,17 @@ const BusinessMyApplications: React.FC = () => {
 
         {/* Applications Grid */}
         {filteredApplications.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-white">
+          <div className="text-center py-12" style={{ background: "#F7F7F7", borderRadius: "8px", padding: "4rem" }}>
+            <div>
               {applications.length === 0 ? (
                 <div>
-                  <h3 className="text-lg font-medium mb-2">No applications yet</h3>
-                  <p>You haven't applied to any opportunities yet. Browse opportunities to get started!</p>
+                  <h3 className="text-lg font-medium mb-2" style={OPEN_SANS}>No applications yet</h3>
+                  <p style={OPEN_SANS}>You haven't applied to any opportunities yet. Browse opportunities to get started!</p>
                 </div>
               ) : (
                 <div>
-                  <h3 className="text-lg font-medium mb-2">No matching applications</h3>
-                  <p>Try adjusting your search terms.</p>
+                  <h3 className="text-lg font-medium mb-2" style={OPEN_SANS}>No matching applications</h3>
+                  <p style={OPEN_SANS}>Try adjusting your search terms.</p>
                 </div>
               )}
             </div>

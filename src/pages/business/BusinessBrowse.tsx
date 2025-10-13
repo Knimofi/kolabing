@@ -202,31 +202,32 @@ const BusinessBrowse = () => {
     );
   }
 
+  const RUBIK_EXTRA_BOLD_TITLE = {
+    fontFamily: "'Rubik', Arial, sans-serif",
+    textTransform: "uppercase" as const,
+    fontWeight: 800,
+    color: "#000",
+    fontSize: 26,
+    letterSpacing: 0.03,
+    margin: 0,
+  };
+  const OPEN_SANS_SUBTITLE = {
+    fontFamily: "'Open Sans', Arial, sans-serif",
+    fontWeight: 400,
+    fontSize: 15,
+    color: "#222",
+    letterSpacing: 0,
+    textTransform: "none" as const,
+    margin: 0,
+  };
+
   return (
-    <div className="min-h-screen" style={{ background: "#000" }}>
+    <div className="min-h-screen" style={{ background: "#fff" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         {/* Page Header */}
         <div>
-          <h1 
-            className="text-3xl md:text-4xl mb-1"
-            style={{
-              ...RUBIK_BOLD,
-              color: "#fff",
-              letterSpacing: "0.04em",
-            }}
-          >
-            FIND A COLLAB
-          </h1>
-          <p
-            className="text-lg mb-1"
-            style={{
-              ...RUBIK_MEDIUM,
-              color: "#fff",
-              fontFamily: "'Rubik', Arial, sans-serif",
-            }}
-          >
-            DISCOVER COLLABORATION OPPORTUNITIES FROM COMMUNITIES
-          </p>
+          <h1 style={RUBIK_EXTRA_BOLD_TITLE}>FIND A COLLAB</h1>
+          <p style={OPEN_SANS_SUBTITLE}>Discover collaboration opportunities from communities</p>
         </div>
 
         {/* Search */}
@@ -244,14 +245,14 @@ const BusinessBrowse = () => {
 
         {/* Offers Grid */}
         {filteredOffers.length === 0 ? (
-          <Card className="border-black bg-white">
+          <Card style={{ background: "#F7F7F7" }}>
             <CardContent className="py-16">
               <div className="text-center">
                 <Search className="w-12 h-12 text-[#FFD861] mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2">
+                <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#000" }}>
                   {offers.length === 0 ? 'No community collab requests available yet' : 'No matching collab requests found'}
                 </h3>
-                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                <p className="mb-6 max-w-md mx-auto" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
                   {offers.length === 0 
                     ? 'New collab requests will appear here. Check back soon!'
                     : 'Try adjusting your search terms.'

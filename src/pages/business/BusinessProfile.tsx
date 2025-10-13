@@ -109,26 +109,56 @@ const BusinessProfile: React.FC = () => {
     }
   };
 
-  return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="flex items-center space-x-3">
-        <Building2 className="w-8 h-8 text-primary" />
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Business Profile</h1>
-          <p className="text-muted-foreground">
-            Manage your business information and contact details
-          </p>
-        </div>
-      </div>
+  const RUBIK_EXTRA_BOLD_TITLE = {
+    fontFamily: "'Rubik', Arial, sans-serif",
+    textTransform: "uppercase" as const,
+    fontWeight: 800,
+    color: "#000",
+    fontSize: 26,
+    letterSpacing: 0.03,
+    margin: 0,
+  };
+  const OPEN_SANS_SUBTITLE = {
+    fontFamily: "'Open Sans', Arial, sans-serif",
+    fontWeight: 400,
+    fontSize: 15,
+    color: "#222",
+    letterSpacing: 0,
+    textTransform: "none" as const,
+    margin: 0,
+  };
+  const BUTTON_YELLOW = {
+    background: "#FFD861",
+    border: "2px solid #FFD861",
+    color: "#000",
+    fontFamily: "'Darker Grotesque', Arial, sans-serif",
+    textTransform: "uppercase" as const,
+    fontWeight: 400,
+    letterSpacing: "0.03em",
+    fontSize: 17,
+  };
 
-      <form onSubmit={handleSubmit}>
-        <Card>
-          <CardHeader>
-            <CardTitle>Business Information</CardTitle>
-            <CardDescription>
-              This information will be visible to communities when you create offers
-            </CardDescription>
-          </CardHeader>
+  return (
+    <div className="min-h-screen" style={{ background: "#fff" }}>
+      <div className="max-w-2xl mx-auto py-10 px-4 space-y-8">
+        <div className="flex items-center space-x-3">
+          <Building2 className="w-8 h-8" style={{ color: "#FFD861" }} />
+          <div>
+            <h1 style={RUBIK_EXTRA_BOLD_TITLE}>Business Profile</h1>
+            <p style={OPEN_SANS_SUBTITLE}>
+              Manage your business information and contact details
+            </p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <Card style={{ background: "#fff", border: "1px solid #e0e0e0" }}>
+            <CardHeader>
+              <CardTitle style={{ fontFamily: "'Open Sans', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 500, fontSize: 13 }}>Business Information</CardTitle>
+              <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
+                This information will be visible to communities when you create offers
+              </CardDescription>
+            </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
@@ -329,24 +359,25 @@ const BusinessProfile: React.FC = () => {
             </div>
 
           </CardContent>
-        </Card>
+          </Card>
 
-        <div className="flex justify-end pt-6">
-          <Button type="submit" disabled={loading} size="lg">
-            {loading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Saving...
-              </>
-            ) : (
-              <>
-                <Save className="w-4 h-4 mr-2" />
-                Save Profile
-              </>
-            )}
-          </Button>
-        </div>
-      </form>
+          <div className="flex justify-end pt-6">
+            <Button type="submit" disabled={loading} size="lg" style={BUTTON_YELLOW}>
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4 mr-2" />
+                  Save Profile
+                </>
+              )}
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

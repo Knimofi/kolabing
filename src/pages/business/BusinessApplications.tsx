@@ -222,26 +222,46 @@ const BusinessApplications = () => {
     );
   }
 
-  return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Applications Received</h1>
-        <p className="text-muted-foreground">Review and manage applications for your collaboration opportunities</p>
-      </div>
+  const RUBIK_EXTRA_BOLD_TITLE = {
+    fontFamily: "'Rubik', Arial, sans-serif",
+    textTransform: "uppercase" as const,
+    fontWeight: 800,
+    color: "#000",
+    fontSize: 26,
+    letterSpacing: 0.03,
+    margin: 0,
+  };
+  const OPEN_SANS_SUBTITLE = {
+    fontFamily: "'Open Sans', Arial, sans-serif",
+    fontWeight: 400,
+    fontSize: 15,
+    color: "#222",
+    letterSpacing: 0,
+    textTransform: "none" as const,
+    margin: 0,
+  };
 
-      {Object.keys(applicationsByOpportunity).length === 0 ? (
-        <Card>
-          <CardContent className="py-16">
-            <div className="text-center">
-              <MessageSquare className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">No pending applications</h3>
-              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                When communities apply to your collaboration opportunities, they'll appear here for review.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
+  return (
+    <div className="min-h-screen" style={{ background: "#fff" }}>
+      <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
+        <div>
+          <h1 style={RUBIK_EXTRA_BOLD_TITLE}>Applications Received</h1>
+          <p style={OPEN_SANS_SUBTITLE}>Review and manage applications for your collaboration opportunities</p>
+        </div>
+
+        {Object.keys(applicationsByOpportunity).length === 0 ? (
+          <Card style={{ background: "#F7F7F7" }}>
+            <CardContent className="py-16">
+              <div className="text-center">
+                <MessageSquare className="w-12 h-12 text-[#FFD861] mx-auto mb-4" />
+                <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#000" }}>No pending applications</h3>
+                <p className="mb-6 max-w-md mx-auto" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
+                  When communities apply to your collaboration opportunities, they'll appear here for review.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
         <div className="space-y-6">
           {Object.entries(applicationsByOpportunity).map(([oppId, oppData]) => {
             const { opportunity, applications: oppApplications } = oppData as { opportunity: any; applications: any[] };
@@ -446,6 +466,7 @@ const BusinessApplications = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      </div>
     </div>
   );
 };

@@ -81,20 +81,33 @@ const SignIn = () => {
     }
   };
 
+  const BUTTON_YELLOW = {
+    background: "#FFD861",
+    border: "2px solid #FFD861",
+    color: "#000",
+    fontFamily: "'Darker Grotesque', Arial, sans-serif",
+    textTransform: "uppercase" as const,
+    fontWeight: 600,
+    letterSpacing: "0.03em",
+    fontSize: 17,
+    borderRadius: "12px",
+  };
+
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: "#000" }}>
       {/* Header */}
-      <header className="p-4 flex items-center justify-between border-b border-border">
+      <header className="p-4 flex items-center justify-between" style={{ borderBottom: "1px solid #333" }}>
         <Link 
           to="/"
-          className="flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors"
+          className="flex items-center space-x-2 transition-colors"
+          style={{ color: "#fff" }}
           aria-label="Back to home"
         >
           <ArrowLeft className="w-5 h-5" />
           <span className="hidden sm:inline">Back to Home</span>
         </Link>
         
-        <Link to="/auth/sign-up" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+        <Link to="/auth/sign-up" className="text-sm transition-colors" style={{ color: "#FFD861" }}>
           Don't have an account? Sign up
         </Link>
       </header>
@@ -103,16 +116,16 @@ const SignIn = () => {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center space-x-2 mb-4">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-xl">K</span>
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: "#FFD861" }}>
+                <span className="font-bold text-xl" style={{ color: "#000" }}>K</span>
               </div>
-              <span className="text-2xl font-bold text-foreground">Kolabing</span>
+              <span className="text-2xl font-bold" style={{ color: "#fff" }}>Kolabing</span>
             </div>
             
-            <h1 className="text-3xl font-bold text-foreground mb-2">
+            <h1 className="text-3xl font-bold mb-2" style={{ color: "#fff", fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase" as const }}>
               Welcome Back
             </h1>
-            <p className="text-muted-foreground">
+            <p style={{ color: "#fff", fontFamily: "'Open Sans', Arial, sans-serif" }}>
               Sign in to your account to continue
             </p>
           </div>
@@ -120,7 +133,7 @@ const SignIn = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email */}
             <div>
-              <Label htmlFor="email" className="text-sm font-medium text-foreground">
+              <Label htmlFor="email" className="text-sm font-medium" style={{ color: "#fff" }}>
                 Email
               </Label>
               <Input
@@ -131,12 +144,13 @@ const SignIn = () => {
                 onChange={handleInputChange}
                 placeholder="Enter your email"
                 className={errors.email ? 'border-destructive' : ''}
+                style={{ background: "#222", color: "#fff", border: "1px solid #444", borderRadius: "8px" }}
                 aria-describedby={errors.email ? 'email-error' : undefined}
                 aria-invalid={!!errors.email}
                 autoComplete="email"
               />
               {errors.email && (
-                <p id="email-error" role="alert" className="text-sm text-destructive mt-1">
+                <p id="email-error" role="alert" className="text-sm mt-1" style={{ color: "#ff6b6b" }}>
                   {errors.email}
                 </p>
               )}
@@ -144,7 +158,7 @@ const SignIn = () => {
 
             {/* Password */}
             <div>
-              <Label htmlFor="password" className="text-sm font-medium text-foreground">
+              <Label htmlFor="password" className="text-sm font-medium" style={{ color: "#fff" }}>
                 Password
               </Label>
               <div className="relative">
@@ -156,6 +170,7 @@ const SignIn = () => {
                   onChange={handleInputChange}
                   placeholder="Enter your password"
                   className={errors.password ? 'border-destructive pr-10' : 'pr-10'}
+                  style={{ background: "#222", color: "#fff", border: "1px solid #444", borderRadius: "8px" }}
                   aria-describedby={errors.password ? 'password-error' : undefined}
                   aria-invalid={!!errors.password}
                   autoComplete="current-password"
@@ -163,14 +178,15 @@ const SignIn = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 transition-colors"
+                  style={{ color: "#fff" }}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
               {errors.password && (
-                <p id="password-error" role="alert" className="text-sm text-destructive mt-1">
+                <p id="password-error" role="alert" className="text-sm mt-1" style={{ color: "#ff6b6b" }}>
                   {errors.password}
                 </p>
               )}
@@ -181,6 +197,7 @@ const SignIn = () => {
               type="submit"
               className="w-full"
               size="lg"
+              style={BUTTON_YELLOW}
               disabled={loading}
             >
               {loading ? 'Signing In...' : 'Sign In'}
@@ -190,7 +207,8 @@ const SignIn = () => {
             <div className="text-center">
               <Link 
                 to="/auth/forgot-password" 
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm transition-colors"
+                style={{ color: "#FFD861" }}
               >
                 Forgot your password?
               </Link>

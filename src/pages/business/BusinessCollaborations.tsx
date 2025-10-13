@@ -187,14 +187,34 @@ const BusinessCollaborations = () => {
     return matchesSearch && matchesFilter;
   });
 
+  const RUBIK_EXTRA_BOLD_TITLE = {
+    fontFamily: "'Rubik', Arial, sans-serif",
+    textTransform: "uppercase" as const,
+    fontWeight: 800,
+    color: "#000",
+    fontSize: 26,
+    letterSpacing: 0.03,
+    margin: 0,
+  };
+  const OPEN_SANS_SUBTITLE = {
+    fontFamily: "'Open Sans', Arial, sans-serif",
+    fontWeight: 400,
+    fontSize: 15,
+    color: "#222",
+    letterSpacing: 0,
+    textTransform: "none" as const,
+    margin: 0,
+  };
+
   return (
-    <div className="space-y-6">
-      <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">My Collaborations</h1>
-          <p className="text-muted-foreground">View and manage your active collaborations</p>
-        </div>
-      </header>
+    <div className="min-h-screen" style={{ background: "#fff" }}>
+      <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
+        <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 style={RUBIK_EXTRA_BOLD_TITLE}>My Collaborations</h1>
+            <p style={OPEN_SANS_SUBTITLE}>View and manage your active collaborations</p>
+          </div>
+        </header>
 
       {/* Pending Feedback */}
       <PendingFeedbackCard pendingSurveys={pendingSurveys} onFillFeedback={handleFillFeedback} />
@@ -225,17 +245,17 @@ const BusinessCollaborations = () => {
         />
       </div>
 
-      {/* Collaborations Grid */}
-      {filteredCollaborations.length === 0 ? (
-        <Card>
-          <CardContent className="py-16 text-center">
-            <p className="text-lg font-semibold">No collaborations found</p>
-            <p className="text-muted-foreground mt-2">
-              {searchTerm ? "Try adjusting your search terms." : "Your active collaborations will appear here."}
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
+        {/* Collaborations Grid */}
+        {filteredCollaborations.length === 0 ? (
+          <Card style={{ background: "#F7F7F7" }}>
+            <CardContent className="py-16 text-center">
+              <p className="text-lg font-semibold" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#000" }}>No collaborations found</p>
+              <p className="mt-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
+                {searchTerm ? "Try adjusting your search terms." : "Your active collaborations will appear here."}
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCollaborations.map((collaboration) => (
             <CollaborationCard
@@ -248,9 +268,9 @@ const BusinessCollaborations = () => {
             />
           ))}
         </div>
-      )}
+        )}
 
-      <CollaborationDetailsModal
+        <CollaborationDetailsModal
         open={showDetailsModal}
         onOpenChange={setShowDetailsModal}
         collaboration={selectedCollaboration}
@@ -260,18 +280,19 @@ const BusinessCollaborations = () => {
         currentUserProfileId={profile?.id}
       />
 
-      {currentSurvey && (
-        <SurveyModal
-          open={showSurveyModal}
-          onOpenChange={setShowSurveyModal}
-          surveyId={currentSurvey.surveyId}
-          collaborationId={currentSurvey.collaborationId}
-          userType="business"
-          partnerName={currentSurvey.partnerName}
-          onSubmitSuccess={handleSurveySubmitSuccess}
-          currentUserProfileId={profile?.id}
-        />
-      )}
+        {currentSurvey && (
+          <SurveyModal
+            open={showSurveyModal}
+            onOpenChange={setShowSurveyModal}
+            surveyId={currentSurvey.surveyId}
+            collaborationId={currentSurvey.collaborationId}
+            userType="business"
+            partnerName={currentSurvey.partnerName}
+            onSubmitSuccess={handleSurveySubmitSuccess}
+            currentUserProfileId={profile?.id}
+          />
+        )}
+      </div>
     </div>
   );
 };
