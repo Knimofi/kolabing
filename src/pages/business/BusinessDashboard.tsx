@@ -9,24 +9,16 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
 // --- FONT STYLES ---
-const OPEN_SANS_BOLD_TITLE = {
-  fontFamily: "'Open Sans', Arial, sans-serif",
+const RUBIK_EXTRA_BOLD_TITLE = {
+  fontFamily: "'Rubik', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 700,
+  fontWeight: 800,
   color: "#000",
-  fontSize: 22,
-  letterSpacing: 0.02,
+  fontSize: 26,
+  letterSpacing: 0.03,
   margin: 0,
 };
-const OPEN_SANS_BOLD_TITLE_LARGE = {
-  ...OPEN_SANS_BOLD_TITLE,
-  fontSize: 25,
-};
-const OPEN_SANS_BOLD_TITLE_LATEST = {
-  ...OPEN_SANS_BOLD_TITLE,
-  fontSize: 26,
-};
-const OPEN_SANS_CARD_SMALL_LIGHT = {
+const OPEN_SANS_BOLD_CARD_SMALL = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   textTransform: "uppercase" as const,
   fontWeight: 500,
@@ -63,7 +55,6 @@ const BUTTON_YELLOW = {
   letterSpacing: "0.03em",
   fontSize: 17,
 };
-
 const BUTTON_OUTLINE = {
   background: "#000",
   border: "1.5px solid #000",
@@ -132,7 +123,7 @@ const BusinessDashboard = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 style={OPEN_SANS_BOLD_TITLE_LATEST}>Business Dashboard</h1>
+            <h1 style={RUBIK_EXTRA_BOLD_TITLE}>Business Dashboard</h1>
             <p style={OPEN_SANS_SUBTITLE}>Manage your offers and track collaboration performance</p>
           </div>
           <Link to="/business/opportunities/new">
@@ -152,7 +143,7 @@ const BusinessDashboard = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card style={{ background: STAT_CARD_BG }}>
             <CardHeader className="pb-2">
-              <span style={OPEN_SANS_CARD_SMALL_LIGHT}>Total Offers</span>
+              <span style={OPEN_SANS_BOLD_CARD_SMALL}>Total Offers</span>
             </CardHeader>
             <CardContent>
               <div
@@ -168,7 +159,7 @@ const BusinessDashboard = () => {
           </Card>
           <Card style={{ background: STAT_CARD_BG }}>
             <CardHeader className="pb-2">
-              <span style={OPEN_SANS_CARD_SMALL_LIGHT}>Active Offers</span>
+              <span style={OPEN_SANS_BOLD_CARD_SMALL}>Active Offers</span>
             </CardHeader>
             <CardContent>
               <div
@@ -184,7 +175,7 @@ const BusinessDashboard = () => {
           </Card>
           <Card style={{ background: STAT_CARD_BG }}>
             <CardHeader className="pb-2">
-              <span style={OPEN_SANS_CARD_SMALL_LIGHT}>Applications</span>
+              <span style={OPEN_SANS_BOLD_CARD_SMALL}>Applications</span>
             </CardHeader>
             <CardContent>
               <div
@@ -200,7 +191,7 @@ const BusinessDashboard = () => {
           </Card>
           <Card style={{ background: STAT_CARD_BG }}>
             <CardHeader className="pb-2">
-              <span style={OPEN_SANS_CARD_SMALL_LIGHT}>Collaborations</span>
+              <span style={OPEN_SANS_BOLD_CARD_SMALL}>Collaborations</span>
             </CardHeader>
             <CardContent>
               <div
@@ -220,7 +211,7 @@ const BusinessDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card style={{ background: GETTING_STARTED_BG }}>
             <CardHeader>
-              <CardTitle style={OPEN_SANS_BOLD_TITLE_LARGE}>Getting Started</CardTitle>
+              <CardTitle style={{ ...RUBIK_EXTRA_BOLD_TITLE, fontSize: 24 }}>Getting Started</CardTitle>
               <CardDescription style={OPEN_SANS_SUBTITLE}>
                 Complete these steps to start connecting with communities
               </CardDescription>
