@@ -9,19 +9,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
+// Font/style constants
 const DARKER_GROTESQUE = {
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
   textTransform: "uppercase",
   fontWeight: 400,
   color: "#000",
 };
-
 const OPEN_SANS = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
   color: "#000",
 };
-
 const RUBIK_BOLD = {
   fontFamily: "'Rubik', Arial, sans-serif",
   textTransform: "uppercase",
@@ -37,7 +36,7 @@ const localizer = dateFnsLocalizer({
   locales: { "en-US": enUS },
 });
 
-// Screenshot-matched event colors
+// Event colors to match your screenshot
 const colorMap = {
   collab_request_draft: "#F65F5A", // red
   collab_request_published: "#FFD861", // yellow
@@ -70,9 +69,108 @@ function CollaborationCalendar({ userType }) {
     const participantSet = new Set();
 
     try {
-      // --- Copy your supabase fetch logic here ---
-      // Fetch Collab Requests, Collaborations, Applications, collect .type property, filter based on userType
-      // For brevity, omitting deep fetch; use your previous code for correct data here
+      // Collab Requests (created by this user)
+      if (filterType === "all" || filterType === "collab_requests") {
+        const { data: requests } = await supabase
+          .from("collab_opportunities")
+          .select("*")
+          .eq("creator_profile_id", profile.id)
+          .eq("creator_profile_type", userType);
+
+        requests?.forEach((req) => {
+          const eventDate = req.availability_start ? new Date(req.availability_start) : new Date(req.created_at);
+          allEvents.push({
+            id: req.id,
+            title: `${req.status?.toUpperCase?.() || "REQ"}: ${req.title}`,
+            start: eventDate,
+            end: req.availability_end ? new Date(req.availability_end) : eventDate,
+            type: `collab_request_${req.status}`,
+            status: req.status,
+          });
+        });
+      }
+
+      // Collaborations (where this user is creator or applicant)
+      if (filterType === "all" || filterType === "collaborations") {
+        const { data: collabs } = await supabase
+          .from("collaborations")
+          .select(
+            "*, business_profile:business_profiles!business_profile_id(profile_id, name), community_profile:community_profiles!community_profile_id(profile_id, name)",
+          )
+          .or(`creator_profile_id.eq.${profile.id},applicant_profile_id.eq.${profile.id}`);
+
+        collabs?.forEach((collab) => {
+          const otherParticipantName =
+            collab.creator_profile_id === profile.id
+              ? collab.community_profile?.name || collab.business_profile?.name || "Unknown"
+              : collab.business_profile?.name || collab.community_profile?.name || "Unknown";
+          const otherParticipantId =
+            collab.creator_profile_id === profile.id ? collab.applicant_profile_id : collab.creator_profile_id;
+
+          participantSet.add(JSON.stringify({ id: otherParticipantId, name: otherParticipantName }));
+
+          if (filterParticipant === "all" || filterParticipant === otherParticipantId) {
+            const eventDate = collab.scheduled_date ? new Date(collab.scheduled_date) : new Date(collab.created_at);
+            allEvents.push({
+              id: collab.id,
+              title: `Collab: ${otherParticipantName}`,
+              start: eventDate,
+              end: eventDate,
+              type: `collaboration_${collab.status}`,
+              status: collab.status,
+              participantId: otherParticipantId,
+              participantName: otherParticipantName,
+            });
+          }
+        });
+      }
+
+      // Applications (sent or received)
+      if (filterType === "all" || filterType === "applications") {
+        let applicationsQuery = supabase
+          .from("applications")
+          .select(
+            "*, collab_opportunities!collab_opportunity_id(id, title, creator_profile_id), community_profile:community_profiles!community_profile_id(profile_id, name)",
+          );
+
+        if (userType === "community") {
+          applicationsQuery = applicationsQuery.eq("applicant_profile_id", profile.id);
+        } else {
+          // For business, filter by creator_profile_id in related opportunities
+          const { data: myOpportunities } = await supabase
+            .from("collab_opportunities")
+            .select("id")
+            .eq("creator_profile_id", profile.id);
+          const opportunityIds = myOpportunities?.map((o) => o.id) || [];
+          if (opportunityIds.length > 0) {
+            applicationsQuery = applicationsQuery.in("collab_opportunity_id", opportunityIds);
+          } else {
+            applicationsQuery = applicationsQuery.eq("collab_opportunity_id", "00000000-0000-0000-0000-000000000000");
+          }
+        }
+
+        const { data: apps } = await applicationsQuery;
+
+        apps?.forEach((app) => {
+          const participantName = app.community_profile?.name || "Unknown";
+          const participantId = app.applicant_profile_id;
+
+          participantSet.add(JSON.stringify({ id: participantId, name: participantName }));
+
+          if (filterParticipant === "all" || filterParticipant === participantId) {
+            allEvents.push({
+              id: app.id,
+              title: `Application: ${app.collab_opportunities?.title || "Unknown"}`,
+              start: new Date(app.created_at),
+              end: new Date(app.created_at),
+              type: `application_${app.status}`,
+              status: app.status,
+              participantId,
+              participantName,
+            });
+          }
+        });
+      }
 
       setEvents(allEvents);
       setParticipants(Array.from(participantSet).map((p) => JSON.parse(p)));
@@ -122,7 +220,11 @@ function CollaborationCalendar({ userType }) {
         <div className="flex flex-col md:flex-row gap-4">
           <Select value={filterType} onValueChange={setFilterType}>
             <SelectTrigger
-              style={{ ...DARKER_GROTESQUE, background: "#fff", border: "1px solid #BBB" }}
+              style={{
+                ...DARKER_GROTESQUE,
+                background: "#fff",
+                border: "1px solid #BBB",
+              }}
               className="w-full md:w-[200px]"
             >
               <SelectValue placeholder="Filter by type" />
@@ -136,7 +238,11 @@ function CollaborationCalendar({ userType }) {
           </Select>
           <Select value={filterParticipant} onValueChange={setFilterParticipant}>
             <SelectTrigger
-              style={{ ...DARKER_GROTESQUE, background: "#fff", border: "1px solid #BBB" }}
+              style={{
+                ...DARKER_GROTESQUE,
+                background: "#fff",
+                border: "1px solid #BBB",
+              }}
               className="w-full md:w-[200px]"
             >
               <SelectValue placeholder="Filter by collaborator" />
@@ -203,5 +309,4 @@ function CollaborationCalendar({ userType }) {
     </Card>
   );
 }
-
 export default CollaborationCalendar;
