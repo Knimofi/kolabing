@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
+import { Calendar, dateFnsLocalizer, Views } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enUS } from "date-fns/locale";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,10 +10,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
-// Font/style constants
-const OPEN_SANS_BOLD_MAYUS = {
-  fontFamily: "'Open Sans', Arial, sans-serif",
-  textTransform: "uppercase" as const,
+// ---- FONTS & COLORS ----
+const RUBIK_BOLD_MAYUS = {
+  fontFamily: "'Rubik', Arial, sans-serif",
+  textTransform: "uppercase",
   fontWeight: 700,
   color: "#000",
 };
@@ -23,14 +24,23 @@ const OPEN_SANS = {
 };
 const DARKER_GROTESQUE = {
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase" as const,
+  textTransform: "uppercase",
   fontWeight: 400,
   color: "#000",
 };
+const CAL_EVENT_STYLES = {
+  fontFamily: "'Open Sans', Arial, sans-serif",
+  fontWeight: 400,
+  fontSize: "12px",
+  color: "#000",
+  padding: "1.5px 3px",
+  minHeight: "16px",
+  lineHeight: 1.15,
+};
 const STATUS_COLORS = {
-  discussions: "#31C4D1", // blue
-  scheduled: "#FFD861", // yellow
-  completed: "#F2A7D2", // your provided pink
+  discussions: "#31C4D1",
+  scheduled: "#FFD861",
+  completed: "#F2A7D2",
 };
 
 const localizer = dateFnsLocalizer({
@@ -43,19 +53,70 @@ const localizer = dateFnsLocalizer({
 
 function classifyStatus(event) {
   if (
-    event.type.startsWith("collab_request_draft") ||
-    event.type.startsWith("collab_request_published") ||
-    event.type.startsWith("application_pending")
-  ) {
+    event.type?.startsWith("collab_request_draft") ||
+    event.type?.startsWith("collab_request_published") ||
+    event.type?.startsWith("application_pending")
+  )
     return "discussions";
-  }
-  if (event.type.startsWith("collaboration_scheduled")) {
-    return "scheduled";
-  }
-  if (event.type.startsWith("collab_request_closed") || event.type.startsWith("collaboration_completed")) {
+  if (event.type?.startsWith("collaboration_scheduled")) return "scheduled";
+  if (event.type?.startsWith("collab_request_closed") || event.type?.startsWith("collaboration_completed"))
     return "completed";
-  }
   return "discussions";
+}
+
+// Custom toolbar for navigation
+function CalendarToolbar({ label, onNavigate }) {
+  return (
+    <div className="flex items-center justify-between mb-2 px-2 pt-2">
+      <div className="flex items-center">
+        <button
+          onClick={() => onNavigate("PREV")}
+          className="flex items-center px-2 py-1 rounded border border-gray-200 mr-2 bg-white hover:bg-gray-100"
+          title="Previous"
+          style={{
+            fontFamily: "'Darker Grotesque', Arial, sans-serif",
+            fontSize: 13,
+            fontWeight: 400,
+            color: "#222",
+          }}
+        >
+          <ChevronLeft size={16} className="mr-1" />
+          Previous
+        </button>
+        <button
+          onClick={() => onNavigate("TODAY")}
+          className="px-2 py-1 rounded border border-gray-200 bg-white hover:bg-gray-100 mx-1"
+          style={{
+            fontFamily: "'Darker Grotesque', Arial, sans-serif",
+            fontSize: 13,
+            fontWeight: 600,
+            color: "#222",
+            letterSpacing: "0.04em",
+            textTransform: "uppercase",
+          }}
+        >
+          Today
+        </button>
+        <button
+          onClick={() => onNavigate("NEXT")}
+          className="flex items-center px-2 py-1 rounded border border-gray-200 ml-2 bg-white hover:bg-gray-100"
+          title="Next"
+          style={{
+            fontFamily: "'Darker Grotesque', Arial, sans-serif",
+            fontSize: 13,
+            fontWeight: 400,
+            color: "#222",
+          }}
+        >
+          Next
+          <ChevronRight size={16} className="ml-1" />
+        </button>
+      </div>
+      <div style={{ ...RUBIK_BOLD_MAYUS, fontSize: 16, letterSpacing: 0.04 }}>{label}</div>
+      {/* empty for flex centering */}
+      <div style={{ width: 58, minWidth: 38 }}> </div>
+    </div>
+  );
 }
 
 function CollaborationCalendar({ userType }) {
@@ -77,7 +138,7 @@ function CollaborationCalendar({ userType }) {
     const participantSet = new Set();
 
     try {
-      // Collab Requests
+      // Requests
       const { data: requests } = await supabase
         .from("collab_opportunities")
         .select("*")
@@ -104,7 +165,7 @@ function CollaborationCalendar({ userType }) {
         });
       });
 
-      // Collaborations
+      // Collab events
       const { data: collabs } = await supabase
         .from("collaborations")
         .select(
@@ -135,7 +196,7 @@ function CollaborationCalendar({ userType }) {
         });
       });
 
-      // Applications (Pending)
+      // Pending apps
       let applicationsQuery = supabase
         .from("applications")
         .select(
@@ -192,20 +253,29 @@ function CollaborationCalendar({ userType }) {
     return statusMatch && participantMatch;
   });
 
-  const eventStyleGetter = (event) => {
-    const statusClass = classifyStatus(event);
-    return {
-      style: {
-        backgroundColor: STATUS_COLORS[statusClass] || "#fff",
-        color: "#000",
-        borderRadius: "7px",
-        border: "none",
-        fontFamily: "'Open Sans', Arial, sans-serif",
-        fontWeight: 400,
-        fontSize: "16px",
-        opacity: 0.95,
-      },
-    };
+  // Custom event rendering for thin, small events and "+X more"
+  function EventWrapper({ event }) {
+    return (
+      <div
+        style={{
+          ...CAL_EVENT_STYLES,
+          background: STATUS_COLORS[classifyStatus(event)],
+          borderRadius: 6,
+          fontWeight: 400,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+        title={event.title}
+      >
+        {event.title}
+      </div>
+    );
+  }
+
+  // "More" link style override
+  const components = {
+    toolbar: ({ label, onNavigate }) => <CalendarToolbar label={label} onNavigate={onNavigate} />,
+    event: EventWrapper,
   };
 
   return (
@@ -213,7 +283,7 @@ function CollaborationCalendar({ userType }) {
       <CardHeader>
         <CardTitle
           style={{
-            ...OPEN_SANS_BOLD_MAYUS,
+            ...RUBIK_BOLD_MAYUS,
             fontSize: 24,
             marginBottom: 0,
             marginTop: 2,
@@ -309,9 +379,10 @@ function CollaborationCalendar({ userType }) {
                   color: "#000",
                   fontFamily: "'Open Sans', Arial, sans-serif",
                 }}
-                eventPropGetter={eventStyleGetter}
+                components={components}
                 views={["month", "week", "day"]}
-                defaultView="month"
+                defaultView={Views.MONTH}
+                popup
               />
             </div>
           )}
