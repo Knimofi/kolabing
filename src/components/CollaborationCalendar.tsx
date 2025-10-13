@@ -13,7 +13,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 // ---- FONTS & COLORS ----
 const RUBIK_SEMIBOLD_MAYUS = {
   fontFamily: "'Rubik', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 600,
   color: "#000",
   letterSpacing: "0.05em",
@@ -25,7 +25,7 @@ const OPEN_SANS = {
 };
 const DARKER_GROTESQUE = {
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 400,
   color: "#000",
 };
@@ -94,7 +94,7 @@ function CalendarToolbar({ label, onNavigate }) {
             fontWeight: 600,
             color: "#222",
             letterSpacing: "0.04em",
-            textTransform: "uppercase",
+            textTransform: "uppercase" as const,
           }}
         >
           Today
