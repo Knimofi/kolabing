@@ -12,7 +12,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 // Font/style constants
 const DARKER_GROTESQUE = {
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 400,
   color: "#000",
 };
@@ -23,7 +23,7 @@ const OPEN_SANS = {
 };
 const RUBIK_BOLD = {
   fontFamily: "'Rubik', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 700,
   color: "#000",
 };
@@ -173,7 +173,7 @@ function CollaborationCalendar({ userType }) {
       }
 
       setEvents(allEvents);
-      setParticipants(Array.from(participantSet).map((p) => JSON.parse(p)));
+      setParticipants(Array.from(participantSet).map((p) => JSON.parse(p as string)));
     } catch (error) {
       console.error("Error fetching calendar data:", error);
     } finally {

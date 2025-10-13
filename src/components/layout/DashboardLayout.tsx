@@ -18,7 +18,7 @@ import {
 
 const RUBIK_BOLD = {
   fontFamily: "'Rubik', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 700,
   color: "#000",
 };
@@ -31,7 +31,7 @@ const OPEN_SANS = {
 
 const DARKER_GROTESQUE = {
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 400,
   color: "#000",
 };
