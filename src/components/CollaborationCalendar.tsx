@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
+import { Calendar, dateFnsLocalizer } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +12,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 // Font/style constants
 const DARKER_GROTESQUE = {
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase" as const,
+  textTransform: "uppercase",
   fontWeight: 400,
   color: "#000",
 };
@@ -23,9 +23,15 @@ const OPEN_SANS = {
 };
 const RUBIK_BOLD = {
   fontFamily: "'Rubik', Arial, sans-serif",
-  textTransform: "uppercase" as const,
+  textTransform: "uppercase",
   fontWeight: 700,
   color: "#000",
+};
+
+const STATUS_COLORS = {
+  discussions: "#31C4D1", // blue
+  scheduled: "#FFD861", // yellow
+  completed: "#FFA264", // orange
 };
 
 const localizer = dateFnsLocalizer({
@@ -36,144 +42,148 @@ const localizer = dateFnsLocalizer({
   locales: { "en-US": enUS },
 });
 
-// Event colors to match your screenshot
-const colorMap = {
-  collab_request_draft: "#F65F5A", // red
-  collab_request_published: "#FFD861", // yellow
-  collab_request_closed: "#FFA264", // orange
-  collaboration_scheduled: "#31C4D1", // cyan
-  collaboration_completed: "#47C66A", // green
-  application_pending: "#F7B2DE", // pink
-  application_accepted: "#47C66A", // green
-  application_declined: "#C9D8FC", // light blue
-};
+function classifyStatus(event) {
+  // Draft/published/closed requests & pending apps = 'discussions'
+  if (
+    event.type.startsWith("collab_request_draft") ||
+    event.type.startsWith("collab_request_published") ||
+    event.type.startsWith("application_pending")
+  ) {
+    return "discussions";
+  }
+  // Scheduled collaboration = 'scheduled'
+  if (event.type.startsWith("collaboration_scheduled")) {
+    return "scheduled";
+  }
+  // Completed/collab_request_closed = 'completed'
+  if (event.type.startsWith("collab_request_closed") || event.type.startsWith("collaboration_completed")) {
+    return "completed";
+  }
+  return "discussions";
+}
 
 function CollaborationCalendar({ userType }) {
   const { profile } = useAuth();
-  const [events, setEvents] = useState([]);
+  const [allEvents, setAllEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filterType, setFilterType] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all");
   const [filterParticipant, setFilterParticipant] = useState("all");
   const [participants, setParticipants] = useState([]);
 
   useEffect(() => {
-    if (profile?.id) {
-      fetchCalendarData();
-    }
+    if (profile?.id) fetchCalendarData();
     // eslint-disable-next-line
-  }, [profile?.id, filterType, filterParticipant]);
+  }, [profile?.id]);
 
   const fetchCalendarData = async () => {
     setLoading(true);
-    const allEvents = [];
+    const events = [];
     const participantSet = new Set();
 
     try {
-      // Collab Requests (created by this user)
-      if (filterType === "all" || filterType === "collab_requests") {
-        const { data: requests } = await supabase
+      // Collab Requests
+      const { data: requests } = await supabase
+        .from("collab_opportunities")
+        .select("*")
+        .eq("creator_profile_id", profile.id)
+        .eq("creator_profile_type", userType);
+
+      requests?.forEach((req) => {
+        const eventStatus = req.status?.toLowerCase();
+        const displayType =
+          eventStatus === "closed"
+            ? "collab_request_closed"
+            : eventStatus === "draft"
+              ? "collab_request_draft"
+              : "collab_request_published";
+        const eventDate = req.availability_start ? new Date(req.availability_start) : new Date(req.created_at);
+        events.push({
+          id: req.id,
+          collabTitle: req.title,
+          collaboratorName: "", // No partner yet
+          start: eventDate,
+          end: req.availability_end ? new Date(req.availability_end) : eventDate,
+          type: displayType,
+          status: req.status,
+        });
+      });
+
+      // Collaborations
+      const { data: collabs } = await supabase
+        .from("collaborations")
+        .select(
+          "*, business_profile:business_profiles!business_profile_id(profile_id, name), community_profile:community_profiles!community_profile_id(profile_id, name)",
+        )
+        .or(`creator_profile_id.eq.${profile.id},applicant_profile_id.eq.${profile.id}`);
+
+      collabs?.forEach((collab) => {
+        const otherParticipantName =
+          collab.creator_profile_id === profile.id
+            ? collab.community_profile?.name || collab.business_profile?.name || "Unknown"
+            : collab.business_profile?.name || collab.community_profile?.name || "Unknown";
+        const otherParticipantId =
+          collab.creator_profile_id === profile.id ? collab.applicant_profile_id : collab.creator_profile_id;
+
+        participantSet.add(JSON.stringify({ id: otherParticipantId, name: otherParticipantName }));
+
+        events.push({
+          id: collab.id,
+          collabTitle: collab.title || "Untitled",
+          collaboratorName: otherParticipantName,
+          start: collab.scheduled_date ? new Date(collab.scheduled_date) : new Date(collab.created_at),
+          end: collab.scheduled_date ? new Date(collab.scheduled_date) : new Date(collab.created_at),
+          type: `collaboration_${collab.status}`,
+          status: collab.status,
+          participantId: otherParticipantId,
+          participantName: otherParticipantName,
+        });
+      });
+
+      // Applications (Pending)
+      let applicationsQuery = supabase
+        .from("applications")
+        .select(
+          "*, collab_opportunities!collab_opportunity_id(id, title, creator_profile_id), community_profile:community_profiles!community_profile_id(profile_id, name)",
+        );
+
+      if (userType === "community") {
+        applicationsQuery = applicationsQuery.eq("applicant_profile_id", profile.id);
+      } else {
+        const { data: myOpportunities } = await supabase
           .from("collab_opportunities")
-          .select("*")
-          .eq("creator_profile_id", profile.id)
-          .eq("creator_profile_type", userType);
-
-        requests?.forEach((req) => {
-          const eventDate = req.availability_start ? new Date(req.availability_start) : new Date(req.created_at);
-          allEvents.push({
-            id: req.id,
-            title: `${req.status?.toUpperCase?.() || "REQ"}: ${req.title}`,
-            start: eventDate,
-            end: req.availability_end ? new Date(req.availability_end) : eventDate,
-            type: `collab_request_${req.status}`,
-            status: req.status,
-          });
-        });
-      }
-
-      // Collaborations (where this user is creator or applicant)
-      if (filterType === "all" || filterType === "collaborations") {
-        const { data: collabs } = await supabase
-          .from("collaborations")
-          .select(
-            "*, business_profile:business_profiles!business_profile_id(profile_id, name), community_profile:community_profiles!community_profile_id(profile_id, name)",
-          )
-          .or(`creator_profile_id.eq.${profile.id},applicant_profile_id.eq.${profile.id}`);
-
-        collabs?.forEach((collab) => {
-          const otherParticipantName =
-            collab.creator_profile_id === profile.id
-              ? collab.community_profile?.name || collab.business_profile?.name || "Unknown"
-              : collab.business_profile?.name || collab.community_profile?.name || "Unknown";
-          const otherParticipantId =
-            collab.creator_profile_id === profile.id ? collab.applicant_profile_id : collab.creator_profile_id;
-
-          participantSet.add(JSON.stringify({ id: otherParticipantId, name: otherParticipantName }));
-
-          if (filterParticipant === "all" || filterParticipant === otherParticipantId) {
-            const eventDate = collab.scheduled_date ? new Date(collab.scheduled_date) : new Date(collab.created_at);
-            allEvents.push({
-              id: collab.id,
-              title: `Collab: ${otherParticipantName}`,
-              start: eventDate,
-              end: eventDate,
-              type: `collaboration_${collab.status}`,
-              status: collab.status,
-              participantId: otherParticipantId,
-              participantName: otherParticipantName,
-            });
-          }
-        });
-      }
-
-      // Applications (sent or received)
-      if (filterType === "all" || filterType === "applications") {
-        let applicationsQuery = supabase
-          .from("applications")
-          .select(
-            "*, collab_opportunities!collab_opportunity_id(id, title, creator_profile_id), community_profile:community_profiles!community_profile_id(profile_id, name)",
-          );
-
-        if (userType === "community") {
-          applicationsQuery = applicationsQuery.eq("applicant_profile_id", profile.id);
+          .select("id")
+          .eq("creator_profile_id", profile.id);
+        const opportunityIds = myOpportunities?.map((o) => o.id) || [];
+        if (opportunityIds.length > 0) {
+          applicationsQuery = applicationsQuery.in("collab_opportunity_id", opportunityIds);
         } else {
-          // For business, filter by creator_profile_id in related opportunities
-          const { data: myOpportunities } = await supabase
-            .from("collab_opportunities")
-            .select("id")
-            .eq("creator_profile_id", profile.id);
-          const opportunityIds = myOpportunities?.map((o) => o.id) || [];
-          if (opportunityIds.length > 0) {
-            applicationsQuery = applicationsQuery.in("collab_opportunity_id", opportunityIds);
-          } else {
-            applicationsQuery = applicationsQuery.eq("collab_opportunity_id", "00000000-0000-0000-0000-000000000000");
-          }
+          applicationsQuery = applicationsQuery.eq("collab_opportunity_id", "00000000-0000-0000-0000-000000000000");
         }
-
-        const { data: apps } = await applicationsQuery;
-
-        apps?.forEach((app) => {
-          const participantName = app.community_profile?.name || "Unknown";
-          const participantId = app.applicant_profile_id;
-
-          participantSet.add(JSON.stringify({ id: participantId, name: participantName }));
-
-          if (filterParticipant === "all" || filterParticipant === participantId) {
-            allEvents.push({
-              id: app.id,
-              title: `Application: ${app.collab_opportunities?.title || "Unknown"}`,
-              start: new Date(app.created_at),
-              end: new Date(app.created_at),
-              type: `application_${app.status}`,
-              status: app.status,
-              participantId,
-              participantName,
-            });
-          }
-        });
       }
 
-      setEvents(allEvents);
-      setParticipants(Array.from(participantSet).map((p) => JSON.parse(p as string)));
+      const { data: apps } = await applicationsQuery;
+
+      apps?.forEach((app) => {
+        const participantName = app.community_profile?.name || "Unknown";
+        const participantId = app.applicant_profile_id;
+
+        participantSet.add(JSON.stringify({ id: participantId, name: participantName }));
+
+        events.push({
+          id: app.id,
+          collabTitle: app.collab_opportunities?.title || "Unknown",
+          collaboratorName: participantName,
+          start: new Date(app.created_at),
+          end: new Date(app.created_at),
+          type: `application_${app.status}`,
+          status: app.status,
+          participantId,
+          participantName,
+        });
+      });
+
+      setAllEvents(events);
+      setParticipants(Array.from(participantSet).map((p) => JSON.parse(p)));
     } catch (error) {
       console.error("Error fetching calendar data:", error);
     } finally {
@@ -181,30 +191,35 @@ function CollaborationCalendar({ userType }) {
     }
   };
 
-  const eventStyleGetter = (event) => ({
-    style: {
-      backgroundColor: colorMap[event.type] || "#fff",
-      color: "#000",
-      borderRadius: "7px",
-      opacity: 0.95,
-      border: "none",
-      fontFamily: "'Open Sans', Arial, sans-serif",
-      fontWeight: "bold",
-      fontSize: "16px",
-    },
+  // Filter for dropdown status and collaborator
+  const displayedEvents = allEvents.filter((e) => {
+    const statusClass = classifyStatus(e);
+    const statusMatch = filterStatus === "all" || filterStatus === statusClass;
+    const participantMatch = filterParticipant === "all" || filterParticipant === e.participantId;
+    return statusMatch && participantMatch;
   });
+
+  // Calendar event style: color by status, Open Sans, normal weight
+  const eventStyleGetter = (event) => {
+    const statusClass = classifyStatus(event);
+    return {
+      style: {
+        backgroundColor: STATUS_COLORS[statusClass] || "#fff",
+        color: "#000",
+        borderRadius: "7px",
+        border: "none",
+        fontFamily: "'Open Sans', Arial, sans-serif",
+        fontWeight: 400,
+        fontSize: "16px",
+        opacity: 0.95,
+      },
+    };
+  };
 
   return (
     <Card className="bg-white border-[#eee]">
       <CardHeader>
-        <CardTitle
-          style={{
-            ...RUBIK_BOLD,
-            fontSize: 26,
-          }}
-        >
-          Business Dashboard
-        </CardTitle>
+        <CardTitle style={{ ...RUBIK_BOLD, fontSize: 26 }}>COLLABORATIONS CALENDAR</CardTitle>
         <CardDescription
           style={{
             ...OPEN_SANS,
@@ -216,9 +231,9 @@ function CollaborationCalendar({ userType }) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Filters - Darker Grotesque, uppercase, light */}
+        {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4">
-          <Select value={filterType} onValueChange={setFilterType}>
+          <Select value={filterStatus} onValueChange={setFilterStatus}>
             <SelectTrigger
               style={{
                 ...DARKER_GROTESQUE,
@@ -227,22 +242,18 @@ function CollaborationCalendar({ userType }) {
               }}
               className="w-full md:w-[200px]"
             >
-              <SelectValue placeholder="Filter by type" />
+              <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
             <SelectContent style={DARKER_GROTESQUE}>
-              <SelectItem value="all">All Activities</SelectItem>
-              <SelectItem value="collab_requests">Collab Requests</SelectItem>
-              <SelectItem value="collaborations">Collaborations</SelectItem>
-              <SelectItem value="applications">Applications</SelectItem>
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="discussions">Discussions</SelectItem>
+              <SelectItem value="scheduled">Scheduled</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
             </SelectContent>
           </Select>
           <Select value={filterParticipant} onValueChange={setFilterParticipant}>
             <SelectTrigger
-              style={{
-                ...DARKER_GROTESQUE,
-                background: "#fff",
-                border: "1px solid #BBB",
-              }}
+              style={{ ...DARKER_GROTESQUE, background: "#fff", border: "1px solid #BBB" }}
               className="w-full md:w-[200px]"
             >
               <SelectValue placeholder="Filter by collaborator" />
@@ -258,16 +269,11 @@ function CollaborationCalendar({ userType }) {
           </Select>
         </div>
 
-        {/* Legend - Darker Grotesque, event colors, always black text */}
+        {/* Legend */}
         <div className="flex flex-wrap gap-2 pt-2 pb-2">
-          <Badge style={{ backgroundColor: "#F65F5A", color: "#000", ...DARKER_GROTESQUE }}>Draft</Badge>
-          <Badge style={{ backgroundColor: "#FFD861", color: "#000", ...DARKER_GROTESQUE }}>Published</Badge>
-          <Badge style={{ backgroundColor: "#FFA264", color: "#000", ...DARKER_GROTESQUE }}>Closed</Badge>
-          <Badge style={{ backgroundColor: "#31C4D1", color: "#000", ...DARKER_GROTESQUE }}>Scheduled</Badge>
-          <Badge style={{ backgroundColor: "#47C66A", color: "#000", ...DARKER_GROTESQUE }}>Completed</Badge>
-          <Badge style={{ backgroundColor: "#F7B2DE", color: "#000", ...DARKER_GROTESQUE }}>Pending App</Badge>
-          <Badge style={{ backgroundColor: "#22C55E", color: "#000", ...DARKER_GROTESQUE }}>Accepted</Badge>
-          <Badge style={{ backgroundColor: "#C9D8FC", color: "#000", ...DARKER_GROTESQUE }}>Declined</Badge>
+          <Badge style={{ backgroundColor: "#31C4D1", color: "#000", ...DARKER_GROTESQUE }}>Discussions</Badge>
+          <Badge style={{ backgroundColor: "#FFD861", color: "#000", ...DARKER_GROTESQUE }}>Scheduled</Badge>
+          <Badge style={{ backgroundColor: "#FFA264", color: "#000", ...DARKER_GROTESQUE }}>Completed</Badge>
         </div>
 
         {/* Calendar block */}
@@ -289,7 +295,10 @@ function CollaborationCalendar({ userType }) {
             >
               <Calendar
                 localizer={localizer}
-                events={events}
+                events={displayedEvents.map((e) => ({
+                  ...e,
+                  title: `${e.collaboratorName ? e.collaboratorName + ": " : ""}${e.collabTitle || ""}`,
+                }))}
                 startAccessor="start"
                 endAccessor="end"
                 style={{
@@ -309,4 +318,5 @@ function CollaborationCalendar({ userType }) {
     </Card>
   );
 }
+
 export default CollaborationCalendar;
