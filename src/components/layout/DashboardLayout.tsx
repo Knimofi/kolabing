@@ -1,80 +1,87 @@
-import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { useAuth } from '@/contexts/AuthContext';
-import { 
-  LayoutDashboard, 
-  FileText, 
-  Users, 
-  BarChart3, 
-  Settings, 
+import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  LayoutDashboard,
+  FileText,
+  Users,
+  BarChart3,
+  Settings,
   LogOut,
   Menu,
   X,
   Building2,
   UserCheck,
-  CreditCard
-} from 'lucide-react';
-import { useState } from 'react';
+  CreditCard,
+} from "lucide-react";
 
-interface DashboardLayoutProps {
-  children: React.ReactNode;
-}
+const RUBIK_BOLD = {
+  fontFamily: "'Rubik', Arial, sans-serif",
+  textTransform: "uppercase",
+  fontWeight: 700,
+  color: "#000",
+};
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+const OPEN_SANS = {
+  fontFamily: "'Open Sans', Arial, sans-serif",
+  fontWeight: 400,
+  color: "#000",
+};
+
+const DARKER_GROTESQUE = {
+  fontFamily: "'Darker Grotesque', Arial, sans-serif",
+  textTransform: "uppercase",
+  fontWeight: 400,
+  color: "#000",
+};
+
+const DashboardLayout = ({ children }) => {
   const { profile, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const isBusiness = profile?.user_type === 'business';
+  const isBusiness = profile?.user_type === "business";
 
   const businessNavItems = [
-    { icon: LayoutDashboard, label: 'Overview', href: '/business' },
-    { icon: FileText, label: 'My Collab Requests', href: '/business/opportunities' },
-    { icon: Building2, label: 'Find a Collab', href: '/business/browse' },
-    { icon: FileText, label: 'Applications Submitted', href: '/business/my-applications' },
-    { icon: UserCheck, label: 'Applications Received', href: '/business/applications' },
-    { icon: Users, label: 'Collaborations', href: '/business/collaborations' },
-    { icon: Settings, label: 'Profile', href: '/business/profile' },
+    { icon: LayoutDashboard, label: "Overview", href: "/business" },
+    { icon: FileText, label: "My Collab Requests", href: "/business/opportunities" },
+    { icon: Building2, label: "Find a Collab", href: "/business/browse" },
+    { icon: FileText, label: "Applications Submitted", href: "/business/my-applications" },
+    { icon: UserCheck, label: "Applications Received", href: "/business/applications" },
+    { icon: Users, label: "Collaborations", href: "/business/collaborations" },
+    { icon: Settings, label: "Profile", href: "/business/profile" },
   ];
 
   const communityNavItems = [
-    { icon: LayoutDashboard, label: 'Overview', href: '/community' },
-    { icon: FileText, label: 'My Collab Requests', href: '/community/my-opportunities' },
-    { icon: Building2, label: 'Find a Collab', href: '/community/opportunities' },
-    { icon: FileText, label: 'Applications Submitted', href: '/community/my-applications' },
-    { icon: UserCheck, label: 'Applications Received', href: '/community/applications-received' },
-    { icon: Users, label: 'Collaborations', href: '/community/collaborations' },
-    { icon: Settings, label: 'Profile', href: '/community/profile' },
+    { icon: LayoutDashboard, label: "Overview", href: "/community" },
+    { icon: FileText, label: "My Collab Requests", href: "/community/my-opportunities" },
+    { icon: Building2, label: "Find a Collab", href: "/community/opportunities" },
+    { icon: FileText, label: "Applications Submitted", href: "/community/my-applications" },
+    { icon: UserCheck, label: "Applications Received", href: "/community/applications-received" },
+    { icon: Users, label: "Collaborations", href: "/community/collaborations" },
+    { icon: Settings, label: "Profile", href: "/community/profile" },
   ];
 
   const navItems = isBusiness ? businessNavItems : communityNavItems;
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/');
+    navigate("/");
   };
 
   const closeSidebar = () => setSidebarOpen(false);
 
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Mobile sidebar overlay */}
-      {sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
-          onClick={closeSidebar}
-          aria-hidden="true"
-        />
-      )}
-
+    <div className="min-h-screen bg-background flex" style={{ background: "#fff" }}>
       {/* Sidebar */}
-      <aside 
+      <aside
         className={`
           fixed md:static inset-y-0 left-0 w-64 bg-card border-r border-border z-50 transition-transform duration-300 ease-in-out
-          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
+        style={{ background: "#fff", borderRight: "1px solid #eee" }}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
@@ -85,9 +92,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 alt="Kolabing Logo"
                 className="w-8 h-8"
               />
-              <span className="text-xl font-bold text-foreground">Kolabing</span>
+              <span style={RUBIK_BOLD}>Kolabing</span>
             </Link>
-            
             <button
               onClick={closeSidebar}
               className="md:hidden text-muted-foreground hover:text-foreground"
@@ -108,12 +114,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-foreground truncate">
-                  {profile?.name}
-                </p>
-                <p className="text-xs text-muted-foreground capitalize">
-                  {profile?.user_type} Account
-                </p>
+                <p style={{ ...OPEN_SANS, fontSize: "14px", fontWeight: 600 }}>{profile?.name}</p>
+                <p style={{ ...OPEN_SANS, fontSize: "12px" }}>{profile?.user_type} Account</p>
               </div>
             </div>
           </div>
@@ -121,25 +123,30 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           {/* Navigation */}
           <nav className="flex-1 p-4 space-y-1" role="navigation" aria-label="Main navigation">
             {navItems.map((item) => {
-              const isActive = location.pathname === item.href || 
-                             (item.href !== '/business' && item.href !== '/community' && location.pathname.startsWith(item.href));
-              
+              const isActive =
+                location.pathname === item.href ||
+                (item.href !== "/business" && item.href !== "/community" && location.pathname.startsWith(item.href));
+
               return (
                 <Link
                   key={item.href}
                   to={item.href}
                   onClick={closeSidebar}
-                  className={`
-                    flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                    ${isActive 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                    }
-                  `}
-                  aria-current={isActive ? 'page' : undefined}
+                  style={{
+                    ...DARKER_GROTESQUE,
+                    background: isActive ? "#FFD861" : "transparent",
+                    color: isActive ? "#000" : "#222",
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "8px 12px",
+                    borderRadius: "7px",
+                    textDecoration: "none",
+                    fontWeight: 500,
+                  }}
+                  aria-current={isActive ? "page" : undefined}
                 >
                   <item.icon className="w-5 h-5" />
-                  <span>{item.label}</span>
+                  <span style={{ marginLeft: 10 }}>{item.label}</span>
                 </Link>
               );
             })}
@@ -150,7 +157,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             <Button
               variant="ghost"
               onClick={handleSignOut}
-              className="w-full justify-start text-muted-foreground hover:text-foreground"
+              style={{
+                width: "100%",
+                justifyContent: "start",
+                color: "#444",
+                fontFamily: "'Open Sans', Arial, sans-serif",
+              }}
             >
               <LogOut className="w-5 h-5 mr-3" />
               Sign Out
@@ -162,7 +174,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
-        <header className="bg-card border-b border-border p-4 md:p-6">
+        <header style={{ background: "#fff", borderBottom: "1px solid #eee", padding: "22px 36px" }}>
           <div className="flex items-center justify-between">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -171,9 +183,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             >
               <Menu className="w-6 h-6" />
             </button>
-            
             <div className="flex items-center space-x-4 ml-auto">
-              <span className="text-sm text-muted-foreground hidden sm:inline">
+              <span
+                style={{
+                  ...OPEN_SANS,
+                  fontSize: "15px",
+                  display: "inline",
+                  color: "#222",
+                }}
+              >
                 Welcome back, {profile?.name}
               </span>
             </div>
@@ -181,7 +199,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-4 md:p-6 bg-muted/50">
+        <main className="flex-1 p-4 md:p-6" style={{ background: "#FAFAFA" }}>
           {children}
         </main>
       </div>
