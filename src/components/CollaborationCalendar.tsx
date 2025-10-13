@@ -33,7 +33,7 @@ const DARKER_GROTESQUE = {
 const STATUS_COLORS = {
   discussions: "#31C4D1", // blue
   scheduled: "#FFD861", // yellow
-  completed: "#FFA264", // orange
+  completed: "#F2A7D2", // pink
 };
 
 const localizer = dateFnsLocalizer({
