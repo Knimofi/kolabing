@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 // --- FONT STYLES ---
 const OPEN_SANS_BOLD_TITLE = {
   fontFamily: "'Open Sans', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 700,
   color: "#000",
   fontSize: 22,
@@ -35,8 +35,15 @@ const OPEN_SANS_SUBTITLE = {
   fontSize: 15,
   color: "#222",
   letterSpacing: 0,
-  textTransform: "none",
+  textTransform: "none" as const,
   margin: 0,
+};
+
+const OPEN_SANS = {
+  fontFamily: "'Open Sans', Arial, sans-serif",
+  fontWeight: 400,
+  fontSize: 14,
+  color: "#222",
 };
 const STAT_CARD_BG = "#FFD861";
 const GETTING_STARTED_BG = "#F7F7F7";
@@ -46,7 +53,7 @@ const BUTTON_YELLOW = {
   border: "2px solid #FFD861",
   color: "#000",
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 400,
   letterSpacing: "0.03em",
   fontSize: 17,
@@ -57,14 +64,14 @@ const BUTTON_OUTLINE = {
   border: "1.5px solid #000",
   color: "#fff",
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 400,
   letterSpacing: "0.03em",
   fontSize: 15,
   padding: "8px 14px",
-  whiteSpace: "normal",
+  whiteSpace: "normal" as const,
   maxWidth: "154px",
-  textAlign: "center",
+  textAlign: "center" as const,
 };
 
 const BusinessDashboard = () => {
@@ -133,11 +140,8 @@ const BusinessDashboard = () => {
 
         <ProfileSetupAlert />
 
-        {/* Collab Calendar WITH New Title */}
-        <CollaborationCalendar
-          userType="business"
-          calendarTitle={<span style={OPEN_SANS_BOLD_TITLE}>Collaborations Calendar</span>}
-        />
+        {/* Collab Calendar */}
+        <CollaborationCalendar userType="business" />
 
         {/* Stats cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
