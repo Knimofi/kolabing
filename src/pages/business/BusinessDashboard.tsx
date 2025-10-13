@@ -8,38 +8,35 @@ import CollaborationCalendar from "@/components/CollaborationCalendar";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
-// Fonts/styles
-const RUBIK_TITLE = {
-  fontFamily: "'Rubik', Arial, sans-serif",
-  textTransform: "uppercase" as const,
-  fontWeight: 600,
-  fontSize: 28,
+// --- FONT STYLES ---
+const OPEN_SANS_BOLD_TITLE = {
+  fontFamily: "'Open Sans', Arial, sans-serif",
+  textTransform: "uppercase",
+  fontWeight: 700,
   color: "#000",
-  letterSpacing: "0.02em",
+  fontSize: 22,
+  letterSpacing: 0.02,
   margin: 0,
 };
+
+const OPEN_SANS_BOLD_TITLE_LARGE = {
+  ...OPEN_SANS_BOLD_TITLE,
+  fontSize: 25,
+};
+
+const OPEN_SANS_BOLD_TITLE_LATEST = {
+  ...OPEN_SANS_BOLD_TITLE,
+  fontSize: 26,
+};
+
 const OPEN_SANS_SUBTITLE = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
   fontSize: 15,
   color: "#222",
   letterSpacing: 0,
-  textTransform: "none" as const,
+  textTransform: "none",
   margin: 0,
-};
-const OPEN_SANS = {
-  fontFamily: "'Open Sans', Arial, sans-serif",
-  fontWeight: 400,
-  color: "#222",
-};
-const DARKER_GROTESQUE_LIGHT = {
-  fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase" as const,
-  fontWeight: 400,
-  fontSize: 14,
-  color: "#000",
-  letterSpacing: 0.3,
-  marginBottom: 0,
 };
 const STAT_CARD_BG = "#FFD861";
 const GETTING_STARTED_BG = "#F7F7F7";
@@ -49,7 +46,7 @@ const BUTTON_YELLOW = {
   border: "2px solid #FFD861",
   color: "#000",
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase" as const,
+  textTransform: "uppercase",
   fontWeight: 400,
   letterSpacing: "0.03em",
   fontSize: 17,
@@ -60,14 +57,14 @@ const BUTTON_OUTLINE = {
   border: "1.5px solid #000",
   color: "#fff",
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase" as const,
+  textTransform: "uppercase",
   fontWeight: 400,
   letterSpacing: "0.03em",
   fontSize: 15,
   padding: "8px 14px",
-  whiteSpace: "normal" as const,
+  whiteSpace: "normal",
   maxWidth: "154px",
-  textAlign: "center" as const,
+  textAlign: "center",
 };
 
 const BusinessDashboard = () => {
@@ -123,7 +120,7 @@ const BusinessDashboard = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 style={RUBIK_TITLE}>Business Dashboard</h1>
+            <h1 style={OPEN_SANS_BOLD_TITLE_LATEST}>Business Dashboard</h1>
             <p style={OPEN_SANS_SUBTITLE}>Manage your offers and track collaboration performance</p>
           </div>
           <Link to="/business/opportunities/new">
@@ -134,17 +131,19 @@ const BusinessDashboard = () => {
           </Link>
         </div>
 
-        {/* Alerts */}
         <ProfileSetupAlert />
 
-        {/* Collab Calendar */}
-        <CollaborationCalendar userType="business" />
+        {/* Collab Calendar WITH New Title */}
+        <CollaborationCalendar
+          userType="business"
+          calendarTitle={<span style={OPEN_SANS_BOLD_TITLE}>Collaborations Calendar</span>}
+        />
 
         {/* Stats cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card style={{ background: STAT_CARD_BG }}>
             <CardHeader className="pb-2">
-              <span style={DARKER_GROTESQUE_LIGHT}>Total Offers</span>
+              <span style={OPEN_SANS_BOLD_TITLE}>Total Offers</span>
             </CardHeader>
             <CardContent>
               <div
@@ -160,7 +159,7 @@ const BusinessDashboard = () => {
           </Card>
           <Card style={{ background: STAT_CARD_BG }}>
             <CardHeader className="pb-2">
-              <span style={DARKER_GROTESQUE_LIGHT}>Active Offers</span>
+              <span style={OPEN_SANS_BOLD_TITLE}>Active Offers</span>
             </CardHeader>
             <CardContent>
               <div
@@ -176,7 +175,7 @@ const BusinessDashboard = () => {
           </Card>
           <Card style={{ background: STAT_CARD_BG }}>
             <CardHeader className="pb-2">
-              <span style={DARKER_GROTESQUE_LIGHT}>Applications</span>
+              <span style={OPEN_SANS_BOLD_TITLE}>Applications</span>
             </CardHeader>
             <CardContent>
               <div
@@ -192,7 +191,7 @@ const BusinessDashboard = () => {
           </Card>
           <Card style={{ background: STAT_CARD_BG }}>
             <CardHeader className="pb-2">
-              <span style={DARKER_GROTESQUE_LIGHT}>Collaborations</span>
+              <span style={OPEN_SANS_BOLD_TITLE}>Collaborations</span>
             </CardHeader>
             <CardContent>
               <div
@@ -212,7 +211,7 @@ const BusinessDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card style={{ background: GETTING_STARTED_BG }}>
             <CardHeader>
-              <CardTitle style={DARKER_GROTESQUE_LIGHT}>Getting Started</CardTitle>
+              <CardTitle style={OPEN_SANS_BOLD_TITLE_LARGE}>Getting Started</CardTitle>
               <CardDescription style={OPEN_SANS_SUBTITLE}>
                 Complete these steps to start connecting with communities
               </CardDescription>
