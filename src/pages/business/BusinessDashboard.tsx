@@ -8,26 +8,62 @@ import CollaborationCalendar from "@/components/CollaborationCalendar";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 
-// --- FONTS/STYLES ---
-const RUBIK_BOLD = {
+// Fonts/styles
+const RUBIK_TITLE = {
   fontFamily: "'Rubik', Arial, sans-serif",
   textTransform: "uppercase",
-  fontWeight: 700,
+  fontWeight: 600,
+  fontSize: 28,
   color: "#000",
+  letterSpacing: "0.02em",
+  margin: 0,
 };
-const OPEN_SANS = {
+const OPEN_SANS_SUBTITLE = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
-  color: "#000",
+  fontSize: 15,
+  color: "#222",
+  letterSpacing: 0,
+  textTransform: "none",
+  margin: 0,
 };
 const DARKER_GROTESQUE_LIGHT = {
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
   textTransform: "uppercase",
   fontWeight: 400,
+  fontSize: 14,
   color: "#000",
+  letterSpacing: 0.3,
+  marginBottom: 0,
 };
-const STAT_CARD_BG = "#FFD861"; // Yellow
-const GETTING_STARTED_BG = "#F7F7F7"; // slightly darker white
+const STAT_CARD_BG = "#FFD861";
+const GETTING_STARTED_BG = "#F7F7F7";
+
+const BUTTON_YELLOW = {
+  background: "#FFD861",
+  border: "2px solid #FFD861",
+  color: "#000",
+  fontFamily: "'Darker Grotesque', Arial, sans-serif",
+  textTransform: "uppercase",
+  fontWeight: 400,
+  letterSpacing: "0.03em",
+  fontSize: 17,
+};
+
+const BUTTON_OUTLINE = {
+  background: "#000",
+  border: "1.5px solid #000",
+  color: "#fff",
+  fontFamily: "'Darker Grotesque', Arial, sans-serif",
+  textTransform: "uppercase",
+  fontWeight: 400,
+  letterSpacing: "0.03em",
+  fontSize: 15,
+  padding: "8px 14px",
+  whiteSpace: "normal",
+  maxWidth: "154px",
+  textAlign: "center",
+};
 
 const BusinessDashboard = () => {
   const { profile } = useAuth();
@@ -41,13 +77,11 @@ const BusinessDashboard = () => {
 
   useEffect(() => {
     if (profile?.id) fetchStats();
-    // eslint-disable-next-line
   }, [profile?.id]);
 
   const fetchStats = async () => {
     try {
       setLoading(true);
-      // Fetch stats (unchanged)
       const { count: totalOffers } = await supabase
         .from("collab_opportunities")
         .select("*", { count: "exact", head: true })
@@ -65,7 +99,6 @@ const BusinessDashboard = () => {
         .from("collaborations")
         .select("*", { count: "exact", head: true })
         .eq("creator_profile_id", profile!.id);
-
       setStats({
         totalOffers: totalOffers || 0,
         activeOffers: activeOffers || 0,
@@ -83,43 +116,13 @@ const BusinessDashboard = () => {
     <div className="min-h-screen" style={{ background: "#fff" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div>
-            <h1
-              className="text-3xl md:text-4xl mb-1"
-              style={{
-                ...RUBIK_BOLD,
-                letterSpacing: "0.04em",
-                color: "#000",
-              }}
-            >
-              BUSINESS DASHBOARD
-            </h1>
-            <p
-              className="text-lg mb-1"
-              style={{
-                ...OPEN_SANS,
-                textTransform: "none",
-                color: "#000",
-                fontWeight: 400,
-              }}
-            >
-              Manage your offers and track collaboration performance
-            </p>
+            <h1 style={RUBIK_TITLE}>Business Dashboard</h1>
+            <p style={OPEN_SANS_SUBTITLE}>Manage your offers and track collaboration performance</p>
           </div>
           <Link to="/business/opportunities/new">
-            <Button
-              size="lg"
-              style={{
-                background: "#FFD861",
-                border: "2px solid #FFD861",
-                color: "#000",
-                fontWeight: 400,
-                ...DARKER_GROTESQUE_LIGHT,
-                fontSize: "1.2rem",
-                letterSpacing: "0.04em",
-              }}
-            >
+            <Button size="lg" style={BUTTON_YELLOW}>
               <Plus className="w-5 h-5 mr-2" />
               Create Collab Request
             </Button>
@@ -129,71 +132,74 @@ const BusinessDashboard = () => {
         {/* Alerts */}
         <ProfileSetupAlert />
 
-        {/* Calendar */}
-        <CollaborationCalendar userType="business" />
+        {/* Collab Calendar with updated title prop */}
+        <CollaborationCalendar
+          userType="business"
+          calendarTitle={<span style={DARKER_GROTESQUE_LIGHT}>Collaborations Calendar</span>}
+        />
 
-        {/* Stats cards in yellow */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Stats cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card style={{ background: STAT_CARD_BG }}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm" style={{ ...OPEN_SANS, color: "#000", fontWeight: 600 }}>
-                Total Offers
-              </CardTitle>
-              <FileText className="h-4 w-4" style={{ color: "#000" }} />
+            <CardHeader className="pb-2">
+              <span style={DARKER_GROTESQUE_LIGHT}>Total Offers</span>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold" style={OPEN_SANS}>
+              <div
+                className="text-2xl font-bold"
+                style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#000" }}
+              >
                 {loading ? "..." : stats.totalOffers}
               </div>
-              <p className="text-xs" style={OPEN_SANS}>
+              <p className="text-xs" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
                 {stats.totalOffers === 0 ? "No offers created yet" : "Total created offers"}
               </p>
             </CardContent>
           </Card>
           <Card style={{ background: STAT_CARD_BG }}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm" style={{ ...OPEN_SANS, color: "#000", fontWeight: 600 }}>
-                Active Offers
-              </CardTitle>
-              <TrendingUp className="h-4 w-4" style={{ color: "#000" }} />
+            <CardHeader className="pb-2">
+              <span style={DARKER_GROTESQUE_LIGHT}>Active Offers</span>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold" style={OPEN_SANS}>
+              <div
+                className="text-2xl font-bold"
+                style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#000" }}
+              >
                 {loading ? "..." : stats.activeOffers}
               </div>
-              <p className="text-xs" style={OPEN_SANS}>
+              <p className="text-xs" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
                 Published offers
               </p>
             </CardContent>
           </Card>
           <Card style={{ background: STAT_CARD_BG }}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm" style={{ ...OPEN_SANS, color: "#000", fontWeight: 600 }}>
-                Applications
-              </CardTitle>
-              <Users className="h-4 w-4" style={{ color: "#000" }} />
+            <CardHeader className="pb-2">
+              <span style={DARKER_GROTESQUE_LIGHT}>Applications</span>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold" style={OPEN_SANS}>
+              <div
+                className="text-2xl font-bold"
+                style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#000" }}
+              >
                 {loading ? "..." : stats.applications}
               </div>
-              <p className="text-xs" style={OPEN_SANS}>
+              <p className="text-xs" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
                 Total applications received
               </p>
             </CardContent>
           </Card>
           <Card style={{ background: STAT_CARD_BG }}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm" style={{ ...OPEN_SANS, color: "#000", fontWeight: 600 }}>
-                Collaborations
-              </CardTitle>
-              <Users className="h-4 w-4" style={{ color: "#000" }} />
+            <CardHeader className="pb-2">
+              <span style={DARKER_GROTESQUE_LIGHT}>Collaborations</span>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold" style={OPEN_SANS}>
+              <div
+                className="text-2xl font-bold"
+                style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#000" }}
+              >
                 {loading ? "..." : stats.collaborations}
               </div>
-              <p className="text-xs" style={OPEN_SANS}>
+              <p className="text-xs" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
                 Active partnerships
               </p>
             </CardContent>
@@ -204,22 +210,22 @@ const BusinessDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card style={{ background: GETTING_STARTED_BG }}>
             <CardHeader>
-              <CardTitle style={RUBIK_BOLD}>Getting Started</CardTitle>
-              <CardDescription style={OPEN_SANS}>
+              <CardTitle style={DARKER_GROTESQUE_LIGHT}>Getting Started</CardTitle>
+              <CardDescription style={OPEN_SANS_SUBTITLE}>
                 Complete these steps to start connecting with communities
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center">
-                <div className="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-medium mr-3">
+              <div className="flex flex-col md:flex-row md:items-center mb-1">
+                <div className="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-medium mr-3 mb-2 md:mb-0">
                   ✓
                 </div>
                 <span className="text-sm" style={OPEN_SANS}>
                   Set up your business profile
                 </span>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center mr-3">
+              <div className="flex flex-col md:flex-row md:items-center justify-between mb-1">
+                <div className="flex items-center mr-3 mb-2 md:mb-0">
                   <div className="w-8 h-8 bg-muted text-muted-foreground rounded-full flex items-center justify-center text-sm font-medium mr-3">
                     2
                   </div>
@@ -227,14 +233,14 @@ const BusinessDashboard = () => {
                     Choose a subscription plan
                   </span>
                 </div>
-                <Link to="/business/plans">
-                  <Button variant="outline" size="sm" style={DARKER_GROTESQUE_LIGHT}>
+                <Link to="/business/plans" className="block md:inline-block">
+                  <Button variant="outline" size="sm" style={BUTTON_OUTLINE}>
                     Choose Plan
                   </Button>
                 </Link>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center mr-3">
+              <div className="flex flex-col md:flex-row md:items-center justify-between mb-1">
+                <div className="flex items-center mr-3 mb-2 md:mb-0">
                   <div className="w-8 h-8 bg-muted text-muted-foreground rounded-full flex items-center justify-center text-sm font-medium mr-3">
                     3
                   </div>
@@ -242,9 +248,11 @@ const BusinessDashboard = () => {
                     Create your first collab opportunity
                   </span>
                 </div>
-                <Link to="/business/opportunities/new">
-                  <Button variant="outline" size="sm" style={DARKER_GROTESQUE_LIGHT}>
-                    Create Collab Opportunity
+                <Link to="/business/opportunities/new" className="block md:inline-block">
+                  <Button variant="outline" size="sm" style={BUTTON_OUTLINE}>
+                    Create Collab
+                    <br />
+                    Opportunity
                   </Button>
                 </Link>
               </div>
