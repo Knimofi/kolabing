@@ -133,10 +133,23 @@ const CommunityOpportunitiesNew = () => {
       }
 
       const offerData = {
-        ...data,
+        title: data.title,
+        description: data.description,
+        availability_mode: data.availability_mode,
+        availability_start: data.availability_start?.toISOString(),
+        availability_end: data.availability_end?.toISOString(),
+        recurring_day: data.recurring_day,
+        recurring_time: data.recurring_time,
+        venue_mode: data.venue_mode,
+        address: data.address,
+        preferred_city: data.preferred_city,
+        preferred_area: data.preferred_area,
+        use_profile_photo: data.use_profile_photo,
         offer_photo: finalOfferPhoto,
+        business_offer: data.business_offer,
+        community_deliverables: data.community_deliverables,
         creator_profile_id: communityProfile.profile_id,
-        creator_profile_type: "community",
+        creator_profile_type: "community" as const,
         status,
       };
 
