@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
+import { Calendar, dateFnsLocalizer, Views } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enUS } from "date-fns/locale";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +17,14 @@ const RUBIK_MEDIUM_MAYUS = {
   fontWeight: 500,
   color: "#000",
   letterSpacing: "0.04em",
+};
+const DARKER_GROTESQUE_BUTTON = {
+  fontFamily: "'Darker Grotesque', Arial, sans-serif",
+  textTransform: "uppercase",
+  fontWeight: 400,
+  color: "#111",
+  fontSize: 13,
+  letterSpacing: "0.06em",
 };
 const OPEN_SANS = {
   fontFamily: "'Open Sans', Arial, sans-serif",
@@ -57,6 +66,48 @@ function classifyStatus(event) {
     return "completed";
   }
   return "discussions";
+}
+
+// Custom toolbar for navigation with your button style
+function CalendarToolbar({ label, onNavigate }) {
+  return (
+    <div className="flex items-center justify-between mb-2 px-2 pt-2">
+      <div className="flex items-center">
+        <button
+          onClick={() => onNavigate("PREV")}
+          className="flex items-center px-3 py-1 rounded border border-gray-300 mr-2 bg-white hover:bg-gray-100 transition"
+          title="Previous"
+          style={DARKER_GROTESQUE_BUTTON}
+        >
+          <ChevronLeft size={16} className="mr-1" />
+          Previous
+        </button>
+        <button
+          onClick={() => onNavigate("TODAY")}
+          className="px-3 py-1 rounded border border-gray-300 bg-white hover:bg-gray-100 mx-1 transition"
+          style={{
+            ...DARKER_GROTESQUE_BUTTON,
+            fontWeight: 600,
+            letterSpacing: "0.09em",
+          }}
+        >
+          Today
+        </button>
+        <button
+          onClick={() => onNavigate("NEXT")}
+          className="flex items-center px-3 py-1 rounded border border-gray-300 ml-2 bg-white hover:bg-gray-100 transition"
+          title="Next"
+          style={DARKER_GROTESQUE_BUTTON}
+        >
+          Next
+          <ChevronRight size={16} className="ml-1" />
+        </button>
+      </div>
+      <div style={{ ...RUBIK_MEDIUM_MAYUS, fontSize: 16 }}>{label}</div>
+      {/* spacer for flex, don't remove */}
+      <div style={{ width: 58, minWidth: 38 }}> </div>
+    </div>
+  );
 }
 
 function CollaborationCalendar({ userType }) {
@@ -197,13 +248,18 @@ function CollaborationCalendar({ userType }) {
         backgroundColor: STATUS_COLORS[statusClass] || "#fff",
         color: "#000",
         borderRadius: "7px",
-        border: "none", // No border ever
+        border: "none",
         fontFamily: "'Open Sans', Arial, sans-serif",
         fontWeight: 400,
-        fontSize: "16px",
+        fontSize: "14px",
         opacity: 0.95,
       },
     };
+  };
+
+  // Custom navigation
+  const components = {
+    toolbar: ({ label, onNavigate }) => <CalendarToolbar label={label} onNavigate={onNavigate} />,
   };
 
   return (
@@ -298,6 +354,7 @@ function CollaborationCalendar({ userType }) {
                   fontFamily: "'Open Sans', Arial, sans-serif",
                 }}
                 eventPropGetter={eventStyleGetter}
+                components={components}
                 views={["month", "week", "day"]}
                 defaultView="month"
               />
