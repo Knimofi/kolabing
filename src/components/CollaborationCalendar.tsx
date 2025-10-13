@@ -10,21 +10,23 @@ import { Badge } from "@/components/ui/badge";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 // Font/style constants
-const DARKER_GROTESQUE = {
-  fontFamily: "'Darker Grotesque', Arial, sans-serif",
+const OPEN_SANS_BOLD_MAYUS = {
+  fontFamily: "'Open Sans', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 400,
+  fontWeight: 700,
   color: "#000",
 };
+
 const OPEN_SANS = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
   color: "#000",
 };
-const RUBIK_BOLD = {
-  fontFamily: "'Rubik', Arial, sans-serif",
+
+const DARKER_GROTESQUE = {
+  fontFamily: "'Darker Grotesque', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 700,
+  fontWeight: 400,
   color: "#000",
 };
 
@@ -43,7 +45,6 @@ const localizer = dateFnsLocalizer({
 });
 
 function classifyStatus(event) {
-  // Draft/published/closed requests & pending apps = 'discussions'
   if (
     event.type.startsWith("collab_request_draft") ||
     event.type.startsWith("collab_request_published") ||
@@ -51,11 +52,9 @@ function classifyStatus(event) {
   ) {
     return "discussions";
   }
-  // Scheduled collaboration = 'scheduled'
   if (event.type.startsWith("collaboration_scheduled")) {
     return "scheduled";
   }
-  // Completed/collab_request_closed = 'completed'
   if (event.type.startsWith("collab_request_closed") || event.type.startsWith("collaboration_completed")) {
     return "completed";
   }
@@ -81,7 +80,6 @@ function CollaborationCalendar({ userType }) {
     const participantSet = new Set();
 
     try {
-      // Collab Requests
       const { data: requests } = await supabase
         .from("collab_opportunities")
         .select("*")
@@ -108,7 +106,6 @@ function CollaborationCalendar({ userType }) {
         });
       });
 
-      // Collaborations
       const { data: collabs } = await supabase
         .from("collaborations")
         .select(
@@ -139,7 +136,6 @@ function CollaborationCalendar({ userType }) {
         });
       });
 
-      // Applications (Pending)
       let applicationsQuery = supabase
         .from("applications")
         .select(
@@ -160,9 +156,7 @@ function CollaborationCalendar({ userType }) {
           applicationsQuery = applicationsQuery.eq("collab_opportunity_id", "00000000-0000-0000-0000-000000000000");
         }
       }
-
       const { data: apps } = await applicationsQuery;
-
       apps?.forEach((app) => {
         const participantName = app.community_profile?.name || "Unknown";
         const participantId = app.applicant_profile_id;
@@ -191,7 +185,6 @@ function CollaborationCalendar({ userType }) {
     }
   };
 
-  // Filter for dropdown status and collaborator
   const displayedEvents = allEvents.filter((e) => {
     const statusClass = classifyStatus(e);
     const statusMatch = filterStatus === "all" || filterStatus === statusClass;
@@ -199,7 +192,6 @@ function CollaborationCalendar({ userType }) {
     return statusMatch && participantMatch;
   });
 
-  // Calendar event style: color by status, Open Sans, normal weight
   const eventStyleGetter = (event) => {
     const statusClass = classifyStatus(event);
     return {
@@ -219,7 +211,7 @@ function CollaborationCalendar({ userType }) {
   return (
     <Card className="bg-white border-[#eee]">
       <CardHeader>
-        <CardTitle style={{ ...RUBIK_BOLD, fontSize: 26 }}>COLLABORATIONS CALENDAR</CardTitle>
+        <CardTitle style={{ ...OPEN_SANS_BOLD_MAYUS, fontSize: 24 }}>COLLABORATIONS CALENDAR</CardTitle>
         <CardDescription
           style={{
             ...OPEN_SANS,
