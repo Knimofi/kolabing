@@ -12,28 +12,25 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 // Font/style constants
 const OPEN_SANS_BOLD_MAYUS = {
   fontFamily: "'Open Sans', Arial, sans-serif",
-  textTransform: "uppercase" as const,
+  textTransform: "uppercase",
   fontWeight: 700,
   color: "#000",
 };
-
 const OPEN_SANS = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
   color: "#000",
 };
-
 const DARKER_GROTESQUE = {
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  textTransform: "uppercase" as const,
+  textTransform: "uppercase",
   fontWeight: 400,
   color: "#000",
 };
-
 const STATUS_COLORS = {
   discussions: "#31C4D1", // blue
   scheduled: "#FFD861", // yellow
-  completed: "#F2A7D2", // pink
+  completed: "#F2A7D2", // your provided pink
 };
 
 const localizer = dateFnsLocalizer({
@@ -80,6 +77,7 @@ function CollaborationCalendar({ userType }) {
     const participantSet = new Set();
 
     try {
+      // Collab Requests
       const { data: requests } = await supabase
         .from("collab_opportunities")
         .select("*")
@@ -98,7 +96,7 @@ function CollaborationCalendar({ userType }) {
         events.push({
           id: req.id,
           collabTitle: req.title,
-          collaboratorName: "", // No partner yet
+          collaboratorName: "",
           start: eventDate,
           end: req.availability_end ? new Date(req.availability_end) : eventDate,
           type: displayType,
@@ -106,6 +104,7 @@ function CollaborationCalendar({ userType }) {
         });
       });
 
+      // Collaborations
       const { data: collabs } = await supabase
         .from("collaborations")
         .select(
@@ -136,6 +135,7 @@ function CollaborationCalendar({ userType }) {
         });
       });
 
+      // Applications (Pending)
       let applicationsQuery = supabase
         .from("applications")
         .select(
@@ -211,7 +211,17 @@ function CollaborationCalendar({ userType }) {
   return (
     <Card className="bg-white border-[#eee]">
       <CardHeader>
-        <CardTitle style={{ ...OPEN_SANS_BOLD_MAYUS, fontSize: 24 }}>COLLABORATIONS CALENDAR</CardTitle>
+        <CardTitle
+          style={{
+            ...OPEN_SANS_BOLD_MAYUS,
+            fontSize: 24,
+            marginBottom: 0,
+            marginTop: 2,
+            letterSpacing: "0.07em",
+          }}
+        >
+          COLLABORATIONS CALENDAR
+        </CardTitle>
         <CardDescription
           style={{
             ...OPEN_SANS,
@@ -265,7 +275,7 @@ function CollaborationCalendar({ userType }) {
         <div className="flex flex-wrap gap-2 pt-2 pb-2">
           <Badge style={{ backgroundColor: "#31C4D1", color: "#000", ...DARKER_GROTESQUE }}>Discussions</Badge>
           <Badge style={{ backgroundColor: "#FFD861", color: "#000", ...DARKER_GROTESQUE }}>Scheduled</Badge>
-          <Badge style={{ backgroundColor: "#FFA264", color: "#000", ...DARKER_GROTESQUE }}>Completed</Badge>
+          <Badge style={{ backgroundColor: "#F2A7D2", color: "#000", ...DARKER_GROTESQUE }}>Completed</Badge>
         </div>
 
         {/* Calendar block */}
