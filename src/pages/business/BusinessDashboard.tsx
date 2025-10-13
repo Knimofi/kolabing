@@ -18,17 +18,23 @@ const OPEN_SANS_BOLD_TITLE = {
   letterSpacing: 0.02,
   margin: 0,
 };
-
 const OPEN_SANS_BOLD_TITLE_LARGE = {
   ...OPEN_SANS_BOLD_TITLE,
   fontSize: 25,
 };
-
 const OPEN_SANS_BOLD_TITLE_LATEST = {
   ...OPEN_SANS_BOLD_TITLE,
   fontSize: 26,
 };
-
+const OPEN_SANS_CARD_SMALL_LIGHT = {
+  fontFamily: "'Open Sans', Arial, sans-serif",
+  textTransform: "uppercase" as const,
+  fontWeight: 500,
+  color: "#111",
+  fontSize: 13,
+  letterSpacing: "0.08em",
+  margin: 0,
+};
 const OPEN_SANS_SUBTITLE = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
@@ -38,7 +44,6 @@ const OPEN_SANS_SUBTITLE = {
   textTransform: "none" as const,
   margin: 0,
 };
-
 const OPEN_SANS = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
@@ -147,7 +152,7 @@ const BusinessDashboard = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card style={{ background: STAT_CARD_BG }}>
             <CardHeader className="pb-2">
-              <span style={OPEN_SANS_BOLD_TITLE}>Total Offers</span>
+              <span style={OPEN_SANS_CARD_SMALL_LIGHT}>Total Offers</span>
             </CardHeader>
             <CardContent>
               <div
@@ -163,7 +168,7 @@ const BusinessDashboard = () => {
           </Card>
           <Card style={{ background: STAT_CARD_BG }}>
             <CardHeader className="pb-2">
-              <span style={OPEN_SANS_BOLD_TITLE}>Active Offers</span>
+              <span style={OPEN_SANS_CARD_SMALL_LIGHT}>Active Offers</span>
             </CardHeader>
             <CardContent>
               <div
@@ -179,7 +184,7 @@ const BusinessDashboard = () => {
           </Card>
           <Card style={{ background: STAT_CARD_BG }}>
             <CardHeader className="pb-2">
-              <span style={OPEN_SANS_BOLD_TITLE}>Applications</span>
+              <span style={OPEN_SANS_CARD_SMALL_LIGHT}>Applications</span>
             </CardHeader>
             <CardContent>
               <div
@@ -195,7 +200,7 @@ const BusinessDashboard = () => {
           </Card>
           <Card style={{ background: STAT_CARD_BG }}>
             <CardHeader className="pb-2">
-              <span style={OPEN_SANS_BOLD_TITLE}>Collaborations</span>
+              <span style={OPEN_SANS_CARD_SMALL_LIGHT}>Collaborations</span>
             </CardHeader>
             <CardContent>
               <div
