@@ -11,11 +11,12 @@ import { Badge } from "@/components/ui/badge";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 // ---- FONTS & COLORS ----
-const RUBIK_BOLD_MAYUS = {
+const RUBIK_SEMIBOLD_MAYUS = {
   fontFamily: "'Rubik', Arial, sans-serif",
   textTransform: "uppercase",
-  fontWeight: 700,
+  fontWeight: 600,
   color: "#000",
+  letterSpacing: "0.05em",
 };
 const OPEN_SANS = {
   fontFamily: "'Open Sans', Arial, sans-serif",
@@ -36,6 +37,7 @@ const CAL_EVENT_STYLES = {
   padding: "1.5px 3px",
   minHeight: "16px",
   lineHeight: 1.15,
+  background: "none",
 };
 const STATUS_COLORS = {
   discussions: "#31C4D1",
@@ -112,8 +114,7 @@ function CalendarToolbar({ label, onNavigate }) {
           <ChevronRight size={16} className="ml-1" />
         </button>
       </div>
-      <div style={{ ...RUBIK_BOLD_MAYUS, fontSize: 16, letterSpacing: 0.04 }}>{label}</div>
-      {/* empty for flex centering */}
+      <div style={{ ...RUBIK_SEMIBOLD_MAYUS, fontSize: 16 }}>{label}</div>
       <div style={{ width: 58, minWidth: 38 }}> </div>
     </div>
   );
@@ -253,7 +254,6 @@ function CollaborationCalendar({ userType }) {
     return statusMatch && participantMatch;
   });
 
-  // Custom event rendering for thin, small events and "+X more"
   function EventWrapper({ event }) {
     return (
       <div
@@ -264,6 +264,7 @@ function CollaborationCalendar({ userType }) {
           fontWeight: 400,
           overflow: "hidden",
           textOverflow: "ellipsis",
+          border: "none", // Ensures no border at all!
         }}
         title={event.title}
       >
@@ -272,7 +273,6 @@ function CollaborationCalendar({ userType }) {
     );
   }
 
-  // "More" link style override
   const components = {
     toolbar: ({ label, onNavigate }) => <CalendarToolbar label={label} onNavigate={onNavigate} />,
     event: EventWrapper,
@@ -283,11 +283,10 @@ function CollaborationCalendar({ userType }) {
       <CardHeader>
         <CardTitle
           style={{
-            ...RUBIK_BOLD_MAYUS,
+            ...RUBIK_SEMIBOLD_MAYUS,
             fontSize: 24,
             marginBottom: 0,
             marginTop: 2,
-            letterSpacing: "0.07em",
           }}
         >
           COLLABORATIONS CALENDAR
