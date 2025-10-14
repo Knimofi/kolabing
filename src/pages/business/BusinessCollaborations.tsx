@@ -207,12 +207,14 @@ const BusinessCollaborations = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#fff" }}>
+    <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
-        <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 style={RUBIK_EXTRA_BOLD_TITLE}>My Collaborations</h1>
-            <p style={OPEN_SANS_SUBTITLE}>View and manage your active collaborations</p>
+        <header style={{ background: "#FFF9E6", borderRadius: "12px", padding: "16px" }}>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h1 style={RUBIK_EXTRA_BOLD_TITLE}>My Collaborations</h1>
+              <p style={OPEN_SANS_SUBTITLE}>View and manage your active collaborations</p>
+            </div>
           </div>
         </header>
 
@@ -247,10 +249,10 @@ const BusinessCollaborations = () => {
 
         {/* Collaborations Grid */}
         {filteredCollaborations.length === 0 ? (
-          <Card style={{ background: "#F7F7F7" }}>
+          <Card style={{ background: "#FFFBF0", borderRadius: "12px", border: "1px solid #E5E7EB", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
             <CardContent className="py-16 text-center">
-              <p className="text-lg font-semibold" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#000" }}>No collaborations found</p>
-              <p className="mt-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
+              <p className="text-lg font-semibold" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#1A1A1A" }}>No collaborations found</p>
+              <p className="mt-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
                 {searchTerm ? "Try adjusting your search terms." : "Your active collaborations will appear here."}
               </p>
             </CardContent>

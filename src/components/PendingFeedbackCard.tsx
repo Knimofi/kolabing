@@ -20,11 +20,11 @@ const PendingFeedbackCard = ({ pendingSurveys, onFillFeedback }: PendingFeedback
   }
 
   return (
-    <Card className="border-orange-200 bg-orange-50/50 dark:bg-orange-950/20 dark:border-orange-900">
+    <Card style={{ background: "#FFF4E6", border: "2px solid #FBBF24", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
       <CardHeader>
         <div className="flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 text-orange-600 dark:text-orange-400" />
-          <CardTitle className="text-lg">Pending Feedback</CardTitle>
+          <AlertCircle className="w-5 h-5" style={{ color: "#F59E0B" }} />
+          <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", fontWeight: 600, fontSize: "16px", color: "#78350F" }}>Pending Feedback</CardTitle>
           <Badge variant="secondary">{pendingSurveys.length}</Badge>
         </div>
       </CardHeader>
@@ -32,15 +32,28 @@ const PendingFeedbackCard = ({ pendingSurveys, onFillFeedback }: PendingFeedback
         {pendingSurveys.map((survey) => (
           <div
             key={survey.id}
-            className="flex items-center justify-between p-3 bg-background rounded-lg border"
+            style={{ background: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "8px", padding: "12px" }}
+            className="flex items-center justify-between"
           >
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-sm truncate">{survey.offerTitle}</p>
-              <p className="text-xs text-muted-foreground">with {survey.partnerName}</p>
+              <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontWeight: 500, fontSize: "14px", color: "#1A1A1A" }} className="truncate">{survey.offerTitle}</p>
+              <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "12px", color: "#6B7280" }}>with {survey.partnerName}</p>
             </div>
             <Button
               size="sm"
               onClick={() => onFillFeedback(survey.id, survey.collaboration_id, survey.partnerName)}
+              style={{
+                background: "#FFD861",
+                border: "2px solid #FFD861",
+                color: "#000",
+                fontFamily: "'Darker Grotesque', Arial, sans-serif",
+                textTransform: "uppercase",
+                fontWeight: 600,
+                borderRadius: "8px",
+                transition: "all 0.2s ease-in-out"
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-1px)"}
+              onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
             >
               Fill Feedback
             </Button>

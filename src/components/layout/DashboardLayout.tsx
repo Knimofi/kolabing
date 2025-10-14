@@ -81,7 +81,7 @@ const DashboardLayout = ({ children }) => {
           fixed md:static inset-y-0 left-0 w-64 bg-card border-r border-border z-50 transition-transform duration-300 ease-in-out
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
-        style={{ background: "#fff", borderRight: "1px solid #eee" }}
+        style={{ background: "#FFFFFF", borderRight: "1px solid #F0F0F0", boxShadow: "2px 0 8px rgba(0, 0, 0, 0.02)" }}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
@@ -134,16 +134,24 @@ const DashboardLayout = ({ children }) => {
                   onClick={closeSidebar}
                   style={{
                     ...DARKER_GROTESQUE,
-                    background: isActive ? "#FFD861" : "transparent",
-                    color: isActive ? "#000" : "#222",
+                    background: isActive ? "#FFF9E6" : "transparent",
+                    color: isActive ? "#000" : "#4A4A4A",
                     display: "flex",
                     alignItems: "center",
-                    padding: "8px 12px",
-                    borderRadius: "7px",
+                    padding: "10px 12px",
+                    borderRadius: "8px",
                     textDecoration: "none",
-                    fontWeight: 500,
+                    fontWeight: isActive ? 600 : 500,
+                    borderLeft: isActive ? "3px solid #FFD861" : "3px solid transparent",
+                    transition: "all 0.15s ease",
                   }}
                   aria-current={isActive ? "page" : undefined}
+                  onMouseEnter={(e) => {
+                    if (!isActive) e.currentTarget.style.background = "#F8F9FA";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) e.currentTarget.style.background = "transparent";
+                  }}
                 >
                   <item.icon className="w-5 h-5" />
                   <span style={{ marginLeft: 10 }}>{item.label}</span>
@@ -199,7 +207,7 @@ const DashboardLayout = ({ children }) => {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-4 md:p-6" style={{ background: "#FAFAFA" }}>
+        <main className="flex-1 p-4 md:p-6" style={{ background: "#F8F9FA" }}>
           {children}
         </main>
       </div>

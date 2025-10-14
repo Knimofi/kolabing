@@ -242,20 +242,20 @@ const BusinessApplications = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#fff" }}>
+    <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
-        <div>
+        <div style={{ background: "#FFF9E6", borderRadius: "12px", padding: "16px" }}>
           <h1 style={RUBIK_EXTRA_BOLD_TITLE}>Applications Received</h1>
           <p style={OPEN_SANS_SUBTITLE}>Review and manage applications for your collaboration opportunities</p>
         </div>
 
         {Object.keys(applicationsByOpportunity).length === 0 ? (
-          <Card style={{ background: "#F7F7F7" }}>
+          <Card style={{ background: "#FFFBF0", borderRadius: "12px", border: "1px solid #E5E7EB", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
             <CardContent className="py-16">
               <div className="text-center">
-                <MessageSquare className="w-12 h-12 text-[#FFD861] mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#000" }}>No pending applications</h3>
-                <p className="mb-6 max-w-md mx-auto" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
+                <MessageSquare className="w-12 h-12 mx-auto mb-4" style={{ color: "#FFD861" }} />
+                <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#1A1A1A" }}>No pending applications</h3>
+                <p className="mb-6 max-w-md mx-auto" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
                   When communities apply to your collaboration opportunities, they'll appear here for review.
                 </p>
               </div>

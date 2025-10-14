@@ -202,30 +202,30 @@ const BusinessBrowse = () => {
     );
   }
 
-  const RUBIK_EXTRA_BOLD_TITLE = {
-    fontFamily: "'Rubik', Arial, sans-serif",
-    textTransform: "uppercase" as const,
-    fontWeight: 800,
-    color: "#000",
-    fontSize: 26,
-    letterSpacing: 0.03,
-    margin: 0,
-  };
-  const OPEN_SANS_SUBTITLE = {
-    fontFamily: "'Open Sans', Arial, sans-serif",
-    fontWeight: 400,
-    fontSize: 15,
-    color: "#222",
-    letterSpacing: 0,
-    textTransform: "none" as const,
-    margin: 0,
-  };
+const RUBIK_EXTRA_BOLD_TITLE = {
+  fontFamily: "'Rubik', Arial, sans-serif",
+  textTransform: "uppercase" as const,
+  fontWeight: 800,
+  color: "#1A1A1A",
+  fontSize: 26,
+  letterSpacing: "0.03em",
+  margin: 0,
+};
+const OPEN_SANS_SUBTITLE = {
+  fontFamily: "'Open Sans', Arial, sans-serif",
+  fontWeight: 400,
+  fontSize: 15,
+  color: "#4A4A4A",
+  letterSpacing: 0,
+  textTransform: "none" as const,
+  margin: 0,
+};
 
   return (
-    <div className="min-h-screen" style={{ background: "#fff" }}>
+    <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         {/* Page Header */}
-        <div>
+        <div style={{ background: "#FFF9E6", borderRadius: "12px", padding: "16px" }}>
           <h1 style={RUBIK_EXTRA_BOLD_TITLE}>FIND A COLLAB</h1>
           <p style={OPEN_SANS_SUBTITLE}>Discover collaboration opportunities from communities</p>
         </div>
@@ -239,20 +239,21 @@ const BusinessBrowse = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
+              style={{ borderRadius: "8px", border: "1px solid #E5E7EB" }}
             />
           </div>
         </div>
 
         {/* Offers Grid */}
         {filteredOffers.length === 0 ? (
-          <Card style={{ background: "#F7F7F7" }}>
+          <Card style={{ background: "#FFFBF0", borderRadius: "12px", border: "1px solid #E5E7EB", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
             <CardContent className="py-16">
               <div className="text-center">
-                <Search className="w-12 h-12 text-[#FFD861] mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#000" }}>
+                <Search className="w-12 h-12 mx-auto mb-4" style={{ color: "#FFD861" }} />
+                <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#1A1A1A" }}>
                   {offers.length === 0 ? 'No community collab requests available yet' : 'No matching collab requests found'}
                 </h3>
-                <p className="mb-6 max-w-md mx-auto" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
+                <p className="mb-6 max-w-md mx-auto" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
                   {offers.length === 0 
                     ? 'New collab requests will appear here. Check back soon!'
                     : 'Try adjusting your search terms.'

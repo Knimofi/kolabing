@@ -14,16 +14,16 @@ const RUBIK_EXTRA_BOLD_TITLE = {
   fontFamily: "'Rubik', Arial, sans-serif",
   textTransform: "uppercase" as const,
   fontWeight: 800,
-  color: "#000",
+  color: "#1A1A1A",
   fontSize: 26,
-  letterSpacing: 0.03,
+  letterSpacing: "0.03em",
   margin: 0,
 };
 const OPEN_SANS_BOLD_CARD_SMALL = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 500,
-  color: "#111",
+  fontWeight: 600,
+  color: "#1A1A1A",
   fontSize: 13,
   letterSpacing: "0.08em",
   margin: 0,
@@ -32,7 +32,7 @@ const OPEN_SANS_SUBTITLE = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
   fontSize: 15,
-  color: "#222",
+  color: "#4A4A4A",
   letterSpacing: 0,
   textTransform: "none" as const,
   margin: 0,
@@ -41,25 +41,29 @@ const OPEN_SANS = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
   fontSize: 14,
-  color: "#222",
+  color: "#4A4A4A",
 };
-const STAT_CARD_BG = "#FFD861";
 const BUTTON_YELLOW = {
   background: "#FFD861",
   border: "2px solid #FFD861",
   color: "#000",
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 400,
+  fontWeight: 600,
   letterSpacing: "0.03em",
   fontSize: 17,
+  borderRadius: "8px",
+  boxShadow: "0 2px 6px rgba(255, 216, 97, 0.3)",
+  transition: "all 0.2s ease-in-out",
 };
 const BUTTON_OUTLINE_FILTER = {
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 400,
+  fontWeight: 500,
   letterSpacing: "0.03em",
   fontSize: 14,
+  borderRadius: "8px",
+  transition: "all 0.2s ease-in-out",
 };
 
 const BusinessOffers = () => {
@@ -209,22 +213,26 @@ const BusinessOffers = () => {
     : offers.filter(offer => offer.status === activeFilter);
 
   return (
-    <div className="min-h-screen" style={{ background: "#fff" }}>
+    <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
-        <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 style={RUBIK_EXTRA_BOLD_TITLE}>My Collab Requests</h1>
-            <p style={OPEN_SANS_SUBTITLE}>Create and manage your collaboration opportunities</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button 
-              onClick={() => navigate('/business/opportunities/new')}
-              style={BUTTON_YELLOW}
-              size="lg"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Create Collab Opportunity
-            </Button>
+        <header style={{ background: "#FFF9E6", borderRadius: "12px", padding: "16px" }}>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h1 style={RUBIK_EXTRA_BOLD_TITLE}>My Collab Requests</h1>
+              <p style={OPEN_SANS_SUBTITLE}>Create and manage your collaboration opportunities</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button 
+                onClick={() => navigate('/business/opportunities/new')}
+                size="lg"
+                style={BUTTON_YELLOW}
+                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
+                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Create Collab Opportunity
+              </Button>
+            </div>
           </div>
         </header>
 
@@ -243,14 +251,16 @@ const BusinessOffers = () => {
         </div>
 
         {filteredOffers.length === 0 ? (
-          <Card style={{ background: "#F7F7F7" }}>
+          <Card style={{ background: "#FFFBF0", borderRadius: "12px", border: "1px solid #E5E7EB", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
             <CardContent className="py-16 text-center">
-              <p className="text-lg font-semibold" style={OPEN_SANS}>No opportunities found</p>
+              <p className="text-lg font-semibold" style={{ ...OPEN_SANS, fontWeight: 600, fontSize: "18px", color: "#1A1A1A" }}>No opportunities found</p>
               <Button 
                 onClick={() => navigate('/business/opportunities/new')} 
                 className="mt-4"
-                style={BUTTON_YELLOW}
                 size="lg"
+                style={BUTTON_YELLOW}
+                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
+                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
               >
                 <Plus className="w-5 h-5 mr-2" /> Create Collab Opportunity
               </Button>
@@ -259,32 +269,38 @@ const BusinessOffers = () => {
         ) : (
           <div className="space-y-4">
             {filteredOffers.map((offer) => (
-              <Card key={offer.id} style={{ background: "#fff", border: "1px solid #e0e0e0" }}>
+              <Card key={offer.id} style={{ background: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)", transition: "all 0.2s ease" }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.08)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.04)"; }}
+              >
                 <CardHeader>
                   <CardTitle style={{ ...OPEN_SANS_BOLD_CARD_SMALL, fontSize: 18 }}>{offer.title}</CardTitle>
                   <CardDescription style={OPEN_SANS}>{offer.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex gap-2 flex-wrap">
-                    <Button variant="outline" size="sm" onClick={() => handleViewOffer(offer)} style={BUTTON_OUTLINE_FILTER}>
+                    <Button variant="outline" size="sm" onClick={() => handleViewOffer(offer)} style={{ ...BUTTON_OUTLINE_FILTER, borderRadius: "8px" }}>
                       <Eye className="w-4 h-4 mr-2" /> View
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => navigate(`/business/opportunities/${offer.id}/edit`)} disabled={!['draft', 'published'].includes(offer.status)} style={BUTTON_OUTLINE_FILTER}>
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/business/opportunities/${offer.id}/edit`)} disabled={!['draft', 'published'].includes(offer.status)} style={{ ...BUTTON_OUTLINE_FILTER, borderRadius: "8px" }}>
                       <Edit className="w-4 h-4 mr-2" /> Edit
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleDuplicateOffer(offer)} disabled={!businessProfile} style={BUTTON_OUTLINE_FILTER}>
+                    <Button variant="outline" size="sm" onClick={() => handleDuplicateOffer(offer)} disabled={!businessProfile} style={{ ...BUTTON_OUTLINE_FILTER, borderRadius: "8px" }}>
                       <Copy className="w-4 h-4 mr-2" /> Duplicate
                     </Button>
-                    <Button variant="destructive" size="sm" onClick={() => setOfferToDelete(offer)} style={BUTTON_OUTLINE_FILTER}>
+                    <Button variant="destructive" size="sm" onClick={() => setOfferToDelete(offer)} style={{ ...BUTTON_OUTLINE_FILTER, borderRadius: "8px" }}>
                       <Trash2 className="w-4 h-4 mr-2" /> Delete
                     </Button>
                     {offer.status === 'draft' && (
-                      <Button size="sm" onClick={() => updateOfferStatus(offer.id, 'published')} style={BUTTON_YELLOW}>
+                      <Button size="sm" onClick={() => updateOfferStatus(offer.id, 'published')} style={BUTTON_YELLOW}
+                        onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-1px)"}
+                        onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                      >
                         <Send className="w-4 h-4 mr-2" /> Publish
                       </Button>
                     )}
                     {offer.status === 'published' && (
-                      <Button variant="outline" size="sm" onClick={() => updateOfferStatus(offer.id, 'draft')} style={BUTTON_OUTLINE_FILTER}>
+                      <Button variant="outline" size="sm" onClick={() => updateOfferStatus(offer.id, 'draft')} style={{ ...BUTTON_OUTLINE_FILTER, borderRadius: "8px" }}>
                         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Draft
                       </Button>
                     )}

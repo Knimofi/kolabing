@@ -227,10 +227,10 @@ const BusinessMyApplications: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#fff" }}>
+    <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         {/* Header */}
-        <div>
+        <div style={{ background: "#FFF9E6", borderRadius: "12px", padding: "16px" }}>
           <h1 style={RUBIK_EXTRA_BOLD_TITLE}>APPLICATIONS SUBMITTED</h1>
           <p style={OPEN_SANS_SUBTITLE}>View and manage your collaboration applications</p>
         </div>
@@ -248,16 +248,16 @@ const BusinessMyApplications: React.FC = () => {
 
         {/* Applications Grid */}
         {filteredApplications.length === 0 ? (
-          <div className="text-center py-12" style={{ background: "#F7F7F7", borderRadius: "8px", padding: "4rem" }}>
+          <div className="text-center py-12" style={{ background: "#FFFBF0", borderRadius: "12px", border: "1px solid #E5E7EB", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)", padding: "4rem" }}>
             <div>
               {applications.length === 0 ? (
                 <div>
-                  <h3 className="text-lg font-medium mb-2" style={OPEN_SANS}>No applications yet</h3>
+                  <h3 className="text-lg font-medium mb-2" style={{ ...OPEN_SANS, fontWeight: 600, color: "#1A1A1A" }}>No applications yet</h3>
                   <p style={OPEN_SANS}>You haven't applied to any opportunities yet. Browse opportunities to get started!</p>
                 </div>
               ) : (
                 <div>
-                  <h3 className="text-lg font-medium mb-2" style={OPEN_SANS}>No matching applications</h3>
+                  <h3 className="text-lg font-medium mb-2" style={{ ...OPEN_SANS, fontWeight: 600, color: "#1A1A1A" }}>No matching applications</h3>
                   <p style={OPEN_SANS}>Try adjusting your search terms.</p>
                 </div>
               )}

@@ -139,9 +139,9 @@ const BusinessProfile: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#fff" }}>
+    <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
       <div className="max-w-2xl mx-auto py-10 px-4 space-y-8">
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3" style={{ background: "#FFF9E6", borderRadius: "12px", padding: "16px" }}>
           <Building2 className="w-8 h-8" style={{ color: "#FFD861" }} />
           <div>
             <h1 style={RUBIK_EXTRA_BOLD_TITLE}>Business Profile</h1>
@@ -152,7 +152,7 @@ const BusinessProfile: React.FC = () => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <Card style={{ background: "#fff", border: "1px solid #e0e0e0" }}>
+          <Card style={{ background: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
             <CardHeader>
               <CardTitle style={{ fontFamily: "'Open Sans', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 500, fontSize: 13 }}>Business Information</CardTitle>
               <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>

@@ -13,16 +13,16 @@ const RUBIK_EXTRA_BOLD_TITLE = {
   fontFamily: "'Rubik', Arial, sans-serif",
   textTransform: "uppercase" as const,
   fontWeight: 800,
-  color: "#000",
+  color: "#1A1A1A",
   fontSize: 26,
-  letterSpacing: 0.03,
+  letterSpacing: "0.03em",
   margin: 0,
 };
 const OPEN_SANS_BOLD_CARD_SMALL = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 500,
-  color: "#111",
+  fontWeight: 600,
+  color: "#1A1A1A",
   fontSize: 13,
   letterSpacing: "0.08em",
   margin: 0,
@@ -31,7 +31,7 @@ const OPEN_SANS_SUBTITLE = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
   fontSize: 15,
-  color: "#222",
+  color: "#4A4A4A",
   letterSpacing: 0,
   textTransform: "none" as const,
   margin: 0,
@@ -40,10 +40,8 @@ const OPEN_SANS = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
   fontSize: 14,
-  color: "#222",
+  color: "#4A4A4A",
 };
-const STAT_CARD_BG = "#FFD861";
-const GETTING_STARTED_BG = "#F7F7F7";
 
 const BUTTON_YELLOW = {
   background: "#FFD861",
@@ -51,23 +49,28 @@ const BUTTON_YELLOW = {
   color: "#000",
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 400,
+  fontWeight: 600,
   letterSpacing: "0.03em",
   fontSize: 17,
+  borderRadius: "8px",
+  boxShadow: "0 2px 6px rgba(255, 216, 97, 0.3)",
+  transition: "all 0.2s ease-in-out",
 };
 const BUTTON_OUTLINE = {
-  background: "#000",
-  border: "1.5px solid #000",
+  background: "#1A1A1A",
+  border: "2px solid #1A1A1A",
   color: "#fff",
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 400,
+  fontWeight: 500,
   letterSpacing: "0.03em",
   fontSize: 15,
   padding: "8px 14px",
   whiteSpace: "normal" as const,
   maxWidth: "154px",
   textAlign: "center" as const,
+  borderRadius: "8px",
+  transition: "all 0.2s ease-in-out",
 };
 
 const BusinessDashboard = () => {
@@ -118,20 +121,27 @@ const BusinessDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#fff" }}>
+      <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 style={RUBIK_EXTRA_BOLD_TITLE}>Business Dashboard</h1>
-            <p style={OPEN_SANS_SUBTITLE}>Manage your offers and track collaboration performance</p>
+        <div style={{ background: "#FFF9E6", borderRadius: "12px", padding: "16px" }}>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+            <div>
+              <h1 style={RUBIK_EXTRA_BOLD_TITLE}>Business Dashboard</h1>
+              <p style={OPEN_SANS_SUBTITLE}>Manage your offers and track collaboration performance</p>
+            </div>
+            <Link to="/business/opportunities/new">
+              <Button 
+                size="lg" 
+                style={BUTTON_YELLOW}
+                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
+                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Create Collab Request
+              </Button>
+            </Link>
           </div>
-          <Link to="/business/opportunities/new">
-            <Button size="lg" style={BUTTON_YELLOW}>
-              <Plus className="w-5 h-5 mr-2" />
-              Create Collab Request
-            </Button>
-          </Link>
         </div>
 
         <ProfileSetupAlert />
@@ -141,66 +151,86 @@ const BusinessDashboard = () => {
 
         {/* Stats cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card style={{ background: STAT_CARD_BG }}>
+          <Card style={{ background: "#FFF9E6", border: "1px solid #FFE899", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)", transition: "all 0.2s ease" }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.08)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.04)"; }}
+          >
             <CardHeader className="pb-2">
-              <span style={OPEN_SANS_BOLD_CARD_SMALL}>Total Offers</span>
+              <div className="flex items-center justify-between">
+                <span style={OPEN_SANS_BOLD_CARD_SMALL}>Total Offers</span>
+                <div style={{ background: "#FFD861", borderRadius: "50%", padding: "8px" }}>
+                  <FileText className="w-4 h-4" style={{ color: "#000" }} />
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
-              <div
-                className="text-2xl font-bold"
-                style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#000" }}
-              >
+              <div className="text-3xl font-bold" style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#1A1A1A" }}>
                 {loading ? "..." : stats.totalOffers}
               </div>
-              <p className="text-xs" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
+              <p className="text-xs mt-1" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
                 {stats.totalOffers === 0 ? "No offers created yet" : "Total created offers"}
               </p>
             </CardContent>
           </Card>
-          <Card style={{ background: STAT_CARD_BG }}>
+          <Card style={{ background: "#FFF9E6", border: "1px solid #FFE899", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)", transition: "all 0.2s ease" }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.08)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.04)"; }}
+          >
             <CardHeader className="pb-2">
-              <span style={OPEN_SANS_BOLD_CARD_SMALL}>Active Offers</span>
+              <div className="flex items-center justify-between">
+                <span style={OPEN_SANS_BOLD_CARD_SMALL}>Active Offers</span>
+                <div style={{ background: "#FFD861", borderRadius: "50%", padding: "8px" }}>
+                  <TrendingUp className="w-4 h-4" style={{ color: "#000" }} />
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
-              <div
-                className="text-2xl font-bold"
-                style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#000" }}
-              >
+              <div className="text-3xl font-bold" style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#1A1A1A" }}>
                 {loading ? "..." : stats.activeOffers}
               </div>
-              <p className="text-xs" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
+              <p className="text-xs mt-1" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
                 Published offers
               </p>
             </CardContent>
           </Card>
-          <Card style={{ background: STAT_CARD_BG }}>
+          <Card style={{ background: "#FFF9E6", border: "1px solid #FFE899", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)", transition: "all 0.2s ease" }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.08)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.04)"; }}
+          >
             <CardHeader className="pb-2">
-              <span style={OPEN_SANS_BOLD_CARD_SMALL}>Applications</span>
+              <div className="flex items-center justify-between">
+                <span style={OPEN_SANS_BOLD_CARD_SMALL}>Applications</span>
+                <div style={{ background: "#FFD861", borderRadius: "50%", padding: "8px" }}>
+                  <FileText className="w-4 h-4" style={{ color: "#000" }} />
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
-              <div
-                className="text-2xl font-bold"
-                style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#000" }}
-              >
+              <div className="text-3xl font-bold" style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#1A1A1A" }}>
                 {loading ? "..." : stats.applications}
               </div>
-              <p className="text-xs" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
+              <p className="text-xs mt-1" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
                 Total applications received
               </p>
             </CardContent>
           </Card>
-          <Card style={{ background: STAT_CARD_BG }}>
+          <Card style={{ background: "#FFF9E6", border: "1px solid #FFE899", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)", transition: "all 0.2s ease" }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.08)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.04)"; }}
+          >
             <CardHeader className="pb-2">
-              <span style={OPEN_SANS_BOLD_CARD_SMALL}>Collaborations</span>
+              <div className="flex items-center justify-between">
+                <span style={OPEN_SANS_BOLD_CARD_SMALL}>Collaborations</span>
+                <div style={{ background: "#FFD861", borderRadius: "50%", padding: "8px" }}>
+                  <Users className="w-4 h-4" style={{ color: "#000" }} />
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
-              <div
-                className="text-2xl font-bold"
-                style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#000" }}
-              >
+              <div className="text-3xl font-bold" style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#1A1A1A" }}>
                 {loading ? "..." : stats.collaborations}
               </div>
-              <p className="text-xs" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
+              <p className="text-xs mt-1" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
                 Active partnerships
               </p>
             </CardContent>
@@ -209,16 +239,16 @@ const BusinessDashboard = () => {
 
         {/* Getting Started */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card style={{ background: GETTING_STARTED_BG }}>
+          <Card style={{ background: "#FFFBF0", border: "1px solid #E5E7EB", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
             <CardHeader>
-              <CardTitle style={{ ...RUBIK_EXTRA_BOLD_TITLE, fontSize: 24 }}>Getting Started</CardTitle>
+              <CardTitle style={{ ...RUBIK_EXTRA_BOLD_TITLE, fontSize: 20 }}>Getting Started</CardTitle>
               <CardDescription style={OPEN_SANS_SUBTITLE}>
                 Complete these steps to start connecting with communities
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-col md:flex-row md:items-center mb-1">
-                <div className="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-medium mr-3 mb-2 md:mb-0">
+                <div style={{ width: "32px", height: "32px", background: "#D1FAE5", color: "#059669", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: 600, marginRight: "12px", marginBottom: "8px" }}>
                   ✓
                 </div>
                 <span className="text-sm" style={OPEN_SANS}>
@@ -227,7 +257,7 @@ const BusinessDashboard = () => {
               </div>
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-1">
                 <div className="flex items-center mr-3 mb-2 md:mb-0">
-                  <div className="w-8 h-8 bg-muted text-muted-foreground rounded-full flex items-center justify-center text-sm font-medium mr-3">
+                  <div style={{ width: "32px", height: "32px", background: "#FFF9E6", color: "#D97706", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: 600, marginRight: "12px" }}>
                     2
                   </div>
                   <span className="text-sm" style={OPEN_SANS}>
@@ -235,14 +265,19 @@ const BusinessDashboard = () => {
                   </span>
                 </div>
                 <Link to="/business/plans" className="block md:inline-block">
-                  <Button variant="outline" size="sm" style={BUTTON_OUTLINE}>
+                  <Button 
+                    size="sm" 
+                    style={BUTTON_OUTLINE}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-1px)"}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                  >
                     Choose Plan
                   </Button>
                 </Link>
               </div>
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-1">
                 <div className="flex items-center mr-3 mb-2 md:mb-0">
-                  <div className="w-8 h-8 bg-muted text-muted-foreground rounded-full flex items-center justify-center text-sm font-medium mr-3">
+                  <div style={{ width: "32px", height: "32px", background: "#FFF9E6", color: "#D97706", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: 600, marginRight: "12px" }}>
                     3
                   </div>
                   <span className="text-sm" style={OPEN_SANS}>
@@ -250,7 +285,12 @@ const BusinessDashboard = () => {
                   </span>
                 </div>
                 <Link to="/business/opportunities/new" className="block md:inline-block">
-                  <Button variant="outline" size="sm" style={BUTTON_OUTLINE}>
+                  <Button 
+                    size="sm" 
+                    style={BUTTON_OUTLINE}
+                    onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-1px)"}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                  >
                     Create Collab
                     <br />
                     Opportunity

@@ -75,29 +75,38 @@ function CalendarToolbar({ label, onNavigate }) {
       <div className="flex items-center">
         <button
           onClick={() => onNavigate("PREV")}
-          className="flex items-center px-3 py-1 rounded border border-gray-300 mr-2 bg-white hover:bg-gray-100 transition"
+          className="flex items-center px-3 py-1 mr-2 transition"
           title="Previous"
-          style={DARKER_GROTESQUE_BUTTON}
+          style={{ ...DARKER_GROTESQUE_BUTTON, background: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "8px" }}
+          onMouseEnter={(e) => e.currentTarget.style.background = "#FFF9E6"}
+          onMouseLeave={(e) => e.currentTarget.style.background = "#FFFFFF"}
         >
           <ChevronLeft size={16} className="mr-1" />
           Previous
         </button>
         <button
           onClick={() => onNavigate("TODAY")}
-          className="px-3 py-1 rounded border border-gray-300 bg-white hover:bg-gray-100 mx-1 transition"
+          className="px-3 py-1 mx-1 transition"
           style={{
             ...DARKER_GROTESQUE_BUTTON,
             fontWeight: 600,
             letterSpacing: "0.09em",
+            background: "#FFFFFF",
+            border: "1px solid #E5E7EB",
+            borderRadius: "8px"
           }}
+          onMouseEnter={(e) => e.currentTarget.style.background = "#FFF9E6"}
+          onMouseLeave={(e) => e.currentTarget.style.background = "#FFFFFF"}
         >
           Today
         </button>
         <button
           onClick={() => onNavigate("NEXT")}
-          className="flex items-center px-3 py-1 rounded border border-gray-300 ml-2 bg-white hover:bg-gray-100 transition"
+          className="flex items-center px-3 py-1 ml-2 transition"
           title="Next"
-          style={DARKER_GROTESQUE_BUTTON}
+          style={{ ...DARKER_GROTESQUE_BUTTON, background: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "8px" }}
+          onMouseEnter={(e) => e.currentTarget.style.background = "#FFF9E6"}
+          onMouseLeave={(e) => e.currentTarget.style.background = "#FFFFFF"}
         >
           Next
           <ChevronRight size={16} className="ml-1" />
@@ -263,14 +272,15 @@ function CollaborationCalendar({ userType }) {
   };
 
   return (
-    <Card className="bg-white border-[#eee]">
+    <Card style={{ background: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
       <CardHeader>
-        <CardTitle style={{ ...RUBIK_MEDIUM_MAYUS, fontSize: 24 }}>COLLABORATIONS CALENDAR</CardTitle>
+        <CardTitle style={{ ...RUBIK_MEDIUM_MAYUS, fontSize: 24 }}>COLLABS CALENDAR</CardTitle>
         <CardDescription
           style={{
             ...OPEN_SANS,
             fontSize: 16,
             textTransform: "none",
+            color: "#4A4A4A",
           }}
         >
           View all your collaboration activities in one place
@@ -323,19 +333,19 @@ function CollaborationCalendar({ userType }) {
         </div>
 
         {/* Calendar block */}
-        <div className="bg-white rounded-lg border mt-4" style={{ boxShadow: "none" }}>
+        <div style={{ background: "#FFFBF0", borderRadius: "12px", border: "1px solid #E5E7EB", marginTop: "16px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
           {loading ? (
             <div className="h-[600px] flex items-center justify-center">
-              <p style={OPEN_SANS}>Loading calendar...</p>
+              <p style={{ ...OPEN_SANS, color: "#4A4A4A" }}>Loading calendar...</p>
             </div>
           ) : (
             <div
               style={{
-                background: "#fff",
-                color: "#000",
+                background: "#FFFBF0",
+                color: "#1A1A1A",
                 height: "600px",
-                borderRadius: "10px",
-                border: "1px solid #eee",
+                borderRadius: "12px",
+                border: "1px solid #E5E7EB",
                 fontFamily: "'Open Sans', Arial, sans-serif",
               }}
             >
