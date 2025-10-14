@@ -268,3 +268,53 @@ const BusinessBrowse = () => {
                     borderRadius: "0 0 20px 20px"
                   }}>
                     <span style={{ color: "#57577D", fontFamily: "'Open
+Sans', Arial, sans-serif", fontWeight: 600, fontSize: 14 }}>
+                      {offer.creator_profile?.name}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleSeeDetails(offer)}
+                      style={{
+                        fontFamily: "'Darker Grotesque', Arial, sans-serif",
+                        fontWeight: 500,
+                        textTransform: "uppercase",
+                        fontSize: 14,
+                        background: "#F7F6FD",
+                        border: "1px solid #ECECEC",
+                        color: "#514F6A"
+                      }}
+                    >
+                      Details
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Offer Details Modal */}
+        <OfferDetailsModal
+          open={showDetailsModal}
+          onOpenChange={setShowDetailsModal}
+          offer={selectedOffer}
+          creatorProfile={selectedOffer?.creator_profile}
+        />
+
+        {/* Apply Modal */}
+        <ApplyOfferModal
+          open={showApplyModal}
+          onOpenChange={setShowApplyModal}
+          offer={selectedOffer}
+          businessProfile={selectedOffer?.creator_profile}
+          onSubmit={handleSubmitApplication}
+          isSubmitting={isSubmittingApplication}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default BusinessBrowse;
+
