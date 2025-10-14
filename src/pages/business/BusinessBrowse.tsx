@@ -9,11 +9,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import OfferDetailsModal from "@/components/modals/OfferDetailsModal";
 import ApplyOfferModal from "@/components/modals/ApplyOfferModal";
+import { format } from "date-fns";
 
 const OPEN_SANS_BOLD_MAYUS = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 700,
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   color: "#222",
   letterSpacing: "0.03em",
   fontSize: 30,
@@ -62,7 +63,7 @@ const BusinessBrowse = () => {
           `
           id, title, description, status, published_at, availability_start, availability_end,
           offer_photo, business_offer, community_deliverables, categories, address, timeline_days,
-          creator_profile_id, creator_profile_type, paid, city
+          creator_profile_id, creator_profile_type
         `,
         )
         .eq("status", "published")
@@ -252,9 +253,8 @@ const BusinessBrowse = () => {
                   <div style={{ padding: "18px", paddingBottom: "10px" }}>
                     <div className="flex items-center justify-between mb-1">
                       <span style={{ fontSize: 15, color: "#FFF", fontFamily: "'Open Sans', Arial, sans-serif" }}>
-                        {offer.categories?.[0]} {offer.city ? `· ${offer.city}` : ""}
+                        {offer.categories?.[0]} {offer.creator_profile?.city ? `· ${offer.creator_profile.city}` : ""}
                       </span>
-                      {offer.paid && <span style={BADGE_PAID}>Paid</span>}
                     </div>
                     <div
                       style={{
