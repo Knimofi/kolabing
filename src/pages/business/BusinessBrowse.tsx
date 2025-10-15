@@ -6,27 +6,29 @@ import { Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import OfferCard from "@/components/OfferCard";
 import OfferDetailsModal from "@/components/modals/OfferDetailsModal";
 import ApplyOfferModal from "@/components/modals/ApplyOfferModal";
-import { format } from "date-fns";
 
-const OPEN_SANS_BOLD_MAYUS = {
-  fontFamily: "'Open Sans', Arial, sans-serif",
-  fontWeight: 700,
+const RUBIK_BOLD_TITLE = {
+  fontFamily: "'Rubik', Arial, sans-serif",
   textTransform: "uppercase",
-  color: "#222",
+  fontWeight: 700,
+  color: "#1A1A1A",
   letterSpacing: "0.03em",
   fontSize: 30,
   margin: "0 0 8px 0",
 };
-const OPEN_SANS_REGULAR = {
+
+const OPEN_SANS_SUBTITLE = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
-  color: "#444",
   fontSize: 15,
+  color: "#4A4A4A",
+  letterSpacing: 0,
+  textTransform: "none",
+  margin: 0,
 };
-
-const CARD_OFFER_BG = ["#FF8354", "#FFD861", "#31C4D1"];
 
 const BusinessBrowse = () => {
   const { profile } = useAuth();
@@ -50,9 +52,21 @@ const BusinessBrowse = () => {
         .from("collab_opportunities")
         .select(
           `
-          id, title, description, status, published_at, availability_start, availability_end,
-          offer_photo, business_offer, community_deliverables, categories, address, timeline_days,
-          creator_profile_id, creator_profile_type
+          id,
+          title,
+          description,
+          status,
+          published_at,
+          availability_start,
+          availability_end,
+          offer_photo,
+          business_offer,
+          community_deliverables,
+          categories,
+          address,
+          timeline_days,
+          creator_profile_id,
+          creator_profile_type
         `,
         )
         .eq("status", "published")
@@ -60,30 +74,48 @@ const BusinessBrowse = () => {
         .order("published_at", { ascending: false });
 
       if (offersError) {
-        console.error("Error fetching offers:", offersError);
-        toast({ title: "Error", description: "Failed to load collab requests.", variant: "destructive" });
+        console.error("Supabase error fetching offers:", offersError);
+        toast({
+          title: "Error",
+          description: "Failed to load collab requests. Please try again.",
+          variant: "destructive",
+        });
         return;
       }
 
+      // Fetch community profiles
       const communityIds = [...new Set((offersData || []).map((o) => o.creator_profile_id))];
       const { data: communityProfilesData } = await supabase
         .from("community_profiles")
         .select("profile_id, name, community_type, city, profile_photo, website, instagram")
         .in("profile_id", communityIds);
 
+      // Map for quick lookup
       const communityProfilesMap = new Map(
         (communityProfilesData || []).map((cp) => [cp.profile_id, { ...cp, profile_type: "community" }]),
       );
 
-      const enrichedOffers = (offersData || []).map((offer) => ({
-        ...offer,
-        creator_profile: communityProfilesMap.get(offer.creator_profile_id) || null,
-      }));
+      // Enrich offers with creator profiles
+      const enrichedOffers = (offersData || []).map((offer) => {
+        const creatorProfile = communityProfilesMap.get(offer.creator_profile_id);
 
-      setOffers(enrichedOffers.filter((offer) => offer.creator_profile));
+        return {
+          ...offer,
+          creator_profile: creatorProfile || null,
+        };
+      });
+
+      // Filter out offers without creator profiles
+      const validOffers = enrichedOffers.filter((offer) => offer.creator_profile);
+
+      setOffers(validOffers);
     } catch (error: any) {
-      console.error("Error fetching offers:", error);
-      toast({ title: "Error", description: "Failed to load collab requests.", variant: "destructive" });
+      console.error("Unexpected error fetching offers:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load collab requests. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -101,9 +133,10 @@ const BusinessBrowse = () => {
 
   const handleSubmitApplication = async (applicationData: { availability: string; message: string }) => {
     if (!profile || !selectedOffer) return;
-    setIsSubmittingApplication(true);
 
+    setIsSubmittingApplication(true);
     try {
+      // Check for duplicate applications first
       const { data: existingApplication, error: checkError } = await supabase
         .from("applications")
         .select("id")
@@ -111,9 +144,14 @@ const BusinessBrowse = () => {
         .eq("applicant_profile_id", profile.id)
         .maybeSingle();
 
-      if (checkError && checkError.code !== "PGRST116") throw checkError;
+      if (checkError && checkError.code !== "PGRST116") {
+        throw checkError;
+      }
       if (existingApplication) {
-        toast({ title: "Error", description: "You already applied to this collab request!" });
+        toast({
+          title: "Error",
+          description: "You already applied to this collab request!",
+        });
         return;
       }
 
@@ -131,10 +169,19 @@ const BusinessBrowse = () => {
 
       if (error) throw error;
 
-      toast({ title: "Success", description: "Your application has been submitted!" });
+      toast({
+        title: "Success",
+        description: "Your application has been submitted successfully!",
+      });
+
       fetchOffers();
     } catch (error: any) {
-      toast({ title: "Error", description: error.message || "Error submitting application.", variant: "destructive" });
+      toast({
+        title: "Error",
+        description: error.message || "Failed to submit application. Please try again.",
+        variant: "destructive",
+      });
+      throw error;
     } finally {
       setIsSubmittingApplication(false);
     }
@@ -142,49 +189,47 @@ const BusinessBrowse = () => {
 
   const filteredOffers = offers.filter((offer) => {
     if (!offer.creator_profile) return false;
-
     const matchesSearch =
       (offer.title || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
       (offer.description || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
       (offer.creator_profile.name || "").toLowerCase().includes(searchTerm.toLowerCase());
-
     return matchesSearch;
   });
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-48">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#fff" }}>
-      <div className="max-w-6xl mx-auto py-8 px-2 md:px-4 space-y-8">
-        {/* Header Section */}
+    <div className="min-h-screen" style={{ background: "#FFF" }}>
+      <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
+        {/* Header */}
         <div>
-          <h1 style={OPEN_SANS_BOLD_MAYUS}>FIND A COLLAB</h1>
-          <p style={OPEN_SANS_REGULAR}>Discover collaboration opportunities from communities</p>
+          <h1 style={RUBIK_BOLD_TITLE}>FIND A COLLAB</h1>
+          <p style={OPEN_SANS_SUBTITLE}>Discover collaboration opportunities from communities</p>
         </div>
-
         {/* Search */}
-        <div className="relative mb-6">
-          <Search className="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <Input
-            placeholder="Search collabs by title, community, or keywords..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-11 py-2 text-base"
-            style={{
-              borderRadius: "7px",
-              border: "1.5px solid #ECECEC",
-              fontFamily: "'Open Sans', Arial, sans-serif",
-              background: "#FAFAFB",
-            }}
-          />
+        <div className="my-4">
+          <div className="relative flex-1 w-full max-w-2xl">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Input
+              placeholder="Search collabs by title, community, or keywords..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-11 py-2 text-base"
+              style={{
+                borderRadius: "7px",
+                border: "1.5px solid #ECECEC",
+                fontFamily: "'Open Sans', Arial, sans-serif",
+                background: "#FAFAFB",
+              }}
+            />
+          </div>
         </div>
-
         {/* Offers grid */}
         {filteredOffers.length === 0 ? (
           <Card
@@ -222,97 +267,25 @@ const BusinessBrowse = () => {
           </Card>
         ) : (
           <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {filteredOffers.map((offer, i) => {
-              const offerBg = CARD_OFFER_BG[i % CARD_OFFER_BG.length];
-              return (
-                <div
-                  key={offer.id}
-                  style={{
-                    background: offerBg,
-                    borderRadius: "18px",
-                    boxShadow: "0 2px 10px rgba(30,30,40,0.07)",
-                    overflow: "hidden",
-                  }}
-                >
-                  <div style={{ padding: "20px" }}>
-                    <div className="flex items-center justify-between mb-1">
-                      <span style={{ fontSize: 15, color: "#FFF", fontFamily: "'Open Sans', Arial, sans-serif" }}>
-                        {offer.categories?.[0] || "Collaboration"}
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 27,
-                        color: "#fff",
-                        fontFamily: "'Open Sans', Arial, sans-serif",
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                        lineHeight: 1.0,
-                        marginBottom: 12,
-                        marginTop: 7,
-                      }}
-                    >
-                      {offer.title}
-                    </div>
-                    <div className="flex items-center" style={{ gap: "10px" }}>
-                      <span
-                        className="px-3 py-1 rounded-lg bg-[#222c] text-white text-xs font-semibold"
-                        style={{ fontFamily: "'Open Sans', Arial, sans-serif" }}
-                      >
-                        {offer.availability_start
-                          ? `${format(new Date(offer.availability_start), "MMM d")}${
-                              offer.availability_end ? `–${format(new Date(offer.availability_end), "d")}` : ""
-                            }`
-                          : "Ongoing"}
-                      </span>
-                    </div>
-                  </div>
-                  <div
-                    className="flex justify-between items-center px-6 py-2"
-                    style={{
-                      background: "#FFF9E6",
-                      borderRadius: "0 0 18px 18px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        color: "#555",
-                        fontFamily: "'Open Sans', Arial, sans-serif",
-                        fontWeight: 600,
-                        fontSize: 14,
-                      }}
-                    >
-                      {offer.creator_profile?.name}
-                    </span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleSeeDetails(offer)}
-                      style={{
-                        fontFamily: "'Darker Grotesque', Arial, sans-serif",
-                        fontWeight: 500,
-                        textTransform: "uppercase",
-                        fontSize: 14,
-                      }}
-                    >
-                      Details
-                    </Button>
-                  </div>
-                </div>
-              );
-            })}
+            {filteredOffers.map((offer) => (
+              <OfferCard
+                key={offer.id}
+                offer={offer}
+                creatorProfile={offer.creator_profile}
+                showActions={true}
+                onSeeDetails={() => handleSeeDetails(offer)}
+                onApply={() => handleApply(offer)}
+              />
+            ))}
           </div>
         )}
-
-        {/* Offer Details Modal */}
+        {/* Modals */}
         <OfferDetailsModal
           open={showDetailsModal}
           onOpenChange={setShowDetailsModal}
           offer={selectedOffer}
           creatorProfile={selectedOffer?.creator_profile}
         />
-
-        {/* Apply Modal */}
         <ApplyOfferModal
           open={showApplyModal}
           onOpenChange={setShowApplyModal}
