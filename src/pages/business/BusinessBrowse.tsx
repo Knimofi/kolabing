@@ -83,22 +83,31 @@ const BusinessBrowse = () => {
         return;
       }
 
+      // Fetch community profiles
       const communityIds = [...new Set((offersData || []).map((o) => o.creator_profile_id))];
       const { data: communityProfilesData } = await supabase
         .from("community_profiles")
         .select("profile_id, name, community_type, city, profile_photo, website, instagram")
         .in("profile_id", communityIds);
 
+      // Map for quick lookup
       const communityProfilesMap = new Map(
         (communityProfilesData || []).map((cp) => [cp.profile_id, { ...cp, profile_type: "community" }]),
       );
 
+      // Enrich offers with creator profiles
       const enrichedOffers = (offersData || []).map((offer) => {
         const creatorProfile = communityProfilesMap.get(offer.creator_profile_id);
-        return { ...offer, creator_profile: creatorProfile || null };
+
+        return {
+          ...offer,
+          creator_profile: creatorProfile || null,
+        };
       });
 
+      // Filter out offers without creator profiles
       const validOffers = enrichedOffers.filter((offer) => offer.creator_profile);
+
       setOffers(validOffers);
     } catch (error: any) {
       console.error("Unexpected error fetching offers:", error);
@@ -127,6 +136,7 @@ const BusinessBrowse = () => {
 
     setIsSubmittingApplication(true);
     try {
+      // Check for duplicate applications first
       const { data: existingApplication, error: checkError } = await supabase
         .from("applications")
         .select("id")
@@ -134,7 +144,9 @@ const BusinessBrowse = () => {
         .eq("applicant_profile_id", profile.id)
         .maybeSingle();
 
-      if (checkError && checkError.code !== "PGRST116") throw checkError;
+      if (checkError && checkError.code !== "PGRST116") {
+        throw checkError;
+      }
       if (existingApplication) {
         toast({
           title: "Error",
@@ -187,20 +199,19 @@ const BusinessBrowse = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-48">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-400"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#FFFCF7" }}>
+    <div className="min-h-screen" style={{ background: "#FFF" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         {/* Header */}
         <div>
           <h1 style={RUBIK_BOLD_TITLE}>FIND A COLLAB</h1>
           <p style={OPEN_SANS_SUBTITLE}>Discover collaboration opportunities from communities</p>
         </div>
-
         {/* Search */}
         <div className="my-4">
           <div className="relative flex-1 w-full max-w-2xl">
@@ -209,29 +220,28 @@ const BusinessBrowse = () => {
               placeholder="Search collabs by title, community, or keywords..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-11 py-2 text-base shadow-sm"
+              className="pl-11 py-2 text-base"
               style={{
-                borderRadius: "10px",
-                border: "1.5px solid #EAE2B7",
+                borderRadius: "7px",
+                border: "1.5px solid #ECECEC",
                 fontFamily: "'Open Sans', Arial, sans-serif",
-                background: "#FFFDF7",
+                background: "#FAFAFB",
               }}
             />
           </div>
         </div>
-
         {/* Offers grid */}
         {filteredOffers.length === 0 ? (
           <Card
             style={{
-              background: "#FFF8DC",
-              borderRadius: "16px",
-              border: "1px solid #F3E5AB",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
+              background: "#FFFBF0",
+              borderRadius: "12px",
+              border: "1px solid #E5E7EB",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
             }}
           >
             <CardContent className="py-16 text-center">
-              <Search className="w-12 h-12 mx-auto mb-4" style={{ color: "#F6C700" }} />
+              <Search className="w-12 h-12 mx-auto mb-4" style={{ color: "#FFD861" }} />
               <h3
                 className="text-lg font-semibold mb-2"
                 style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#1A1A1A" }}
@@ -249,11 +259,7 @@ const BusinessBrowse = () => {
                   : "Try adjusting your search terms."}
               </p>
               {searchTerm && (
-                <Button
-                  variant="outline"
-                  onClick={() => setSearchTerm("")}
-                  className="rounded-full border-yellow-300 text-yellow-800 hover:bg-yellow-100"
-                >
+                <Button variant="outline" onClick={() => setSearchTerm("")}>
                   Clear Search
                 </Button>
               )}
@@ -273,7 +279,6 @@ const BusinessBrowse = () => {
             ))}
           </div>
         )}
-
         {/* Modals */}
         <OfferDetailsModal
           open={showDetailsModal}
