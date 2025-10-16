@@ -30,19 +30,6 @@ const OPEN_SANS_SUBTITLE = {
   margin: 0,
 };
 
-const SEARCH_INPUT_STYLE = {
-  borderRadius: "7px",
-  border: "1.5px solid #ECECEC",
-  fontFamily: "'Open Sans', Arial, sans-serif",
-  background: "#FAFAFB",
-  outline: "none",
-  boxShadow: "none",
-};
-
-// No special focus/hover styling
-const SEARCH_INPUT_CLASS =
-  "pl-11 py-2 text-base focus:ring-0 focus:outline-none focus:border-[#ECECEC] hover:border-[#ECECEC]";
-
 const BusinessBrowse = () => {
   const { profile } = useAuth();
   const { toast } = useToast();
@@ -53,6 +40,7 @@ const BusinessBrowse = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [isSubmittingApplication, setIsSubmittingApplication] = useState(false);
+  const [inputState, setInputState] = useState<"normal" | "hover" | "focus">("normal");
 
   useEffect(() => {
     fetchOffers();
@@ -209,6 +197,17 @@ const BusinessBrowse = () => {
     return matchesSearch;
   });
 
+  let borderColor = "#ECECEC";
+  let borderWidth = "1.5px";
+  if (inputState === "hover") {
+    borderColor = "#CCCCCC";
+    borderWidth = "1.5px";
+  }
+  if (inputState === "focus") {
+    borderColor = "#BBBBBB";
+    borderWidth = "2px";
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-48">
@@ -233,18 +232,20 @@ const BusinessBrowse = () => {
               placeholder="Search collabs by title, community, or keywords..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={SEARCH_INPUT_CLASS}
-              style={SEARCH_INPUT_STYLE}
-              onFocus={(e) => {
-                e.target.style.boxShadow = "none";
-                e.target.style.outline = "none";
-                e.target.style.border = "1.5px solid #ECECEC";
+              className="pl-11 py-2 text-base focus:ring-0 focus:outline-none"
+              style={{
+                borderRadius: "7px",
+                border: `${borderWidth} solid ${borderColor}`,
+                fontFamily: "'Open Sans', Arial, sans-serif",
+                background: "#FAFAFB",
+                boxShadow: "none",
+                outline: "none",
+                transition: "border-color 0.13s, border-width 0.13s",
               }}
-              onBlur={(e) => {
-                e.target.style.boxShadow = "none";
-                e.target.style.outline = "none";
-                e.target.style.border = "1.5px solid #ECECEC";
-              }}
+              onFocus={() => setInputState("focus")}
+              onBlur={() => setInputState("normal")}
+              onMouseEnter={() => inputState !== "focus" && setInputState("hover")}
+              onMouseLeave={() => inputState !== "focus" && setInputState("normal")}
             />
           </div>
         </div>
