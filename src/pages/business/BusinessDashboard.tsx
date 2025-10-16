@@ -12,9 +12,9 @@ import { supabase } from "@/integrations/supabase/client";
 const RUBIK_EXTRA_BOLD_TITLE = {
   fontFamily: "'Rubik', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 800,
+  fontWeight: 700,
   color: "#1A1A1A",
-  fontSize: 26,
+  fontSize: 30,
   letterSpacing: "0.03em",
   margin: 0,
 };
@@ -22,7 +22,7 @@ const OPEN_SANS_BOLD_CARD_SMALL = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   textTransform: "uppercase" as const,
   fontWeight: 600,
-  color: "#1A1A1A",
+  color: "#232323",
   fontSize: 13,
   letterSpacing: "0.08em",
   margin: 0,
@@ -124,10 +124,10 @@ const BusinessDashboard = () => {
       <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         {/* Header */}
-        <div style={{ background: "#FFF9E6", borderRadius: "12px", padding: "16px" }}>
+        <div>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div>
-              <h1 style={RUBIK_EXTRA_BOLD_TITLE}>Business Dashboard</h1>
+              <h1 style={RUBIK_EXTRA_BOLD_TITLE}>BUSINESS DASHBOARD</h1>
               <p style={OPEN_SANS_SUBTITLE}>Manage your offers and track collaboration performance</p>
             </div>
             <Link to="/business/opportunities/new">
@@ -151,7 +151,7 @@ const BusinessDashboard = () => {
 
         {/* Stats cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card style={{ background: "#FFF9E6", border: "1px solid #FFE899", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)", transition: "all 0.2s ease" }}
+          <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)", transition: "all 0.2s ease" }}
             onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.08)"; }}
             onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.04)"; }}
           >
@@ -172,9 +172,9 @@ const BusinessDashboard = () => {
               </p>
             </CardContent>
           </Card>
-          <Card style={{ background: "#FFF9E6", border: "1px solid #FFE899", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)", transition: "all 0.2s ease" }}
-            onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.08)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.04)"; }}
+          <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)", transition: "all 0.2s ease" }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.03)"; e.currentTarget.style.boxShadow = "0 4px 24px 0 rgba(231, 192, 58, 0.18), 0 2px 12px 0 rgba(60, 44, 0, 0.1)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)"; }}
           >
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
@@ -193,9 +193,9 @@ const BusinessDashboard = () => {
               </p>
             </CardContent>
           </Card>
-          <Card style={{ background: "#FFF9E6", border: "1px solid #FFE899", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)", transition: "all 0.2s ease" }}
-            onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.08)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.04)"; }}
+          <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)", transition: "all 0.2s ease" }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.03)"; e.currentTarget.style.boxShadow = "0 4px 24px 0 rgba(231, 192, 58, 0.18), 0 2px 12px 0 rgba(60, 44, 0, 0.1)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)"; }}
           >
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
@@ -214,9 +214,9 @@ const BusinessDashboard = () => {
               </p>
             </CardContent>
           </Card>
-          <Card style={{ background: "#FFF9E6", border: "1px solid #FFE899", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)", transition: "all 0.2s ease" }}
-            onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.08)"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.04)"; }}
+          <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)", transition: "all 0.2s ease" }}
+            onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.03)"; e.currentTarget.style.boxShadow = "0 4px 24px 0 rgba(231, 192, 58, 0.18), 0 2px 12px 0 rgba(60, 44, 0, 0.1)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)"; }}
           >
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
@@ -239,9 +239,9 @@ const BusinessDashboard = () => {
 
         {/* Getting Started */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card style={{ background: "#FFFBF0", border: "1px solid #E5E7EB", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
+          <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
             <CardHeader>
-              <CardTitle style={{ ...RUBIK_EXTRA_BOLD_TITLE, fontSize: 20 }}>Getting Started</CardTitle>
+              <CardTitle style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontWeight: 600, fontSize: 18, color: "#232323" }}>Getting Started</CardTitle>
               <CardDescription style={OPEN_SANS_SUBTITLE}>
                 Complete these steps to start connecting with communities
               </CardDescription>

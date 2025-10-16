@@ -264,7 +264,7 @@ const CommunityCollaborations = () => {
     <div className="space-y-6">
       <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">My Collaborations</h1>
+          <h1 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 700, fontSize: 30, color: "#1A1A1A", letterSpacing: "0.03em" }}>MY COLLABORATIONS</h1>
           <p className="text-muted-foreground">View and manage your active collaborations</p>
         </div>
       </header>
@@ -302,7 +302,7 @@ const CommunityCollaborations = () => {
 
       {/* Collaborations Grid */}
       {filteredCollaborations.length === 0 ? (
-        <Card>
+        <Card style={{ background: "#FFF6D8", borderRadius: "18px", border: "1.5px solid #F9E9AC", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
           <CardContent className="py-16 text-center">
             <p className="text-lg font-semibold">No collaborations found</p>
             <p className="text-muted-foreground mt-2">

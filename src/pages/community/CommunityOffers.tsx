@@ -290,8 +290,8 @@ const CommunityOffers = () => {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-          Find a Collab
+        <h1 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 700, fontSize: 30, color: "#1A1A1A", letterSpacing: "0.03em" }}>
+          FIND A COLLAB
         </h1>
         <p className="text-muted-foreground">
           Discover collaboration opportunities from businesses
@@ -313,7 +313,7 @@ const CommunityOffers = () => {
 
       {/* Offers Grid */}
       {filteredOffers.length === 0 ? (
-        <Card>
+        <Card style={{ background: "#FFF6D8", borderRadius: "18px", border: "1.5px solid #F9E9AC", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
           <CardContent className="py-16">
             <div className="text-center">
               <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />

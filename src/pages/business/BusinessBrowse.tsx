@@ -12,7 +12,7 @@ import ApplyOfferModal from "@/components/modals/ApplyOfferModal";
 
 const RUBIK_BOLD_TITLE = {
   fontFamily: "'Rubik', Arial, sans-serif",
-  textTransform: "uppercase",
+  textTransform: "uppercase" as const,
   fontWeight: 700,
   color: "#1A1A1A",
   letterSpacing: "0.03em",
@@ -26,7 +26,7 @@ const OPEN_SANS_SUBTITLE = {
   fontSize: 15,
   color: "#4A4A4A",
   letterSpacing: 0,
-  textTransform: "none",
+  textTransform: "none" as const,
   margin: 0,
 };
 

@@ -120,9 +120,9 @@ const CommunityProfile: React.FC = () => {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex items-center space-x-3">
-        <Users className="w-8 h-8 text-primary" />
+        <Users className="w-8 h-8" style={{ color: "#FFD861" }} />
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Community Profile</h1>
+          <h1 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 700, fontSize: 30, color: "#1A1A1A", letterSpacing: "0.03em" }}>COMMUNITY PROFILE</h1>
           <p className="text-muted-foreground">
             Manage your community information and social presence
           </p>
@@ -130,7 +130,7 @@ const CommunityProfile: React.FC = () => {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <Card>
+        <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
           <CardHeader>
             <CardTitle>Community Information</CardTitle>
             <CardDescription>

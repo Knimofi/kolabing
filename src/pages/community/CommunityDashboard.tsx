@@ -23,16 +23,16 @@ const CommunityDashboard = () => {
     <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         {/* Page Header */}
-        <div style={{ background: "#FFF9E6", borderRadius: "12px", padding: "16px" }}>
+        <div>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h1
                 style={{
                   fontFamily: "'Rubik', Arial, sans-serif",
                   textTransform: "uppercase",
-                  fontWeight: 800,
+                  fontWeight: 700,
                   color: "#1A1A1A",
-                  fontSize: 26,
+                  fontSize: 30,
                   letterSpacing: "0.03em",
                 }}
               >
@@ -105,14 +105,14 @@ const CommunityDashboard = () => {
             <Card 
               key={idx} 
               style={{ 
-                background: "#FFF9E6", 
-                border: "1px solid #FFE899", 
-                borderRadius: "12px", 
-                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)", 
+                background: "#FFF6D8", 
+                border: "1.5px solid #F9E9AC", 
+                borderRadius: "18px", 
+                boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)", 
                 transition: "all 0.2s ease" 
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.08)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.04)"; }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.03)"; e.currentTarget.style.boxShadow = "0 4px 24px 0 rgba(231, 192, 58, 0.18), 0 2px 12px 0 rgba(60, 44, 0, 0.1)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)"; }}
             >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "13px", letterSpacing: "0.08em", color: "#1A1A1A" }}>
@@ -136,7 +136,7 @@ const CommunityDashboard = () => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card style={{ background: "#FFFBF0", border: "1px solid #E5E7EB", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
+          <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
             <CardHeader>
               <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#1A1A1A" }}>
                 GETTING STARTED
@@ -234,7 +234,7 @@ const CommunityDashboard = () => {
             </CardContent>
           </Card>
 
-          <Card style={{ background: "#FFFBF0", border: "1px solid #E5E7EB", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
+          <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
             <CardHeader>
               <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#1A1A1A" }}>RECENT OFFERS</CardTitle>
               <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
@@ -256,7 +256,7 @@ const CommunityDashboard = () => {
         </div>
 
         {/* Tips */}
-        <Card style={{ background: "#FFFBF0", border: "1px solid #E5E7EB", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
+        <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
           <CardHeader>
             <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#1A1A1A" }}>TIPS FOR SUCCESS</CardTitle>
             <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>

@@ -209,10 +209,10 @@ const BusinessCollaborations = () => {
   return (
     <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
-        <header style={{ background: "#FFF9E6", borderRadius: "12px", padding: "16px" }}>
+        <header>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 style={RUBIK_EXTRA_BOLD_TITLE}>My Collaborations</h1>
+              <h1 style={RUBIK_EXTRA_BOLD_TITLE}>MY COLLABORATIONS</h1>
               <p style={OPEN_SANS_SUBTITLE}>View and manage your active collaborations</p>
             </div>
           </div>
@@ -249,7 +249,7 @@ const BusinessCollaborations = () => {
 
         {/* Collaborations Grid */}
         {filteredCollaborations.length === 0 ? (
-          <Card style={{ background: "#FFFBF0", borderRadius: "12px", border: "1px solid #E5E7EB", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
+          <Card style={{ background: "#FFF6D8", borderRadius: "18px", border: "1.5px solid #F9E9AC", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
             <CardContent className="py-16 text-center">
               <p className="text-lg font-semibold" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#1A1A1A" }}>No collaborations found</p>
               <p className="mt-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>

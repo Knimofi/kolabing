@@ -244,13 +244,13 @@ const BusinessApplications = () => {
   return (
     <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
-        <div style={{ background: "#FFF9E6", borderRadius: "12px", padding: "16px" }}>
-          <h1 style={RUBIK_EXTRA_BOLD_TITLE}>Applications Received</h1>
+        <div>
+          <h1 style={RUBIK_EXTRA_BOLD_TITLE}>APPLICATIONS RECEIVED</h1>
           <p style={OPEN_SANS_SUBTITLE}>Review and manage applications for your collaboration opportunities</p>
         </div>
 
         {Object.keys(applicationsByOpportunity).length === 0 ? (
-          <Card style={{ background: "#FFFBF0", borderRadius: "12px", border: "1px solid #E5E7EB", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
+          <Card style={{ background: "#FFF6D8", borderRadius: "18px", border: "1.5px solid #F9E9AC", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
             <CardContent className="py-16">
               <div className="text-center">
                 <MessageSquare className="w-12 h-12 mx-auto mb-4" style={{ color: "#FFD861" }} />

@@ -13,9 +13,9 @@ import { Plus, Eye, Edit, Send, ArrowLeft, Trash2, Copy } from 'lucide-react';
 const RUBIK_EXTRA_BOLD_TITLE = {
   fontFamily: "'Rubik', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 800,
+  fontWeight: 700,
   color: "#1A1A1A",
-  fontSize: 26,
+  fontSize: 30,
   letterSpacing: "0.03em",
   margin: 0,
 };
@@ -215,10 +215,10 @@ const BusinessOffers = () => {
   return (
     <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
-        <header style={{ background: "#FFF9E6", borderRadius: "12px", padding: "16px" }}>
+        <header>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 style={RUBIK_EXTRA_BOLD_TITLE}>My Collab Requests</h1>
+              <h1 style={RUBIK_EXTRA_BOLD_TITLE}>MY COLLAB REQUESTS</h1>
               <p style={OPEN_SANS_SUBTITLE}>Create and manage your collaboration opportunities</p>
             </div>
             <div className="flex items-center gap-2">
@@ -251,7 +251,7 @@ const BusinessOffers = () => {
         </div>
 
         {filteredOffers.length === 0 ? (
-          <Card style={{ background: "#FFFBF0", borderRadius: "12px", border: "1px solid #E5E7EB", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)" }}>
+          <Card style={{ background: "#FFF6D8", borderRadius: "18px", border: "1.5px solid #F9E9AC", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
             <CardContent className="py-16 text-center">
               <p className="text-lg font-semibold" style={{ ...OPEN_SANS, fontWeight: 600, fontSize: "18px", color: "#1A1A1A" }}>No opportunities found</p>
               <Button 
@@ -269,9 +269,9 @@ const BusinessOffers = () => {
         ) : (
           <div className="space-y-4">
             {filteredOffers.map((offer) => (
-              <Card key={offer.id} style={{ background: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "12px", boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)", transition: "all 0.2s ease" }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(0, 0, 0, 0.08)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.04)"; }}
+              <Card key={offer.id} style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)", transition: "all 0.2s ease" }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.03)"; e.currentTarget.style.boxShadow = "0 4px 24px 0 rgba(231, 192, 58, 0.18), 0 2px 12px 0 rgba(60, 44, 0, 0.1)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)"; }}
               >
                 <CardHeader>
                   <CardTitle style={{ ...OPEN_SANS_BOLD_CARD_SMALL, fontSize: 18 }}>{offer.title}</CardTitle>
