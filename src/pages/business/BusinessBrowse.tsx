@@ -30,6 +30,19 @@ const OPEN_SANS_SUBTITLE = {
   margin: 0,
 };
 
+const SEARCH_INPUT_STYLE = {
+  borderRadius: "7px",
+  border: "1.5px solid #ECECEC",
+  fontFamily: "'Open Sans', Arial, sans-serif",
+  background: "#FAFAFB",
+  outline: "none",
+  boxShadow: "none",
+};
+
+// No special focus/hover styling
+const SEARCH_INPUT_CLASS =
+  "pl-11 py-2 text-base focus:ring-0 focus:outline-none focus:border-[#ECECEC] hover:border-[#ECECEC]";
+
 const BusinessBrowse = () => {
   const { profile } = useAuth();
   const { toast } = useToast();
@@ -220,12 +233,17 @@ const BusinessBrowse = () => {
               placeholder="Search collabs by title, community, or keywords..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-11 py-2 text-base"
-              style={{
-                borderRadius: "7px",
-                border: "1.5px solid #ECECEC",
-                fontFamily: "'Open Sans', Arial, sans-serif",
-                background: "#FAFAFB",
+              className={SEARCH_INPUT_CLASS}
+              style={SEARCH_INPUT_STYLE}
+              onFocus={(e) => {
+                e.target.style.boxShadow = "none";
+                e.target.style.outline = "none";
+                e.target.style.border = "1.5px solid #ECECEC";
+              }}
+              onBlur={(e) => {
+                e.target.style.boxShadow = "none";
+                e.target.style.outline = "none";
+                e.target.style.border = "1.5px solid #ECECEC";
               }}
             />
           </div>
