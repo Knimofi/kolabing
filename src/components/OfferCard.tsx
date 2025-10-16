@@ -47,36 +47,42 @@ interface OfferCardProps {
   onApply?: () => void;
 }
 
-const OfferCard = ({ offer, creatorProfile, businessProfile, showActions = true, onSeeDetails, onApply }: OfferCardProps) => {
-  // Use creatorProfile if available, otherwise fall back to businessProfile for backward compatibility
+const SOFT_YELLOW = "#FFF6D8";
+const SOFT_BLACK = "#232323";
+const CARD_BORDER = "#F9E9AC";
+const SHADOW = "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)";
+const BUTTON_YELLOW = "#FFD861";
+
+const OfferCard = ({
+  offer,
+  creatorProfile,
+  businessProfile,
+  showActions = true,
+  onSeeDetails,
+  onApply,
+}: OfferCardProps) => {
   const profile = creatorProfile || businessProfile;
   const formatAvailability = () => {
     if (!offer.availability_start && !offer.availability_end) return null;
-
     if (offer.availability_start && offer.availability_end) {
       const start = new Date(offer.availability_start);
       const end = new Date(offer.availability_end);
       return `${format(start, "MMM d")}–${format(end, "d")}`;
     }
-
     if (offer.availability_start) {
       return `From ${format(new Date(offer.availability_start), "MMM d")}`;
     }
-
     return null;
   };
-
   const renderBusinessOffer = () => (
-    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+    <div className="flex items-center gap-2 text-sm" style={{ color: SOFT_BLACK, opacity: 0.8 }}>
       <span>🎁</span>
       <span className="truncate">{offer.business_offer.description}</span>
     </div>
   );
-
   const renderDeliverables = () => {
     const deliverables: string[] = [];
     const d = offer.community_deliverables;
-
     if (d.tagged_stories) deliverables.push(`📲 ${d.tagged_stories} Stories`);
     if (d.google_reviews) deliverables.push(`⭐ ${d.google_reviews} Reviews`);
     if (d.number_of_attendees) deliverables.push(`👥 ${d.number_of_attendees} Attendees`);
@@ -87,9 +93,8 @@ const OfferCard = ({ offer, creatorProfile, businessProfile, showActions = true,
     if (d.group_picture) deliverables.push("🖼️ Group Picture");
     if (d.loyalty_signups) deliverables.push(`📝 ${d.loyalty_signups} Sign-ups`);
     if (d.minimum_consumption) deliverables.push(`💶 Min. €${d.minimum_consumption}`);
-
     return (
-      <div className="flex flex-wrap gap-1 text-sm text-muted-foreground">
+      <div className="flex flex-wrap gap-1 text-sm" style={{ color: SOFT_BLACK, opacity: 0.8 }}>
         {deliverables.map((item, index) => (
           <React.Fragment key={index}>
             <span>{item}</span>
@@ -121,15 +126,26 @@ const OfferCard = ({ offer, creatorProfile, businessProfile, showActions = true,
     }
   }
 
-  const displayType = (creatorProfile?.business_type || creatorProfile?.community_type || businessProfile?.business_type) || "Creator";
-  const displayBadge = creatorProfile?.profile_type === 'community' ? 'Community' : 'Business';
+  const displayType =
+    creatorProfile?.business_type || creatorProfile?.community_type || businessProfile?.business_type || "Creator";
+  const displayBadge = creatorProfile?.profile_type === "community" ? "Community" : "Business";
 
   return (
-    <Card className="group h-full transition-all duration-200 hover:scale-105 hover:shadow-lg rounded-lg">
+    <Card
+      className="group h-full transition-all duration-200 hover:scale-[1.03] hover:shadow-xl"
+      style={{
+        background: SOFT_YELLOW,
+        color: SOFT_BLACK,
+        borderRadius: "18px",
+        border: `1.5px solid ${CARD_BORDER}`,
+        boxShadow: SHADOW,
+        position: "relative",
+      }}
+    >
       <CardContent className="p-4 h-full flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 text-sm" style={{ color: SOFT_BLACK, opacity: 0.87 }}>
             <span>{displayType}</span>
             <span>•</span>
             <span>{profile?.city || "Location"}</span>
@@ -139,9 +155,8 @@ const OfferCard = ({ offer, creatorProfile, businessProfile, showActions = true,
             <AvatarFallback className="text-xs">{profile?.name?.[0] || "C"}</AvatarFallback>
           </Avatar>
         </div>
-
         {/* Cover Image */}
-        <div className="relative mb-4 rounded-lg overflow-hidden bg-muted aspect-video">
+        <div className="relative mb-4 rounded-lg overflow-hidden aspect-video" style={{ background: "#FFE49B" }}>
           <img
             src={photoUrl}
             alt={offer.title}
@@ -149,34 +164,61 @@ const OfferCard = ({ offer, creatorProfile, businessProfile, showActions = true,
             onError={(e) => {
               (e.target as HTMLImageElement).src = "/placeholder.svg";
             }}
+            style={{ borderRadius: "9px" }}
           />
           {formatAvailability() && (
-            <div className="absolute bottom-2 left-2 bg-background/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium">
+            <div
+              className="absolute bottom-2 left-2 bg-white/85 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium"
+              style={{ color: SOFT_BLACK }}
+            >
               {formatAvailability()}
             </div>
           )}
         </div>
-
         {/* Main Content */}
         <div className="flex-1 space-y-3">
-          <h3 className="font-semibold text-lg leading-tight line-clamp-2">{offer.title}</h3>
-
+          <h3 className="font-semibold text-xl leading-tight line-clamp-2" style={{ color: SOFT_BLACK }}>
+            {offer.title}
+          </h3>
           {renderBusinessOffer()}
           {renderDeliverables()}
-
-          <p className="text-sm text-muted-foreground leading-relaxed">{truncateDescription(offer.description)}</p>
+          <p className="text-sm leading-relaxed" style={{ color: SOFT_BLACK, opacity: 0.87 }}>
+            {truncateDescription(offer.description)}
+          </p>
         </div>
-
         {/* Footer Actions */}
         {showActions && (
-          <div className="flex gap-2 mt-4 pt-3 border-t">
+          <div className="flex gap-2 mt-4 pt-3 border-t" style={{ borderColor: CARD_BORDER }}>
             {onSeeDetails && (
-              <Button variant="outline" size="sm" className="flex-1" onClick={onSeeDetails}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex-1"
+                style={{
+                  background: SOFT_YELLOW,
+                  color: SOFT_BLACK,
+                  fontWeight: 500,
+                  border: `1px solid ${SOFT_YELLOW}`,
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#FFE49B")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = SOFT_YELLOW)}
+                onClick={onSeeDetails}
+              >
                 See Details
               </Button>
             )}
             {onApply && (
-              <Button size="sm" className="flex-1" onClick={onApply}>
+              <Button
+                size="sm"
+                className="flex-1"
+                style={{
+                  background: BUTTON_YELLOW,
+                  color: SOFT_BLACK,
+                  fontWeight: 600,
+                  boxShadow: "none",
+                }}
+                onClick={onApply}
+              >
                 Apply
               </Button>
             )}
