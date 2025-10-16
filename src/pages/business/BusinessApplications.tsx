@@ -225,17 +225,17 @@ const BusinessApplications = () => {
   const RUBIK_EXTRA_BOLD_TITLE = {
     fontFamily: "'Rubik', Arial, sans-serif",
     textTransform: "uppercase" as const,
-    fontWeight: 800,
-    color: "#000",
-    fontSize: 26,
-    letterSpacing: 0.03,
+    fontWeight: 700,
+    color: "#2b2b2d",
+    fontSize: 30,
+    letterSpacing: "0.03em",
     margin: 0,
   };
   const OPEN_SANS_SUBTITLE = {
     fontFamily: "'Open Sans', Arial, sans-serif",
     fontWeight: 400,
     fontSize: 15,
-    color: "#222",
+    color: "#5a5a5c",
     letterSpacing: 0,
     textTransform: "none" as const,
     margin: 0,
@@ -254,8 +254,8 @@ const BusinessApplications = () => {
             <CardContent className="py-16">
               <div className="text-center">
                 <MessageSquare className="w-12 h-12 mx-auto mb-4" style={{ color: "#FFD861" }} />
-                <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#1A1A1A" }}>No pending applications</h3>
-                <p className="mb-6 max-w-md mx-auto" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
+                <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#2b2b2d" }}>No pending applications</h3>
+                <p className="mb-6 max-w-md mx-auto" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
                   When communities apply to your collaboration opportunities, they'll appear here for review.
                 </p>
               </div>

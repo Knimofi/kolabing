@@ -14,9 +14,9 @@ const RUBIK_BOLD_TITLE = {
   fontFamily: "'Rubik', Arial, sans-serif",
   textTransform: "uppercase" as const,
   fontWeight: 700,
-  color: "#1A1A1A",
-  letterSpacing: "0.03em",
+  color: "#2b2b2d",
   fontSize: 30,
+  letterSpacing: "0.03em",
   margin: "0 0 8px 0",
 };
 
@@ -24,7 +24,7 @@ const OPEN_SANS_SUBTITLE = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
   fontSize: 15,
-  color: "#4A4A4A",
+  color: "#5a5a5c",
   letterSpacing: 0,
   textTransform: "none" as const,
   margin: 0,
@@ -227,7 +227,7 @@ const BusinessBrowse = () => {
         {/* Search */}
         <div className="my-4">
           <div className="relative flex-1 w-full max-w-2xl">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" style={{ color: "#6b6b6d" }} />
             <Input
               placeholder="Search collabs by title, community, or keywords..."
               value={searchTerm}
@@ -263,7 +263,7 @@ const BusinessBrowse = () => {
               <Search className="w-12 h-12 mx-auto mb-4" style={{ color: "#FFD861" }} />
               <h3
                 className="text-lg font-semibold mb-2"
-                style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#1A1A1A" }}
+                style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#2b2b2d" }}
               >
                 {offers.length === 0
                   ? "No community collab requests available yet"
@@ -271,7 +271,7 @@ const BusinessBrowse = () => {
               </h3>
               <p
                 className="mb-6 max-w-md mx-auto"
-                style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}
+                style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}
               >
                 {offers.length === 0
                   ? "New collab requests will appear here soon."

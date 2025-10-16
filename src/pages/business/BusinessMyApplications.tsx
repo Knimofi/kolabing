@@ -189,17 +189,17 @@ const BusinessMyApplications: React.FC = () => {
   const RUBIK_EXTRA_BOLD_TITLE = {
     fontFamily: "'Rubik', Arial, sans-serif",
     textTransform: "uppercase" as const,
-    fontWeight: 800,
-    color: "#000",
-    fontSize: 26,
-    letterSpacing: 0.03,
+    fontWeight: 700,
+    color: "#2b2b2d",
+    fontSize: 30,
+    letterSpacing: "0.03em",
     margin: 0,
   };
   const OPEN_SANS_SUBTITLE = {
     fontFamily: "'Open Sans', Arial, sans-serif",
     fontWeight: 400,
     fontSize: 15,
-    color: "#222",
+    color: "#5a5a5c",
     letterSpacing: 0,
     textTransform: "none" as const,
     margin: 0,
@@ -208,7 +208,7 @@ const BusinessMyApplications: React.FC = () => {
     fontFamily: "'Open Sans', Arial, sans-serif",
     fontWeight: 400,
     fontSize: 14,
-    color: "#222",
+    color: "#5a5a5c",
   };
 
   if (loading) {
@@ -237,7 +237,7 @@ const BusinessMyApplications: React.FC = () => {
 
         {/* Search */}
         <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" style={{ color: "#6b6b6d" }} />
           <Input
             placeholder="Search applications..."
             value={searchTerm}
@@ -252,12 +252,12 @@ const BusinessMyApplications: React.FC = () => {
             <div>
               {applications.length === 0 ? (
                 <div>
-                  <h3 className="text-lg font-medium mb-2" style={{ ...OPEN_SANS, fontWeight: 600, color: "#1A1A1A" }}>No applications yet</h3>
+                  <h3 className="text-lg font-medium mb-2" style={{ ...OPEN_SANS, fontWeight: 600, color: "#2b2b2d" }}>No applications yet</h3>
                   <p style={OPEN_SANS}>You haven't applied to any opportunities yet. Browse opportunities to get started!</p>
                 </div>
               ) : (
                 <div>
-                  <h3 className="text-lg font-medium mb-2" style={{ ...OPEN_SANS, fontWeight: 600, color: "#1A1A1A" }}>No matching applications</h3>
+                  <h3 className="text-lg font-medium mb-2" style={{ ...OPEN_SANS, fontWeight: 600, color: "#2b2b2d" }}>No matching applications</h3>
                   <p style={OPEN_SANS}>Try adjusting your search terms.</p>
                 </div>
               )}

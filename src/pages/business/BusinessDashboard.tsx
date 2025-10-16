@@ -13,7 +13,7 @@ const RUBIK_EXTRA_BOLD_TITLE = {
   fontFamily: "'Rubik', Arial, sans-serif",
   textTransform: "uppercase" as const,
   fontWeight: 700,
-  color: "#1A1A1A",
+  color: "#2b2b2d",
   fontSize: 30,
   letterSpacing: "0.03em",
   margin: 0,
@@ -22,7 +22,7 @@ const OPEN_SANS_BOLD_CARD_SMALL = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   textTransform: "uppercase" as const,
   fontWeight: 600,
-  color: "#232323",
+  color: "#2b2b2d",
   fontSize: 13,
   letterSpacing: "0.08em",
   margin: 0,
@@ -31,7 +31,7 @@ const OPEN_SANS_SUBTITLE = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
   fontSize: 15,
-  color: "#4A4A4A",
+  color: "#5a5a5c",
   letterSpacing: 0,
   textTransform: "none" as const,
   margin: 0,
@@ -40,13 +40,13 @@ const OPEN_SANS = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
   fontSize: 14,
-  color: "#4A4A4A",
+  color: "#5a5a5c",
 };
 
 const BUTTON_YELLOW = {
   background: "#FFD861",
-  border: "2px solid #FFD861",
-  color: "#000",
+  border: "none",
+  color: "#2b2b2d",
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
   textTransform: "uppercase" as const,
   fontWeight: 600,
@@ -57,12 +57,12 @@ const BUTTON_YELLOW = {
   transition: "all 0.2s ease-in-out",
 };
 const BUTTON_OUTLINE = {
-  background: "#1A1A1A",
-  border: "2px solid #1A1A1A",
-  color: "#fff",
+  background: "transparent",
+  border: "1.5px solid #CCCCCC",
+  color: "#2b2b2d",
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 500,
+  fontWeight: 600,
   letterSpacing: "0.03em",
   fontSize: 15,
   padding: "8px 14px",
@@ -159,15 +159,15 @@ const BusinessDashboard = () => {
               <div className="flex items-center justify-between">
                 <span style={OPEN_SANS_BOLD_CARD_SMALL}>Total Offers</span>
                 <div style={{ background: "#FFD861", borderRadius: "50%", padding: "8px" }}>
-                  <FileText className="w-4 h-4" style={{ color: "#000" }} />
+                  <FileText className="w-4 h-4" style={{ color: "#2b2b2d" }} />
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold" style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#1A1A1A" }}>
+              <div className="text-3xl font-bold" style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#2b2b2d" }}>
                 {loading ? "..." : stats.totalOffers}
               </div>
-              <p className="text-xs mt-1" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
+              <p className="text-xs mt-1" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
                 {stats.totalOffers === 0 ? "No offers created yet" : "Total created offers"}
               </p>
             </CardContent>
@@ -180,15 +180,15 @@ const BusinessDashboard = () => {
               <div className="flex items-center justify-between">
                 <span style={OPEN_SANS_BOLD_CARD_SMALL}>Active Offers</span>
                 <div style={{ background: "#FFD861", borderRadius: "50%", padding: "8px" }}>
-                  <TrendingUp className="w-4 h-4" style={{ color: "#000" }} />
+                  <TrendingUp className="w-4 h-4" style={{ color: "#2b2b2d" }} />
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold" style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#1A1A1A" }}>
+              <div className="text-3xl font-bold" style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#2b2b2d" }}>
                 {loading ? "..." : stats.activeOffers}
               </div>
-              <p className="text-xs mt-1" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
+              <p className="text-xs mt-1" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
                 Published offers
               </p>
             </CardContent>
@@ -201,15 +201,15 @@ const BusinessDashboard = () => {
               <div className="flex items-center justify-between">
                 <span style={OPEN_SANS_BOLD_CARD_SMALL}>Applications</span>
                 <div style={{ background: "#FFD861", borderRadius: "50%", padding: "8px" }}>
-                  <FileText className="w-4 h-4" style={{ color: "#000" }} />
+                  <FileText className="w-4 h-4" style={{ color: "#2b2b2d" }} />
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold" style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#1A1A1A" }}>
+              <div className="text-3xl font-bold" style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#2b2b2d" }}>
                 {loading ? "..." : stats.applications}
               </div>
-              <p className="text-xs mt-1" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
+              <p className="text-xs mt-1" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
                 Total applications received
               </p>
             </CardContent>
@@ -222,15 +222,15 @@ const BusinessDashboard = () => {
               <div className="flex items-center justify-between">
                 <span style={OPEN_SANS_BOLD_CARD_SMALL}>Collaborations</span>
                 <div style={{ background: "#FFD861", borderRadius: "50%", padding: "8px" }}>
-                  <Users className="w-4 h-4" style={{ color: "#000" }} />
+                  <Users className="w-4 h-4" style={{ color: "#2b2b2d" }} />
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold" style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#1A1A1A" }}>
+              <div className="text-3xl font-bold" style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#2b2b2d" }}>
                 {loading ? "..." : stats.collaborations}
               </div>
-              <p className="text-xs mt-1" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
+              <p className="text-xs mt-1" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
                 Active partnerships
               </p>
             </CardContent>
@@ -241,7 +241,7 @@ const BusinessDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
             <CardHeader>
-              <CardTitle style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontWeight: 600, fontSize: 18, color: "#232323" }}>Getting Started</CardTitle>
+              <CardTitle style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontWeight: 600, fontSize: 18, color: "#2b2b2d" }}>Getting Started</CardTitle>
               <CardDescription style={OPEN_SANS_SUBTITLE}>
                 Complete these steps to start connecting with communities
               </CardDescription>

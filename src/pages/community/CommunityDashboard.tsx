@@ -31,7 +31,7 @@ const CommunityDashboard = () => {
                   fontFamily: "'Rubik', Arial, sans-serif",
                   textTransform: "uppercase",
                   fontWeight: 700,
-                  color: "#1A1A1A",
+                  color: "#2b2b2d",
                   fontSize: 30,
                   letterSpacing: "0.03em",
                 }}
@@ -43,7 +43,7 @@ const CommunityDashboard = () => {
                   fontFamily: "'Open Sans', Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 15,
-                  color: "#4A4A4A",
+                  color: "#5a5a5c",
                 }}
               >
                 DISCOVER OPPORTUNITIES AND MANAGE YOUR COLLABORATIONS
@@ -54,8 +54,8 @@ const CommunityDashboard = () => {
                 size="lg"
                 style={{
                   background: "#FFD861",
-                  border: "2px solid #FFD861",
-                  color: "#000",
+                  border: "none",
+                  color: "#2b2b2d",
                   fontFamily: "'Darker Grotesque', Arial, sans-serif",
                   textTransform: "uppercase",
                   fontWeight: 600,
@@ -84,20 +84,20 @@ const CommunityDashboard = () => {
           {[
             {
               title: "APPLICATIONS",
-              icon: <FileText className="h-5 w-5" style={{ color: "#000" }} />,
+              icon: <FileText className="h-5 w-5" style={{ color: "#2b2b2d" }} />,
               value: 0,
               desc: "Total applications sent",
             },
-            { title: "PENDING", icon: <Clock className="h-5 w-5" style={{ color: "#000" }} />, value: 0, desc: "Awaiting response" },
+            { title: "PENDING", icon: <Clock className="h-5 w-5" style={{ color: "#2b2b2d" }} />, value: 0, desc: "Awaiting response" },
             {
               title: "ACCEPTED",
-              icon: <TrendingUp className="h-5 w-5" style={{ color: "#000" }} />,
+              icon: <TrendingUp className="h-5 w-5" style={{ color: "#2b2b2d" }} />,
               value: 0,
               desc: "Successful applications",
             },
             {
               title: "COLLABORATIONS",
-              icon: <Users className="h-5 w-5" style={{ color: "#000" }} />,
+              icon: <Users className="h-5 w-5" style={{ color: "#2b2b2d" }} />,
               value: 0,
               desc: "Active partnerships",
             },
@@ -115,7 +115,7 @@ const CommunityDashboard = () => {
               onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)"; }}
             >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "13px", letterSpacing: "0.08em", color: "#1A1A1A" }}>
+                <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "13px", letterSpacing: "0.08em", color: "#2b2b2d" }}>
                   {title}
                 </CardTitle>
                 <div style={{ background: "#FFD861", borderRadius: "50%", padding: "8px" }}>
@@ -123,10 +123,10 @@ const CommunityDashboard = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-extrabold mb-1" style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#1A1A1A" }}>
+                <div className="text-3xl font-extrabold mb-1" style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#2b2b2d" }}>
                   {String(value)}
                 </div>
-                <p className="text-xs" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
+                <p className="text-xs" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
                   {desc}
                 </p>
               </CardContent>
@@ -138,10 +138,10 @@ const CommunityDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
             <CardHeader>
-              <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#1A1A1A" }}>
+              <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#2b2b2d" }}>
                 GETTING STARTED
               </CardTitle>
-              <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
+              <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
                 Complete these steps to start collaborating with businesses
               </CardDescription>
             </CardHeader>
@@ -163,7 +163,7 @@ const CommunityDashboard = () => {
                 >
                   ✓
                 </div>
-                <span style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "15px", color: "#1A1A1A" }}>
+                <span style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "15px", color: "#2b2b2d" }}>
                   Set up your community profile
                 </span>
               </div>
@@ -185,7 +185,7 @@ const CommunityDashboard = () => {
                   >
                     2
                   </div>
-                  <span style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "15px", color: "#1A1A1A" }}>
+                  <span style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "15px", color: "#2b2b2d" }}>
                     Browse available opportunities
                   </span>
                 </div>
@@ -194,8 +194,8 @@ const CommunityDashboard = () => {
                     size="sm"
                     style={{
                       background: "#FFD861",
-                      border: "2px solid #FFD861",
-                      color: "#000",
+                      border: "none",
+                      color: "#2b2b2d",
                       fontFamily: "'Darker Grotesque', Arial, sans-serif",
                       textTransform: "uppercase",
                       fontWeight: 600,
@@ -227,27 +227,27 @@ const CommunityDashboard = () => {
                 >
                   3
                 </div>
-                <span style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "15px", color: "#1A1A1A" }}>
-                  Submit your first application
-                </span>
-              </div>
-            </CardContent>
-          </Card>
+                  <span style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "15px", color: "#2b2b2d" }}>
+                    Submit your first application
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
 
-          <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
-            <CardHeader>
-              <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#1A1A1A" }}>RECENT OFFERS</CardTitle>
-              <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
+            <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
+              <CardHeader>
+                <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#2b2b2d" }}>RECENT OFFERS</CardTitle>
+                <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
                 Latest collaboration opportunities
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-center py-8">
                 <Search className="w-12 h-12 mx-auto mb-4" style={{ color: "#FFD861" }} />
-                <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "15px", color: "#1A1A1A" }}>
+                <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "15px", color: "#2b2b2d" }}>
                   No offers available yet
                 </p>
-                <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "13px", color: "#6B7280", marginTop: "8px" }}>
+                <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "13px", color: "#6b6b6d", marginTop: "8px" }}>
                   Check back soon for new opportunities
                 </p>
               </div>
@@ -258,34 +258,34 @@ const CommunityDashboard = () => {
         {/* Tips */}
         <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
           <CardHeader>
-            <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#1A1A1A" }}>TIPS FOR SUCCESS</CardTitle>
-            <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
+            <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#2b2b2d" }}>TIPS FOR SUCCESS</CardTitle>
+            <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
               Maximize your collaboration potential
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div style={{ padding: "16px", background: "#FFF9E6", borderRadius: "8px" }}>
-                <h4 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "14px", color: "#1A1A1A", marginBottom: "8px" }}>
+                <h4 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "14px", color: "#2b2b2d", marginBottom: "8px" }}>
                   COMPLETE YOUR PROFILE
                 </h4>
-                <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "14px", color: "#4A4A4A" }}>
+                <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "14px", color: "#5a5a5c" }}>
                   A detailed profile increases your chances of being accepted for collaborations.
                 </p>
               </div>
               <div style={{ padding: "16px", background: "#FFF9E6", borderRadius: "8px" }}>
-                <h4 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "14px", color: "#1A1A1A", marginBottom: "8px" }}>
+                <h4 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "14px", color: "#2b2b2d", marginBottom: "8px" }}>
                   WRITE COMPELLING APPLICATIONS
                 </h4>
-                <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "14px", color: "#4A4A4A" }}>
+                <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "14px", color: "#5a5a5c" }}>
                   Personalize each application to show why you're the perfect fit.
                 </p>
               </div>
               <div style={{ padding: "16px", background: "#FFF9E6", borderRadius: "8px" }}>
-                <h4 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "14px", color: "#1A1A1A", marginBottom: "8px" }}>
+                <h4 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "14px", color: "#2b2b2d", marginBottom: "8px" }}>
                   BUILD YOUR REPUTATION
                 </h4>
-                <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "14px", color: "#4A4A4A" }}>
+                <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "14px", color: "#5a5a5c" }}>
                   Complete collaborations successfully to build trust and get more opportunities.
                 </p>
               </div>

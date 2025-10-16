@@ -112,28 +112,28 @@ const BusinessProfile: React.FC = () => {
   const RUBIK_EXTRA_BOLD_TITLE = {
     fontFamily: "'Rubik', Arial, sans-serif",
     textTransform: "uppercase" as const,
-    fontWeight: 800,
-    color: "#000",
-    fontSize: 26,
-    letterSpacing: 0.03,
+    fontWeight: 700,
+    color: "#2b2b2d",
+    fontSize: 30,
+    letterSpacing: "0.03em",
     margin: 0,
   };
   const OPEN_SANS_SUBTITLE = {
     fontFamily: "'Open Sans', Arial, sans-serif",
     fontWeight: 400,
     fontSize: 15,
-    color: "#222",
+    color: "#5a5a5c",
     letterSpacing: 0,
     textTransform: "none" as const,
     margin: 0,
   };
   const BUTTON_YELLOW = {
     background: "#FFD861",
-    border: "2px solid #FFD861",
-    color: "#000",
+    border: "none",
+    color: "#2b2b2d",
     fontFamily: "'Darker Grotesque', Arial, sans-serif",
     textTransform: "uppercase" as const,
-    fontWeight: 400,
+    fontWeight: 600,
     letterSpacing: "0.03em",
     fontSize: 17,
   };
@@ -154,8 +154,8 @@ const BusinessProfile: React.FC = () => {
         <form onSubmit={handleSubmit}>
           <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
             <CardHeader>
-              <CardTitle style={{ fontFamily: "'Open Sans', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 500, fontSize: 13 }}>Business Information</CardTitle>
-              <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#222" }}>
+              <CardTitle style={{ fontFamily: "'Open Sans', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 600, fontSize: 16, color: "#2b2b2d" }}>Business Information</CardTitle>
+              <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
                 This information will be visible to communities when you create offers
               </CardDescription>
             </CardHeader>

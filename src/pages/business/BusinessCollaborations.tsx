@@ -190,17 +190,17 @@ const BusinessCollaborations = () => {
   const RUBIK_EXTRA_BOLD_TITLE = {
     fontFamily: "'Rubik', Arial, sans-serif",
     textTransform: "uppercase" as const,
-    fontWeight: 800,
-    color: "#000",
-    fontSize: 26,
-    letterSpacing: 0.03,
+    fontWeight: 700,
+    color: "#2b2b2d",
+    fontSize: 30,
+    letterSpacing: "0.03em",
     margin: 0,
   };
   const OPEN_SANS_SUBTITLE = {
     fontFamily: "'Open Sans', Arial, sans-serif",
     fontWeight: 400,
     fontSize: 15,
-    color: "#222",
+    color: "#5a5a5c",
     letterSpacing: 0,
     textTransform: "none" as const,
     margin: 0,
@@ -238,7 +238,7 @@ const BusinessCollaborations = () => {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" style={{ color: "#6b6b6d" }} />
         <Input
           placeholder="Search collaborations by offer title or community name..."
           value={searchTerm}
@@ -251,8 +251,8 @@ const BusinessCollaborations = () => {
         {filteredCollaborations.length === 0 ? (
           <Card style={{ background: "#FFF6D8", borderRadius: "18px", border: "1.5px solid #F9E9AC", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
             <CardContent className="py-16 text-center">
-              <p className="text-lg font-semibold" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#1A1A1A" }}>No collaborations found</p>
-              <p className="mt-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#4A4A4A" }}>
+              <p className="text-lg font-semibold" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#2b2b2d" }}>No collaborations found</p>
+              <p className="mt-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
                 {searchTerm ? "Try adjusting your search terms." : "Your active collaborations will appear here."}
               </p>
             </CardContent>

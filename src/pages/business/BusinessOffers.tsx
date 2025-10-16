@@ -14,7 +14,7 @@ const RUBIK_EXTRA_BOLD_TITLE = {
   fontFamily: "'Rubik', Arial, sans-serif",
   textTransform: "uppercase" as const,
   fontWeight: 700,
-  color: "#1A1A1A",
+  color: "#2b2b2d",
   fontSize: 30,
   letterSpacing: "0.03em",
   margin: 0,
@@ -23,7 +23,7 @@ const OPEN_SANS_BOLD_CARD_SMALL = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   textTransform: "uppercase" as const,
   fontWeight: 600,
-  color: "#1A1A1A",
+  color: "#2b2b2d",
   fontSize: 13,
   letterSpacing: "0.08em",
   margin: 0,
@@ -32,7 +32,7 @@ const OPEN_SANS_SUBTITLE = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
   fontSize: 15,
-  color: "#4A4A4A",
+  color: "#5a5a5c",
   letterSpacing: 0,
   textTransform: "none" as const,
   margin: 0,
@@ -41,12 +41,12 @@ const OPEN_SANS = {
   fontFamily: "'Open Sans', Arial, sans-serif",
   fontWeight: 400,
   fontSize: 14,
-  color: "#4A4A4A",
+  color: "#5a5a5c",
 };
 const BUTTON_YELLOW = {
   background: "#FFD861",
-  border: "2px solid #FFD861",
-  color: "#000",
+  border: "none",
+  color: "#2b2b2d",
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
   textTransform: "uppercase" as const,
   fontWeight: 600,
@@ -59,10 +59,10 @@ const BUTTON_YELLOW = {
 const BUTTON_OUTLINE_FILTER = {
   fontFamily: "'Darker Grotesque', Arial, sans-serif",
   textTransform: "uppercase" as const,
-  fontWeight: 500,
+  fontWeight: 600,
   letterSpacing: "0.03em",
   fontSize: 14,
-  borderRadius: "8px",
+  borderRadius: "7px",
   transition: "all 0.2s ease-in-out",
 };
 
@@ -253,7 +253,7 @@ const BusinessOffers = () => {
         {filteredOffers.length === 0 ? (
           <Card style={{ background: "#FFF6D8", borderRadius: "18px", border: "1.5px solid #F9E9AC", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
             <CardContent className="py-16 text-center">
-              <p className="text-lg font-semibold" style={{ ...OPEN_SANS, fontWeight: 600, fontSize: "18px", color: "#1A1A1A" }}>No opportunities found</p>
+              <p className="text-lg font-semibold" style={{ ...OPEN_SANS, fontWeight: 600, fontSize: "18px", color: "#2b2b2d" }}>No opportunities found</p>
               <Button 
                 onClick={() => navigate('/business/opportunities/new')} 
                 className="mt-4"
