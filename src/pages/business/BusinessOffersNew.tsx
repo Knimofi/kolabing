@@ -48,8 +48,6 @@ const offerSchema = z.object({
 
 type OfferFormData = z.infer<typeof offerSchema>;
 
-const CARD_STYLE = "bg-black border-[#F9E9AC] border-[1.5px] rounded-[18px] shadow-lg";
-
 const BusinessOffersNew = () => {
   const navigate = useNavigate();
   const { profile } = useAuth();
@@ -159,8 +157,8 @@ const BusinessOffersNew = () => {
   };
 
   return (
-    <div className="min-h-screen px-4 py-8 flex justify-center items-center bg-black">
-      <Card className={`${CARD_STYLE} max-w-[700px] w-full space-y-6`}>
+    <div className="min-h-screen bg-black py-8 px-4 flex flex-col items-center">
+      <div className="w-full max-w-2xl space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" onClick={() => navigate("/business/offers")}>
@@ -168,23 +166,17 @@ const BusinessOffersNew = () => {
             Back to Offers
           </Button>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-[#FFF6D8]">
-              {" "}
-              {/* contrast for black box */}
-              Create New Offer
-            </h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground">Create New Offer</h1>
             <p className="text-muted-foreground">Design your collaboration opportunity</p>
           </div>
         </div>
         <Form {...form}>
           <form className="space-y-6">
             {/* Basic Information */}
-            <Card className={CARD_STYLE}>
+            <Card>
               <CardHeader>
-                <CardTitle className="text-[#FFF6D8]">Basic Information</CardTitle>
-                <CardDescription className="text-[#e5e5e5]">
-                  Provide the essential details about your collaboration offer
-                </CardDescription>
+                <CardTitle>Basic Information</CardTitle>
+                <CardDescription>Provide the essential details about your collaboration offer</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -192,7 +184,7 @@ const BusinessOffersNew = () => {
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[#FFF6D8]">Offer Title</FormLabel>
+                      <FormLabel>Offer Title</FormLabel>
                       <FormControl>
                         <Input placeholder="e.g., Instagram Partnership for Coffee Shop" {...field} />
                       </FormControl>
@@ -205,7 +197,7 @@ const BusinessOffersNew = () => {
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[#FFF6D8]">Description</FormLabel>
+                      <FormLabel>Description</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Describe your collaboration opportunity in detail..."
@@ -220,12 +212,10 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Availability */}
-            <Card className={CARD_STYLE}>
+            <Card>
               <CardHeader>
-                <CardTitle className="text-[#FFF6D8]">Availability</CardTitle>
-                <CardDescription className="text-[#e5e5e5]">
-                  When are you available for this collaboration?
-                </CardDescription>
+                <CardTitle>Availability</CardTitle>
+                <CardDescription>When are you available for this collaboration?</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -234,7 +224,7 @@ const BusinessOffersNew = () => {
                     name="availability_start"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel className="text-[#FFF6D8]">Start Date</FormLabel>
+                        <FormLabel>Start Date</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
@@ -263,7 +253,7 @@ const BusinessOffersNew = () => {
                     name="availability_end"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel className="text-[#FFF6D8]">End Date</FormLabel>
+                        <FormLabel>End Date</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
@@ -291,10 +281,10 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Location */}
-            <Card className={CARD_STYLE}>
+            <Card>
               <CardHeader>
-                <CardTitle className="text-[#FFF6D8]">Location</CardTitle>
-                <CardDescription className="text-[#e5e5e5]">Where will this collaboration take place?</CardDescription>
+                <CardTitle>Location</CardTitle>
+                <CardDescription>Where will this collaboration take place?</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -306,7 +296,7 @@ const BusinessOffersNew = () => {
                         <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
                       <div className="space-y-1 leading-none">
-                        <FormLabel className="text-[#FFF6D8]">No physical venue required</FormLabel>
+                        <FormLabel>No physical venue required</FormLabel>
                         <p className="text-sm text-muted-foreground">
                           Check this if the collaboration is online or doesn't require a specific location
                         </p>
@@ -320,7 +310,7 @@ const BusinessOffersNew = () => {
                     name="address"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[#FFF6D8]">Address</FormLabel>
+                        <FormLabel>Address</FormLabel>
                         <FormControl>
                           <Input placeholder="Enter the collaboration venue address" {...field} />
                         </FormControl>
@@ -332,10 +322,10 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Photo Upload */}
-            <Card className={CARD_STYLE}>
+            <Card>
               <CardHeader>
-                <CardTitle className="text-[#FFF6D8]">Offer Photo</CardTitle>
-                <CardDescription className="text-[#e5e5e5]">Upload a photo for your offer (optional)</CardDescription>
+                <CardTitle>Offer Photo</CardTitle>
+                <CardDescription>Upload a photo for your offer (optional)</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FileUpload
@@ -348,12 +338,10 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Business Offer */}
-            <Card className={CARD_STYLE}>
+            <Card>
               <CardHeader>
-                <CardTitle className="text-[#FFF6D8]">What You're Offering</CardTitle>
-                <CardDescription className="text-[#e5e5e5]">
-                  Describe what you're providing to the community
-                </CardDescription>
+                <CardTitle>What You're Offering</CardTitle>
+                <CardDescription>Describe what you're providing to the community</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -361,7 +349,7 @@ const BusinessOffersNew = () => {
                   name="business_offer.description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-[#FFF6D8]">Your Offer</FormLabel>
+                      <FormLabel>Your Offer</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="e.g., Free products, monetary compensation, exclusive access..."
@@ -376,12 +364,10 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Community Deliverables */}
-            <Card className={CARD_STYLE}>
+            <Card>
               <CardHeader>
-                <CardTitle className="text-[#FFF6D8]">What do you expect from the community?</CardTitle>
-                <CardDescription className="text-[#e5e5e5]">
-                  Select the deliverables you expect from your community partner
-                </CardDescription>
+                <CardTitle>What do you expect from the community?</CardTitle>
+                <CardDescription>Select the deliverables you expect from your community partner</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
@@ -395,7 +381,7 @@ const BusinessOffersNew = () => {
                             <FormControl>
                               <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
-                            <FormLabel className="font-normal text-[#FFF6D8]">{option.label}</FormLabel>
+                            <FormLabel className="font-normal">{option.label}</FormLabel>
                           </FormItem>
                         )}
                       />
@@ -420,12 +406,14 @@ const BusinessOffersNew = () => {
                       )}
                     </div>
                   ))}
+
+                  {/* Always show minimum consumption */}
                   <FormField
                     control={form.control}
                     name="community_deliverables.minimum_consumption"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-[#FFF6D8]">Minimum Consumption in Place (€)</FormLabel>
+                        <FormLabel>Minimum Consumption in Place (€)</FormLabel>
                         <FormControl>
                           <Input
                             type="number"
@@ -445,7 +433,7 @@ const BusinessOffersNew = () => {
                   render={({ field }) => (
                     <FormItem>
                       <div className="flex items-center gap-2">
-                        <FormLabel className="text-[#FFF6D8]">Timeline (days after collaboration)</FormLabel>
+                        <FormLabel>Timeline (days after collaboration)</FormLabel>
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger type="button">
@@ -493,7 +481,7 @@ const BusinessOffersNew = () => {
             </div>
           </form>
         </Form>
-      </Card>
+      </div>
     </div>
   );
 };
