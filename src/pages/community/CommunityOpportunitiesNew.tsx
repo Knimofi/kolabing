@@ -11,9 +11,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { CalendarIcon, ArrowLeft, Save, Send } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,8 +24,8 @@ const BG_INPUT = "#E5E7EB";
 const TEXT_DARK = "#232323";
 
 const offerSchema = z.object({
-  title: z.string().min(1, "Title is required").max(100, "Title must be under 100 characters"),
-  description: z.string().min(1, "Description is required").max(1000, "Description must be under 1000 characters"),
+  title: z.string().min(1, "Title is required").max(100),
+  description: z.string().min(1, "Description is required").max(1000),
   availability_mode: z.enum(["date_range", "recurring"]).default("date_range"),
   availability_start: z.date().optional(),
   availability_end: z.date().optional(),
@@ -49,6 +46,8 @@ const offerSchema = z.object({
     monetary_compensation: z.boolean().default(false),
     compensation_amount: z.number().optional(),
   }),
+  community_deliverables_input_mode: z.enum(["text", "checklist"]).default("checklist"),
+  community_deliverables_text: z.string().optional(),
   community_deliverables: z.object({
     tagged_stories: z.number().optional(),
     google_reviews: z.number().optional(),
@@ -67,6 +66,22 @@ const offerSchema = z.object({
 });
 
 type OfferFormData = z.infer<typeof offerSchema>;
+
+const deliverableOptions = [
+  { id: "tagged_stories", label: "Tagged Stories", hasAmount: true },
+  { id: "google_reviews", label: "Google Reviews", hasAmount: true },
+  { id: "number_of_attendees", label: "Number of Attendees", hasAmount: true },
+  { id: "professional_photography", label: "Professional Photography", hasAmount: false },
+  { id: "professional_reel_video", label: "Professional Reel/Video", hasAmount: false },
+  { id: "ugc_content", label: "UGC Content", hasAmount: false },
+  { id: "collab_reel_post", label: "Collab Reel/Post", hasAmount: false },
+  { id: "group_picture", label: "Group Picture", hasAmount: false },
+  { id: "loyalty_signups", label: "Loyalty Sign-ups", hasAmount: true },
+  { id: "venue", label: "Venue", hasAmount: false },
+  { id: "event_creation", label: "Event Creation", hasAmount: false },
+  { id: "split_revenue", label: "Split Revenue", hasAmount: false },
+  { id: "monetary_compensation", label: "Monetary Compensation (€)", hasAmount: true },
+] as const;
 
 const CommunityOpportunitiesNew = () => {
   const navigate = useNavigate();
@@ -91,130 +106,68 @@ const CommunityOpportunitiesNew = () => {
         split_revenue: false,
         monetary_compensation: false,
       },
-      community_deliverables: {
-        tagged_stories: undefined,
-        google_reviews: undefined,
-        number_of_attendees: undefined,
-        professional_photography: false,
-        professional_reel_video: false,
-        ugc_content: false,
-        collab_reel_post: false,
-        group_picture: false,
-        loyalty_signups: undefined,
-        venue: false,
-        event_creation: false,
-        split_revenue: false,
-        monetary_compensation: undefined,
-      },
+      community_deliverables_input_mode: "checklist",
+      community_deliverables_text: "",
+      community_deliverables: {},
     },
   });
 
-  // Combined checklist in "What can you offer" (two-column)
-  const combinedChecklistOptions = [
-    { id: "venue", label: "Venue", hasAmount: false },
-    { id: "event_creation", label: "Event Creation", hasAmount: false },
-    { id: "split_revenue", label: "Split Revenue", hasAmount: false },
-    { id: "monetary_compensation", label: "Monetary Compensation (€)", hasAmount: true },
-    { id: "tagged_stories", label: "Tagged Stories", hasAmount: true },
-    { id: "google_reviews", label: "Google Reviews", hasAmount: true },
-    { id: "number_of_attendees", label: "Number of Attendees", hasAmount: true },
-    { id: "professional_photography", label: "Professional Photography", hasAmount: false },
-    { id: "professional_reel_video", label: "Professional Reel/Video", hasAmount: false },
-    { id: "ugc_content", label: "UGC Content", hasAmount: false },
-    { id: "collab_reel_post", label: "Collab Reel/Post", hasAmount: false },
-    { id: "group_picture", label: "Group Picture", hasAmount: false },
-    { id: "loyalty_signups", label: "Loyalty Sign-ups", hasAmount: true },
-  ] as const;
-
-  const halfIndex = Math.ceil(combinedChecklistOptions.length / 2);
-  const leftColumnOptions = combinedChecklistOptions.slice(0, halfIndex);
-  const rightColumnOptions = combinedChecklistOptions.slice(halfIndex);
-
-  // "What do you expect from collaborators?" options and amounts (preserved from original)
-  const deliverableOptions = [
-    { id: "tagged_stories", label: "Tagged Stories", hasAmount: true },
-    { id: "google_reviews", label: "Google Reviews", hasAmount: true },
-    { id: "number_of_attendees", label: "Number of Attendees", hasAmount: true },
-    { id: "professional_photography", label: "Professional Photography", hasAmount: false },
-    { id: "professional_reel_video", label: "Professional Reel/Video", hasAmount: false },
-    { id: "ugc_content", label: "UGC Content", hasAmount: false },
-    { id: "collab_reel_post", label: "Collab Reel/Post", hasAmount: false },
-    { id: "group_picture", label: "Group Picture", hasAmount: false },
-    { id: "loyalty_signups", label: "Loyalty Sign-ups", hasAmount: true },
-    { id: "venue", label: "Venue", hasAmount: false },
-    { id: "event_creation", label: "Event Creation", hasAmount: false },
-    { id: "split_revenue", label: "Split Revenue", hasAmount: false },
-    { id: "monetary_compensation", label: "Monetary Compensation (€)", hasAmount: true },
-  ] as const;
-
   const handleSubmit = async (data: OfferFormData, status: "draft" | "published") => {
     if (!profile) return;
-
     setIsSubmitting(true);
-
     try {
       const { data: communityProfile, error: communityError } = await supabase
         .from("community_profiles")
         .select("profile_id, profile_photo")
         .eq("profile_id", profile.id)
         .single();
-
       if (communityError || !communityProfile) {
         toast({
           title: "Error",
-          description: "Community profile missing. Please complete your community profile setup.",
+          description: "Community profile missing. Please complete your setup.",
           variant: "destructive",
         });
-        setIsSubmitting(false);
         return;
       }
-
       let finalOfferPhoto = data.offer_photo;
       if (data.use_profile_photo && communityProfile.profile_photo) {
         finalOfferPhoto = communityProfile.profile_photo;
       }
-
       const offerData = {
         title: data.title,
         description: data.description,
         availability_mode: data.availability_mode,
-        availability_start: data.availability_mode === "date_range" ? data.availability_start?.toISOString() : null,
-        availability_end: data.availability_mode === "date_range" ? data.availability_end?.toISOString() : null,
-        recurring_day: data.availability_mode === "recurring" ? data.recurring_day : null,
-        recurring_time: data.availability_mode === "recurring" ? data.recurring_time : null,
+        availability_start: data.availability_start?.toISOString(),
+        availability_end: data.availability_end?.toISOString(),
+        recurring_day: data.recurring_day,
+        recurring_time: data.recurring_time,
         venue_mode: data.venue_mode,
-        address: data.venue_mode === "i_have_venue" ? data.address : null,
-        preferred_city: data.venue_mode === "partner_provides" ? data.preferred_city : null,
-        preferred_area: data.venue_mode === "partner_provides" ? data.preferred_area : null,
-        no_venue: data.venue_mode === "no_venue",
+        address: data.address,
+        preferred_city: data.preferred_city,
+        preferred_area: data.preferred_area,
         use_profile_photo: data.use_profile_photo,
         offer_photo: finalOfferPhoto,
+        offer_input_mode: data.offer_input_mode,
         business_offer: data.business_offer,
+        community_deliverables_input_mode: data.community_deliverables_input_mode,
+        community_deliverables_text: data.community_deliverables_text,
         community_deliverables: data.community_deliverables,
-        timeline_days: null,
         creator_profile_id: communityProfile.profile_id,
-        creator_profile_type: "community",
+        creator_profile_type: "community" as const,
         status,
       };
-
       const { error } = await supabase.from("collab_opportunities").insert([offerData]);
-
       if (error) throw error;
-
       toast({
-        title: status === "draft" ? "Collab request saved as draft" : "Collab request published successfully",
+        title: status === "draft" ? "Saved as Draft" : "Published!",
         description:
-          status === "draft"
-            ? "You can publish it later from your dashboard."
-            : "Your collab request is now live and businesses can apply.",
+          status === "draft" ? "You can publish later from your dashboard." : "Your collaboration is now live!",
       });
-
       navigate("/community/my-opportunities");
     } catch (error: any) {
-      console.error("Error creating collab request:", error);
       toast({
         title: "Error",
-        description: error.message || "Failed to create collab request. Please try again.",
+        description: error.message || "Something went wrong. Try again.",
         variant: "destructive",
       });
     } finally {
@@ -224,30 +177,17 @@ const CommunityOpportunitiesNew = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: "#fff" }} className="py-8 px-4 flex flex-col items-center">
-      <div className="w-full max-w-3xl space-y-6">
+      <div className="w-full max-w-2xl space-y-6">
         <div className="flex items-center gap-4">
-          <Button
-            size="sm"
-            onClick={() => navigate("/community/my-opportunities")}
-            style={{ backgroundColor: "#FBBF24", color: "#000" }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#000";
-              (e.currentTarget as HTMLButtonElement).style.color = "#FBBF24";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#FBBF24";
-              (e.currentTarget as HTMLButtonElement).style.color = "#000";
-            }}
-          >
+          <Button variant="ghost" size="sm" onClick={() => navigate("/community/my-opportunities")}>
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to My Collab Requests
+            Back to My Requests
           </Button>
           <div>
-            <h1 style={{ color: TEXT_DARK, fontSize: 30, fontWeight: 900 }}>Create a Collab Request</h1>
+            <h1 style={{ color: TEXT_DARK, fontSize: 30, fontWeight: 900 }}>Create New Request</h1>
             <p style={{ color: "#606060" }}>Design your collaboration opportunity</p>
           </div>
         </div>
-
         <Form {...form}>
           <form className="space-y-6">
             {/* Basic Information */}
@@ -255,7 +195,7 @@ const CommunityOpportunitiesNew = () => {
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Basic Information</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
-                  Provide the essential details about your collaboration opportunity
+                  Provide the essential details about your collaboration request
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -264,10 +204,10 @@ const CommunityOpportunitiesNew = () => {
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel style={{ color: TEXT_DARK }}>Collab Title</FormLabel>
+                      <FormLabel style={{ color: TEXT_DARK }}>Request Title</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="e.g., Looking for venue partner for monthly meetup"
+                          placeholder="e.g., Looking for venue partner for monthly meetups"
                           style={{
                             background: BG_INPUT,
                             color: TEXT_DARK,
@@ -289,14 +229,14 @@ const CommunityOpportunitiesNew = () => {
                       <FormLabel style={{ color: TEXT_DARK }}>Description</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Describe what you're looking for..."
-                          className="min-h-[100px]"
+                          placeholder="Describe your collaboration opportunity in detail..."
                           style={{
                             background: BG_INPUT,
                             color: TEXT_DARK,
                             border: "none",
                             fontFamily: "Open Sans, Arial, sans-serif",
                           }}
+                          className="min-h-[100px]"
                           {...field}
                         />
                       </FormControl>
@@ -306,7 +246,6 @@ const CommunityOpportunitiesNew = () => {
                 />
               </CardContent>
             </Card>
-
             {/* Availability */}
             <Card style={{ background: BG_SECTION }}>
               <CardHeader>
@@ -321,29 +260,27 @@ const CommunityOpportunitiesNew = () => {
                   name="availability_mode"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel style={{ color: TEXT_DARK }}>Availability Type</FormLabel>
-                      <FormControl>
-                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex space-x-6">
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="date_range" id="date_range" />
-                            <Label htmlFor="date_range" style={{ color: TEXT_DARK }}>
-                              Specific date range
-                            </Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="recurring" id="recurring" />
-                            <Label htmlFor="recurring" style={{ color: TEXT_DARK }}>
-                              Recurring schedule
-                            </Label>
-                          </div>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
+                      <FormLabel style={{ color: TEXT_DARK }}>Mode</FormLabel>
+                      <div className="flex gap-4">
+                        <Button
+                          type="button"
+                          variant={field.value === "date_range" ? "secondary" : "outline"}
+                          onClick={() => field.onChange("date_range")}
+                        >
+                          Date Range
+                        </Button>
+                        <Button
+                          type="button"
+                          variant={field.value === "recurring" ? "secondary" : "outline"}
+                          onClick={() => field.onChange("recurring")}
+                        >
+                          Recurring
+                        </Button>
+                      </div>
                     </FormItem>
                   )}
                 />
-
-                {form.watch("availability_mode") === "date_range" && (
+                {form.watch("availability_mode") === "date_range" ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
@@ -416,33 +353,26 @@ const CommunityOpportunitiesNew = () => {
                       )}
                     />
                   </div>
-                )}
-
-                {form.watch("availability_mode") === "recurring" && (
+                ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="recurring_day"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel style={{ color: TEXT_DARK }}>Day of Week</FormLabel>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <FormControl>
-                              <SelectTrigger style={{ fontFamily: "Open Sans, Arial, sans-serif" }}>
-                                <SelectValue placeholder="Select a day" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="monday">Monday</SelectItem>
-                              <SelectItem value="tuesday">Tuesday</SelectItem>
-                              <SelectItem value="wednesday">Wednesday</SelectItem>
-                              <SelectItem value="thursday">Thursday</SelectItem>
-                              <SelectItem value="friday">Friday</SelectItem>
-                              <SelectItem value="saturday">Saturday</SelectItem>
-                              <SelectItem value="sunday">Sunday</SelectItem>
-                              <SelectItem value="everyday">Every day</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <FormLabel style={{ color: TEXT_DARK }}>Day</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="e.g., Every Tuesday"
+                              style={{
+                                background: BG_INPUT,
+                                color: TEXT_DARK,
+                                border: "none",
+                                fontFamily: "Open Sans, Arial, sans-serif",
+                              }}
+                              {...field}
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -452,11 +382,10 @@ const CommunityOpportunitiesNew = () => {
                       name="recurring_time"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel style={{ color: TEXT_DARK }}>Time (optional)</FormLabel>
+                          <FormLabel style={{ color: TEXT_DARK }}>Time</FormLabel>
                           <FormControl>
                             <Input
-                              type="time"
-                              placeholder="e.g., 19:00"
+                              placeholder="e.g., 18:00 - 21:00"
                               style={{
                                 background: BG_INPUT,
                                 color: TEXT_DARK,
@@ -474,7 +403,6 @@ const CommunityOpportunitiesNew = () => {
                 )}
               </CardContent>
             </Card>
-
             {/* Location */}
             <Card style={{ background: BG_SECTION }}>
               <CardHeader>
@@ -489,44 +417,43 @@ const CommunityOpportunitiesNew = () => {
                   name="venue_mode"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel style={{ color: TEXT_DARK }}>Venue Requirements</FormLabel>
-                      <FormControl>
-                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex space-x-6">
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="no_venue" id="no_venue" />
-                            <Label htmlFor="no_venue" style={{ color: TEXT_DARK }}>
-                              No physical venue required
-                            </Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="i_have_venue" id="i_have_venue" />
-                            <Label htmlFor="i_have_venue" style={{ color: TEXT_DARK }}>
-                              I have a venue
-                            </Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="partner_provides" id="partner_provides" />
-                            <Label htmlFor="partner_provides" style={{ color: TEXT_DARK }}>
-                              Collab partner provides venue
-                            </Label>
-                          </div>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
+                      <FormLabel style={{ color: TEXT_DARK }}>Venue Mode</FormLabel>
+                      <div className="flex gap-4">
+                        <Button
+                          type="button"
+                          variant={field.value === "no_venue" ? "secondary" : "outline"}
+                          onClick={() => field.onChange("no_venue")}
+                        >
+                          No Venue
+                        </Button>
+                        <Button
+                          type="button"
+                          variant={field.value === "i_have_venue" ? "secondary" : "outline"}
+                          onClick={() => field.onChange("i_have_venue")}
+                        >
+                          I Have Venue
+                        </Button>
+                        <Button
+                          type="button"
+                          variant={field.value === "partner_provides" ? "secondary" : "outline"}
+                          onClick={() => field.onChange("partner_provides")}
+                        >
+                          Partner Provides
+                        </Button>
+                      </div>
                     </FormItem>
                   )}
                 />
-
-                {form.watch("venue_mode") === "i_have_venue" && (
+                {form.watch("venue_mode") !== "no_venue" && (
                   <FormField
                     control={form.control}
                     name="address"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel style={{ color: TEXT_DARK }}>Venue Address</FormLabel>
+                        <FormLabel style={{ color: TEXT_DARK }}>Address</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter the venue address"
+                            placeholder="Enter the collaboration venue address"
                             style={{
                               background: BG_INPUT,
                               color: TEXT_DARK,
@@ -541,64 +468,58 @@ const CommunityOpportunitiesNew = () => {
                     )}
                   />
                 )}
-
-                {form.watch("venue_mode") === "partner_provides" && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="preferred_city"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel style={{ color: TEXT_DARK }}>Preferred City</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="e.g., Barcelona"
-                              style={{
-                                background: BG_INPUT,
-                                color: TEXT_DARK,
-                                border: "none",
-                                fontFamily: "Open Sans, Arial, sans-serif",
-                              }}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="preferred_area"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel style={{ color: TEXT_DARK }}>Preferred Area (optional)</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="e.g., Eixample, Gracia..."
-                              style={{
-                                background: BG_INPUT,
-                                color: TEXT_DARK,
-                                border: "none",
-                                fontFamily: "Open Sans, Arial, sans-serif",
-                              }}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                )}
+                <FormField
+                  control={form.control}
+                  name="preferred_city"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel style={{ color: TEXT_DARK }}>Preferred City</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="City (optional)"
+                          style={{
+                            background: BG_INPUT,
+                            color: TEXT_DARK,
+                            border: "none",
+                            fontFamily: "Open Sans, Arial, sans-serif",
+                          }}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="preferred_area"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel style={{ color: TEXT_DARK }}>Preferred Area</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Area or neighborhood (optional)"
+                          style={{
+                            background: BG_INPUT,
+                            color: TEXT_DARK,
+                            border: "none",
+                            fontFamily: "Open Sans, Arial, sans-serif",
+                          }}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </CardContent>
             </Card>
-
             {/* Photo Upload */}
             <Card style={{ background: BG_SECTION }}>
               <CardHeader>
-                <CardTitle style={{ color: TEXT_DARK }}>Collaboration Photo</CardTitle>
+                <CardTitle style={{ color: TEXT_DARK }}>Request Photo</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
-                  Add a photo for your collaboration (optional)
+                  Upload a photo for your request (optional)
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -606,16 +527,13 @@ const CommunityOpportunitiesNew = () => {
                   control={form.control}
                   name="use_profile_photo"
                   render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormItem className="flex flex-row items-center space-x-3 space-y-0">
                       <FormControl>
                         <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel style={{ color: TEXT_DARK }}>Use my community's profile photo</FormLabel>
-                        <p style={{ color: "#606060", fontSize: 14 }}>
-                          Your profile photo will be used for this collaboration
-                        </p>
-                      </div>
+                      <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
+                        Use your community profile photo
+                      </FormLabel>
                     </FormItem>
                   )}
                 />
@@ -624,119 +542,164 @@ const CommunityOpportunitiesNew = () => {
                     bucket="offer-photos"
                     value={form.watch("offer_photo")}
                     onChange={(url) => form.setValue("offer_photo", url)}
-                    label="Collaboration Photo"
+                    label="Request Photo"
                     accept="image/*"
                   />
                 )}
               </CardContent>
             </Card>
-
-            {/* What do you expect from collaborators? */}
-            <Card style={{ background: BG_SECTION }}>
-              <CardHeader>
-                <CardTitle style={{ color: TEXT_DARK }}>What do you expect from collaborators?</CardTitle>
-                <CardDescription style={{ color: "#606060" }}>
-                  Select what you expect from your collaboration partner
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  {deliverableOptions.map((option) => (
-                    <div key={option.id} className="space-y-2">
-                      <FormField
-                        control={form.control}
-                        name={`community_deliverables.${option.id}` as any}
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <Checkbox checked={!!field.value} onCheckedChange={field.onChange} />
-                            </FormControl>
-                            <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
-                              {option.label}
-                            </FormLabel>
-                          </FormItem>
-                        )}
-                      />
-                      {option.hasAmount && form.watch(`community_deliverables.${option.id}` as any) && (
-                        <FormField
-                          control={form.control}
-                          name={`community_deliverables.${option.id}` as any}
-                          render={({ field }) => (
-                            <FormItem className="ml-6">
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  placeholder={
-                                    option.id === "monetary_compensation"
-                                      ? "Amount in €"
-                                      : `How many ${option.label.toLowerCase()}?`
-                                  }
-                                  style={{
-                                    background: BG_INPUT,
-                                    color: TEXT_DARK,
-                                    border: "none",
-                                    fontFamily: "Open Sans, Arial, sans-serif",
-                                  }}
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* What can you offer? */}
+            {/* What can you offer */}
             <Card style={{ background: BG_SECTION }}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>What can you offer?</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
-                  Select from options and describe what you provide to collaborators
+                  Describe what your community is providing to the business partner
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="offer_input_mode"
+                  name="business_offer.description"
                   render={({ field }) => (
-                    <FormItem className="mb-4">
+                    <FormItem>
+                      <FormLabel style={{ color: TEXT_DARK }}>Your Offer</FormLabel>
                       <FormControl>
-                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex space-x-6">
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="text" id="offer_text" />
-                            <Label htmlFor="offer_text" style={{ color: TEXT_DARK }}>
-                              Describe in your own words
-                            </Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="checklist" id="offer_checklist" />
-                            <Label htmlFor="offer_checklist" style={{ color: TEXT_DARK }}>
-                              Select from options
-                            </Label>
-                          </div>
-                        </RadioGroup>
+                        <Textarea
+                          placeholder="e.g., Attendees, social content, photography, UGC, etc."
+                          className="min-h-[80px]"
+                          style={{
+                            background: BG_INPUT,
+                            color: TEXT_DARK,
+                            border: "none",
+                            fontFamily: "Open Sans, Arial, sans-serif",
+                          }}
+                          {...field}
+                        />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
-
-                {form.watch("offer_input_mode") === "text" && (
+                <FormField
+                  control={form.control}
+                  name="business_offer.venue"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                      <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
+                        Provide Venue
+                      </FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="business_offer.event_creation"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                      <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
+                        Event Creation Support
+                      </FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="business_offer.split_revenue"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                      <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
+                        Split Revenue
+                      </FormLabel>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="business_offer.monetary_compensation"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                      <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
+                        Monetary Compensation
+                      </FormLabel>
+                    </FormItem>
+                  )}
+                />
+                {form.watch("business_offer.monetary_compensation") && (
                   <FormField
                     control={form.control}
-                    name="business_offer.description"
+                    name="business_offer.compensation_amount"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel style={{ color: TEXT_DARK }}>Your Offer</FormLabel>
+                        <FormLabel style={{ color: TEXT_DARK }}>Compensation Amount (€)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="Enter compensation amount"
+                            style={{
+                              background: BG_INPUT,
+                              color: TEXT_DARK,
+                              border: "none",
+                              fontFamily: "Open Sans, Arial, sans-serif",
+                            }}
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+              </CardContent>
+            </Card>
+            {/* What do you expect */}
+            <Card style={{ background: BG_SECTION }}>
+              <CardHeader>
+                <CardTitle style={{ color: TEXT_DARK }}>What do you expect from collaborators?</CardTitle>
+                <CardDescription style={{ color: "#606060" }}>
+                  Describe or select the deliverables you expect from your business partner
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex gap-4 mb-4">
+                  <Button
+                    type="button"
+                    variant={form.watch("community_deliverables_input_mode") === "checklist" ? "secondary" : "outline"}
+                    onClick={() => form.setValue("community_deliverables_input_mode", "checklist")}
+                  >
+                    Checklist
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={form.watch("community_deliverables_input_mode") === "text" ? "secondary" : "outline"}
+                    onClick={() => form.setValue("community_deliverables_input_mode", "text")}
+                  >
+                    Text
+                  </Button>
+                </div>
+                {form.watch("community_deliverables_input_mode") === "text" ? (
+                  <FormField
+                    control={form.control}
+                    name="community_deliverables_text"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel style={{ color: TEXT_DARK }}>Expectations</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="e.g., Social media promotion, event hosting, content creation..."
-                            className="min-h-[80px]"
+                            placeholder="Describe your expectations from the business partner..."
+                            className="min-h-[100px]"
                             style={{
                               background: BG_INPUT,
                               color: TEXT_DARK,
@@ -750,119 +713,71 @@ const CommunityOpportunitiesNew = () => {
                       </FormItem>
                     )}
                   />
-                )}
-
-                {form.watch("offer_input_mode") === "checklist" && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      {leftColumnOptions.map((option) => (
-                        <div key={option.id} className="space-y-2">
+                ) : (
+                  <div className="space-y-4">
+                    {deliverableOptions.map((option) => (
+                      <div key={option.id} className="space-y-2">
+                        <FormField
+                          control={form.control}
+                          name={`community_deliverables.${option.id}` as any}
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <Checkbox
+                                  checked={
+                                    typeof field.value === "number" ? Boolean(field.value) : Boolean(field.value)
+                                  }
+                                  onCheckedChange={(checked) => {
+                                    if (option.hasAmount) {
+                                      field.onChange(checked ? 1 : undefined);
+                                    } else {
+                                      field.onChange(checked);
+                                    }
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
+                                {option.label}
+                              </FormLabel>
+                            </FormItem>
+                          )}
+                        />
+                        {option.hasAmount && form.watch(`community_deliverables.${option.id}` as any) && (
                           <FormField
                             control={form.control}
                             name={`community_deliverables.${option.id}` as any}
                             render={({ field }) => (
-                              <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                              <FormItem className="ml-6">
                                 <FormControl>
-                                  <Checkbox checked={!!field.value} onCheckedChange={field.onChange} />
+                                  <Input
+                                    type="number"
+                                    placeholder={`How many ${option.label.toLowerCase()}?`}
+                                    style={{
+                                      background: BG_INPUT,
+                                      color: TEXT_DARK,
+                                      border: "none",
+                                      fontFamily: "Open Sans, Arial, sans-serif",
+                                    }}
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                                  />
                                 </FormControl>
-                                <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
-                                  {option.label}
-                                </FormLabel>
+                                <FormMessage />
                               </FormItem>
                             )}
                           />
-                          {option.hasAmount && form.watch(`community_deliverables.${option.id}` as any) && (
-                            <FormField
-                              control={form.control}
-                              name={`community_deliverables.${option.id}` as any}
-                              render={({ field }) => (
-                                <FormItem className="ml-6">
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      placeholder={
-                                        option.id === "monetary_compensation"
-                                          ? "Amount in €"
-                                          : `How many ${option.label.toLowerCase()}?`
-                                      }
-                                      style={{
-                                        background: BG_INPUT,
-                                        color: TEXT_DARK,
-                                        border: "none",
-                                        fontFamily: "Open Sans, Arial, sans-serif",
-                                      }}
-                                      {...field}
-                                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                    <div className="space-y-4">
-                      {rightColumnOptions.map((option) => (
-                        <div key={option.id} className="space-y-2">
-                          <FormField
-                            control={form.control}
-                            name={`community_deliverables.${option.id}` as any}
-                            render={({ field }) => (
-                              <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                                <FormControl>
-                                  <Checkbox checked={!!field.value} onCheckedChange={field.onChange} />
-                                </FormControl>
-                                <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
-                                  {option.label}
-                                </FormLabel>
-                              </FormItem>
-                            )}
-                          />
-                          {option.hasAmount && form.watch(`community_deliverables.${option.id}` as any) && (
-                            <FormField
-                              control={form.control}
-                              name={`community_deliverables.${option.id}` as any}
-                              render={({ field }) => (
-                                <FormItem className="ml-6">
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      placeholder={
-                                        option.id === "monetary_compensation"
-                                          ? "Amount in €"
-                                          : `How many ${option.label.toLowerCase()}?`
-                                      }
-                                      style={{
-                                        background: BG_INPUT,
-                                        color: TEXT_DARK,
-                                        border: "none",
-                                        fontFamily: "Open Sans, Arial, sans-serif",
-                                      }}
-                                      {...field}
-                                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 )}
               </CardContent>
             </Card>
 
-            {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-end">
               <Button
                 type="button"
                 variant="outline"
-                size="lg"
                 onClick={form.handleSubmit((data) => handleSubmit(data, "draft"))}
                 disabled={isSubmitting}
               >
@@ -871,12 +786,11 @@ const CommunityOpportunitiesNew = () => {
               </Button>
               <Button
                 type="button"
-                size="lg"
                 onClick={form.handleSubmit((data) => handleSubmit(data, "published"))}
                 disabled={isSubmitting}
               >
                 <Send className="w-4 h-4 mr-2" />
-                Publish Collab Request
+                Publish Request
               </Button>
             </div>
           </form>
