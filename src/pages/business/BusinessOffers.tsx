@@ -24,7 +24,7 @@ const EXTERNAL_BUTTON_FONT = {
   letterSpacing: "0.03em",
   fontSize: "16px",
   borderRadius: "9px",
-  textTransform: "uppercase" as const,
+  textTransform: "uppercase",
   transition: "all 0.14s",
 };
 const INTERNAL_BUTTON_FONT = {
