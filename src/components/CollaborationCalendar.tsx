@@ -38,9 +38,9 @@ const DARKER_GROTESQUE = {
   color: "#000",
 };
 const STATUS_COLORS = {
-  discussions: "#31C4D1", // blue
-  scheduled: "#FFD861", // yellow
-  completed: "#F2A7D2", // pink
+  discussions: "#E5E5E5", // neutral/soft grey
+  scheduled: "#FFDDAC", // soft orange
+  completed: "#FFD861", // bright yellow
 };
 
 const localizer = dateFnsLocalizer({
@@ -252,14 +252,21 @@ function CollaborationCalendar({ userType }) {
 
   const eventStyleGetter = (event) => {
     const statusClass = classifyStatus(event);
+    const colorScheme = {
+      discussions: { bg: "#E5E5E5", text: "#444" },
+      scheduled: { bg: "#FFDDAC", text: "#D8910B" },
+      completed: { bg: "#FFD861", text: "#232323" }
+    };
+    const scheme = colorScheme[statusClass] || { bg: "#fff", text: "#000" };
+    
     return {
       style: {
-        backgroundColor: STATUS_COLORS[statusClass] || "#fff",
-        color: "#000",
+        backgroundColor: scheme.bg,
+        color: scheme.text,
         borderRadius: "7px",
         border: "none",
         fontFamily: "'Open Sans', Arial, sans-serif",
-        fontWeight: 400,
+        fontWeight: statusClass === "discussions" ? 400 : 600,
         fontSize: "14px",
         opacity: 0.95,
       },
@@ -327,9 +334,9 @@ function CollaborationCalendar({ userType }) {
 
         {/* Legend */}
         <div className="flex flex-wrap gap-2 pt-2 pb-2">
-          <Badge style={{ backgroundColor: "#31C4D1", color: "#000", ...DARKER_GROTESQUE }}>Discussions</Badge>
-          <Badge style={{ backgroundColor: "#FFD861", color: "#000", ...DARKER_GROTESQUE }}>Scheduled</Badge>
-          <Badge style={{ backgroundColor: "#F2A7D2", color: "#000", ...DARKER_GROTESQUE }}>Completed</Badge>
+          <Badge style={{ backgroundColor: "#E5E5E5", color: "#444", ...DARKER_GROTESQUE }}>Discussions</Badge>
+          <Badge style={{ backgroundColor: "#FFDDAC", color: "#D8910B", ...DARKER_GROTESQUE, fontWeight: 600 }}>Scheduled</Badge>
+          <Badge style={{ backgroundColor: "#FFD861", color: "#232323", ...DARKER_GROTESQUE, fontWeight: 600 }}>Completed</Badge>
         </div>
 
         {/* Calendar block */}

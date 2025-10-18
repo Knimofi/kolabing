@@ -126,11 +126,11 @@ const CollaborationCard = ({ collaboration, onView, onStatusUpdate, onOpenFeedba
       )}
 
         {/* Action Buttons */}
-        <div className="flex gap-2 pt-2">
+        <div className="flex flex-wrap gap-2 pt-4 mt-auto">
           <Button
             variant="outline"
             size="sm"
-            className="flex-1"
+            className="flex-1 min-w-[120px]"
             onClick={onView}
           >
             <Eye className="w-4 h-4 mr-2" />
@@ -141,7 +141,7 @@ const CollaborationCard = ({ collaboration, onView, onStatusUpdate, onOpenFeedba
             <>
               <Button
                 size="sm"
-                className="bg-green-600 hover:bg-green-700 text-white"
+                className="bg-green-600 hover:bg-green-700 text-white flex-1 min-w-[100px]"
                 onClick={() => {
                   onStatusUpdate('completed');
                   if (onOpenFeedbackModal) {
@@ -155,6 +155,7 @@ const CollaborationCard = ({ collaboration, onView, onStatusUpdate, onOpenFeedba
               <Button
                 size="sm"
                 variant="destructive"
+                className="flex-1 min-w-[100px]"
                 onClick={() => onStatusUpdate('cancelled')}
               >
                 <XCircle className="w-4 h-4 mr-1" />

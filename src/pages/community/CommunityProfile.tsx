@@ -157,6 +157,13 @@ const CommunityProfile: React.FC = () => {
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
                   placeholder="Enter your community name"
+                  style={{
+                    background: "#F5F6F8",
+                    color: "#232323",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontFamily: "'Open Sans', Arial, sans-serif",
+                  }}
                   aria-invalid={!!errors.name}
                   aria-describedby={errors.name ? 'name-error' : undefined}
                 />
@@ -184,6 +191,13 @@ const CommunityProfile: React.FC = () => {
                   value={formData.city}
                   onChange={(e) => handleInputChange('city', e.target.value)}
                   placeholder="Enter your city"
+                  style={{
+                    background: "#F5F6F8",
+                    color: "#232323",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontFamily: "'Open Sans', Arial, sans-serif",
+                  }}
                   aria-invalid={!!errors.city}
                   aria-describedby={errors.city ? 'city-error' : undefined}
                 />
@@ -247,6 +261,13 @@ const CommunityProfile: React.FC = () => {
                 value={formData.phone_number}
                 onChange={(e) => handleInputChange('phone_number', e.target.value)}
                 placeholder="Enter your phone number"
+                style={{
+                  background: "#F5F6F8",
+                  color: "#232323",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontFamily: "'Open Sans', Arial, sans-serif",
+                }}
                 aria-invalid={!!errors.phone_number}
                 aria-describedby={errors.phone_number ? 'phone-error' : undefined}
               />
@@ -276,6 +297,13 @@ const CommunityProfile: React.FC = () => {
                 value={formData.about}
                 onChange={(e) => handleInputChange('about', e.target.value)}
                 placeholder="Describe here your community and mentality."
+                style={{
+                  background: "#F5F6F8",
+                  color: "#232323",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontFamily: "'Open Sans', Arial, sans-serif",
+                }}
                 className="min-h-[100px]"
               />
             </div>
@@ -299,6 +327,13 @@ const CommunityProfile: React.FC = () => {
                   value={formData.website}
                   onChange={(e) => handleInputChange('website', e.target.value)}
                   placeholder="yourwebsite.com"
+                  style={{
+                    background: "#F5F6F8",
+                    color: "#232323",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontFamily: "'Open Sans', Arial, sans-serif",
+                  }}
                   aria-invalid={!!errors.website}
                   aria-describedby={errors.website ? 'website-error' : undefined}
                 />
@@ -326,6 +361,13 @@ const CommunityProfile: React.FC = () => {
                   value={formData.instagram}
                   onChange={(e) => handleInputChange('instagram', e.target.value)}
                   placeholder="yourcommunity"
+                  style={{
+                    background: "#F5F6F8",
+                    color: "#232323",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontFamily: "'Open Sans', Arial, sans-serif",
+                  }}
                   aria-invalid={!!errors.instagram}
                   aria-describedby={errors.instagram ? 'instagram-error' : undefined}
                 />
@@ -344,6 +386,13 @@ const CommunityProfile: React.FC = () => {
                 value={formData.tiktok}
                 onChange={(e) => handleInputChange('tiktok', e.target.value)}
                 placeholder="yourcommunity"
+                style={{
+                  background: "#F5F6F8",
+                  color: "#232323",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontFamily: "'Open Sans', Arial, sans-serif",
+                }}
                 aria-invalid={!!errors.tiktok}
                 aria-describedby={errors.tiktok ? 'tiktok-error' : undefined}
               />
