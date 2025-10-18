@@ -226,7 +226,19 @@ const CommunityOpportunitiesNew = () => {
     <div style={{ minHeight: "100vh", background: "#fff" }} className="py-8 px-4 flex flex-col items-center">
       <div className="w-full max-w-3xl space-y-6">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/community/my-opportunities")}>
+          <Button
+            size="sm"
+            onClick={() => navigate("/community/my-opportunities")}
+            style={{ backgroundColor: "#FBBF24", color: "#000" }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#000";
+              (e.currentTarget as HTMLButtonElement).style.color = "#FBBF24";
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#FBBF24";
+              (e.currentTarget as HTMLButtonElement).style.color = "#000";
+            }}
+          >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to My Collab Requests
           </Button>
@@ -304,8 +316,162 @@ const CommunityOpportunitiesNew = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* (Availability fields with styles same as above, omitted here for brevity but should be included) */}
-                {/* ... */}
+                <FormField
+                  control={form.control}
+                  name="availability_mode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel style={{ color: TEXT_DARK }}>Availability Type</FormLabel>
+                      <FormControl>
+                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex space-x-6">
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="date_range" id="date_range" />
+                            <Label htmlFor="date_range" style={{ color: TEXT_DARK }}>
+                              Specific date range
+                            </Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="recurring" id="recurring" />
+                            <Label htmlFor="recurring" style={{ color: TEXT_DARK }}>
+                              Recurring schedule
+                            </Label>
+                          </div>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {form.watch("availability_mode") === "date_range" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="availability_start"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel style={{ color: TEXT_DARK }}>Start Date</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  style={{
+                                    background: BG_INPUT,
+                                    color: TEXT_DARK,
+                                    border: "none",
+                                    fontFamily: "Open Sans, Arial, sans-serif",
+                                  }}
+                                  className={cn(
+                                    "w-full pl-3 text-left font-normal",
+                                    !field.value && "text-muted-foreground",
+                                  )}
+                                >
+                                  {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="availability_end"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel style={{ color: TEXT_DARK }}>End Date</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  style={{
+                                    background: BG_INPUT,
+                                    color: TEXT_DARK,
+                                    border: "none",
+                                    fontFamily: "Open Sans, Arial, sans-serif",
+                                  }}
+                                  className={cn(
+                                    "w-full pl-3 text-left font-normal",
+                                    !field.value && "text-muted-foreground",
+                                  )}
+                                >
+                                  {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
+
+                {form.watch("availability_mode") === "recurring" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="recurring_day"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: TEXT_DARK }}>Day of Week</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger style={{ fontFamily: "Open Sans, Arial, sans-serif" }}>
+                                <SelectValue placeholder="Select a day" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="monday">Monday</SelectItem>
+                              <SelectItem value="tuesday">Tuesday</SelectItem>
+                              <SelectItem value="wednesday">Wednesday</SelectItem>
+                              <SelectItem value="thursday">Thursday</SelectItem>
+                              <SelectItem value="friday">Friday</SelectItem>
+                              <SelectItem value="saturday">Saturday</SelectItem>
+                              <SelectItem value="sunday">Sunday</SelectItem>
+                              <SelectItem value="everyday">Every day</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="recurring_time"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: TEXT_DARK }}>Time (optional)</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="time"
+                              placeholder="e.g., 19:00"
+                              style={{
+                                background: BG_INPUT,
+                                color: TEXT_DARK,
+                                border: "none",
+                                fontFamily: "Open Sans, Arial, sans-serif",
+                              }}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -318,8 +484,112 @@ const CommunityOpportunitiesNew = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* (Location fields with styles, omitted here for brevity but should be included) */}
-                {/* ... */}
+                <FormField
+                  control={form.control}
+                  name="venue_mode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel style={{ color: TEXT_DARK }}>Venue Requirements</FormLabel>
+                      <FormControl>
+                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex space-x-6">
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="no_venue" id="no_venue" />
+                            <Label htmlFor="no_venue" style={{ color: TEXT_DARK }}>
+                              No physical venue required
+                            </Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="i_have_venue" id="i_have_venue" />
+                            <Label htmlFor="i_have_venue" style={{ color: TEXT_DARK }}>
+                              I have a venue
+                            </Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="partner_provides" id="partner_provides" />
+                            <Label htmlFor="partner_provides" style={{ color: TEXT_DARK }}>
+                              Collab partner provides venue
+                            </Label>
+                          </div>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {form.watch("venue_mode") === "i_have_venue" && (
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel style={{ color: TEXT_DARK }}>Venue Address</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter the venue address"
+                            style={{
+                              background: BG_INPUT,
+                              color: TEXT_DARK,
+                              border: "none",
+                              fontFamily: "Open Sans, Arial, sans-serif",
+                            }}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                {form.watch("venue_mode") === "partner_provides" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="preferred_city"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: TEXT_DARK }}>Preferred City</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="e.g., Barcelona"
+                              style={{
+                                background: BG_INPUT,
+                                color: TEXT_DARK,
+                                border: "none",
+                                fontFamily: "Open Sans, Arial, sans-serif",
+                              }}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="preferred_area"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: TEXT_DARK }}>Preferred Area (optional)</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="e.g., Eixample, Gracia..."
+                              style={{
+                                background: BG_INPUT,
+                                color: TEXT_DARK,
+                                border: "none",
+                                fontFamily: "Open Sans, Arial, sans-serif",
+                              }}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -332,8 +602,32 @@ const CommunityOpportunitiesNew = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Photo upload fields with styles */}
-                {/* ... */}
+                <FormField
+                  control={form.control}
+                  name="use_profile_photo"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel style={{ color: TEXT_DARK }}>Use my community's profile photo</FormLabel>
+                        <p style={{ color: "#606060", fontSize: 14 }}>
+                          Your profile photo will be used for this collaboration
+                        </p>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                {!form.watch("use_profile_photo") && (
+                  <FileUpload
+                    bucket="offer-photos"
+                    value={form.watch("offer_photo")}
+                    onChange={(url) => form.setValue("offer_photo", url)}
+                    label="Collaboration Photo"
+                    accept="image/*"
+                  />
+                )}
               </CardContent>
             </Card>
 
