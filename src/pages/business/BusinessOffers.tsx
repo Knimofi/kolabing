@@ -18,21 +18,18 @@ const BUTTON_DARKER_YELLOW = "#FFE49B";
 const FILTER_GRAY = "#F3F4F6";
 const FILTER_GRAY_ACTIVE = "#E5E7EB";
 
-const EXTERNAL_BUTTON_FONT = {
-  fontFamily: "Darker Grotesque, Arial, sans-serif",
-  fontWeight: 400,
-  letterSpacing: "0.03em",
+// Used for all buttons INSIDE the card
+const CARD_BUTTON_STYLE = {
+  fontFamily: "Open Sans, Arial, sans-serif",
+  fontWeight: 500, // Normal for all except View
   fontSize: "16px",
-  borderRadius: "9px",
-  textTransform: "uppercase",
-  transition: "all 0.14s",
+  borderRadius: "8px",
 };
 
-const INTERNAL_BUTTON_FONT = {
-  fontFamily: "'GT Walsheim', 'Montserrat', 'Arial', sans-serif",
-  fontWeight: 500,
-  fontSize: "15px",
-  borderRadius: "9px",
+// Only View button is bold
+const VIEW_BUTTON_STYLE = {
+  ...CARD_BUTTON_STYLE,
+  fontWeight: 700,
 };
 
 const BusinessOffers = () => {
@@ -54,22 +51,19 @@ const BusinessOffers = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const { data: bpData, error: bpError } = await supabase
+      const { data: bpData } = await supabase
         .from("business_profiles")
         .select("*")
         .eq("profile_id", profile.id)
         .single();
 
-      if (bpError || !bpData) throw new Error("Business profile not found.");
       setBusinessProfile(bpData);
 
-      const { data: offersData, error: offersError } = await supabase
+      const { data: offersData } = await supabase
         .from("collab_opportunities")
         .select("*")
         .eq("creator_profile_id", bpData.profile_id)
         .order("created_at", { ascending: false });
-
-      if (offersError) throw offersError;
 
       setOffers(offersData || []);
     } catch (error: any) {
@@ -85,15 +79,11 @@ const BusinessOffers = () => {
 
   const updateOfferStatus = async (offerId: string, newStatus: "draft" | "published" | "closed" | "completed") => {
     try {
-      const { error } = await supabase.from("collab_opportunities").update({ status: newStatus }).eq("id", offerId);
-      if (error) throw error;
+      await supabase.from("collab_opportunities").update({ status: newStatus }).eq("id", offerId);
       setOffers(offers.map((offer) => (offer.id === offerId ? { ...offer, status: newStatus } : offer)));
-      toast({
-        title: "Success",
-        description: "Offer status updated!",
-      });
+      toast({ title: "Success", description: "Offer status updated!" });
     } catch (error: any) {
-      toast({ title: "Error", description: error.message || "Failed to update offer status", variant: "destructive" });
+      toast({ title: "Error", description: error.message ?? "Failed to update offer status", variant: "destructive" });
     }
   };
 
@@ -104,20 +94,12 @@ const BusinessOffers = () => {
 
   const handleDeleteOffer = async (offer: any) => {
     try {
-      const { error } = await supabase.from("collab_opportunities").delete().eq("id", offer.id);
-      if (error) throw error;
+      await supabase.from("collab_opportunities").delete().eq("id", offer.id);
       setOffers(offers.filter((o) => o.id !== offer.id));
       setOfferToDelete(null);
-      toast({
-        title: "Success",
-        description: "Offer deleted successfully",
-      });
+      toast({ title: "Success", description: "Offer deleted successfully" });
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to delete offer",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message ?? "Failed to delete offer", variant: "destructive" });
     }
   };
 
@@ -130,20 +112,11 @@ const BusinessOffers = () => {
         status: "draft",
         published_at: null,
       };
-      const { data, error } = await supabase.from("collab_opportunities").insert([duplicatedOffer]).select().single();
-
-      if (error) throw error;
+      const { data } = await supabase.from("collab_opportunities").insert([duplicatedOffer]).select().single();
       setOffers([data, ...offers]);
-      toast({
-        title: "Success",
-        description: "Offer duplicated successfully",
-      });
+      toast({ title: "Success", description: "Offer duplicated successfully" });
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to duplicate offer",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message ?? "Failed to duplicate offer", variant: "destructive" });
     }
   };
 
@@ -152,7 +125,7 @@ const BusinessOffers = () => {
   const filteredOffers = activeFilter === "all" ? offers : offers.filter((offer) => offer.status === activeFilter);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white" style={{ minHeight: "100vh", background: "#fff" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         <header className="pb-2 mb-2">
           <h1
@@ -168,27 +141,17 @@ const BusinessOffers = () => {
           >
             My Collab Requests
           </h1>
-          <p
-            style={{
-              fontFamily: "Open Sans, Arial, sans-serif",
-              fontWeight: 400,
-              fontSize: 15,
-              color: "#4A4A4A",
-              letterSpacing: 0,
-              textTransform: "none",
-              margin: "0 0 0.5em 0",
-            }}
-          >
-            Create and manage your collaboration opportunities
-          </p>
           <Button
             onClick={() => navigate("/business/opportunities/new")}
             size="lg"
             style={{
-              ...EXTERNAL_BUTTON_FONT,
+              fontFamily: "Darker Grotesque, Arial, sans-serif",
+              fontWeight: 600,
+              letterSpacing: "0.02em",
+              fontSize: "16px",
+              textTransform: "uppercase",
               background: BUTTON_YELLOW,
               color: SOFT_BLACK,
-              fontWeight: 400,
               border: "none",
               boxShadow: "none",
               marginTop: 8,
@@ -200,30 +163,6 @@ const BusinessOffers = () => {
             CREATE COLLAB OPPORTUNITY
           </Button>
         </header>
-        {/* FILTER Buttons */}
-        <div className="flex gap-2 flex-wrap mb-4">
-          {["all", "draft", "published", "closed", "completed"].map((filter) => (
-            <Button
-              key={filter}
-              variant="ghost"
-              size="sm"
-              onClick={() => setActiveFilter(filter as any)}
-              style={{
-                ...EXTERNAL_BUTTON_FONT,
-                background: activeFilter === filter ? FILTER_GRAY_ACTIVE : FILTER_GRAY,
-                color: SOFT_BLACK,
-                fontWeight: activeFilter === filter ? 800 : 400,
-                border: activeFilter === filter ? `1.5px solid #D1D5DB` : `1px solid #F3F4F6`,
-                boxShadow: "none",
-                padding: "8px 18px",
-              }}
-            >
-              {filter === "all" ? "ALL OFFERS" : filter.toUpperCase()} (
-              {filter === "all" ? offers.length : offers.filter((o) => o.status === filter).length})
-            </Button>
-          ))}
-        </div>
-
         {filteredOffers.length === 0 ? (
           <Card
             style={{
@@ -250,12 +189,12 @@ const BusinessOffers = () => {
                 className="mt-4"
                 size="lg"
                 style={{
-                  ...INTERNAL_BUTTON_FONT,
+                  ...CARD_BUTTON_STYLE,
                   background: BUTTON_YELLOW,
                   color: SOFT_BLACK,
-                  fontWeight: 600,
                   border: "none",
                   boxShadow: "none",
+                  fontWeight: 700,
                 }}
               >
                 <Plus className="w-5 h-5 mr-2" />
@@ -264,11 +203,11 @@ const BusinessOffers = () => {
             </CardContent>
           </Card>
         ) : (
-          // Responsive grid: never overflows
           <div
             className="grid gap-6"
             style={{
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
+              justifyItems: "center",
             }}
           >
             {filteredOffers.map((offer) => {
@@ -278,26 +217,25 @@ const BusinessOffers = () => {
                   photoUrl = offer.offer_photo;
                 } else {
                   const { data } = supabase.storage.from("collab_opportunities").getPublicUrl(offer.offer_photo);
-                  if (data?.publicUrl) {
-                    photoUrl = data.publicUrl;
-                  }
+                  if (data?.publicUrl) photoUrl = data.publicUrl;
                 }
               }
               return (
                 <Card
                   key={offer.id}
-                  className="group"
                   style={{
                     background: SOFT_YELLOW,
                     color: SOFT_BLACK,
                     borderRadius: "18px",
                     border: `1.5px solid ${CARD_BORDER}`,
                     boxShadow: SHADOW,
-                    position: "relative",
+                    width: "100%",
+                    maxWidth: "370px",
                   }}
+                  className="flex flex-col"
                 >
-                  <CardContent className="p-4 h-full flex flex-col">
-                    {/* header (same as before) */}
+                  <CardContent className="p-4 flex flex-col">
+                    {/* HEADER */}
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2 text-sm" style={{ color: SOFT_BLACK, opacity: 0.87 }}>
                         <span>{businessProfile?.business_type || "Business"}</span>
@@ -322,7 +260,7 @@ const BusinessOffers = () => {
                         <AvatarFallback className="text-xs">{businessProfile?.name?.[0] || "B"}</AvatarFallback>
                       </Avatar>
                     </div>
-                    {/* Cover Image */}
+                    {/* IMAGE */}
                     <div
                       className="relative mb-4 rounded-lg overflow-hidden aspect-video"
                       style={{ background: "#FFE49B" }}
@@ -335,34 +273,34 @@ const BusinessOffers = () => {
                         onError={(e) => ((e.target as HTMLImageElement).src = "/placeholder.svg")}
                       />
                     </div>
-                    {/* Main Content */}
+                    {/* MAIN CONTENT */}
                     <div className="flex-1 space-y-3">
                       <h3
-                        className="leading-tight line-clamp-2"
                         style={{
-                          fontFamily: "'GT Walsheim', 'Montserrat', 'Arial', sans-serif",
-                          fontWeight: 400,
+                          fontFamily: "Open Sans, Arial, sans-serif",
+                          fontWeight: 600,
                           fontSize: "18px",
                           color: SOFT_BLACK,
-                          opacity: 0.95,
-                          marginBottom: "2px",
+                          margin: 0,
                         }}
                       >
                         {offer.title}
                       </h3>
-                      <p className="text-sm leading-relaxed" style={{ color: SOFT_BLACK, opacity: 0.87 }}>
+                      <p
+                        className="text-sm"
+                        style={{ fontFamily: "Open Sans, Arial, sans-serif", color: SOFT_BLACK, opacity: 0.87 }}
+                      >
                         {offer.description}
                       </p>
                     </div>
-                    {/* Footer Actions (unchanged) */}
-                    <div className="flex gap-2 mt-4 pt-3 border-t" style={{ borderColor: CARD_BORDER }}>
+                    {/* BUTTONS */}
+                    <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t" style={{ borderColor: CARD_BORDER }}>
                       <Button
                         size="sm"
                         style={{
-                          ...INTERNAL_BUTTON_FONT,
+                          ...VIEW_BUTTON_STYLE,
                           background: BUTTON_DARKER_YELLOW,
                           color: SOFT_BLACK,
-                          fontWeight: 600,
                           border: "none",
                         }}
                         onClick={() => handleViewOffer(offer)}
@@ -374,10 +312,9 @@ const BusinessOffers = () => {
                       <Button
                         size="sm"
                         style={{
-                          ...INTERNAL_BUTTON_FONT,
+                          ...CARD_BUTTON_STYLE,
                           background: SOFT_YELLOW,
                           color: SOFT_BLACK,
-                          fontWeight: 500,
                           border: `1px solid ${SOFT_YELLOW}`,
                         }}
                         disabled={!["draft", "published"].includes(offer.status)}
@@ -390,10 +327,9 @@ const BusinessOffers = () => {
                       <Button
                         size="sm"
                         style={{
-                          ...INTERNAL_BUTTON_FONT,
+                          ...CARD_BUTTON_STYLE,
                           background: SOFT_YELLOW,
                           color: SOFT_BLACK,
-                          fontWeight: 500,
                           border: `1px solid ${SOFT_YELLOW}`,
                         }}
                         onClick={() => handleDuplicateOffer(offer)}
@@ -407,10 +343,9 @@ const BusinessOffers = () => {
                         variant="destructive"
                         size="sm"
                         style={{
-                          ...INTERNAL_BUTTON_FONT,
+                          ...CARD_BUTTON_STYLE,
                           background: "#FFE5E5",
                           color: "#dc2626",
-                          fontWeight: 600,
                           border: "1.5px solid #dc2626",
                         }}
                         onClick={() => setOfferToDelete(offer)}
@@ -422,13 +357,7 @@ const BusinessOffers = () => {
                       {offer.status === "draft" && (
                         <Button
                           size="sm"
-                          style={{
-                            ...INTERNAL_BUTTON_FONT,
-                            background: BUTTON_YELLOW,
-                            color: SOFT_BLACK,
-                            fontWeight: 600,
-                            border: "none",
-                          }}
+                          style={{ ...CARD_BUTTON_STYLE, background: BUTTON_YELLOW, color: SOFT_BLACK, border: "none" }}
                           onClick={() => updateOfferStatus(offer.id, "published")}
                           onMouseEnter={(e) => (e.currentTarget.style.background = BUTTON_DARKER_YELLOW)}
                           onMouseLeave={(e) => (e.currentTarget.style.background = BUTTON_YELLOW)}
@@ -440,10 +369,9 @@ const BusinessOffers = () => {
                         <Button
                           size="sm"
                           style={{
-                            ...INTERNAL_BUTTON_FONT,
+                            ...CARD_BUTTON_STYLE,
                             background: SOFT_YELLOW,
                             color: SOFT_BLACK,
-                            fontWeight: 500,
                             border: `1px solid ${SOFT_YELLOW}`,
                           }}
                           onClick={() => updateOfferStatus(offer.id, "draft")}
@@ -461,7 +389,7 @@ const BusinessOffers = () => {
           </div>
         )}
 
-        {/* MODAL for delete (OfferCard btn style) */}
+        {/* MODAL for delete (same button style) */}
         {offerToDelete && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <Card
@@ -479,7 +407,7 @@ const BusinessOffers = () => {
                     fontWeight: 700,
                     fontSize: "18px",
                     color: SOFT_BLACK,
-                    fontFamily: "Darker Grotesque, Arial, sans-serif",
+                    fontFamily: "Open Sans, Arial, sans-serif",
                     marginBottom: "2px",
                   }}
                 >
@@ -503,10 +431,9 @@ const BusinessOffers = () => {
                   variant="ghost"
                   onClick={() => setOfferToDelete(null)}
                   style={{
-                    ...INTERNAL_BUTTON_FONT,
+                    ...CARD_BUTTON_STYLE,
                     background: SOFT_YELLOW,
                     color: SOFT_BLACK,
-                    fontWeight: 500,
                     border: "1px solid " + SOFT_YELLOW,
                   }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "#FFE49B")}
@@ -518,10 +445,9 @@ const BusinessOffers = () => {
                   variant="destructive"
                   onClick={() => handleDeleteOffer(offerToDelete)}
                   style={{
-                    ...INTERNAL_BUTTON_FONT,
+                    ...CARD_BUTTON_STYLE,
                     background: "#FFE5E5",
                     color: "#dc2626",
-                    fontWeight: 600,
                     border: "1.5px solid #dc2626",
                   }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "#F8B4B4")}
