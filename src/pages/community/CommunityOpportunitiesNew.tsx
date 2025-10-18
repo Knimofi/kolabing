@@ -22,6 +22,10 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { FileUpload } from "@/components/ui/file-upload";
 
+const BG_SECTION = "#F3F4F6";
+const BG_INPUT = "#E5E7EB";
+const TEXT_DARK = "#232323";
+
 const offerSchema = z.object({
   title: z.string().min(1, "Title is required").max(100, "Title must be under 100 characters"),
   description: z.string().min(1, "Description is required").max(1000, "Description must be under 1000 characters"),
@@ -105,7 +109,11 @@ const CommunityOpportunitiesNew = () => {
     },
   });
 
-  const deliverableOptions = [
+  const combinedChecklistOptions = [
+    { id: "venue", label: "Venue", hasAmount: false },
+    { id: "event_creation", label: "Event Creation", hasAmount: false },
+    { id: "split_revenue", label: "Split Revenue", hasAmount: false },
+    { id: "monetary_compensation", label: "Monetary Compensation (€)", hasAmount: true },
     { id: "tagged_stories", label: "Tagged Stories", hasAmount: true },
     { id: "google_reviews", label: "Google Reviews", hasAmount: true },
     { id: "number_of_attendees", label: "Number of Attendees", hasAmount: true },
@@ -115,11 +123,11 @@ const CommunityOpportunitiesNew = () => {
     { id: "collab_reel_post", label: "Collab Reel/Post", hasAmount: false },
     { id: "group_picture", label: "Group Picture", hasAmount: false },
     { id: "loyalty_signups", label: "Loyalty Sign-ups", hasAmount: true },
-    { id: "venue", label: "Venue", hasAmount: false },
-    { id: "event_creation", label: "Event Creation", hasAmount: false },
-    { id: "split_revenue", label: "Split Revenue", hasAmount: false },
-    { id: "monetary_compensation", label: "Monetary Compensation (€)", hasAmount: true },
   ] as const;
+
+  const halfIndex = Math.ceil(combinedChecklistOptions.length / 2);
+  const leftColumnOptions = combinedChecklistOptions.slice(0, halfIndex);
+  const rightColumnOptions = combinedChecklistOptions.slice(halfIndex);
 
   const handleSubmit = async (data: OfferFormData, status: "draft" | "published") => {
     if (!profile) return;
@@ -143,7 +151,6 @@ const CommunityOpportunitiesNew = () => {
         return;
       }
 
-      // Determine the photo to use
       let finalOfferPhoto = data.offer_photo;
       if (data.use_profile_photo && communityProfile.profile_photo) {
         finalOfferPhoto = communityProfile.profile_photo;
@@ -198,358 +205,44 @@ const CommunityOpportunitiesNew = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate("/community/my-opportunities")}>
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to My Collab Requests
-        </Button>
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Create a Collab Request</h1>
-          <p className="text-muted-foreground">Design your collaboration opportunity</p>
+    <div style={{ minHeight: "100vh", background: "#fff" }} className="py-8 px-4 flex flex-col items-center">
+      <div className="w-full max-w-3xl space-y-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/community/my-opportunities")}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to My Collab Requests
+          </Button>
+          <div>
+            <h1 style={{ color: TEXT_DARK, fontSize: 30, fontWeight: 900 }}>Create a Collab Request</h1>
+            <p style={{ color: "#606060" }}>Design your collaboration opportunity</p>
+          </div>
         </div>
-      </div>
-      <Form {...form}>
-        <form className="space-y-6">
-          {/* Basic Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
-              <CardDescription>Provide the essential details about your collaboration opportunity</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Collab Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., Looking for venue partner for monthly meetup" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Describe what you're looking for..."
-                        className="min-h-[100px]"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Availability */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Availability</CardTitle>
-              <CardDescription>When are you available for this collaboration?</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="availability_mode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Availability Type</FormLabel>
-                    <FormControl>
-                      <RadioGroup value={field.value} onValueChange={field.onChange}>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="date_range" id="date_range" />
-                          <Label htmlFor="date_range">Specific date range</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="recurring" id="recurring" />
-                          <Label htmlFor="recurring">Recurring schedule</Label>
-                        </div>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {form.watch("availability_mode") === "date_range" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="availability_start"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>Start Date</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant="outline"
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground",
-                                )}
-                              >
-                                {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="availability_end"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>End Date</FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant="outline"
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground",
-                                )}
-                              >
-                                {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              )}
-
-              {form.watch("availability_mode") === "recurring" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="recurring_day"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Day of Week</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a day" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="monday">Monday</SelectItem>
-                            <SelectItem value="tuesday">Tuesday</SelectItem>
-                            <SelectItem value="wednesday">Wednesday</SelectItem>
-                            <SelectItem value="thursday">Thursday</SelectItem>
-                            <SelectItem value="friday">Friday</SelectItem>
-                            <SelectItem value="saturday">Saturday</SelectItem>
-                            <SelectItem value="sunday">Sunday</SelectItem>
-                            <SelectItem value="everyday">Every day</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="recurring_time"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Time (optional)</FormLabel>
-                        <FormControl>
-                          <Input type="time" placeholder="e.g., 19:00" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Location */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Location</CardTitle>
-              <CardDescription>Where will this collaboration take place?</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="venue_mode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Venue Requirements</FormLabel>
-                    <FormControl>
-                      <RadioGroup value={field.value} onValueChange={field.onChange}>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="no_venue" id="no_venue" />
-                          <Label htmlFor="no_venue">No physical venue required</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="i_have_venue" id="i_have_venue" />
-                          <Label htmlFor="i_have_venue">I have a venue</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="partner_provides" id="partner_provides" />
-                          <Label htmlFor="partner_provides">Collab partner provides venue</Label>
-                        </div>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {form.watch("venue_mode") === "i_have_venue" && (
+        <Form {...form}>
+          <form className="space-y-6">
+            {/* Basic Information */}
+            <Card style={{ background: BG_SECTION }}>
+              <CardHeader>
+                <CardTitle style={{ color: TEXT_DARK }}>Basic Information</CardTitle>
+                <CardDescription style={{ color: "#606060" }}>
+                  Provide the essential details about your collaboration opportunity
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="address"
+                  name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Venue Address</FormLabel>
+                      <FormLabel style={{ color: TEXT_DARK }}>Collab Title</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter the venue address" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              {form.watch("venue_mode") === "partner_provides" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="preferred_city"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Preferred City</FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g., Barcelona" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="preferred_area"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Preferred Area (optional)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g., Eixample, Gracia..." {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Photo Upload */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Collaboration Photo</CardTitle>
-              <CardDescription>Add a photo for your collaboration (optional)</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="use_profile_photo"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                    <FormControl>
-                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>Use my community's profile photo</FormLabel>
-                      <p className="text-sm text-muted-foreground">
-                        Your profile photo will be used for this collaboration
-                      </p>
-                    </div>
-                  </FormItem>
-                )}
-              />
-
-              {!form.watch("use_profile_photo") && (
-                <FileUpload
-                  bucket="offer-photos"
-                  value={form.watch("offer_photo")}
-                  onChange={(url) => form.setValue("offer_photo", url)}
-                  label="Collaboration Photo"
-                  accept="image/*"
-                />
-              )}
-            </CardContent>
-          </Card>
-
-          {/* What You're Offering */}
-          <Card>
-            <CardHeader>
-              <CardTitle>What can you offer?</CardTitle>
-              <CardDescription>Describe what you're providing to your collaboration partner</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="offer_input_mode"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <RadioGroup value={field.value} onValueChange={field.onChange}>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="text" id="offer_text" />
-                          <Label htmlFor="offer_text">Describe in your own words</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="checklist" id="offer_checklist" />
-                          <Label htmlFor="offer_checklist">Select from options</Label>
-                        </div>
-                      </RadioGroup>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              {form.watch("offer_input_mode") === "text" && (
-                <FormField
-                  control={form.control}
-                  name="business_offer.description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Your Offer</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="e.g., Social media promotion, event hosting, content creation..."
-                          className="min-h-[80px]"
+                        <Input
+                          placeholder="e.g., Looking for venue partner for monthly meetup"
+                          style={{
+                            background: BG_INPUT,
+                            color: TEXT_DARK,
+                            border: "none",
+                            fontFamily: "Open Sans, Arial, sans-serif",
+                          }}
                           {...field}
                         />
                       </FormControl>
@@ -557,159 +250,549 @@ const CommunityOpportunitiesNew = () => {
                     </FormItem>
                   )}
                 />
-              )}
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel style={{ color: TEXT_DARK }}>Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Describe what you're looking for..."
+                          className="min-h-[100px]"
+                          style={{
+                            background: BG_INPUT,
+                            color: TEXT_DARK,
+                            border: "none",
+                            fontFamily: "Open Sans, Arial, sans-serif",
+                          }}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
 
-              {form.watch("offer_input_mode") === "checklist" && (
-                <div className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="business_offer.venue"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
-                        <FormLabel className="font-normal">Venue</FormLabel>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="business_offer.event_creation"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
-                        <FormLabel className="font-normal">Event Creation</FormLabel>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="business_offer.split_revenue"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                        </FormControl>
-                        <FormLabel className="font-normal">Split Revenue</FormLabel>
-                      </FormItem>
-                    )}
-                  />
-                  <div className="space-y-2">
+            {/* Availability */}
+            <Card style={{ background: BG_SECTION }}>
+              <CardHeader>
+                <CardTitle style={{ color: TEXT_DARK }}>Availability</CardTitle>
+                <CardDescription style={{ color: "#606060" }}>
+                  When are you available for this collaboration?
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="availability_mode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel style={{ color: TEXT_DARK }}>Availability Type</FormLabel>
+                      <FormControl>
+                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex space-x-6">
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="date_range" id="date_range" />
+                            <Label htmlFor="date_range" style={{ color: TEXT_DARK }}>
+                              Specific date range
+                            </Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="recurring" id="recurring" />
+                            <Label htmlFor="recurring" style={{ color: TEXT_DARK }}>
+                              Recurring schedule
+                            </Label>
+                          </div>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {form.watch("availability_mode") === "date_range" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
-                      name="business_offer.monetary_compensation"
+                      name="availability_start"
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                          </FormControl>
-                          <FormLabel className="font-normal">Monetary Compensation</FormLabel>
+                        <FormItem className="flex flex-col">
+                          <FormLabel style={{ color: TEXT_DARK }}>Start Date</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  style={{
+                                    background: BG_INPUT,
+                                    color: TEXT_DARK,
+                                    border: "none",
+                                    fontFamily: "Open Sans, Arial, sans-serif",
+                                  }}
+                                  className={cn(
+                                    "w-full pl-3 text-left font-normal",
+                                    !field.value && "text-muted-foreground",
+                                  )}
+                                >
+                                  {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
-                    {form.watch("business_offer.monetary_compensation") && (
-                      <FormField
-                        control={form.control}
-                        name="business_offer.compensation_amount"
-                        render={({ field }) => (
-                          <FormItem className="ml-6">
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder="Amount in €"
-                                {...field}
-                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    )}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* What You're Looking For */}
-          <Card>
-            <CardHeader>
-              <CardTitle>What do you expect from collaborators?</CardTitle>
-              <CardDescription>Select what you expect from your collaboration partner</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                {deliverableOptions.map((option) => (
-                  <div key={option.id} className="space-y-2">
                     <FormField
                       control={form.control}
-                      name={`community_deliverables.${option.id}` as any}
+                      name="availability_end"
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox checked={!!field.value} onCheckedChange={field.onChange} />
-                          </FormControl>
-                          <FormLabel className="font-normal">{option.label}</FormLabel>
+                        <FormItem className="flex flex-col">
+                          <FormLabel style={{ color: TEXT_DARK }}>End Date</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  style={{
+                                    background: BG_INPUT,
+                                    color: TEXT_DARK,
+                                    border: "none",
+                                    fontFamily: "Open Sans, Arial, sans-serif",
+                                  }}
+                                  className={cn(
+                                    "w-full pl-3 text-left font-normal",
+                                    !field.value && "text-muted-foreground",
+                                  )}
+                                >
+                                  {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
                         </FormItem>
                       )}
                     />
-                    {option.hasAmount && form.watch(`community_deliverables.${option.id}` as any) && (
-                      <FormField
-                        control={form.control}
-                        name={`community_deliverables.${option.id}` as any}
-                        render={({ field }) => (
-                          <FormItem className="ml-6">
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder={
-                                  option.id === "monetary_compensation"
-                                    ? "Amount in €"
-                                    : `How many ${option.label.toLowerCase()}?`
-                                }
-                                {...field}
-                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    )}
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                )}
 
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-end">
-            <Button
-              type="button"
-              variant="outline"
-              size="lg"
-              onClick={form.handleSubmit((data) => handleSubmit(data, "draft"))}
-              disabled={isSubmitting}
-            >
-              <Save className="w-4 h-4 mr-2" />
-              Save as Draft
-            </Button>
-            <Button
-              type="button"
-              size="lg"
-              onClick={form.handleSubmit((data) => handleSubmit(data, "published"))}
-              disabled={isSubmitting}
-            >
-              <Send className="w-4 h-4 mr-2" />
-              Publish Collab Request
-            </Button>
-          </div>
-        </form>
-      </Form>
+                {form.watch("availability_mode") === "recurring" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="recurring_day"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: TEXT_DARK }}>Day of Week</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger style={{ fontFamily: "Open Sans, Arial, sans-serif" }}>
+                                <SelectValue placeholder="Select a day" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="monday">Monday</SelectItem>
+                              <SelectItem value="tuesday">Tuesday</SelectItem>
+                              <SelectItem value="wednesday">Wednesday</SelectItem>
+                              <SelectItem value="thursday">Thursday</SelectItem>
+                              <SelectItem value="friday">Friday</SelectItem>
+                              <SelectItem value="saturday">Saturday</SelectItem>
+                              <SelectItem value="sunday">Sunday</SelectItem>
+                              <SelectItem value="everyday">Every day</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="recurring_time"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: TEXT_DARK }}>Time (optional)</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="time"
+                              placeholder="e.g., 19:00"
+                              style={{
+                                background: BG_INPUT,
+                                color: TEXT_DARK,
+                                border: "none",
+                                fontFamily: "Open Sans, Arial, sans-serif",
+                              }}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Location */}
+            <Card style={{ background: BG_SECTION }}>
+              <CardHeader>
+                <CardTitle style={{ color: TEXT_DARK }}>Location</CardTitle>
+                <CardDescription style={{ color: "#606060" }}>
+                  Where will this collaboration take place?
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="venue_mode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel style={{ color: TEXT_DARK }}>Venue Requirements</FormLabel>
+                      <FormControl>
+                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex space-x-6">
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="no_venue" id="no_venue" />
+                            <Label htmlFor="no_venue" style={{ color: TEXT_DARK }}>
+                              No physical venue required
+                            </Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="i_have_venue" id="i_have_venue" />
+                            <Label htmlFor="i_have_venue" style={{ color: TEXT_DARK }}>
+                              I have a venue
+                            </Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="partner_provides" id="partner_provides" />
+                            <Label htmlFor="partner_provides" style={{ color: TEXT_DARK }}>
+                              Collab partner provides venue
+                            </Label>
+                          </div>
+                        </RadioGroup>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {form.watch("venue_mode") === "i_have_venue" && (
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel style={{ color: TEXT_DARK }}>Venue Address</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter the venue address"
+                            style={{
+                              background: BG_INPUT,
+                              color: TEXT_DARK,
+                              border: "none",
+                              fontFamily: "Open Sans, Arial, sans-serif",
+                            }}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                {form.watch("venue_mode") === "partner_provides" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="preferred_city"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: TEXT_DARK }}>Preferred City</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="e.g., Barcelona"
+                              style={{
+                                background: BG_INPUT,
+                                color: TEXT_DARK,
+                                border: "none",
+                                fontFamily: "Open Sans, Arial, sans-serif",
+                              }}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="preferred_area"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel style={{ color: TEXT_DARK }}>Preferred Area (optional)</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="e.g., Eixample, Gracia..."
+                              style={{
+                                background: BG_INPUT,
+                                color: TEXT_DARK,
+                                border: "none",
+                                fontFamily: "Open Sans, Arial, sans-serif",
+                              }}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Photo Upload */}
+            <Card style={{ background: BG_SECTION }}>
+              <CardHeader>
+                <CardTitle style={{ color: TEXT_DARK }}>Collaboration Photo</CardTitle>
+                <CardDescription style={{ color: "#606060" }}>
+                  Add a photo for your collaboration (optional)
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="use_profile_photo"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel style={{ color: TEXT_DARK }}>Use my community's profile photo</FormLabel>
+                        <p style={{ color: "#606060", fontSize: 14 }}>
+                          Your profile photo will be used for this collaboration
+                        </p>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                {!form.watch("use_profile_photo") && (
+                  <FileUpload
+                    bucket="offer-photos"
+                    value={form.watch("offer_photo")}
+                    onChange={(url) => form.setValue("offer_photo", url)}
+                    label="Collaboration Photo"
+                    accept="image/*"
+                  />
+                )}
+              </CardContent>
+            </Card>
+
+            {/* What can you offer? - merged checklist with 2 columns */}
+            <Card style={{ background: BG_SECTION }}>
+              <CardHeader>
+                <CardTitle style={{ color: TEXT_DARK }}>What can you offer?</CardTitle>
+                <CardDescription style={{ color: "#606060" }}>
+                  Select from options and describe what you provide to collaborators
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <FormField
+                  control={form.control}
+                  name="offer_input_mode"
+                  render={({ field }) => (
+                    <FormItem className="mb-4">
+                      <FormControl>
+                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex space-x-6">
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="text" id="offer_text" />
+                            <Label htmlFor="offer_text" style={{ color: TEXT_DARK }}>
+                              Describe in your own words
+                            </Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="checklist" id="offer_checklist" />
+                            <Label htmlFor="offer_checklist" style={{ color: TEXT_DARK }}>
+                              Select from options
+                            </Label>
+                          </div>
+                        </RadioGroup>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                {form.watch("offer_input_mode") === "text" && (
+                  <FormField
+                    control={form.control}
+                    name="business_offer.description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel style={{ color: TEXT_DARK }}>Your Offer</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="e.g., Social media promotion, event hosting, content creation..."
+                            className="min-h-[80px]"
+                            style={{
+                              background: BG_INPUT,
+                              color: TEXT_DARK,
+                              border: "none",
+                              fontFamily: "Open Sans, Arial, sans-serif",
+                            }}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+
+                {form.watch("offer_input_mode") === "checklist" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Left column */}
+                    <div className="space-y-4">
+                      {leftColumnOptions.map((option) => (
+                        <div key={option.id} className="space-y-2">
+                          <FormField
+                            control={form.control}
+                            name={`community_deliverables.${option.id}` as any}
+                            render={({ field }) => (
+                              <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                                <FormControl>
+                                  <Checkbox checked={!!field.value} onCheckedChange={field.onChange} />
+                                </FormControl>
+                                <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
+                                  {option.label}
+                                </FormLabel>
+                              </FormItem>
+                            )}
+                          />
+                          {option.hasAmount && form.watch(`community_deliverables.${option.id}` as any) && (
+                            <FormField
+                              control={form.control}
+                              name={`community_deliverables.${option.id}` as any}
+                              render={({ field }) => (
+                                <FormItem className="ml-6">
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      placeholder={
+                                        option.id === "monetary_compensation"
+                                          ? "Amount in €"
+                                          : `How many ${option.label.toLowerCase()}?`
+                                      }
+                                      style={{
+                                        background: BG_INPUT,
+                                        color: TEXT_DARK,
+                                        border: "none",
+                                        fontFamily: "Open Sans, Arial, sans-serif",
+                                      }}
+                                      {...field}
+                                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Right column */}
+                    <div className="space-y-4">
+                      {rightColumnOptions.map((option) => (
+                        <div key={option.id} className="space-y-2">
+                          <FormField
+                            control={form.control}
+                            name={`community_deliverables.${option.id}` as any}
+                            render={({ field }) => (
+                              <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                                <FormControl>
+                                  <Checkbox checked={!!field.value} onCheckedChange={field.onChange} />
+                                </FormControl>
+                                <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
+                                  {option.label}
+                                </FormLabel>
+                              </FormItem>
+                            )}
+                          />
+                          {option.hasAmount && form.watch(`community_deliverables.${option.id}` as any) && (
+                            <FormField
+                              control={form.control}
+                              name={`community_deliverables.${option.id}` as any}
+                              render={({ field }) => (
+                                <FormItem className="ml-6">
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      placeholder={
+                                        option.id === "monetary_compensation"
+                                          ? "Amount in €"
+                                          : `How many ${option.label.toLowerCase()}?`
+                                      }
+                                      style={{
+                                        background: BG_INPUT,
+                                        color: TEXT_DARK,
+                                        border: "none",
+                                        fontFamily: "Open Sans, Arial, sans-serif",
+                                      }}
+                                      {...field}
+                                      onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                onClick={form.handleSubmit((data) => handleSubmit(data, "draft"))}
+                disabled={isSubmitting}
+              >
+                <Save className="w-4 h-4 mr-2" />
+                Save as Draft
+              </Button>
+              <Button
+                type="button"
+                size="lg"
+                onClick={form.handleSubmit((data) => handleSubmit(data, "published"))}
+                disabled={isSubmitting}
+              >
+                <Send className="w-4 h-4 mr-2" />
+                Publish Collab Request
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
     </div>
   );
 };
