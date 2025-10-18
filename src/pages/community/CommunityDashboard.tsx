@@ -20,7 +20,7 @@ const RUBIK_MEDIUM = {
 
 const CommunityDashboard = () => {
   return (
-    <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-screen" style={{ background: "#F7F8FA" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         {/* Page Header */}
         <div>
@@ -31,7 +31,7 @@ const CommunityDashboard = () => {
                   fontFamily: "'Rubik', Arial, sans-serif",
                   textTransform: "uppercase",
                   fontWeight: 700,
-                  color: "#2b2b2d",
+                  color: "#232323",
                   fontSize: 30,
                   letterSpacing: "0.03em",
                 }}
@@ -54,14 +54,11 @@ const CommunityDashboard = () => {
                 size="lg"
                 style={{
                   background: "#FFD861",
-                  border: "none",
-                  color: "#2b2b2d",
-                  fontFamily: "'Darker Grotesque', Arial, sans-serif",
-                  textTransform: "uppercase",
-                  fontWeight: 600,
+                  color: "#fff",
+                  fontWeight: 700,
                   borderRadius: "8px",
-                  boxShadow: "0 2px 6px rgba(255, 216, 97, 0.3)",
-                  transition: "all 0.2s ease-in-out"
+                  boxShadow: "0 1.5px 4px 0 rgba(55, 73, 87, 0.11)",
+                  border: "none"
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
                 onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
@@ -105,14 +102,14 @@ const CommunityDashboard = () => {
             <Card 
               key={idx} 
               style={{ 
-                background: "#FFF6D8", 
-                border: "1.5px solid #F9E9AC", 
-                borderRadius: "18px", 
-                boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)", 
+                background: "#fff", 
+                border: "1px solid #EBEBEB", 
+                borderRadius: "14px", 
+                boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)", 
                 transition: "all 0.2s ease" 
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.03)"; e.currentTarget.style.boxShadow = "0 4px 24px 0 rgba(231, 192, 58, 0.18), 0 2px 12px 0 rgba(60, 44, 0, 0.1)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)"; }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.02)"; e.currentTarget.style.boxShadow = "0 4px 16px 0 rgba(55, 73, 87, 0.15), 1px 1px 3px rgba(55,73,87,0.18)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)"; }}
             >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "13px", letterSpacing: "0.08em", color: "#2b2b2d" }}>
@@ -136,7 +133,7 @@ const CommunityDashboard = () => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
+          <Card style={{ background: "#fff", border: "1px solid #EBEBEB", borderRadius: "14px", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)" }}>
             <CardHeader>
               <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#2b2b2d" }}>
                 GETTING STARTED
@@ -194,14 +191,11 @@ const CommunityDashboard = () => {
                     size="sm"
                     style={{
                       background: "#FFD861",
-                      border: "none",
-                      color: "#2b2b2d",
-                      fontFamily: "'Darker Grotesque', Arial, sans-serif",
-                      textTransform: "uppercase",
-                      fontWeight: 600,
+                      color: "#fff",
+                      fontWeight: 700,
                       borderRadius: "8px",
-                      boxShadow: "0 2px 6px rgba(255, 216, 97, 0.3)",
-                      transition: "all 0.2s ease-in-out"
+                      boxShadow: "0 1.5px 4px 0 rgba(55, 73, 87, 0.11)",
+                      border: "none"
                     }}
                     onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-1px)"}
                     onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
@@ -234,9 +228,9 @@ const CommunityDashboard = () => {
               </CardContent>
             </Card>
 
-            <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
+            <Card style={{ background: "#fff", border: "1px solid #EBEBEB", borderRadius: "14px", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)" }}>
               <CardHeader>
-                <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#2b2b2d" }}>RECENT OFFERS</CardTitle>
+                <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#232323" }}>RECENT OFFERS</CardTitle>
                 <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
                 Latest collaboration opportunities
               </CardDescription>
@@ -256,9 +250,9 @@ const CommunityDashboard = () => {
         </div>
 
         {/* Tips */}
-        <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
+        <Card style={{ background: "#fff", border: "1px solid #EBEBEB", borderRadius: "14px", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)" }}>
           <CardHeader>
-            <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#2b2b2d" }}>TIPS FOR SUCCESS</CardTitle>
+            <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#232323" }}>TIPS FOR SUCCESS</CardTitle>
             <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
               Maximize your collaboration potential
             </CardDescription>

@@ -284,7 +284,7 @@ const OfferCard = ({
                 className="flex-1"
                 style={{
                   background: BUTTON_YELLOW,
-                  color: SOFT_BLACK,
+                  color: "#232323",
                   fontWeight: 600,
                   boxShadow: "none",
                 }}

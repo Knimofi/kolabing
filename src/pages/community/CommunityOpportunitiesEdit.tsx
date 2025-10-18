@@ -272,8 +272,9 @@ const CommunityOpportunitiesEdit = () => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
+    <div style={{ minHeight: "100vh", background: "#F7F8FA", padding: "32px 0" }}>
+      <div className="container mx-auto px-6 space-y-6">
+        <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" onClick={() => navigate("/community/my-opportunities")}>
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to My Collab Requests
         </Button>
@@ -684,6 +685,7 @@ const CommunityOpportunitiesEdit = () => {
           </div>
         </form>
       </Form>
+      </div>
     </div>
   );
 };

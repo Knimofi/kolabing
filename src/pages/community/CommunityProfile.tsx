@@ -118,11 +118,12 @@ const CommunityProfile: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="flex items-center space-x-3">
-        <Users className="w-8 h-8" style={{ color: "#FFD861" }} />
-        <div>
-          <h1 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 700, fontSize: 30, color: "#1A1A1A", letterSpacing: "0.03em" }}>COMMUNITY PROFILE</h1>
+    <div style={{ minHeight: "100vh", background: "#F7F8FA", padding: "32px 0" }}>
+      <div className="max-w-2xl mx-auto px-6 space-y-6">
+        <div className="flex items-center space-x-3">
+          <Users className="w-8 h-8" style={{ color: "#FFD861" }} />
+          <div>
+            <h1 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 700, fontSize: 30, color: "#232323", letterSpacing: "0.03em" }}>COMMUNITY PROFILE</h1>
           <p className="text-muted-foreground">
             Manage your community information and social presence
           </p>
@@ -130,7 +131,7 @@ const CommunityProfile: React.FC = () => {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
+        <Card style={{ background: "#fff", border: "1px solid #EBEBEB", borderRadius: "14px", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)" }}>
           <CardHeader>
             <CardTitle>Community Information</CardTitle>
             <CardDescription>
@@ -356,7 +357,7 @@ const CommunityProfile: React.FC = () => {
         </Card>
 
         <div className="flex justify-end pt-6">
-          <Button type="submit" disabled={loading} size="lg">
+          <Button type="submit" disabled={loading} size="lg" style={{ background: "#FFD861", color: "#fff", fontWeight: 700, borderRadius: "8px", boxShadow: "0 1.5px 4px 0 rgba(55, 73, 87, 0.11)", border: "none" }}>
             {loading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -371,6 +372,7 @@ const CommunityProfile: React.FC = () => {
           </Button>
         </div>
       </form>
+      </div>
     </div>
   );
 };

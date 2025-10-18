@@ -287,12 +287,13 @@ const CommunityOffers = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div>
-        <h1 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 700, fontSize: 30, color: "#1A1A1A", letterSpacing: "0.03em" }}>
-          FIND A COLLAB
-        </h1>
+    <div style={{ minHeight: "100vh", background: "#F7F8FA", padding: "32px 0" }}>
+      <div className="container mx-auto px-6 space-y-6">
+        {/* Page Header */}
+        <div>
+          <h1 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 700, fontSize: 30, color: "#232323", letterSpacing: "0.03em" }}>
+            FIND A COLLAB
+          </h1>
         <p className="text-muted-foreground">
           Discover collaboration opportunities from businesses
         </p>
@@ -313,7 +314,7 @@ const CommunityOffers = () => {
 
       {/* Offers Grid */}
       {filteredOffers.length === 0 ? (
-        <Card style={{ background: "#FFF6D8", borderRadius: "18px", border: "1.5px solid #F9E9AC", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
+        <Card style={{ background: "#fff", borderRadius: "14px", border: "1px solid #EBEBEB", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)" }}>
           <CardContent className="py-16">
             <div className="text-center">
               <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
@@ -366,6 +367,7 @@ const CommunityOffers = () => {
         onSubmit={handleSubmitApplication}
         isSubmitting={isSubmittingApplication}
       />
+      </div>
     </div>
   );
 };

@@ -241,10 +241,11 @@ const fetchApplications = async () => {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div>
-        <h1 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 700, fontSize: 30, color: "#1A1A1A", letterSpacing: "0.03em" }}>APPLICATIONS SUBMITTED</h1>
+    <div style={{ minHeight: "100vh", background: "#F7F8FA", padding: "32px 0" }}>
+      <div className="container mx-auto px-6 space-y-6">
+        {/* Header */}
+        <div>
+          <h1 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 700, fontSize: 30, color: "#232323", letterSpacing: "0.03em" }}>APPLICATIONS SUBMITTED</h1>
         <p className="text-muted-foreground">
           View and manage your collaboration applications
         </p>
@@ -263,7 +264,7 @@ const fetchApplications = async () => {
 
       {/* Applications Grid */}
       {filteredApplications.length === 0 ? (
-        <div style={{ background: "#FFF6D8", borderRadius: "18px", border: "1.5px solid #F9E9AC", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)", padding: "3rem", textAlign: "center" }}>
+        <div style={{ background: "#fff", borderRadius: "14px", border: "1px solid #EBEBEB", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)", padding: "3rem", textAlign: "center" }}>
           <div className="text-muted-foreground">
             {applications.length === 0 ? (
               <div>
@@ -320,6 +321,7 @@ const fetchApplications = async () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      </div>
     </div>
   );
 };

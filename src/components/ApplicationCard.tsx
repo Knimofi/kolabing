@@ -62,7 +62,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
   }
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-full flex flex-col" style={{ background: "#fff", borderRadius: "14px", border: "1px solid #EBEBEB", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)" }}>
       <CardHeader>
         <CardTitle className="text-lg line-clamp-2">
           {application.collab_opportunities.title}
