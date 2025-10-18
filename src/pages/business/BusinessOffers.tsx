@@ -18,13 +18,22 @@ const BUTTON_DARKER_YELLOW = "#FFE49B";
 const FILTER_GRAY = "#F3F4F6";
 const FILTER_GRAY_ACTIVE = "#E5E7EB";
 
-const BUTTON_FONT = {
+// UPPERCASE, lighter font for external buttons
+const EXTERNAL_BUTTON_FONT = {
   fontFamily: "Darker Grotesque, Arial, sans-serif",
-  fontWeight: 600,
-  letterSpacing: "0.02em",
+  fontWeight: 400,
+  letterSpacing: "0.03em",
   fontSize: "16px",
   borderRadius: "9px",
+  textTransform: "uppercase",
   transition: "all 0.14s",
+};
+// Internal "OfferCard style" for inside boxes/modal
+const INTERNAL_BUTTON_FONT = {
+  fontFamily: "'GT Walsheim', 'Montserrat', 'Arial', sans-serif",
+  fontWeight: 500,
+  fontSize: "15px",
+  borderRadius: "9px",
 };
 
 const BusinessOffers = () => {
@@ -122,7 +131,6 @@ const BusinessOffers = () => {
         status: "draft",
         published_at: null,
       };
-
       const { data, error } = await supabase.from("collab_opportunities").insert([duplicatedOffer]).select().single();
 
       if (error) throw error;
@@ -178,10 +186,10 @@ const BusinessOffers = () => {
             onClick={() => navigate("/business/opportunities/new")}
             size="lg"
             style={{
-              ...BUTTON_FONT,
+              ...EXTERNAL_BUTTON_FONT,
               background: BUTTON_YELLOW,
               color: SOFT_BLACK,
-              fontWeight: 600,
+              fontWeight: 400,
               border: "none",
               boxShadow: "none",
               marginTop: 8,
@@ -190,10 +198,10 @@ const BusinessOffers = () => {
             onMouseLeave={(e) => (e.currentTarget.style.background = BUTTON_YELLOW)}
           >
             <Plus className="w-5 h-5 mr-2" />
-            Create Collab Opportunity
+            CREATE COLLAB OPPORTUNITY
           </Button>
         </header>
-
+        {/* FILTER Buttons */}
         <div className="flex gap-2 flex-wrap mb-4">
           {["all", "draft", "published", "closed", "completed"].map((filter) => (
             <Button
@@ -202,16 +210,16 @@ const BusinessOffers = () => {
               size="sm"
               onClick={() => setActiveFilter(filter as any)}
               style={{
-                ...BUTTON_FONT,
+                ...EXTERNAL_BUTTON_FONT,
                 background: activeFilter === filter ? FILTER_GRAY_ACTIVE : FILTER_GRAY,
                 color: SOFT_BLACK,
-                fontWeight: activeFilter === filter ? 800 : 600,
+                fontWeight: activeFilter === filter ? 800 : 400,
                 border: activeFilter === filter ? `1.5px solid #D1D5DB` : `1px solid #F3F4F6`,
                 boxShadow: "none",
                 padding: "8px 18px",
               }}
             >
-              {filter === "all" ? "All Offers" : filter.charAt(0).toUpperCase() + filter.slice(1)} (
+              {filter === "all" ? "ALL OFFERS" : filter.toUpperCase()} (
               {filter === "all" ? offers.length : offers.filter((o) => o.status === filter).length})
             </Button>
           ))}
@@ -243,7 +251,7 @@ const BusinessOffers = () => {
                 className="mt-4"
                 size="lg"
                 style={{
-                  ...BUTTON_FONT,
+                  ...INTERNAL_BUTTON_FONT,
                   background: BUTTON_YELLOW,
                   color: SOFT_BLACK,
                   fontWeight: 600,
@@ -257,7 +265,8 @@ const BusinessOffers = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-4">
+          // GRID for 3 per row
+          <div className="grid gap-6" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
             {filteredOffers.map((offer) => {
               // Compute photo URL
               let photoUrl = businessProfile?.profile_photo || "/placeholder.svg";
@@ -271,7 +280,6 @@ const BusinessOffers = () => {
                   }
                 }
               }
-              // Render the card
               return (
                 <Card
                   key={offer.id}
@@ -286,7 +294,7 @@ const BusinessOffers = () => {
                   }}
                 >
                   <CardContent className="p-4 h-full flex flex-col">
-                    {/* Header */}
+                    {/* ...HEADER (same as before) */}
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2 text-sm" style={{ color: SOFT_BLACK, opacity: 0.87 }}>
                         <span>{businessProfile?.business_type || "Business"}</span>
@@ -326,19 +334,29 @@ const BusinessOffers = () => {
                     </div>
                     {/* Main Content */}
                     <div className="flex-1 space-y-3">
-                      <h3 className="font-semibold text-xl leading-tight line-clamp-2" style={{ color: SOFT_BLACK }}>
+                      <h3
+                        className="leading-tight line-clamp-2"
+                        style={{
+                          fontFamily: "'GT Walsheim', 'Montserrat', 'Arial', sans-serif",
+                          fontWeight: 400,
+                          fontSize: "18px",
+                          color: SOFT_BLACK,
+                          opacity: 0.95,
+                          marginBottom: "2px",
+                        }}
+                      >
                         {offer.title}
                       </h3>
                       <p className="text-sm leading-relaxed" style={{ color: SOFT_BLACK, opacity: 0.87 }}>
                         {offer.description}
                       </p>
                     </div>
-                    {/* Footer Actions */}
+                    {/* Footer Actions -- OfferCard button style! */}
                     <div className="flex gap-2 mt-4 pt-3 border-t" style={{ borderColor: CARD_BORDER }}>
                       <Button
                         size="sm"
                         style={{
-                          ...BUTTON_FONT,
+                          ...INTERNAL_BUTTON_FONT,
                           background: BUTTON_DARKER_YELLOW,
                           color: SOFT_BLACK,
                           fontWeight: 600,
@@ -353,7 +371,7 @@ const BusinessOffers = () => {
                       <Button
                         size="sm"
                         style={{
-                          ...BUTTON_FONT,
+                          ...INTERNAL_BUTTON_FONT,
                           background: SOFT_YELLOW,
                           color: SOFT_BLACK,
                           fontWeight: 500,
@@ -369,7 +387,7 @@ const BusinessOffers = () => {
                       <Button
                         size="sm"
                         style={{
-                          ...BUTTON_FONT,
+                          ...INTERNAL_BUTTON_FONT,
                           background: SOFT_YELLOW,
                           color: SOFT_BLACK,
                           fontWeight: 500,
@@ -386,7 +404,7 @@ const BusinessOffers = () => {
                         variant="destructive"
                         size="sm"
                         style={{
-                          ...BUTTON_FONT,
+                          ...INTERNAL_BUTTON_FONT,
                           background: "#FFE5E5",
                           color: "#dc2626",
                           fontWeight: 600,
@@ -402,7 +420,7 @@ const BusinessOffers = () => {
                         <Button
                           size="sm"
                           style={{
-                            ...BUTTON_FONT,
+                            ...INTERNAL_BUTTON_FONT,
                             background: BUTTON_YELLOW,
                             color: SOFT_BLACK,
                             fontWeight: 600,
@@ -419,7 +437,7 @@ const BusinessOffers = () => {
                         <Button
                           size="sm"
                           style={{
-                            ...BUTTON_FONT,
+                            ...INTERNAL_BUTTON_FONT,
                             background: SOFT_YELLOW,
                             color: SOFT_BLACK,
                             fontWeight: 500,
@@ -440,6 +458,7 @@ const BusinessOffers = () => {
           </div>
         )}
 
+        {/* MODAL for delete (OfferCard btn style) */}
         {offerToDelete && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <Card
@@ -481,13 +500,13 @@ const BusinessOffers = () => {
                   variant="ghost"
                   onClick={() => setOfferToDelete(null)}
                   style={{
-                    ...BUTTON_FONT,
+                    ...INTERNAL_BUTTON_FONT,
                     background: SOFT_YELLOW,
                     color: SOFT_BLACK,
-                    fontWeight: 600,
-                    border: "none",
+                    fontWeight: 500,
+                    border: "1px solid " + SOFT_YELLOW,
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = BUTTON_DARKER_YELLOW)}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#FFE49B")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = SOFT_YELLOW)}
                 >
                   Cancel
@@ -496,7 +515,7 @@ const BusinessOffers = () => {
                   variant="destructive"
                   onClick={() => handleDeleteOffer(offerToDelete)}
                   style={{
-                    ...BUTTON_FONT,
+                    ...INTERNAL_BUTTON_FONT,
                     background: "#FFE5E5",
                     color: "#dc2626",
                     fontWeight: 600,
