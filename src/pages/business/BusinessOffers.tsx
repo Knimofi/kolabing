@@ -18,7 +18,6 @@ const BUTTON_DARKER_YELLOW = "#FFE49B";
 const FILTER_GRAY = "#F3F4F6";
 const FILTER_GRAY_ACTIVE = "#E5E7EB";
 
-// UPPERCASE, lighter font for external buttons
 const EXTERNAL_BUTTON_FONT = {
   fontFamily: "Darker Grotesque, Arial, sans-serif",
   fontWeight: 400,
@@ -28,7 +27,7 @@ const EXTERNAL_BUTTON_FONT = {
   textTransform: "uppercase",
   transition: "all 0.14s",
 };
-// Internal "OfferCard style" for inside boxes/modal
+
 const INTERNAL_BUTTON_FONT = {
   fontFamily: "'GT Walsheim', 'Montserrat', 'Arial', sans-serif",
   fontWeight: 500,
@@ -265,10 +264,14 @@ const BusinessOffers = () => {
             </CardContent>
           </Card>
         ) : (
-          // GRID for 3 per row
-          <div className="grid gap-6" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+          // Responsive grid: never overflows
+          <div
+            className="grid gap-6"
+            style={{
+              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            }}
+          >
             {filteredOffers.map((offer) => {
-              // Compute photo URL
               let photoUrl = businessProfile?.profile_photo || "/placeholder.svg";
               if (offer.offer_photo) {
                 if (offer.offer_photo.startsWith("http")) {
@@ -294,7 +297,7 @@ const BusinessOffers = () => {
                   }}
                 >
                   <CardContent className="p-4 h-full flex flex-col">
-                    {/* ...HEADER (same as before) */}
+                    {/* header (same as before) */}
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2 text-sm" style={{ color: SOFT_BLACK, opacity: 0.87 }}>
                         <span>{businessProfile?.business_type || "Business"}</span>
@@ -351,7 +354,7 @@ const BusinessOffers = () => {
                         {offer.description}
                       </p>
                     </div>
-                    {/* Footer Actions -- OfferCard button style! */}
+                    {/* Footer Actions (unchanged) */}
                     <div className="flex gap-2 mt-4 pt-3 border-t" style={{ borderColor: CARD_BORDER }}>
                       <Button
                         size="sm"
