@@ -22,6 +22,24 @@ import { FileUpload } from "@/components/ui/file-upload";
 const BG_SECTION = "#F3F4F6";
 const BG_INPUT = "#E5E7EB";
 const TEXT_DARK = "#232323";
+const YELLOW = "#FFC300";
+const WHITE = "#FFF";
+
+const checklistOptions = [
+  { id: "tagged_stories", label: "Tagged Stories", hasAmount: true },
+  { id: "google_reviews", label: "Google Reviews", hasAmount: true },
+  { id: "number_of_attendees", label: "Number of Attendees", hasAmount: true },
+  { id: "professional_photography", label: "Professional Photography", hasAmount: false },
+  { id: "professional_reel_video", label: "Professional Reel/Video", hasAmount: false },
+  { id: "ugc_content", label: "UGC Content", hasAmount: false },
+  { id: "collab_reel_post", label: "Collab Reel/Post", hasAmount: false },
+  { id: "group_picture", label: "Group Picture", hasAmount: false },
+  { id: "loyalty_signups", label: "Loyalty Sign-ups", hasAmount: true },
+  { id: "venue", label: "Venue", hasAmount: false },
+  { id: "event_creation", label: "Event Creation", hasAmount: false },
+  { id: "split_revenue", label: "Split Revenue", hasAmount: false },
+  { id: "monetary_compensation", label: "Monetary Compensation (€)", hasAmount: true },
+];
 
 const offerSchema = z.object({
   title: z.string().min(1, "Title is required").max(100),
@@ -37,51 +55,17 @@ const offerSchema = z.object({
   preferred_area: z.string().optional(),
   use_profile_photo: z.boolean().default(false),
   offer_photo: z.string().optional(),
-  offer_input_mode: z.enum(["text", "checklist"]).default("text"),
-  business_offer: z.object({
-    description: z.string().optional(),
-    venue: z.boolean().default(false),
-    event_creation: z.boolean().default(false),
-    split_revenue: z.boolean().default(false),
-    monetary_compensation: z.boolean().default(false),
-    compensation_amount: z.number().optional(),
-  }),
-  community_deliverables_input_mode: z.enum(["text", "checklist"]).default("checklist"),
-  community_deliverables_text: z.string().optional(),
-  community_deliverables: z.object({
-    tagged_stories: z.number().optional(),
-    google_reviews: z.number().optional(),
-    number_of_attendees: z.number().optional(),
-    professional_photography: z.boolean().default(false),
-    professional_reel_video: z.boolean().default(false),
-    ugc_content: z.boolean().default(false),
-    collab_reel_post: z.boolean().default(false),
-    group_picture: z.boolean().default(false),
-    loyalty_signups: z.number().optional(),
-    venue: z.boolean().default(false),
-    event_creation: z.boolean().default(false),
-    split_revenue: z.boolean().default(false),
-    monetary_compensation: z.number().optional(),
-  }),
+
+  offer_input_mode: z.enum(["checklist", "text"]).default("text"),
+  offer_checklist: z.record(z.union([z.boolean(), z.number()])).optional(),
+  offer_text: z.string().optional(),
+
+  expect_input_mode: z.enum(["checklist", "text"]).default("checklist"),
+  expect_checklist: z.record(z.union([z.boolean(), z.number()])).optional(),
+  expect_text: z.string().optional(),
 });
 
 type OfferFormData = z.infer<typeof offerSchema>;
-
-const deliverableOptions = [
-  { id: "tagged_stories", label: "Tagged Stories", hasAmount: true },
-  { id: "google_reviews", label: "Google Reviews", hasAmount: true },
-  { id: "number_of_attendees", label: "Number of Attendees", hasAmount: true },
-  { id: "professional_photography", label: "Professional Photography", hasAmount: false },
-  { id: "professional_reel_video", label: "Professional Reel/Video", hasAmount: false },
-  { id: "ugc_content", label: "UGC Content", hasAmount: false },
-  { id: "collab_reel_post", label: "Collab Reel/Post", hasAmount: false },
-  { id: "group_picture", label: "Group Picture", hasAmount: false },
-  { id: "loyalty_signups", label: "Loyalty Sign-ups", hasAmount: true },
-  { id: "venue", label: "Venue", hasAmount: false },
-  { id: "event_creation", label: "Event Creation", hasAmount: false },
-  { id: "split_revenue", label: "Split Revenue", hasAmount: false },
-  { id: "monetary_compensation", label: "Monetary Compensation (€)", hasAmount: true },
-] as const;
 
 const CommunityOpportunitiesNew = () => {
   const navigate = useNavigate();
@@ -99,16 +83,11 @@ const CommunityOpportunitiesNew = () => {
       use_profile_photo: false,
       offer_photo: "",
       offer_input_mode: "text",
-      business_offer: {
-        description: "",
-        venue: false,
-        event_creation: false,
-        split_revenue: false,
-        monetary_compensation: false,
-      },
-      community_deliverables_input_mode: "checklist",
-      community_deliverables_text: "",
-      community_deliverables: {},
+      offer_checklist: {},
+      offer_text: "",
+      expect_input_mode: "checklist",
+      expect_checklist: {},
+      expect_text: "",
     },
   });
 
@@ -147,11 +126,13 @@ const CommunityOpportunitiesNew = () => {
         preferred_area: data.preferred_area,
         use_profile_photo: data.use_profile_photo,
         offer_photo: finalOfferPhoto,
+
         offer_input_mode: data.offer_input_mode,
-        business_offer: data.business_offer,
-        community_deliverables_input_mode: data.community_deliverables_input_mode,
-        community_deliverables_text: data.community_deliverables_text,
-        community_deliverables: data.community_deliverables,
+        offer_checklist: data.offer_checklist,
+        offer_text: data.offer_text,
+        expect_input_mode: data.expect_input_mode,
+        expect_checklist: data.expect_checklist,
+        expect_text: data.expect_text,
         creator_profile_id: communityProfile.profile_id,
         creator_profile_type: "community" as const,
         status,
@@ -178,8 +159,19 @@ const CommunityOpportunitiesNew = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#fff" }} className="py-8 px-4 flex flex-col items-center">
       <div className="w-full max-w-2xl space-y-6">
+        {/* Header */}
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/community/my-opportunities")}>
+          <Button
+            variant="ghost"
+            size="sm"
+            style={{
+              background: YELLOW,
+              color: WHITE,
+              fontWeight: 700,
+              borderRadius: 8,
+            }}
+            onClick={() => navigate("/community/my-opportunities")}
+          >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to My Requests
           </Button>
@@ -195,7 +187,7 @@ const CommunityOpportunitiesNew = () => {
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Basic Information</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
-                  Provide the essential details about your collaboration request
+                  Provide essential details about your collaboration request
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -548,157 +540,41 @@ const CommunityOpportunitiesNew = () => {
                 )}
               </CardContent>
             </Card>
-            {/* What can you offer */}
+            {/* What can you offer? */}
             <Card style={{ background: BG_SECTION }}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>What can you offer?</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
-                  Describe what your community is providing to the business partner
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="business_offer.description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel style={{ color: TEXT_DARK }}>Your Offer</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="e.g., Attendees, social content, photography, UGC, etc."
-                          className="min-h-[80px]"
-                          style={{
-                            background: BG_INPUT,
-                            color: TEXT_DARK,
-                            border: "none",
-                            fontFamily: "Open Sans, Arial, sans-serif",
-                          }}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="business_offer.venue"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                      </FormControl>
-                      <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
-                        Provide Venue
-                      </FormLabel>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="business_offer.event_creation"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                      </FormControl>
-                      <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
-                        Event Creation Support
-                      </FormLabel>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="business_offer.split_revenue"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                      </FormControl>
-                      <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
-                        Split Revenue
-                      </FormLabel>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="business_offer.monetary_compensation"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                      </FormControl>
-                      <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
-                        Monetary Compensation
-                      </FormLabel>
-                    </FormItem>
-                  )}
-                />
-                {form.watch("business_offer.monetary_compensation") && (
-                  <FormField
-                    control={form.control}
-                    name="business_offer.compensation_amount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel style={{ color: TEXT_DARK }}>Compensation Amount (€)</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            placeholder="Enter compensation amount"
-                            style={{
-                              background: BG_INPUT,
-                              color: TEXT_DARK,
-                              border: "none",
-                              fontFamily: "Open Sans, Arial, sans-serif",
-                            }}
-                            {...field}
-                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
-              </CardContent>
-            </Card>
-            {/* What do you expect */}
-            <Card style={{ background: BG_SECTION }}>
-              <CardHeader>
-                <CardTitle style={{ color: TEXT_DARK }}>What do you expect from collaborators?</CardTitle>
-                <CardDescription style={{ color: "#606060" }}>
-                  Describe or select the deliverables you expect from your business partner
+                  Select from the list or write your own offering for the business partner
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex gap-4 mb-4">
                   <Button
                     type="button"
-                    variant={form.watch("community_deliverables_input_mode") === "checklist" ? "secondary" : "outline"}
-                    onClick={() => form.setValue("community_deliverables_input_mode", "checklist")}
+                    variant={form.watch("offer_input_mode") === "checklist" ? "secondary" : "outline"}
+                    onClick={() => form.setValue("offer_input_mode", "checklist")}
                   >
-                    Checklist
+                    Select from the list
                   </Button>
                   <Button
                     type="button"
-                    variant={form.watch("community_deliverables_input_mode") === "text" ? "secondary" : "outline"}
-                    onClick={() => form.setValue("community_deliverables_input_mode", "text")}
+                    variant={form.watch("offer_input_mode") === "text" ? "secondary" : "outline"}
+                    onClick={() => form.setValue("offer_input_mode", "text")}
                   >
-                    Text
+                    Write my own
                   </Button>
                 </div>
-                {form.watch("community_deliverables_input_mode") === "text" ? (
+                {form.watch("offer_input_mode") === "text" ? (
                   <FormField
                     control={form.control}
-                    name="community_deliverables_text"
+                    name="offer_text"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel style={{ color: TEXT_DARK }}>Expectations</FormLabel>
+                        <FormLabel style={{ color: TEXT_DARK }}>Offer details</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Describe your expectations from the business partner..."
+                            placeholder="Describe your offering for the business partner..."
                             className="min-h-[100px]"
                             style={{
                               background: BG_INPUT,
@@ -715,21 +591,19 @@ const CommunityOpportunitiesNew = () => {
                   />
                 ) : (
                   <div className="space-y-4">
-                    {deliverableOptions.map((option) => (
+                    {checklistOptions.map((option) => (
                       <div key={option.id} className="space-y-2">
                         <FormField
                           control={form.control}
-                          name={`community_deliverables.${option.id}` as any}
+                          name={`offer_checklist.${option.id}` as any}
                           render={({ field }) => (
                             <FormItem className="flex flex-row items-center space-x-3 space-y-0">
                               <FormControl>
                                 <Checkbox
-                                  checked={
-                                    typeof field.value === "number" ? Boolean(field.value) : Boolean(field.value)
-                                  }
+                                  checked={option.hasAmount ? Number(field.value) > 0 : Boolean(field.value)}
                                   onCheckedChange={(checked) => {
                                     if (option.hasAmount) {
-                                      field.onChange(checked ? 1 : undefined);
+                                      field.onChange(checked ? 1 : 0);
                                     } else {
                                       field.onChange(checked);
                                     }
@@ -742,15 +616,16 @@ const CommunityOpportunitiesNew = () => {
                             </FormItem>
                           )}
                         />
-                        {option.hasAmount && form.watch(`community_deliverables.${option.id}` as any) && (
+                        {option.hasAmount && Number(form.watch(`offer_checklist.${option.id}`)) > 0 && (
                           <FormField
                             control={form.control}
-                            name={`community_deliverables.${option.id}` as any}
+                            name={`offer_checklist.${option.id}` as any}
                             render={({ field }) => (
                               <FormItem className="ml-6">
                                 <FormControl>
                                   <Input
                                     type="number"
+                                    min={1}
                                     placeholder={`How many ${option.label.toLowerCase()}?`}
                                     style={{
                                       background: BG_INPUT,
@@ -773,7 +648,115 @@ const CommunityOpportunitiesNew = () => {
                 )}
               </CardContent>
             </Card>
-
+            {/* What do you expect from collaborators? */}
+            <Card style={{ background: BG_SECTION }}>
+              <CardHeader>
+                <CardTitle style={{ color: TEXT_DARK }}>What do you expect from collaborators?</CardTitle>
+                <CardDescription style={{ color: "#606060" }}>
+                  Select from the list or write your own expectations for the business partner
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex gap-4 mb-4">
+                  <Button
+                    type="button"
+                    variant={form.watch("expect_input_mode") === "checklist" ? "secondary" : "outline"}
+                    onClick={() => form.setValue("expect_input_mode", "checklist")}
+                  >
+                    Select from the list
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={form.watch("expect_input_mode") === "text" ? "secondary" : "outline"}
+                    onClick={() => form.setValue("expect_input_mode", "text")}
+                  >
+                    Write my own
+                  </Button>
+                </div>
+                {form.watch("expect_input_mode") === "text" ? (
+                  <FormField
+                    control={form.control}
+                    name="expect_text"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel style={{ color: TEXT_DARK }}>Expectations</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Describe your expectations from the business partner..."
+                            className="min-h-[100px]"
+                            style={{
+                              background: BG_INPUT,
+                              color: TEXT_DARK,
+                              border: "none",
+                              fontFamily: "Open Sans, Arial, sans-serif",
+                            }}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ) : (
+                  <div className="space-y-4">
+                    {checklistOptions.map((option) => (
+                      <div key={option.id} className="space-y-2">
+                        <FormField
+                          control={form.control}
+                          name={`expect_checklist.${option.id}` as any}
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <Checkbox
+                                  checked={option.hasAmount ? Number(field.value) > 0 : Boolean(field.value)}
+                                  onCheckedChange={(checked) => {
+                                    if (option.hasAmount) {
+                                      field.onChange(checked ? 1 : 0);
+                                    } else {
+                                      field.onChange(checked);
+                                    }
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
+                                {option.label}
+                              </FormLabel>
+                            </FormItem>
+                          )}
+                        />
+                        {option.hasAmount && Number(form.watch(`expect_checklist.${option.id}`)) > 0 && (
+                          <FormField
+                            control={form.control}
+                            name={`expect_checklist.${option.id}` as any}
+                            render={({ field }) => (
+                              <FormItem className="ml-6">
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    min={1}
+                                    placeholder={`How many ${option.label.toLowerCase()}?`}
+                                    style={{
+                                      background: BG_INPUT,
+                                      color: TEXT_DARK,
+                                      border: "none",
+                                      fontFamily: "Open Sans, Arial, sans-serif",
+                                    }}
+                                    {...field}
+                                    onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+            {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-end">
               <Button
                 type="button"
