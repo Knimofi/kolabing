@@ -74,12 +74,20 @@ const OfferCard = ({
     }
     return null;
   };
+
+  // WHAT THEY OFFER SECTION
   const renderBusinessOffer = () => (
-    <div className="flex items-center gap-2 text-sm" style={{ color: SOFT_BLACK, opacity: 0.8 }}>
-      <span>🎁</span>
-      <span className="truncate">{offer.business_offer.description}</span>
+    <div className="mb-1">
+      <div className="font-semibold text-sm" style={{ color: SOFT_BLACK }}>
+        What they offer
+      </div>
+      <div className="flex items-center gap-2 text-sm" style={{ color: SOFT_BLACK, opacity: 0.85 }}>
+        <span>🎁</span>
+        <span className="truncate">{offer.business_offer.description}</span>
+      </div>
     </div>
   );
+  // WHAT THEY ARE LOOKING FOR SECTION
   const renderDeliverables = () => {
     const deliverables: string[] = [];
     const d = offer.community_deliverables;
@@ -94,14 +102,19 @@ const OfferCard = ({
     if (d.loyalty_signups) deliverables.push(`📝 ${d.loyalty_signups} Sign-ups`);
     if (d.minimum_consumption) deliverables.push(`💶 Min. €${d.minimum_consumption}`);
     return (
-      <div className="flex flex-wrap gap-1 text-sm" style={{ color: SOFT_BLACK, opacity: 0.8 }}>
-        {deliverables.map((item, index) => (
-          <React.Fragment key={index}>
-            <span>{item}</span>
-            {index < deliverables.length - 1 && <span>•</span>}
-          </React.Fragment>
-        ))}
-      </div>
+      <>
+        <div className="font-semibold text-sm mt-2" style={{ color: SOFT_BLACK }}>
+          What they're looking for
+        </div>
+        <div className="flex flex-wrap gap-1 text-sm" style={{ color: SOFT_BLACK, opacity: 0.85 }}>
+          {deliverables.map((item, index) => (
+            <React.Fragment key={index}>
+              <span>{item}</span>
+              {index < deliverables.length - 1 && <span>•</span>}
+            </React.Fragment>
+          ))}
+        </div>
+      </>
     );
   };
 
@@ -113,7 +126,6 @@ const OfferCard = ({
     return words.slice(0, maxWords).join(" ") + "...";
   };
 
-  // ✅ Compute the photo URL correctly
   let photoUrl = profile?.profile_photo || "/placeholder.svg";
   if (offer.offer_photo) {
     if (offer.offer_photo.startsWith("http")) {
