@@ -1,35 +1,35 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, ArrowLeft, Save, Send, Info } from 'lucide-react';
-import { format } from 'date-fns';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
-import { FileUpload } from '@/components/ui/file-upload';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CalendarIcon, ArrowLeft, Save, Send, Info } from "lucide-react";
+import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import { FileUpload } from "@/components/ui/file-upload";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const offerSchema = z.object({
-  title: z.string().min(1, 'Title is required').max(100, 'Title must be under 100 characters'),
-  description: z.string().min(1, 'Description is required').max(1000, 'Description must be under 1000 characters'),
+  title: z.string().min(1, "Title is required").max(100, "Title must be under 100 characters"),
+  description: z.string().min(1, "Description is required").max(1000, "Description must be under 1000 characters"),
   availability_start: z.date().optional(),
   availability_end: z.date().optional(),
   address: z.string().optional(),
   no_venue: z.boolean().default(false),
   offer_photo: z.string().optional(),
   business_offer: z.object({
-    description: z.string().min(1, 'Business offer is required'),
+    description: z.string().min(1, "Business offer is required"),
   }),
   community_deliverables: z.object({
     tagged_stories: z.number().optional(),
@@ -43,7 +43,7 @@ const offerSchema = z.object({
     loyalty_signups: z.number().optional(),
     minimum_consumption: z.number().optional(),
   }),
-  timeline_days: z.number().min(1, 'Timeline is required').max(365, 'Timeline must be under 365 days'),
+  timeline_days: z.number().min(1, "Timeline is required").max(365, "Timeline must be under 365 days"),
 });
 
 type OfferFormData = z.infer<typeof offerSchema>;
@@ -57,12 +57,12 @@ const BusinessOffersNew = () => {
   const form = useForm<OfferFormData>({
     resolver: zodResolver(offerSchema),
     defaultValues: {
-      title: '',
-      description: '',
+      title: "",
+      description: "",
       no_venue: false,
-      offer_photo: '',
+      offer_photo: "",
       business_offer: {
-        description: '',
+        description: "",
       },
       community_deliverables: {
         tagged_stories: undefined,
@@ -81,18 +81,18 @@ const BusinessOffersNew = () => {
   });
 
   const deliverableOptions = [
-    { id: 'tagged_stories', label: 'Tagged Stories', hasAmount: true },
-    { id: 'google_reviews', label: 'Google Reviews', hasAmount: true },
-    { id: 'number_of_attendees', label: 'Number of Attendees', hasAmount: true },
-    { id: 'professional_photography', label: 'Professional Photography', hasAmount: false },
-    { id: 'professional_reel_video', label: 'Professional Reel/Video', hasAmount: false },
-    { id: 'ugc_content', label: 'UGC Content', hasAmount: false },
-    { id: 'collab_reel_post', label: 'Collab Reel/Post', hasAmount: false },
-    { id: 'group_picture', label: 'Group Picture', hasAmount: false },
-    { id: 'loyalty_signups', label: 'Loyalty Sign-ups', hasAmount: true },
+    { id: "tagged_stories", label: "Tagged Stories", hasAmount: true },
+    { id: "google_reviews", label: "Google Reviews", hasAmount: true },
+    { id: "number_of_attendees", label: "Number of Attendees", hasAmount: true },
+    { id: "professional_photography", label: "Professional Photography", hasAmount: false },
+    { id: "professional_reel_video", label: "Professional Reel/Video", hasAmount: false },
+    { id: "ugc_content", label: "UGC Content", hasAmount: false },
+    { id: "collab_reel_post", label: "Collab Reel/Post", hasAmount: false },
+    { id: "group_picture", label: "Group Picture", hasAmount: false },
+    { id: "loyalty_signups", label: "Loyalty Sign-ups", hasAmount: true },
   ] as const;
 
-  const handleSubmit = async (data: OfferFormData, status: 'draft' | 'published') => {
+  const handleSubmit = async (data: OfferFormData, status: "draft" | "published") => {
     if (!profile) return;
 
     setIsSubmitting(true);
@@ -100,9 +100,9 @@ const BusinessOffersNew = () => {
     try {
       // Fetch the business profile for the current user
       const { data: businessProfile, error: businessError } = await supabase
-        .from('business_profiles')
-        .select('profile_id')
-        .eq('profile_id', profile.id)
+        .from("business_profiles")
+        .select("profile_id")
+        .eq("profile_id", profile.id)
         .single();
 
       if (businessError || !businessProfile) {
@@ -127,30 +127,29 @@ const BusinessOffersNew = () => {
         community_deliverables: data.community_deliverables,
         timeline_days: data.timeline_days,
         creator_profile_id: businessProfile.profile_id,
-        creator_profile_type: 'business',
+        creator_profile_type: "business",
         status,
       };
 
-      const { error } = await supabase
-        .from('collab_opportunities')
-        .insert([offerData]);
+      const { error } = await supabase.from("collab_opportunities").insert([offerData]);
 
       if (error) throw error;
 
       toast({
-        title: status === 'draft' ? 'Offer saved as draft' : 'Offer published successfully',
-        description: status === 'draft'
-          ? 'You can publish it later from your offers dashboard.'
-          : 'Your offer is now live and communities can apply.',
+        title: status === "draft" ? "Offer saved as draft" : "Offer published successfully",
+        description:
+          status === "draft"
+            ? "You can publish it later from your offers dashboard."
+            : "Your offer is now live and communities can apply.",
       });
 
-      navigate('/business/opportunities');
+      navigate("/business/opportunities");
     } catch (error: any) {
-      console.error('Error creating offer:', error);
+      console.error("Error creating offer:", error);
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to create offer. Please try again.',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to create offer. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
@@ -158,373 +157,333 @@ const BusinessOffersNew = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/business/offers')}>
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Offers
-        </Button>
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-            Create New Offer
-          </h1>
-          <p className="text-muted-foreground">
-            Design your collaboration opportunity
-          </p>
+    <div className="min-h-screen px-4 py-8 flex justify-center items-center bg-black">
+      {" "}
+      {/* Black page bg */}
+      <Card className="bg-[#FFF6D8] border-[#F9E9AC] border-[1.5px] rounded-[18px] shadow-lg max-w-[700px] w-full space-y-6">
+        {/* Header */}
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/business/offers")}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Offers
+          </Button>
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-neutral-900">Create New Offer</h1>
+            <p className="text-muted-foreground">Design your collaboration opportunity</p>
+          </div>
         </div>
-      </div>
-      <Form {...form}>
-        <form className="space-y-6">
-          {/* Basic Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
-              <CardDescription>
-                Provide the essential details about your collaboration offer
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Offer Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., Instagram Partnership for Coffee Shop" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="Describe your collaboration opportunity in detail..."
-                        className="min-h-[100px]"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-          {/* Availability */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Availability</CardTitle>
-              <CardDescription>
-                When are you available for this collaboration?
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Form {...form}>
+          <form className="space-y-6">
+            {/* Basic Information */}
+            <Card className="bg-[#FFF6D8] border-[#F9E9AC] border-[1.5px] rounded-[18px] shadow-lg">
+              <CardHeader>
+                <CardTitle>Basic Information</CardTitle>
+                <CardDescription>Provide the essential details about your collaboration offer</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="availability_start"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Start Date</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="availability_end"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>End Date</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </CardContent>
-          </Card>
-          {/* Location */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Location</CardTitle>
-              <CardDescription>
-                Where will this collaboration take place?
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="no_venue"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        No physical venue required
-                      </FormLabel>
-                      <p className="text-sm text-muted-foreground">
-                        Check this if the collaboration is online or doesn't require a specific location
-                      </p>
-                    </div>
-                  </FormItem>
-                )}
-              />
-              {!form.watch('no_venue') && (
-                <FormField
-                  control={form.control}
-                  name="address"
+                  name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Address</FormLabel>
+                      <FormLabel>Offer Title</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter the collaboration venue address" {...field} />
+                        <Input placeholder="e.g., Instagram Partnership for Coffee Shop" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              )}
-            </CardContent>
-          </Card>
-          {/* Photo Upload */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Offer Photo</CardTitle>
-              <CardDescription>
-                Upload a photo for your offer (optional)
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FileUpload
-                bucket="offer-photos"
-                value={form.watch('offer_photo')}
-                onChange={(url) => form.setValue('offer_photo', url)}
-                label="Offer Photo"
-                accept="image/*"
-              />
-            </CardContent>
-          </Card>
-          {/* Business Offer */}
-          <Card>
-            <CardHeader>
-              <CardTitle>What You're Offering</CardTitle>
-              <CardDescription>
-                Describe what you're providing to the community
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="business_offer.description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Your Offer</FormLabel>
-                    <FormControl>
-                      <Textarea 
-                        placeholder="e.g., Free products, monetary compensation, exclusive access..."
-                        className="min-h-[80px]"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-          {/* Community Deliverables */}
-          <Card>
-            <CardHeader>
-              <CardTitle>What do you expect from the community?</CardTitle>
-              <CardDescription>
-                Select the deliverables you expect from your community partner
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                {deliverableOptions.map((option) => (
-                  <div key={option.id} className="space-y-2">
-                    <FormField
-                      control={form.control}
-                      name={`community_deliverables.${option.id}` as any}
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <FormLabel className="font-normal">
-                            {option.label}
-                          </FormLabel>
-                        </FormItem>
-                      )}
-                    />
-                    {option.hasAmount && form.watch(`community_deliverables.${option.id}` as any) && (
-                      <FormField
-                        control={form.control}
-                        name={`community_deliverables.${option.id}` as any}
-                        render={({ field }) => (
-                          <FormItem className="ml-6">
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder={`How many ${option.label.toLowerCase()}?`}
-                                {...field}
-                                onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    )}
-                  </div>
-                ))}
-
-                {/* Always show minimum consumption */}
                 <FormField
                   control={form.control}
-                  name="community_deliverables.minimum_consumption"
+                  name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Minimum Consumption in Place (€)</FormLabel>
+                      <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="Enter minimum consumption amount"
+                        <Textarea
+                          placeholder="Describe your collaboration opportunity in detail..."
+                          className="min-h-[100px]"
                           {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                         />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-              </div>
-              <FormField
-                control={form.control}
-                name="timeline_days"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center gap-2">
-                      <FormLabel>Timeline (days after collaboration)</FormLabel>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger type="button">
-                            <Info size={14} className="text-muted-foreground" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>How much time a community has to finish all deliverables.</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Number of days to complete deliverables"
-                        {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 7)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+              </CardContent>
+            </Card>
+            {/* Availability */}
+            <Card className="bg-[#FFF6D8] border-[#F9E9AC] border-[1.5px] rounded-[18px] shadow-lg">
+              <CardHeader>
+                <CardTitle>Availability</CardTitle>
+                <CardDescription>When are you available for this collaboration?</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="availability_start"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Start Date</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground",
+                                )}
+                              >
+                                {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="availability_end"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>End Date</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground",
+                                )}
+                              >
+                                {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar mode="single" selected={field.value} onSelect={field.onChange} initialFocus />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+            {/* Location */}
+            <Card className="bg-[#FFF6D8] border-[#F9E9AC] border-[1.5px] rounded-[18px] shadow-lg">
+              <CardHeader>
+                <CardTitle>Location</CardTitle>
+                <CardDescription>Where will this collaboration take place?</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="no_venue"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>No physical venue required</FormLabel>
+                        <p className="text-sm text-muted-foreground">
+                          Check this if the collaboration is online or doesn't require a specific location
+                        </p>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                {!form.watch("no_venue") && (
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Address</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter the collaboration venue address" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 )}
-              />
-            </CardContent>
-          </Card>
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-end">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={form.handleSubmit((data) => handleSubmit(data, 'draft'))}
-              disabled={isSubmitting}
-            >
-              <Save className="w-4 h-4 mr-2" />
-              Save as Draft
-            </Button>
-            <Button
-              type="button"
-              onClick={form.handleSubmit((data) => handleSubmit(data, 'published'))}
-              disabled={isSubmitting}
-            >
-              <Send className="w-4 h-4 mr-2" />
-              Publish Offer
-            </Button>
-          </div>
-        </form>
-      </Form>
+              </CardContent>
+            </Card>
+            {/* Photo Upload */}
+            <Card className="bg-[#FFF6D8] border-[#F9E9AC] border-[1.5px] rounded-[18px] shadow-lg">
+              <CardHeader>
+                <CardTitle>Offer Photo</CardTitle>
+                <CardDescription>Upload a photo for your offer (optional)</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FileUpload
+                  bucket="offer-photos"
+                  value={form.watch("offer_photo")}
+                  onChange={(url) => form.setValue("offer_photo", url)}
+                  label="Offer Photo"
+                  accept="image/*"
+                />
+              </CardContent>
+            </Card>
+            {/* Business Offer */}
+            <Card className="bg-[#FFF6D8] border-[#F9E9AC] border-[1.5px] rounded-[18px] shadow-lg">
+              <CardHeader>
+                <CardTitle>What You're Offering</CardTitle>
+                <CardDescription>Describe what you're providing to the community</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="business_offer.description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Your Offer</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="e.g., Free products, monetary compensation, exclusive access..."
+                          className="min-h-[80px]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+            {/* Community Deliverables */}
+            <Card className="bg-[#FFF6D8] border-[#F9E9AC] border-[1.5px] rounded-[18px] shadow-lg">
+              <CardHeader>
+                <CardTitle>What do you expect from the community?</CardTitle>
+                <CardDescription>Select the deliverables you expect from your community partner</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  {deliverableOptions.map((option) => (
+                    <div key={option.id} className="space-y-2">
+                      <FormField
+                        control={form.control}
+                        name={`community_deliverables.${option.id}` as any}
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                            <FormControl>
+                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                            </FormControl>
+                            <FormLabel className="font-normal">{option.label}</FormLabel>
+                          </FormItem>
+                        )}
+                      />
+                      {option.hasAmount && form.watch(`community_deliverables.${option.id}` as any) && (
+                        <FormField
+                          control={form.control}
+                          name={`community_deliverables.${option.id}` as any}
+                          render={({ field }) => (
+                            <FormItem className="ml-6">
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  placeholder={`How many ${option.label.toLowerCase()}?`}
+                                  {...field}
+                                  onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      )}
+                    </div>
+                  ))}
+
+                  {/* Always show minimum consumption */}
+                  <FormField
+                    control={form.control}
+                    name="community_deliverables.minimum_consumption"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Minimum Consumption in Place (€)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="Enter minimum consumption amount"
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="timeline_days"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex items-center gap-2">
+                        <FormLabel>Timeline (days after collaboration)</FormLabel>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger type="button">
+                              <Info size={14} className="text-muted-foreground" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>How much time a community has to finish all deliverables.</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="Number of days to complete deliverables"
+                          {...field}
+                          onChange={(e) => field.onChange(parseInt(e.target.value) || 7)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </CardContent>
+            </Card>
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={form.handleSubmit((data) => handleSubmit(data, "draft"))}
+                disabled={isSubmitting}
+              >
+                <Save className="w-4 h-4 mr-2" />
+                Save as Draft
+              </Button>
+              <Button
+                type="button"
+                onClick={form.handleSubmit((data) => handleSubmit(data, "published"))}
+                disabled={isSubmitting}
+              >
+                <Send className="w-4 h-4 mr-2" />
+                Publish Offer
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </Card>
     </div>
   );
 };
