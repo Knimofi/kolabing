@@ -19,11 +19,12 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { FileUpload } from "@/components/ui/file-upload";
 
-const BG_SECTION = "#F3F4F6";
-const BG_INPUT = "#E5E7EB";
+const BG_PAGE = "#F7F8FA"; // uniform greyish background
+const BG_SECTION = "#fff"; // cards are white for lifted effect
+const CARD_SHADOW = "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55, 73, 87, 0.13)";
+const CARD_RADIUS = "14px";
 const TEXT_DARK = "#232323";
-const YELLOW = "#FFC300";
-const WHITE = "#FFF";
+const CHIP_YELLOW = "#FFD861"; // Use this for main buttons and chips
 
 const checklistOptions = [
   { id: "tagged_stories", label: "Tagged Stories", hasAmount: true },
@@ -156,19 +157,52 @@ const CommunityOpportunitiesNew = () => {
     }
   };
 
+  // Card style shortcut
+  const cardStyles = {
+    background: BG_SECTION,
+    boxShadow: CARD_SHADOW,
+    borderRadius: CARD_RADIUS,
+    border: "1px solid #EBEBEB",
+  };
+
+  // Button styles
+  const mainButtonStyles = {
+    background: CHIP_YELLOW,
+    color: TEXT_DARK,
+    fontWeight: 700,
+    borderRadius: "8px",
+    boxShadow: "0 1.5px 4px 0 rgba(55, 73, 87, 0.11)",
+    border: "none",
+  };
+
+  const outlineButtonStyles = {
+    background: "#fff",
+    color: TEXT_DARK,
+    fontWeight: 500,
+    borderRadius: "8px",
+    boxShadow: "0 1.5px 3px 0 rgba(55,73,87,0.08)",
+    border: "1px solid #EBEBEB",
+  };
+
   return (
-    <div style={{ minHeight: "100vh", background: "#fff" }} className="py-8 px-4 flex flex-col items-center">
-      <div className="w-full max-w-2xl space-y-6">
+    <div
+      style={{
+        minHeight: "100vh",
+        background: BG_PAGE,
+        padding: "32px 0 0 0",
+      }}
+      className="flex flex-col items-center"
+    >
+      <div className="w-full max-w-2xl space-y-6 mx-auto px-4">
         {/* Header */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 mb-2">
           <Button
             variant="ghost"
             size="sm"
             style={{
-              background: YELLOW,
-              color: WHITE,
-              fontWeight: 700,
-              borderRadius: 8,
+              ...mainButtonStyles,
+              padding: "10px 22px",
+              fontSize: "16px",
             }}
             onClick={() => navigate("/community/my-opportunities")}
           >
@@ -183,7 +217,7 @@ const CommunityOpportunitiesNew = () => {
         <Form {...form}>
           <form className="space-y-6">
             {/* Basic Information */}
-            <Card style={{ background: BG_SECTION }}>
+            <Card style={cardStyles}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Basic Information</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -201,9 +235,10 @@ const CommunityOpportunitiesNew = () => {
                         <Input
                           placeholder="e.g., Looking for venue partner for monthly meetups"
                           style={{
-                            background: BG_INPUT,
+                            background: "#F5F6F8",
                             color: TEXT_DARK,
                             border: "none",
+                            borderRadius: "8px",
                             fontFamily: "Open Sans, Arial, sans-serif",
                           }}
                           {...field}
@@ -223,9 +258,10 @@ const CommunityOpportunitiesNew = () => {
                         <Textarea
                           placeholder="Describe your collaboration opportunity in detail..."
                           style={{
-                            background: BG_INPUT,
+                            background: "#F5F6F8",
                             color: TEXT_DARK,
                             border: "none",
+                            borderRadius: "8px",
                             fontFamily: "Open Sans, Arial, sans-serif",
                           }}
                           className="min-h-[100px]"
@@ -239,7 +275,7 @@ const CommunityOpportunitiesNew = () => {
               </CardContent>
             </Card>
             {/* Availability */}
-            <Card style={{ background: BG_SECTION }}>
+            <Card style={cardStyles}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Availability</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -256,14 +292,24 @@ const CommunityOpportunitiesNew = () => {
                       <div className="flex gap-4">
                         <Button
                           type="button"
-                          variant={field.value === "date_range" ? "secondary" : "outline"}
+                          style={{
+                            ...mainButtonStyles,
+                            background: field.value === "date_range" ? CHIP_YELLOW : "#fff",
+                            color: field.value === "date_range" ? TEXT_DARK : TEXT_DARK,
+                            border: field.value === "date_range" ? "none" : "1px solid #EBEBEB",
+                          }}
                           onClick={() => field.onChange("date_range")}
                         >
                           Date Range
                         </Button>
                         <Button
                           type="button"
-                          variant={field.value === "recurring" ? "secondary" : "outline"}
+                          style={{
+                            ...mainButtonStyles,
+                            background: field.value === "recurring" ? CHIP_YELLOW : "#fff",
+                            color: field.value === "recurring" ? TEXT_DARK : TEXT_DARK,
+                            border: field.value === "recurring" ? "none" : "1px solid #EBEBEB",
+                          }}
                           onClick={() => field.onChange("recurring")}
                         >
                           Recurring
@@ -286,10 +332,10 @@ const CommunityOpportunitiesNew = () => {
                                 <Button
                                   variant="outline"
                                   style={{
-                                    background: BG_INPUT,
-                                    color: TEXT_DARK,
-                                    border: "none",
-                                    fontFamily: "Open Sans, Arial, sans-serif",
+                                    ...outlineButtonStyles,
+                                    borderRadius: "8px",
+                                    padding: "10px",
+                                    textAlign: "left",
                                   }}
                                   className={cn(
                                     "w-full pl-3 text-left font-normal",
@@ -321,10 +367,10 @@ const CommunityOpportunitiesNew = () => {
                                 <Button
                                   variant="outline"
                                   style={{
-                                    background: BG_INPUT,
-                                    color: TEXT_DARK,
-                                    border: "none",
-                                    fontFamily: "Open Sans, Arial, sans-serif",
+                                    ...outlineButtonStyles,
+                                    borderRadius: "8px",
+                                    padding: "10px",
+                                    textAlign: "left",
                                   }}
                                   className={cn(
                                     "w-full pl-3 text-left font-normal",
@@ -357,9 +403,10 @@ const CommunityOpportunitiesNew = () => {
                             <Input
                               placeholder="e.g., Every Tuesday"
                               style={{
-                                background: BG_INPUT,
+                                background: "#F5F6F8",
                                 color: TEXT_DARK,
                                 border: "none",
+                                borderRadius: "8px",
                                 fontFamily: "Open Sans, Arial, sans-serif",
                               }}
                               {...field}
@@ -379,9 +426,10 @@ const CommunityOpportunitiesNew = () => {
                             <Input
                               placeholder="e.g., 18:00 - 21:00"
                               style={{
-                                background: BG_INPUT,
+                                background: "#F5F6F8",
                                 color: TEXT_DARK,
                                 border: "none",
+                                borderRadius: "8px",
                                 fontFamily: "Open Sans, Arial, sans-serif",
                               }}
                               {...field}
@@ -396,7 +444,7 @@ const CommunityOpportunitiesNew = () => {
               </CardContent>
             </Card>
             {/* Location */}
-            <Card style={{ background: BG_SECTION }}>
+            <Card style={cardStyles}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Location</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -411,27 +459,25 @@ const CommunityOpportunitiesNew = () => {
                     <FormItem>
                       <FormLabel style={{ color: TEXT_DARK }}>Venue Mode</FormLabel>
                       <div className="flex gap-4">
-                        <Button
-                          type="button"
-                          variant={field.value === "no_venue" ? "secondary" : "outline"}
-                          onClick={() => field.onChange("no_venue")}
-                        >
-                          No Venue
-                        </Button>
-                        <Button
-                          type="button"
-                          variant={field.value === "i_have_venue" ? "secondary" : "outline"}
-                          onClick={() => field.onChange("i_have_venue")}
-                        >
-                          I Have Venue
-                        </Button>
-                        <Button
-                          type="button"
-                          variant={field.value === "partner_provides" ? "secondary" : "outline"}
-                          onClick={() => field.onChange("partner_provides")}
-                        >
-                          Partner Provides
-                        </Button>
+                        {["no_venue", "i_have_venue", "partner_provides"].map((mode) => (
+                          <Button
+                            key={mode}
+                            type="button"
+                            style={{
+                              ...mainButtonStyles,
+                              background: field.value === mode ? CHIP_YELLOW : "#fff",
+                              color: field.value === mode ? TEXT_DARK : TEXT_DARK,
+                              border: field.value === mode ? "none" : "1px solid #EBEBEB",
+                            }}
+                            onClick={() => field.onChange(mode)}
+                          >
+                            {mode === "no_venue"
+                              ? "No Venue"
+                              : mode === "i_have_venue"
+                                ? "I Have Venue"
+                                : "Partner Provides"}
+                          </Button>
+                        ))}
                       </div>
                     </FormItem>
                   )}
@@ -447,9 +493,10 @@ const CommunityOpportunitiesNew = () => {
                           <Input
                             placeholder="Enter the collaboration venue address"
                             style={{
-                              background: BG_INPUT,
+                              background: "#F5F6F8",
                               color: TEXT_DARK,
                               border: "none",
+                              borderRadius: "8px",
                               fontFamily: "Open Sans, Arial, sans-serif",
                             }}
                             {...field}
@@ -470,9 +517,10 @@ const CommunityOpportunitiesNew = () => {
                         <Input
                           placeholder="City (optional)"
                           style={{
-                            background: BG_INPUT,
+                            background: "#F5F6F8",
                             color: TEXT_DARK,
                             border: "none",
+                            borderRadius: "8px",
                             fontFamily: "Open Sans, Arial, sans-serif",
                           }}
                           {...field}
@@ -492,9 +540,10 @@ const CommunityOpportunitiesNew = () => {
                         <Input
                           placeholder="Area or neighborhood (optional)"
                           style={{
-                            background: BG_INPUT,
+                            background: "#F5F6F8",
                             color: TEXT_DARK,
                             border: "none",
+                            borderRadius: "8px",
                             fontFamily: "Open Sans, Arial, sans-serif",
                           }}
                           {...field}
@@ -507,7 +556,7 @@ const CommunityOpportunitiesNew = () => {
               </CardContent>
             </Card>
             {/* Photo Upload */}
-            <Card style={{ background: BG_SECTION }}>
+            <Card style={cardStyles}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Request Photo</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -541,7 +590,7 @@ const CommunityOpportunitiesNew = () => {
               </CardContent>
             </Card>
             {/* What can you offer? */}
-            <Card style={{ background: BG_SECTION }}>
+            <Card style={cardStyles}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>What can you offer?</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -552,14 +601,24 @@ const CommunityOpportunitiesNew = () => {
                 <div className="flex gap-4 mb-4">
                   <Button
                     type="button"
-                    variant={form.watch("offer_input_mode") === "checklist" ? "secondary" : "outline"}
+                    style={{
+                      ...mainButtonStyles,
+                      background: form.watch("offer_input_mode") === "checklist" ? CHIP_YELLOW : "#fff",
+                      color: form.watch("offer_input_mode") === "checklist" ? TEXT_DARK : TEXT_DARK,
+                      border: form.watch("offer_input_mode") === "checklist" ? "none" : "1px solid #EBEBEB",
+                    }}
                     onClick={() => form.setValue("offer_input_mode", "checklist")}
                   >
                     Select from the list
                   </Button>
                   <Button
                     type="button"
-                    variant={form.watch("offer_input_mode") === "text" ? "secondary" : "outline"}
+                    style={{
+                      ...mainButtonStyles,
+                      background: form.watch("offer_input_mode") === "text" ? CHIP_YELLOW : "#fff",
+                      color: form.watch("offer_input_mode") === "text" ? TEXT_DARK : TEXT_DARK,
+                      border: form.watch("offer_input_mode") === "text" ? "none" : "1px solid #EBEBEB",
+                    }}
                     onClick={() => form.setValue("offer_input_mode", "text")}
                   >
                     Write my own
@@ -577,9 +636,10 @@ const CommunityOpportunitiesNew = () => {
                             placeholder="Describe your offering for the business partner..."
                             className="min-h-[100px]"
                             style={{
-                              background: BG_INPUT,
+                              background: "#F5F6F8",
                               color: TEXT_DARK,
                               border: "none",
+                              borderRadius: "8px",
                               fontFamily: "Open Sans, Arial, sans-serif",
                             }}
                             {...field}
@@ -628,9 +688,10 @@ const CommunityOpportunitiesNew = () => {
                                     min={1}
                                     placeholder={`How many ${option.label.toLowerCase()}?`}
                                     style={{
-                                      background: BG_INPUT,
+                                      background: "#F5F6F8",
                                       color: TEXT_DARK,
                                       border: "none",
+                                      borderRadius: "8px",
                                       fontFamily: "Open Sans, Arial, sans-serif",
                                     }}
                                     {...field}
@@ -649,7 +710,7 @@ const CommunityOpportunitiesNew = () => {
               </CardContent>
             </Card>
             {/* What do you expect from collaborators? */}
-            <Card style={{ background: BG_SECTION }}>
+            <Card style={cardStyles}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>What do you expect from collaborators?</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -660,14 +721,24 @@ const CommunityOpportunitiesNew = () => {
                 <div className="flex gap-4 mb-4">
                   <Button
                     type="button"
-                    variant={form.watch("expect_input_mode") === "checklist" ? "secondary" : "outline"}
+                    style={{
+                      ...mainButtonStyles,
+                      background: form.watch("expect_input_mode") === "checklist" ? CHIP_YELLOW : "#fff",
+                      color: form.watch("expect_input_mode") === "checklist" ? TEXT_DARK : TEXT_DARK,
+                      border: form.watch("expect_input_mode") === "checklist" ? "none" : "1px solid #EBEBEB",
+                    }}
                     onClick={() => form.setValue("expect_input_mode", "checklist")}
                   >
                     Select from the list
                   </Button>
                   <Button
                     type="button"
-                    variant={form.watch("expect_input_mode") === "text" ? "secondary" : "outline"}
+                    style={{
+                      ...mainButtonStyles,
+                      background: form.watch("expect_input_mode") === "text" ? CHIP_YELLOW : "#fff",
+                      color: form.watch("expect_input_mode") === "text" ? TEXT_DARK : TEXT_DARK,
+                      border: form.watch("expect_input_mode") === "text" ? "none" : "1px solid #EBEBEB",
+                    }}
                     onClick={() => form.setValue("expect_input_mode", "text")}
                   >
                     Write my own
@@ -685,9 +756,10 @@ const CommunityOpportunitiesNew = () => {
                             placeholder="Describe your expectations from the business partner..."
                             className="min-h-[100px]"
                             style={{
-                              background: BG_INPUT,
+                              background: "#F5F6F8",
                               color: TEXT_DARK,
                               border: "none",
+                              borderRadius: "8px",
                               fontFamily: "Open Sans, Arial, sans-serif",
                             }}
                             {...field}
@@ -736,9 +808,10 @@ const CommunityOpportunitiesNew = () => {
                                     min={1}
                                     placeholder={`How many ${option.label.toLowerCase()}?`}
                                     style={{
-                                      background: BG_INPUT,
+                                      background: "#F5F6F8",
                                       color: TEXT_DARK,
                                       border: "none",
+                                      borderRadius: "8px",
                                       fontFamily: "Open Sans, Arial, sans-serif",
                                     }}
                                     {...field}
@@ -760,7 +833,7 @@ const CommunityOpportunitiesNew = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-end">
               <Button
                 type="button"
-                variant="outline"
+                style={outlineButtonStyles}
                 onClick={form.handleSubmit((data) => handleSubmit(data, "draft"))}
                 disabled={isSubmitting}
               >
@@ -769,6 +842,12 @@ const CommunityOpportunitiesNew = () => {
               </Button>
               <Button
                 type="button"
+                style={{
+                  ...mainButtonStyles,
+                  minWidth: "170px",
+                  fontSize: "17px",
+                  padding: "12px 0",
+                }}
                 onClick={form.handleSubmit((data) => handleSubmit(data, "published"))}
                 disabled={isSubmitting}
               >
