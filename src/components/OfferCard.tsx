@@ -53,6 +53,22 @@ const CARD_BORDER = "#F9E9AC";
 const SHADOW = "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)";
 const BUTTON_YELLOW = "#FFD861";
 
+// Util to check if there are any deliverables
+function hasDeliverables(d: OfferCardProps["offer"]["community_deliverables"]) {
+  return (
+    !!d.tagged_stories ||
+    !!d.google_reviews ||
+    !!d.number_of_attendees ||
+    !!d.professional_photography ||
+    !!d.professional_reel_video ||
+    !!d.ugc_content ||
+    !!d.collab_reel_post ||
+    !!d.group_picture ||
+    !!d.loyalty_signups ||
+    !!d.minimum_consumption
+  );
+}
+
 const OfferCard = ({
   offer,
   creatorProfile,
@@ -75,22 +91,30 @@ const OfferCard = ({
     return null;
   };
 
-  // WHAT THEY OFFER SECTION
-  const renderBusinessOffer = () => (
-    <div className="mb-1">
-      <div className="font-semibold text-sm" style={{ color: SOFT_BLACK }}>
-        What they offer
+  // OFFERING ROW
+  const renderOffering = () => (
+    <div className="flex items-center gap-2 mb-px">
+      <div
+        className="uppercase"
+        style={{
+          fontFamily: "'GT Walsheim', 'Montserrat', 'Arial', sans-serif",
+          fontWeight: 400,
+          letterSpacing: "0.02em",
+          color: SOFT_BLACK,
+          fontSize: "13px",
+          opacity: 0.94,
+        }}
+      >
+        OFFERING
       </div>
-      <div className="flex items-center gap-2 text-sm" style={{ color: SOFT_BLACK, opacity: 0.85 }}>
-        <span>🎁</span>
-        <span className="truncate">{offer.business_offer.description}</span>
-      </div>
+      <span style={{ fontSize: "14px", color: SOFT_BLACK, opacity: 0.85 }}>{offer.business_offer.description}</span>
     </div>
   );
-  // WHAT THEY ARE LOOKING FOR SECTION
-  const renderDeliverables = () => {
-    const deliverables: string[] = [];
+
+  // LOOKING FOR ROW
+  const renderLookingFor = () => {
     const d = offer.community_deliverables;
+    const deliverables: string[] = [];
     if (d.tagged_stories) deliverables.push(`📲 ${d.tagged_stories} Stories`);
     if (d.google_reviews) deliverables.push(`⭐ ${d.google_reviews} Reviews`);
     if (d.number_of_attendees) deliverables.push(`👥 ${d.number_of_attendees} Attendees`);
@@ -101,30 +125,71 @@ const OfferCard = ({
     if (d.group_picture) deliverables.push("🖼️ Group Picture");
     if (d.loyalty_signups) deliverables.push(`📝 ${d.loyalty_signups} Sign-ups`);
     if (d.minimum_consumption) deliverables.push(`💶 Min. €${d.minimum_consumption}`);
+
     return (
-      <>
-        <div className="font-semibold text-sm mt-2" style={{ color: SOFT_BLACK }}>
-          What they're looking for
+      <div className="flex items-center gap-2 flex-wrap mb-px">
+        <div
+          className="uppercase"
+          style={{
+            fontFamily: "'GT Walsheim', 'Montserrat', 'Arial', sans-serif",
+            fontWeight: 400,
+            letterSpacing: "0.02em",
+            color: SOFT_BLACK,
+            fontSize: "13px",
+            opacity: 0.94,
+          }}
+        >
+          LOOKING FOR
         </div>
-        <div className="flex flex-wrap gap-1 text-sm" style={{ color: SOFT_BLACK, opacity: 0.85 }}>
-          {deliverables.map((item, index) => (
+        {deliverables.length > 0 ? (
+          deliverables.map((item, index) => (
             <React.Fragment key={index}>
-              <span>{item}</span>
-              {index < deliverables.length - 1 && <span>•</span>}
+              <span
+                style={{
+                  fontSize: "14px",
+                  color: SOFT_BLACK,
+                  opacity: 0.85,
+                  marginRight: "2px",
+                }}
+              >
+                {item}
+              </span>
+              {index < deliverables.length - 1 && (
+                <span
+                  style={{
+                    fontSize: "14px",
+                    color: SOFT_BLACK,
+                    opacity: 0.5,
+                  }}
+                >
+                  •
+                </span>
+              )}
             </React.Fragment>
-          ))}
-        </div>
-      </>
+          ))
+        ) : (
+          <span style={{ fontSize: "14px", color: SOFT_BLACK, opacity: 0.85 }}>{offer.description}</span>
+        )}
+      </div>
     );
   };
 
-  const truncateDescription = (text: string, maxLines = 2) => {
-    const words = text.split(" ");
-    const approximateWordsPerLine = 8;
-    const maxWords = maxLines * approximateWordsPerLine;
-    if (words.length <= maxWords) return text;
-    return words.slice(0, maxWords).join(" ") + "...";
-  };
+  // No longer bold for the title, softer color, normal font
+  const renderTitle = () => (
+    <div
+      className="leading-tight line-clamp-2"
+      style={{
+        fontFamily: "'GT Walsheim', 'Montserrat', 'Arial', sans-serif",
+        fontWeight: 400,
+        fontSize: "18px",
+        color: SOFT_BLACK,
+        opacity: 0.95,
+        marginBottom: "2px",
+      }}
+    >
+      {offer.title}
+    </div>
+  );
 
   let photoUrl = profile?.profile_photo || "/placeholder.svg";
   if (offer.offer_photo) {
@@ -140,7 +205,6 @@ const OfferCard = ({
 
   const displayType =
     creatorProfile?.business_type || creatorProfile?.community_type || businessProfile?.business_type || "Creator";
-  const displayBadge = creatorProfile?.profile_type === "community" ? "Community" : "Business";
 
   return (
     <Card
@@ -188,15 +252,10 @@ const OfferCard = ({
           )}
         </div>
         {/* Main Content */}
-        <div className="flex-1 space-y-3">
-          <h3 className="font-semibold text-xl leading-tight line-clamp-2" style={{ color: SOFT_BLACK }}>
-            {offer.title}
-          </h3>
-          {renderBusinessOffer()}
-          {renderDeliverables()}
-          <p className="text-sm leading-relaxed" style={{ color: SOFT_BLACK, opacity: 0.87 }}>
-            {truncateDescription(offer.description)}
-          </p>
+        <div className="flex-1 space-y-2">
+          {renderTitle()}
+          {renderOffering()}
+          {renderLookingFor()}
         </div>
         {/* Footer Actions */}
         {showActions && (
