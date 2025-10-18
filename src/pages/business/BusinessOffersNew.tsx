@@ -20,6 +20,10 @@ import { cn } from "@/lib/utils";
 import { FileUpload } from "@/components/ui/file-upload";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+const BG_SECTION = "#F3F4F6";
+const BG_INPUT = "#E5E7EB";
+const TEXT_DARK = "#232323";
+
 const offerSchema = z.object({
   title: z.string().min(1, "Title is required").max(100, "Title must be under 100 characters"),
   description: z.string().min(1, "Description is required").max(1000, "Description must be under 1000 characters"),
@@ -94,11 +98,9 @@ const BusinessOffersNew = () => {
 
   const handleSubmit = async (data: OfferFormData, status: "draft" | "published") => {
     if (!profile) return;
-
     setIsSubmitting(true);
 
     try {
-      // Fetch the business profile for the current user
       const { data: businessProfile, error: businessError } = await supabase
         .from("business_profiles")
         .select("profile_id")
@@ -145,7 +147,6 @@ const BusinessOffersNew = () => {
 
       navigate("/business/opportunities");
     } catch (error: any) {
-      console.error("Error creating offer:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to create offer. Please try again.",
@@ -157,26 +158,27 @@ const BusinessOffersNew = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black py-8 px-4 flex flex-col items-center">
+    <div style={{ minHeight: "100vh", background: "#fff" }} className="py-8 px-4 flex flex-col items-center">
       <div className="w-full max-w-2xl space-y-6">
-        {/* Header */}
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/business/offers")}>
+          <Button variant="ghost" size="sm" onClick={() => navigate("/business/opportunities")}>
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Offers
+            Back to My Requests
           </Button>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">Create New Offer</h1>
-            <p className="text-muted-foreground">Design your collaboration opportunity</p>
+            <h1 style={{ color: TEXT_DARK, fontSize: 30, fontWeight: 900 }}>Create New Request</h1>
+            <p style={{ color: "#606060" }}>Design your collaboration opportunity</p>
           </div>
         </div>
         <Form {...form}>
           <form className="space-y-6">
             {/* Basic Information */}
-            <Card>
+            <Card style={{ background: BG_SECTION }}>
               <CardHeader>
-                <CardTitle>Basic Information</CardTitle>
-                <CardDescription>Provide the essential details about your collaboration offer</CardDescription>
+                <CardTitle style={{ color: TEXT_DARK }}>Basic Information</CardTitle>
+                <CardDescription style={{ color: "#606060" }}>
+                  Provide the essential details about your collaboration request
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -184,9 +186,18 @@ const BusinessOffersNew = () => {
                   name="title"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Offer Title</FormLabel>
+                      <FormLabel style={{ color: TEXT_DARK }}>Request Title</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., Instagram Partnership for Coffee Shop" {...field} />
+                        <Input
+                          placeholder="e.g., Instagram Partnership for Coffee Shop"
+                          style={{
+                            background: BG_INPUT,
+                            color: TEXT_DARK,
+                            border: "none",
+                            fontFamily: "Open Sans, Arial, sans-serif",
+                          }}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -197,10 +208,16 @@ const BusinessOffersNew = () => {
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Description</FormLabel>
+                      <FormLabel style={{ color: TEXT_DARK }}>Description</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Describe your collaboration opportunity in detail..."
+                          style={{
+                            background: BG_INPUT,
+                            color: TEXT_DARK,
+                            border: "none",
+                            fontFamily: "Open Sans, Arial, sans-serif",
+                          }}
                           className="min-h-[100px]"
                           {...field}
                         />
@@ -212,10 +229,12 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Availability */}
-            <Card>
+            <Card style={{ background: BG_SECTION }}>
               <CardHeader>
-                <CardTitle>Availability</CardTitle>
-                <CardDescription>When are you available for this collaboration?</CardDescription>
+                <CardTitle style={{ color: TEXT_DARK }}>Availability</CardTitle>
+                <CardDescription style={{ color: "#606060" }}>
+                  When are you available for this collaboration?
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -224,12 +243,18 @@ const BusinessOffersNew = () => {
                     name="availability_start"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel>Start Date</FormLabel>
+                        <FormLabel style={{ color: TEXT_DARK }}>Start Date</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
                                 variant="outline"
+                                style={{
+                                  background: BG_INPUT,
+                                  color: TEXT_DARK,
+                                  border: "none",
+                                  fontFamily: "Open Sans, Arial, sans-serif",
+                                }}
                                 className={cn(
                                   "w-full pl-3 text-left font-normal",
                                   !field.value && "text-muted-foreground",
@@ -253,12 +278,18 @@ const BusinessOffersNew = () => {
                     name="availability_end"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel>End Date</FormLabel>
+                        <FormLabel style={{ color: TEXT_DARK }}>End Date</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
                                 variant="outline"
+                                style={{
+                                  background: BG_INPUT,
+                                  color: TEXT_DARK,
+                                  border: "none",
+                                  fontFamily: "Open Sans, Arial, sans-serif",
+                                }}
                                 className={cn(
                                   "w-full pl-3 text-left font-normal",
                                   !field.value && "text-muted-foreground",
@@ -281,10 +312,12 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Location */}
-            <Card>
+            <Card style={{ background: BG_SECTION }}>
               <CardHeader>
-                <CardTitle>Location</CardTitle>
-                <CardDescription>Where will this collaboration take place?</CardDescription>
+                <CardTitle style={{ color: TEXT_DARK }}>Location</CardTitle>
+                <CardDescription style={{ color: "#606060" }}>
+                  Where will this collaboration take place?
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -296,8 +329,8 @@ const BusinessOffersNew = () => {
                         <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
                       <div className="space-y-1 leading-none">
-                        <FormLabel>No physical venue required</FormLabel>
-                        <p className="text-sm text-muted-foreground">
+                        <FormLabel style={{ color: TEXT_DARK }}>No physical venue required</FormLabel>
+                        <p style={{ color: "#606060", fontSize: 14 }}>
                           Check this if the collaboration is online or doesn't require a specific location
                         </p>
                       </div>
@@ -310,9 +343,18 @@ const BusinessOffersNew = () => {
                     name="address"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Address</FormLabel>
+                        <FormLabel style={{ color: TEXT_DARK }}>Address</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter the collaboration venue address" {...field} />
+                          <Input
+                            placeholder="Enter the collaboration venue address"
+                            style={{
+                              background: BG_INPUT,
+                              color: TEXT_DARK,
+                              border: "none",
+                              fontFamily: "Open Sans, Arial, sans-serif",
+                            }}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -322,26 +364,30 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Photo Upload */}
-            <Card>
+            <Card style={{ background: BG_SECTION }}>
               <CardHeader>
-                <CardTitle>Offer Photo</CardTitle>
-                <CardDescription>Upload a photo for your offer (optional)</CardDescription>
+                <CardTitle style={{ color: TEXT_DARK }}>Request Photo</CardTitle>
+                <CardDescription style={{ color: "#606060" }}>
+                  Upload a photo for your request (optional)
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FileUpload
                   bucket="offer-photos"
                   value={form.watch("offer_photo")}
                   onChange={(url) => form.setValue("offer_photo", url)}
-                  label="Offer Photo"
+                  label="Request Photo"
                   accept="image/*"
                 />
               </CardContent>
             </Card>
             {/* Business Offer */}
-            <Card>
+            <Card style={{ background: BG_SECTION }}>
               <CardHeader>
-                <CardTitle>What You're Offering</CardTitle>
-                <CardDescription>Describe what you're providing to the community</CardDescription>
+                <CardTitle style={{ color: TEXT_DARK }}>What You're Offering</CardTitle>
+                <CardDescription style={{ color: "#606060" }}>
+                  Describe what you're providing to the community
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <FormField
@@ -349,11 +395,17 @@ const BusinessOffersNew = () => {
                   name="business_offer.description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Your Offer</FormLabel>
+                      <FormLabel style={{ color: TEXT_DARK }}>Your Offer</FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="e.g., Free products, monetary compensation, exclusive access..."
                           className="min-h-[80px]"
+                          style={{
+                            background: BG_INPUT,
+                            color: TEXT_DARK,
+                            border: "none",
+                            fontFamily: "Open Sans, Arial, sans-serif",
+                          }}
                           {...field}
                         />
                       </FormControl>
@@ -364,10 +416,12 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Community Deliverables */}
-            <Card>
+            <Card style={{ background: BG_SECTION }}>
               <CardHeader>
-                <CardTitle>What do you expect from the community?</CardTitle>
-                <CardDescription>Select the deliverables you expect from your community partner</CardDescription>
+                <CardTitle style={{ color: TEXT_DARK }}>What do you expect from the community?</CardTitle>
+                <CardDescription style={{ color: "#606060" }}>
+                  Select the deliverables you expect from your community partner
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-4">
@@ -381,7 +435,9 @@ const BusinessOffersNew = () => {
                             <FormControl>
                               <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
-                            <FormLabel className="font-normal">{option.label}</FormLabel>
+                            <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>
+                              {option.label}
+                            </FormLabel>
                           </FormItem>
                         )}
                       />
@@ -395,6 +451,12 @@ const BusinessOffersNew = () => {
                                 <Input
                                   type="number"
                                   placeholder={`How many ${option.label.toLowerCase()}?`}
+                                  style={{
+                                    background: BG_INPUT,
+                                    color: TEXT_DARK,
+                                    border: "none",
+                                    fontFamily: "Open Sans, Arial, sans-serif",
+                                  }}
                                   {...field}
                                   onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                                 />
@@ -406,18 +468,22 @@ const BusinessOffersNew = () => {
                       )}
                     </div>
                   ))}
-
-                  {/* Always show minimum consumption */}
                   <FormField
                     control={form.control}
                     name="community_deliverables.minimum_consumption"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Minimum Consumption in Place (€)</FormLabel>
+                        <FormLabel style={{ color: TEXT_DARK }}>Minimum Consumption in Place (€)</FormLabel>
                         <FormControl>
                           <Input
                             type="number"
                             placeholder="Enter minimum consumption amount"
+                            style={{
+                              background: BG_INPUT,
+                              color: TEXT_DARK,
+                              border: "none",
+                              fontFamily: "Open Sans, Arial, sans-serif",
+                            }}
                             {...field}
                             onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                           />
@@ -433,7 +499,7 @@ const BusinessOffersNew = () => {
                   render={({ field }) => (
                     <FormItem>
                       <div className="flex items-center gap-2">
-                        <FormLabel>Timeline (days after collaboration)</FormLabel>
+                        <FormLabel style={{ color: TEXT_DARK }}>Timeline (days after collaboration)</FormLabel>
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger type="button">
@@ -449,6 +515,12 @@ const BusinessOffersNew = () => {
                         <Input
                           type="number"
                           placeholder="Number of days to complete deliverables"
+                          style={{
+                            background: BG_INPUT,
+                            color: TEXT_DARK,
+                            border: "none",
+                            fontFamily: "Open Sans, Arial, sans-serif",
+                          }}
                           {...field}
                           onChange={(e) => field.onChange(parseInt(e.target.value) || 7)}
                         />
@@ -476,7 +548,7 @@ const BusinessOffersNew = () => {
                 disabled={isSubmitting}
               >
                 <Send className="w-4 h-4 mr-2" />
-                Publish Offer
+                Publish Request
               </Button>
             </div>
           </form>
