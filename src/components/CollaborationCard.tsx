@@ -1,17 +1,17 @@
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { format } from 'date-fns';
-import { Eye, CheckCircle, XCircle } from 'lucide-react';
-import { ContactInfoCard } from '@/components/ContactInfoCard';
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { format } from "date-fns";
+import { Eye, CheckCircle, XCircle } from "lucide-react";
+import { ContactInfoCard } from "@/components/ContactInfoCard";
 
 interface CollaborationCardProps {
   collaboration: {
     id: string;
     created_at: string;
-    status: 'scheduled' | 'active' | 'completed' | 'cancelled';
+    status: "scheduled" | "active" | "completed" | "cancelled";
     scheduled_date?: string;
     contact_methods?: {
       whatsapp?: string;
@@ -38,28 +38,39 @@ interface CollaborationCardProps {
     };
   };
   onView: () => void;
-  onStatusUpdate: (status: 'completed' | 'cancelled') => void;
+  onStatusUpdate: (status: "completed" | "cancelled") => void;
   onOpenFeedbackModal?: (collaborationId: string) => void;
-  userType: 'business' | 'community';
+  userType: "business" | "community";
 }
 
-const CollaborationCard = ({ collaboration, onView, onStatusUpdate, onOpenFeedbackModal, userType }: CollaborationCardProps) => {
+const CollaborationCard = ({
+  collaboration,
+  onView,
+  onStatusUpdate,
+  onOpenFeedbackModal,
+  userType,
+}: CollaborationCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'scheduled': return 'bg-blue-100 text-blue-800';
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'completed': return 'bg-emerald-100 text-emerald-800';
-      case 'cancelled': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "scheduled":
+        return "bg-blue-100 text-blue-800";
+      case "active":
+        return "bg-green-100 text-green-800";
+      case "completed":
+        return "bg-emerald-100 text-emerald-800";
+      case "cancelled":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
-  const partner = userType === 'business' ? collaboration.community_profile : collaboration.business_profile;
-  const partnerType = userType === 'business' ? 'Community' : 'Business';
+  const partner = userType === "business" ? collaboration.community_profile : collaboration.business_profile;
+  const partnerType = userType === "business" ? "Community" : "Business";
 
-  let photoUrl = '/placeholder.svg';
+  let photoUrl = "/placeholder.svg";
   if (collaboration.offer.offer_photo) {
-    if (collaboration.offer.offer_photo.startsWith('http')) {
+    if (collaboration.offer.offer_photo.startsWith("http")) {
       photoUrl = collaboration.offer.offer_photo;
     } else {
       photoUrl = `https://qcmperlkuujhweikoyru.supabase.co/storage/v1/object/public/offer-photos/${collaboration.offer.offer_photo}`;
@@ -67,20 +78,26 @@ const CollaborationCard = ({ collaboration, onView, onStatusUpdate, onOpenFeedba
   }
 
   return (
-    <Card className="group h-full transition-all duration-200 hover:scale-105 hover:shadow-lg rounded-lg">
+    <Card
+      className="group h-full flex flex-col"
+      style={{
+        background: "#fff",
+        borderRadius: "14px",
+        border: "1px solid #EBEBEB",
+        boxShadow: "0 1.5px 8px 0 rgba(55,73,87,0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)",
+      }}
+    >
       <CardContent className="p-4 h-full flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 text-sm" style={{ color: "#65676A", fontWeight: 500 }}>
             <span>{partnerType}</span>
             <span>•</span>
-            <span>{partner?.city || 'Location'}</span>
+            <span>{partner?.city || "Location"}</span>
           </div>
           <Avatar className="w-6 h-6">
             <AvatarImage src={partner?.profile_photo} />
-            <AvatarFallback className="text-xs">
-              {partner?.name?.[0] || partnerType[0]}
-            </AvatarFallback>
+            <AvatarFallback className="text-xs">{partner?.name?.[0] || partnerType[0]}</AvatarFallback>
           </Avatar>
         </div>
 
@@ -91,7 +108,7 @@ const CollaborationCard = ({ collaboration, onView, onStatusUpdate, onOpenFeedba
             alt={collaboration.offer.title}
             className="w-full h-full object-cover"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = '/placeholder.svg';
+              (e.target as HTMLImageElement).src = "/placeholder.svg";
             }}
           />
           <div className="absolute bottom-2 left-2">
@@ -103,47 +120,61 @@ const CollaborationCard = ({ collaboration, onView, onStatusUpdate, onOpenFeedba
 
         {/* Main Content */}
         <div className="flex-1 space-y-3">
-          <h3 className="font-semibold text-lg leading-tight line-clamp-2">
+          <h3
+            className="text-lg font-bold line-clamp-2"
+            style={{
+              color: "#181A20",
+              fontFamily: "'Open Sans', Arial, sans-serif",
+              fontWeight: 700,
+              letterSpacing: "0.01em",
+            }}
+          >
             {collaboration.offer.title}
           </h3>
 
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2 text-sm" style={{ color: "#474954", fontWeight: 500 }}>
             <span>With {partner?.name || `${partnerType} Partner`}</span>
           </div>
 
-          <div className="text-sm text-muted-foreground">
-            Started: {format(new Date(collaboration.created_at), 'MMM d, yyyy')}
+          <div className="text-sm" style={{ color: "#474954", fontWeight: 500 }}>
+            Started: {format(new Date(collaboration.created_at), "MMM d, yyyy")}
           </div>
         </div>
 
-      {/* Contact Info for Community Users */}
-      {userType === 'community' && (
-        <ContactInfoCard 
-          scheduledDate={collaboration.scheduled_date}
-          contactMethods={collaboration.contact_methods}
-          isCommunityView={true}
-        />
-      )}
+        {/* Contact Info for Community Users */}
+        {userType === "community" && (
+          <ContactInfoCard
+            scheduledDate={collaboration.scheduled_date}
+            contactMethods={collaboration.contact_methods}
+            isCommunityView={true}
+          />
+        )}
 
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-2 pt-4 mt-auto">
           <Button
-            variant="outline"
-            size="sm"
-            className="flex-1 min-w-[120px]"
             onClick={onView}
+            className="flex-1 min-w-[120px]"
+            style={{
+              background: "#FFF8E1",
+              color: "#181A20",
+              fontWeight: 700,
+              borderRadius: "8px",
+              border: "none",
+              boxShadow: "0 1.5px 4px 0 rgba(55, 73, 87, 0.11)",
+            }}
+            size="sm"
           >
             <Eye className="w-4 h-4 mr-2" />
             View Details
           </Button>
-          
-          {(collaboration.status === 'scheduled' || collaboration.status === 'active') && (
+          {(collaboration.status === "scheduled" || collaboration.status === "active") && (
             <>
               <Button
                 size="sm"
                 className="bg-green-600 hover:bg-green-700 text-white flex-1 min-w-[100px]"
                 onClick={() => {
-                  onStatusUpdate('completed');
+                  onStatusUpdate("completed");
                   if (onOpenFeedbackModal) {
                     setTimeout(() => onOpenFeedbackModal(collaboration.id), 500);
                   }
@@ -156,7 +187,7 @@ const CollaborationCard = ({ collaboration, onView, onStatusUpdate, onOpenFeedba
                 size="sm"
                 variant="destructive"
                 className="flex-1 min-w-[100px]"
-                onClick={() => onStatusUpdate('cancelled')}
+                onClick={() => onStatusUpdate("cancelled")}
               >
                 <XCircle className="w-4 h-4 mr-1" />
                 Cancel
