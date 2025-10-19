@@ -8,10 +8,9 @@ import AnimatedHeroTitle from "@/components/AnimatedHeroTitle";
 import VideoCarousel from "@/components/VideoCarousel";
 import ComparisonTable from "@/components/ComparisonTable";
 import BookCallCTA from "@/components/BookCallCTA";
-import PricingSection from "@/components/PricingSection";
 import NewHero from "@/components/NewHero";
-
-/* Make sure you load Rubik Bold+ExtraBold and Darker Grotesque in your global CSS or via Tailwind config */
+import "@/styles/landing.css";
+import { landingStyles } from "@/styles/landing-tokens";
 
 const howItWorksSteps = [
   {
@@ -66,24 +65,15 @@ const Landing = () => {
         <section id="business-needs" className="px-4 py-24" style={{ backgroundColor: "#FFD861" }}>
           <div className="container mx-auto max-w-4xl text-center">
             <h1
-              className="text-3xl md:text-5xl mb-2 leading-tight"
-              style={{
-                fontFamily: "'Darker Grotesque', sans-serif",
-                fontWeight: 300,
-                color: "#000",
-                textTransform: "lowercase",
-              }}
+              className="text-3xl md:text-5xl mb-2 leading-tight lowercase"
+              style={landingStyles.body}
             >
               what your business needs
             </h1>
             <AnimatedHeroTitle />
             <p
               className="text-xl mb-12 max-w-2xl mx-auto"
-              style={{
-                fontFamily: "'Darker Grotesque', sans-serif",
-                fontWeight: 300,
-                color: "#000",
-              }}
+              style={landingStyles.body}
             >
               we connect you to the best local communities for events that will bring content, sales and engagement with
               your local customers
@@ -91,12 +81,7 @@ const Landing = () => {
             <Link to="/auth/sign-up" className="inline-flex">
               <Button
                 size="lg"
-                className="px-12 py-5 bg-black text-white border-black hover:text-[#FFD861] hover:bg-black"
-                style={{
-                  fontFamily: "'Darker Grotesque', sans-serif",
-                  fontWeight: 500,
-                  textTransform: "uppercase",
-                }}
+                className="landing-button-secondary"
               >
                 CREATE YOUR PROFILE
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -108,16 +93,7 @@ const Landing = () => {
         {/* HOW IT WORKS SECTION */}
         <section id="how-it-works" className="py-20 px-4 bg-white">
           <div className="container mx-auto max-w-6xl">
-            <h2
-              className="text-3xl md:text-5xl text-center mb-16"
-              style={{
-                fontFamily: "'Rubik', sans-serif",
-                fontWeight: 800,
-                color: "#000",
-                textTransform: "uppercase",
-                letterSpacing: "0.02em",
-              }}
-            >
+            <h2 className="landing-heading text-3xl md:text-5xl text-center mb-16">
               how it works
             </h2>
             <div className="w-full">
@@ -143,30 +119,10 @@ const Landing = () => {
                     }}
                   >
                     <div className="text-4xl mb-3">{item.icon}</div>
-                    <h3
-                      className="text-sm mb-2"
-                      style={{
-                        fontFamily: "'Rubik', sans-serif",
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.04em",
-                        color: "#000",
-                        margin: 0,
-                      }}
-                    >
+                    <h3 className="landing-subheading text-sm mb-2">
                       {item.title}
                     </h3>
-                    <p
-                      className="text-md leading-snug"
-                      style={{
-                        fontFamily: "'Darker Grotesque', sans-serif",
-                        fontWeight: 400,
-                        textTransform: "uppercase",
-                        color: "#222",
-                        margin: 0,
-                        marginTop: 2,
-                      }}
-                    >
+                    <p className="landing-body text-md leading-snug uppercase">
                       {item.text}
                     </p>
                   </div>
@@ -181,27 +137,11 @@ const Landing = () => {
         {/* WHY CHOOSE KOLABING */}
         <section id="why-choose-kolabing" className="bg-white py-20 px-4">
           <div className="container mx-auto max-w-5xl text-center">
-            <h2
-              className="text-3xl md:text-5xl mb-5"
-              style={{
-                fontFamily: "'Rubik', sans-serif",
-                fontWeight: 800,
-                textTransform: "uppercase",
-                letterSpacing: "0.04em",
-                color: "#000",
-              }}
-            >
+            <h2 className="landing-heading text-3xl md:text-5xl mb-5">
               <span style={{ fontStyle: "italic" }}>why</span> CHOOSE KOLABING
               <span style={{ fontStyle: "italic" }}>?</span>
             </h2>
-            <p
-              className="text-xl mb-3" // Reduce spacing below paragraph!
-              style={{
-                fontFamily: "'Darker Grotesque', sans-serif",
-                fontWeight: 300,
-                color: "#222",
-              }}
-            >
+            <p className="landing-body text-xl mb-3">
               Why Kolabing stands out for brands and communities seeking real connections, measurable growth, and
               authentic local engagement.
             </p>
@@ -212,7 +152,6 @@ const Landing = () => {
           </div>
         </section>
 
-        <PricingSection />
         <BookCallCTA />
       </main>
       <Footer />

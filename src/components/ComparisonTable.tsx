@@ -1,6 +1,7 @@
 import React from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Check, X, Minus } from "lucide-react";
+import "@/styles/landing.css";
 
 const ComparisonTable = () => {
   const comparisonData = [
@@ -61,7 +62,7 @@ const ComparisonTable = () => {
     <section className="py-10 px-4">
       <div className="container mx-auto max-w-4xl">
         <div className="overflow-x-auto rounded-lg">
-          <Table className="w-full" style={{ background: "transparent" }}>
+          <Table className="w-full landing-table" style={{ background: "transparent" }}>
             <TableHeader>
               <TableRow className="border border-black">
                 <TableHead

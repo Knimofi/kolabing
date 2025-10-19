@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Instagram } from "lucide-react";
+import "@/styles/landing.css";
+import { landingStyles } from "@/styles/landing-tokens";
 
 const Footer = () => {
   return (
@@ -15,8 +17,8 @@ const Footer = () => {
               className="w-8 h-8"
             />
             <span
-              className="text-xl font-extrabold text-white tracking-wide"
-              style={{ fontFamily: "'Rubik', sans-serif", textTransform: "uppercase" }}
+              className="text-xl text-white tracking-wide"
+              style={{ ...landingStyles.subheading, color: '#fff' }}
             >
               KOLABING
             </span>
@@ -24,8 +26,7 @@ const Footer = () => {
 
           {/* Navigation Links */}
           <div
-            className="flex flex-wrap items-center justify-center space-x-6 text-sm font-medium"
-            style={{ fontFamily: "'Darker Grotesque', sans-serif" }}
+            className="flex flex-wrap items-center justify-center space-x-6 text-sm font-medium landing-body"
           >
             <Link to="/#how-it-works" className="text-neutral-400 hover:text-white transition-colors">
               How It Works
@@ -57,10 +58,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="mt-10 pt-6 border-t border-[#222] text-center">
-          <p
-            className="text-sm text-neutral-500 tracking-wide"
-            style={{ fontFamily: "'Darker Grotesque', sans-serif" }}
-          >
+          <p className="text-sm text-neutral-500 tracking-wide landing-body">
             © 2025 Kolabing. All rights reserved.
           </p>
         </div>

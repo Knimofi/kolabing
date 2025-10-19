@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { LandingTokens } from "@/styles/landing-tokens";
 
 // Animated text options
 const rotatingTexts = ["More Clients", "Better Content", "Communities"];
@@ -41,7 +42,7 @@ const AnimatedHeroTitle = () => {
             className="text-3xl md:text-5xl font-bold transition-all duration-500 flex items-center justify-center whitespace-nowrap"
             style={{
               lineHeight: 1.0,
-              fontFamily: "Rubik, sans-serif",
+              fontFamily: LandingTokens.fonts.heading,
               color: "#fff",
               textTransform: "uppercase",
             }}

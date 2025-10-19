@@ -1,0 +1,136 @@
+/* Dashboard & Internal Pages Design System */
+
+/* Dashboard Color Palette */
+:root {
+  --dashboard-bg: #F7F8FA;
+  --dashboard-card-bg: #fff;
+  --dashboard-primary: #FFD861;
+  --dashboard-text-dark: #232323;
+  --dashboard-text-muted: #606060;
+  --dashboard-border: #EBEBEB;
+  --dashboard-input-bg: #F5F6F8;
+}
+
+/* Dashboard Typography */
+.dashboard-heading {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-weight: 900;
+  color: var(--dashboard-text-dark);
+}
+
+.dashboard-subheading {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-weight: 700;
+  color: var(--dashboard-text-dark);
+}
+
+.dashboard-body {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-weight: 400;
+  color: var(--dashboard-text-muted);
+}
+
+/* Dashboard Layout */
+.dashboard-page {
+  min-height: 100vh;
+  background: var(--dashboard-bg);
+  padding: 32px 0;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+  background: var(--dashboard-card-bg);
+  box-shadow: 0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55, 73, 87, 0.13);
+  border-radius: 14px;
+  border: 1px solid var(--dashboard-border);
+  padding: 1.5rem;
+}
+
+/* Dashboard Buttons */
+.dashboard-button-primary {
+  background: var(--dashboard-primary);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 8px;
+  box-shadow: 0 1.5px 4px 0 rgba(55, 73, 87, 0.11);
+  border: none;
+  padding: 0.625rem 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.dashboard-button-primary:hover {
+  background: var(--dashboard-primary);
+  opacity: 0.9;
+}
+
+.dashboard-button-secondary {
+  background: #fff;
+  color: var(--dashboard-text-dark);
+  font-weight: 500;
+  border-radius: 8px;
+  box-shadow: 0 1.5px 3px 0 rgba(55, 73, 87, 0.08);
+  border: 1px solid var(--dashboard-border);
+  padding: 0.625rem 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.dashboard-button-secondary:hover {
+  background: #f9f9f9;
+}
+
+/* Dashboard Form Inputs */
+.dashboard-input {
+  background: var(--dashboard-input-bg);
+  color: var(--dashboard-text-dark);
+  border: none;
+  border-radius: 8px;
+  padding: 0.625rem 0.75rem;
+  font-family: 'Open Sans', Arial, sans-serif;
+}
+
+.dashboard-input:focus {
+  outline: none;
+  border: 1px solid #E8D7A0;
+  box-shadow: 0 0 0 3px rgba(255, 246, 216, 0.4);
+}
+
+.dashboard-textarea {
+  background: var(--dashboard-input-bg);
+  color: var(--dashboard-text-dark);
+  border: none;
+  border-radius: 8px;
+  padding: 0.625rem 0.75rem;
+  font-family: 'Open Sans', Arial, sans-serif;
+  min-height: 100px;
+}
+
+.dashboard-textarea:focus {
+  outline: none;
+  border: 1px solid #E8D7A0;
+  box-shadow: 0 0 0 3px rgba(255, 246, 216, 0.4);
+}
+
+/* Dashboard Badges/Pills */
+.dashboard-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.dashboard-badge-yellow {
+  background: var(--dashboard-primary);
+  color: var(--dashboard-text-dark);
+}
+
+.dashboard-badge-grey {
+  background: #E5E5E5;
+  color: #444;
+}
+
+.dashboard-badge-orange {
+  background: #FFDDAC;
+  color: #D8910B;
+}

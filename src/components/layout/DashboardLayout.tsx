@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { LayoutDashboard, FileText, Users, BarChart3, Settings, LogOut, Menu, X, Building2, UserCheck, CreditCard } from "lucide-react";
+import "@/styles/dashboard.css";
 const RUBIK_BOLD = {
   fontFamily: "'Rubik', Arial, sans-serif",
   textTransform: "uppercase" as const,

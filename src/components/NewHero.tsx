@@ -1,6 +1,8 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import "@/styles/landing.css";
+import { LandingTokens } from "@/styles/landing-tokens";
 
 // Responsive button styles
 const getButtonStyle = (): React.CSSProperties => {
@@ -8,14 +10,14 @@ const getButtonStyle = (): React.CSSProperties => {
   const isTablet = window.innerWidth >= 640 && window.innerWidth < 1024;
   
   return {
-    background: "#FFD861",
+    background: LandingTokens.colors.yellow,
     color: "#111",
-    fontFamily: "'Darker Grotesque', Arial, sans-serif",
+    fontFamily: LandingTokens.fonts.body,
     textTransform: "uppercase" as const,
-    fontWeight: 500,
+    fontWeight: LandingTokens.fontWeights.medium,
     fontSize: isMobile ? "0.9rem" : isTablet ? "1rem" : "1.1rem",
     letterSpacing: "0.05em",
-    borderRadius: "0.6em",
+    borderRadius: LandingTokens.borderRadius.button,
     border: "none",
     padding: isMobile ? "0.4rem 1.2rem" : isTablet ? "0.45rem 1.5rem" : "0.5rem 1.8rem",
     minWidth: isMobile ? "100%" : "unset",
@@ -72,8 +74,8 @@ const NewHero = () => {
               className="text-lg sm:text-xl md:text-2xl lg:text-3xl mb-2 md:mb-3"
               style={{
                 color: "#F9F7E8",
-                fontFamily: "'Darker Grotesque', Arial, sans-serif",
-                fontWeight: 300,
+                fontFamily: LandingTokens.fonts.body,
+                fontWeight: LandingTokens.fontWeights.light,
                 letterSpacing: "0.01em",
                 textAlign: "center",
                 lineHeight: 1.14,
@@ -86,8 +88,8 @@ const NewHero = () => {
               className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl"
               style={{
                 color: "#F9F7E8",
-                fontFamily: "'Rubik', Arial, sans-serif",
-                fontWeight: 900,
+                fontFamily: LandingTokens.fonts.heading,
+                fontWeight: LandingTokens.fontWeights.black,
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
                 textAlign: "center",

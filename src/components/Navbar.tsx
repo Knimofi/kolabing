@@ -3,21 +3,12 @@ import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
+import "@/styles/landing.css";
+import { landingStyles } from "@/styles/landing-tokens";
 
 // Font styles
-const NAV_FONT = {
-  fontFamily: "'Darker Grotesque', Arial, sans-serif",
-  fontWeight: 400,
-  textTransform: "uppercase" as const,
-  letterSpacing: "0.04em",
-};
-
-const LOGO_FONT = {
-  fontFamily: "'Rubik', Arial, sans-serif",
-  fontWeight: 900,
-  textTransform: "uppercase" as const,
-  letterSpacing: "0.06em",
-};
+const NAV_FONT = landingStyles.body;
+const LOGO_FONT = landingStyles.subheading;
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
