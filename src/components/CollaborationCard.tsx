@@ -79,82 +79,81 @@ const CollaborationCard = ({
 
   return (
     <Card
-      className="group h-full flex flex-col"
+      className="flex flex-col"
       style={{
         background: "#fff",
         borderRadius: "14px",
         border: "1px solid #EBEBEB",
         boxShadow: "0 1.5px 8px 0 rgba(55,73,87,0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)",
+        padding: "0.5rem 0.75rem",
       }}
     >
-      <CardContent className="p-4 h-full flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2 text-sm" style={{ color: "#65676A", fontWeight: 500 }}>
-            <span>{partnerType}</span>
-            <span>•</span>
-            <span>{partner?.city || "Location"}</span>
+      <CardContent className="p-0 w-full flex flex-col gap-2">
+        <div className="flex flex-row w-full gap-4 items-center">
+          {/* Small Square Photo */}
+          <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-muted relative">
+            <img
+              src={photoUrl}
+              alt={collaboration.offer.title}
+              className="w-full h-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "/placeholder.svg";
+              }}
+            />
+            <div className="absolute bottom-2 left-2">
+              <Badge className={getStatusColor(collaboration.status)}>
+                {collaboration.status.charAt(0).toUpperCase() + collaboration.status.slice(1)}
+              </Badge>
+            </div>
           </div>
-          <Avatar className="w-6 h-6">
-            <AvatarImage src={partner?.profile_photo} />
-            <AvatarFallback className="text-xs">{partner?.name?.[0] || partnerType[0]}</AvatarFallback>
-          </Avatar>
+
+          {/* Title and Details (middle section) */}
+          <div className="flex flex-col flex-1 min-w-0 gap-1">
+            <div className="flex items-center gap-2 text-xs" style={{ color: "#65676A", fontWeight: 500 }}>
+              <span>{partnerType}</span>
+              <span>•</span>
+              <span>{partner?.city || "Location"}</span>
+              <Avatar className="w-5 h-5 ml-2">
+                <AvatarImage src={partner?.profile_photo} />
+                <AvatarFallback className="text-xs">{partner?.name?.[0] || partnerType[0]}</AvatarFallback>
+              </Avatar>
+            </div>
+            <h3
+              className="text-base font-bold truncate"
+              style={{
+                color: "#181A20",
+                fontFamily: "'Open Sans', Arial, sans-serif",
+                fontWeight: 700,
+                letterSpacing: "0.01em",
+              }}
+            >
+              {collaboration.offer.title}
+            </h3>
+            <div className="flex items-center gap-2 text-xs" style={{ color: "#474954", fontWeight: 500 }}>
+              <span>With {partner?.name || `${partnerType} Partner`}</span>
+            </div>
+            <div className="text-xs" style={{ color: "#474954", fontWeight: 500 }}>
+              Started: {format(new Date(collaboration.created_at), "MMM d, yyyy")}
+            </div>
+          </div>
+
+          {/* Right-side Details */}
+          <div className="flex flex-col items-end min-w-[160px] max-w-[210px] ml-4">
+            {/* Only for community user: acceptance box and contact info */}
+            {userType === "community" && (
+              <ContactInfoCard
+                scheduledDate={collaboration.scheduled_date}
+                contactMethods={collaboration.contact_methods}
+                isCommunityView={true}
+              />
+            )}
+          </div>
         </div>
-
-        {/* Cover Image */}
-        <div className="relative mb-4 rounded-lg overflow-hidden bg-muted aspect-video">
-          <img
-            src={photoUrl}
-            alt={collaboration.offer.title}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "/placeholder.svg";
-            }}
-          />
-          <div className="absolute bottom-2 left-2">
-            <Badge className={getStatusColor(collaboration.status)}>
-              {collaboration.status.charAt(0).toUpperCase() + collaboration.status.slice(1)}
-            </Badge>
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <div className="flex-1 space-y-3">
-          <h3
-            className="text-lg font-bold line-clamp-2"
-            style={{
-              color: "#181A20",
-              fontFamily: "'Open Sans', Arial, sans-serif",
-              fontWeight: 700,
-              letterSpacing: "0.01em",
-            }}
-          >
-            {collaboration.offer.title}
-          </h3>
-
-          <div className="flex items-center gap-2 text-sm" style={{ color: "#474954", fontWeight: 500 }}>
-            <span>With {partner?.name || `${partnerType} Partner`}</span>
-          </div>
-
-          <div className="text-sm" style={{ color: "#474954", fontWeight: 500 }}>
-            Started: {format(new Date(collaboration.created_at), "MMM d, yyyy")}
-          </div>
-        </div>
-
-        {/* Contact Info (includes acceptance box for community users) */}
-        {userType === "community" && (
-          <ContactInfoCard
-            scheduledDate={collaboration.scheduled_date}
-            contactMethods={collaboration.contact_methods}
-            isCommunityView={true}
-          />
-        )}
-
-        {/* Action Buttons */}
-        <div className="flex flex-wrap gap-2 pt-4 mt-auto">
+        {/* Buttons < 1 row below all info */}
+        <div className="flex flex-row flex-wrap gap-2 pt-2 border-t border-muted mt-3">
           <Button
             onClick={onView}
-            className="flex-1 min-w-[120px]"
+            className="min-w-[110px]"
             style={{
               background: "#FFF8E1",
               color: "#181A20",
@@ -172,7 +171,7 @@ const CollaborationCard = ({
             <>
               <Button
                 size="sm"
-                className="bg-green-600 hover:bg-green-700 text-white flex-1 min-w-[100px]"
+                className="bg-green-600 hover:bg-green-700 text-white min-w-[90px]"
                 onClick={() => {
                   onStatusUpdate("completed");
                   if (onOpenFeedbackModal) {
@@ -186,7 +185,7 @@ const CollaborationCard = ({
               <Button
                 size="sm"
                 variant="destructive"
-                className="flex-1 min-w-[100px]"
+                className="min-w-[90px]"
                 onClick={() => onStatusUpdate("cancelled")}
               >
                 <XCircle className="w-4 h-4 mr-1" />
