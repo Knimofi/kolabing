@@ -17,6 +17,7 @@ import {
 import ApplicationCard from "@/components/ApplicationCard";
 import ApplicationDetailsModal from "@/components/modals/ApplicationDetailsModal";
 import { Search } from "lucide-react";
+import { DashboardClassNames } from "@/styles/dashboard-component-styles";
 
 interface Application {
   id: string;
@@ -191,43 +192,20 @@ const CommunityMyApplications: React.FC = () => {
       <div className="container mx-auto px-6 space-y-6">
         {/* Header */}
         <div>
-          <h1
-            style={{
-              fontFamily: "'Rubik', Arial, sans-serif",
-              textTransform: "uppercase",
-              fontWeight: 700,
-              fontSize: 30,
-              color: "#232323",
-              letterSpacing: "0.03em",
-            }}
-          >
+          <h1 className="font-[700] text-[30px] uppercase text-[#232323] tracking-tight mb-2">
             APPLICATIONS SUBMITTED
           </h1>
-          <p className="text-muted-foreground">View and manage your collaboration applications</p>
+          <p className="text-[15px] text-[#999] mb-6">View and manage your collaboration applications</p>
         </div>
 
         {/* Search */}
-        <div className="relative max-w-md mb-2">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <input
-            type="text"
+        <div className="relative w-full max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#606060] pointer-events-none" />
+          <Input
             placeholder="Search applications..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              width: "100%",
-              background: "#F6F7F9",
-              border: "none",
-              outline: "none",
-              borderRadius: "8px",
-              padding: "10px 12px 10px 36px",
-              fontSize: 15,
-              color: "#232323",
-              fontFamily: "'Open Sans', Arial, sans-serif",
-              boxShadow: "0 0.5px 1.5px rgba(55,73,87,0.07)",
-              marginTop: 0,
-              marginBottom: 0,
-            }}
+            className="w-full bg-[#F5F5F5] text-[#222] border-none rounded-lg px-3 py-2.5 pl-10 focus:outline-none focus:border focus:border-[#E8D7A0] focus:shadow-[0_0_0_3px_rgba(255,246,216,0.4)]"
           />
         </div>
 

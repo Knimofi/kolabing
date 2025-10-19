@@ -227,22 +227,22 @@ const BusinessMyApplications: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-screen" style={{ background: "#F7F8FA" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         {/* Header */}
         <div>
-          <h1 style={RUBIK_EXTRA_BOLD_TITLE}>APPLICATIONS SUBMITTED</h1>
-          <p style={OPEN_SANS_SUBTITLE}>View and manage your collaboration applications</p>
+          <h1 className="font-[700] text-[30px] uppercase text-[#232323] tracking-tight mb-2">APPLICATIONS SUBMITTED</h1>
+          <p className="text-[15px] text-[#999] mb-6">View and manage your collaboration applications</p>
         </div>
 
         {/* Search */}
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" style={{ color: "#6b6b6d" }} />
+        <div className="relative w-full max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#606060] pointer-events-none" />
           <Input
             placeholder="Search applications..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="w-full bg-[#F5F5F5] text-[#222] border-none rounded-lg px-3 py-2.5 pl-10 focus:outline-none focus:border focus:border-[#E8D7A0] focus:shadow-[0_0_0_3px_rgba(255,246,216,0.4)]"
           />
         </div>
 

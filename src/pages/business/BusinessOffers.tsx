@@ -127,37 +127,62 @@ const BusinessOffers = () => {
   const filteredOffers = activeFilter === "all" ? offers : offers.filter((offer) => offer.status === activeFilter);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ background: "#F7F8FA" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         <header className="pb-2 mb-2">
-          <h1
-            style={{
-              fontFamily: "Rubik, Arial, sans-serif",
-              textTransform: "uppercase",
-              fontWeight: 800,
-              color: "#1A1A1A",
-              fontSize: 26,
-              letterSpacing: "0.03em",
-              margin: 0,
-            }}
-          >
+          <h1 className="font-[700] text-[30px] uppercase text-[#232323] tracking-tight mb-2">
             My Collab Requests
           </h1>
-          <p
-            style={{
-              fontFamily: "Open Sans, Arial, sans-serif",
-              fontWeight: 400,
-              fontSize: 15,
-              color: "#4A4A4A",
-              letterSpacing: 0,
-              textTransform: "none",
-              margin: "0 0 0.5em 0",
-            }}
-          >
+          <p className="text-[15px] text-[#999] mb-6">
             Create and manage your collaboration opportunities
           </p>
           <Button
-            onClick={() => navigate("/business/opportunities/new")}
+            onClick={() => navigate("/business/offers/new")}
+            style={{
+              background: "#FFD861",
+              color: "#fff",
+              fontWeight: 700,
+              borderRadius: "8px",
+              boxShadow: "0 1.5px 4px 0 rgba(55, 73, 87, 0.11)",
+              border: "none",
+            }}
+            size="lg"
+          >
+            <Plus className="w-5 h-5 mr-2" />
+            CREATE COLLAB REQUEST
+          </Button>
+        </header>
+        <div className="flex gap-2 flex-wrap mb-4">
+          {["all", "draft", "published", "closed", "completed"].map((filter) => (
+            <Button
+              key={filter}
+              variant={activeFilter === filter ? "primary" : "outline"}
+              size="sm"
+              onClick={() => setActiveFilter(filter)}
+            >
+              {filter === "all" ? "ALL OFFERS" : filter.toUpperCase()} (
+              {filter === "all" ? offers.length : offers.filter((o) => o.status === filter).length})
+            </Button>
+          ))}
+        </div>
+
+        {filteredOffers.length === 0 ? (
+          <Card className="bg-white border border-[#EBEBEB] rounded-[14px] shadow-[0_1.5px_8px_0_rgba(55,73,87,0.10),0.5px_0.5px_1.5px_rgba(55,73,87,0.13)] p-12 text-center text-[#606060]">
+            <CardContent className="py-16 text-center">
+              <p className="font-bold text-lg text-[#232323] mb-4">
+                No opportunities found
+              </p>
+              <Button
+                onClick={() => navigate("/business/opportunities/new")}
+                className="mt-4"
+                size="lg"
+                variant="primary"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Create Collab Request
+              </Button>
+            </CardContent>
+          </Card>
             size="lg"
             style={{
               ...EXTERNAL_BUTTON_FONT,

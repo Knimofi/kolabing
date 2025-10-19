@@ -187,33 +187,14 @@ const BusinessCollaborations = () => {
     return matchesSearch && matchesFilter;
   });
 
-  const RUBIK_EXTRA_BOLD_TITLE = {
-    fontFamily: "'Rubik', Arial, sans-serif",
-    textTransform: "uppercase" as const,
-    fontWeight: 700,
-    color: "#2b2b2d",
-    fontSize: 30,
-    letterSpacing: "0.03em",
-    margin: 0,
-  };
-  const OPEN_SANS_SUBTITLE = {
-    fontFamily: "'Open Sans', Arial, sans-serif",
-    fontWeight: 400,
-    fontSize: 15,
-    color: "#5a5a5c",
-    letterSpacing: 0,
-    textTransform: "none" as const,
-    margin: 0,
-  };
-
   return (
-    <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-screen" style={{ background: "#F7F8FA" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         <header>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 style={RUBIK_EXTRA_BOLD_TITLE}>MY COLLABORATIONS</h1>
-              <p style={OPEN_SANS_SUBTITLE}>View and manage your active collaborations</p>
+              <h1 className="font-[700] text-[30px] uppercase text-[#232323] tracking-tight mb-2">MY COLLABORATIONS</h1>
+              <p className="text-[15px] text-[#999] mb-6">View and manage your active collaborations</p>
             </div>
           </div>
         </header>
@@ -226,7 +207,7 @@ const BusinessCollaborations = () => {
         {["all", "scheduled", "active", "completed", "cancelled"].map((filter) => (
           <Button
             key={filter}
-            variant={activeFilter === filter ? "default" : "outline"}
+            variant={activeFilter === filter ? "primary" : "outline"}
             size="sm"
             onClick={() => setActiveFilter(filter as any)}
           >
@@ -237,22 +218,22 @@ const BusinessCollaborations = () => {
       </div>
 
       {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" style={{ color: "#6b6b6d" }} />
+      <div className="relative w-full max-w-md">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#606060] pointer-events-none" />
         <Input
           placeholder="Search collaborations by offer title or community name..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
+          className="w-full bg-[#F5F5F5] text-[#222] border-none rounded-lg px-3 py-2.5 pl-10 focus:outline-none focus:border focus:border-[#E8D7A0] focus:shadow-[0_0_0_3px_rgba(255,246,216,0.4)]"
         />
       </div>
 
         {/* Collaborations Grid */}
         {filteredCollaborations.length === 0 ? (
-          <Card style={{ background: "#FFF6D8", borderRadius: "18px", border: "1.5px solid #F9E9AC", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
+          <Card className="bg-white border border-[#EBEBEB] rounded-[14px] shadow-[0_1.5px_8px_0_rgba(55,73,87,0.10),0.5px_0.5px_1.5px_rgba(55,73,87,0.13)] p-12 text-center text-[#606060]">
             <CardContent className="py-16 text-center">
-              <p className="text-lg font-semibold" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#2b2b2d" }}>No collaborations found</p>
-              <p className="mt-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
+              <p className="text-lg font-bold text-[#232323]">No collaborations found</p>
+              <p className="mt-2 text-[#606060]">
                 {searchTerm ? "Try adjusting your search terms." : "Your active collaborations will appear here."}
               </p>
             </CardContent>

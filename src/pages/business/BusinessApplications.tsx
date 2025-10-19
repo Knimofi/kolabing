@@ -222,40 +222,21 @@ const BusinessApplications = () => {
     );
   }
 
-  const RUBIK_EXTRA_BOLD_TITLE = {
-    fontFamily: "'Rubik', Arial, sans-serif",
-    textTransform: "uppercase" as const,
-    fontWeight: 700,
-    color: "#2b2b2d",
-    fontSize: 30,
-    letterSpacing: "0.03em",
-    margin: 0,
-  };
-  const OPEN_SANS_SUBTITLE = {
-    fontFamily: "'Open Sans', Arial, sans-serif",
-    fontWeight: 400,
-    fontSize: 15,
-    color: "#5a5a5c",
-    letterSpacing: 0,
-    textTransform: "none" as const,
-    margin: 0,
-  };
-
   return (
-    <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-screen" style={{ background: "#F7F8FA" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         <div>
-          <h1 style={RUBIK_EXTRA_BOLD_TITLE}>APPLICATIONS RECEIVED</h1>
-          <p style={OPEN_SANS_SUBTITLE}>Review and manage applications for your collaboration opportunities</p>
+          <h1 className="font-[700] text-[30px] uppercase text-[#232323] tracking-tight mb-2">APPLICATIONS RECEIVED</h1>
+          <p className="text-[15px] text-[#999] mb-6">Review and manage applications for your collaboration opportunities</p>
         </div>
 
         {Object.keys(applicationsByOpportunity).length === 0 ? (
-          <Card style={{ background: "#FFF6D8", borderRadius: "18px", border: "1.5px solid #F9E9AC", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
+          <Card className="bg-white border border-[#EBEBEB] rounded-[14px] shadow-[0_1.5px_8px_0_rgba(55,73,87,0.10),0.5px_0.5px_1.5px_rgba(55,73,87,0.13)] p-12 text-center text-[#606060]">
             <CardContent className="py-16">
               <div className="text-center">
-                <MessageSquare className="w-12 h-12 mx-auto mb-4" style={{ color: "#FFD861" }} />
-                <h3 className="text-lg font-semibold mb-2" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#2b2b2d" }}>No pending applications</h3>
-                <p className="mb-6 max-w-md mx-auto" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
+                <MessageSquare className="w-12 h-12 mx-auto mb-4 text-[#FFD861] opacity-50" />
+                <h3 className="text-lg font-bold mb-2 text-[#232323]">No pending applications</h3>
+                <p className="mb-6 max-w-md mx-auto text-[#606060]">
                   When communities apply to your collaboration opportunities, they'll appear here for review.
                 </p>
               </div>

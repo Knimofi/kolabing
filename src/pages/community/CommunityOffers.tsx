@@ -291,37 +291,37 @@ const CommunityOffers = () => {
       <div className="container mx-auto px-6 space-y-6">
         {/* Page Header */}
         <div>
-          <h1 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 700, fontSize: 30, color: "#232323", letterSpacing: "0.03em" }}>
+          <h1 className="font-[700] text-[30px] uppercase text-[#232323] tracking-tight mb-2">
             FIND A COLLAB
           </h1>
-        <p className="text-muted-foreground">
+        <p className="text-[15px] text-[#999] mb-6">
           Discover collaboration opportunities from businesses
         </p>
       </div>
 
       {/* Search */}
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+        <div className="relative w-full max-w-md">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#606060] pointer-events-none" />
           <Input
             placeholder="Search collabs by title, business, or keywords..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="w-full bg-[#F5F5F5] text-[#222] border-none rounded-lg px-3 py-2.5 pl-10 focus:outline-none focus:border focus:border-[#E8D7A0] focus:shadow-[0_0_0_3px_rgba(255,246,216,0.4)]"
           />
         </div>
       </div>
 
       {/* Offers Grid */}
       {filteredOffers.length === 0 ? (
-        <Card style={{ background: "#fff", borderRadius: "14px", border: "1px solid #EBEBEB", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)" }}>
+        <Card className="bg-white border border-[#EBEBEB] rounded-[14px] shadow-[0_1.5px_8px_0_rgba(55,73,87,0.10),0.5px_0.5px_1.5px_rgba(55,73,87,0.13)] p-12 text-center text-[#606060]">
           <CardContent className="py-16">
             <div className="text-center">
-              <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">
+              <Search className="w-12 h-12 mx-auto mb-4 text-[#FFD861] opacity-50" />
+              <h3 className="text-lg font-bold text-[#232323] mb-2">
                 {offers.length === 0 ? 'No collabs available yet' : 'No matching collabs found'}
               </h3>
-              <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+              <p className="text-[#606060] mb-6 max-w-md mx-auto">
                 {offers.length === 0 
                   ? 'New collabs will appear here. Check back soon!'
                   : 'Try adjusting your search terms.'

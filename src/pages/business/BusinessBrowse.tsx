@@ -9,26 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import OfferCard from "@/components/OfferCard";
 import OfferDetailsModal from "@/components/modals/OfferDetailsModal";
 import ApplyOfferModal from "@/components/modals/ApplyOfferModal";
-
-const RUBIK_BOLD_TITLE = {
-  fontFamily: "'Rubik', Arial, sans-serif",
-  textTransform: "uppercase" as const,
-  fontWeight: 700,
-  color: "#2b2b2d",
-  fontSize: 30,
-  letterSpacing: "0.03em",
-  margin: "0 0 8px 0",
-};
-
-const OPEN_SANS_SUBTITLE = {
-  fontFamily: "'Open Sans', Arial, sans-serif",
-  fontWeight: 400,
-  fontSize: 15,
-  color: "#5a5a5c",
-  letterSpacing: 0,
-  textTransform: "none" as const,
-  margin: 0,
-};
+import { DashboardClassNames } from "@/styles/dashboard-component-styles";
 
 const BusinessBrowse = () => {
   const { profile } = useAuth();
@@ -40,7 +21,6 @@ const BusinessBrowse = () => {
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [isSubmittingApplication, setIsSubmittingApplication] = useState(false);
-  const [inputState, setInputState] = useState<"normal" | "hover" | "focus">("normal");
 
   useEffect(() => {
     fetchOffers();
@@ -197,17 +177,6 @@ const BusinessBrowse = () => {
     return matchesSearch;
   });
 
-  let borderColor = "#ECECEC";
-  let borderWidth = "1.5px";
-  if (inputState === "hover") {
-    borderColor = "#CCCCCC";
-    borderWidth = "1.5px";
-  }
-  if (inputState === "focus") {
-    borderColor = "#BBBBBB";
-    borderWidth = "2px";
-  }
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-48">
@@ -217,62 +186,36 @@ const BusinessBrowse = () => {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "#FFF" }}>
+    <div className="min-h-screen" style={{ background: "#F7F8FA" }}>
       <div className="max-w-6xl mx-auto py-10 px-4 space-y-8">
         {/* Header */}
         <div>
-          <h1 style={RUBIK_BOLD_TITLE}>FIND A COLLAB</h1>
-          <p style={OPEN_SANS_SUBTITLE}>Discover collaboration opportunities from communities</p>
+          <h1 className={DashboardClassNames.pageTitle}>FIND A COLLAB</h1>
+          <p className={DashboardClassNames.pageSubtitle}>Discover collaboration opportunities from communities</p>
         </div>
         {/* Search */}
         <div className="my-4">
-          <div className="relative flex-1 w-full max-w-2xl">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" style={{ color: "#6b6b6d" }} />
+          <div className={DashboardClassNames.searchContainer}>
+            <Search className={DashboardClassNames.searchIcon} />
             <Input
               placeholder="Search collabs by title, community, or keywords..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-11 py-2 text-base focus:ring-0 focus:outline-none"
-              style={{
-                borderRadius: "7px",
-                border: `${borderWidth} solid ${borderColor}`,
-                fontFamily: "'Open Sans', Arial, sans-serif",
-                background: "#FAFAFB",
-                boxShadow: "none",
-                outline: "none",
-                transition: "border-color 0.13s, border-width 0.13s",
-              }}
-              onFocus={() => setInputState("focus")}
-              onBlur={() => setInputState("normal")}
-              onMouseEnter={() => inputState !== "focus" && setInputState("hover")}
-              onMouseLeave={() => inputState !== "focus" && setInputState("normal")}
+              className={DashboardClassNames.searchInput}
             />
           </div>
         </div>
         {/* Offers grid */}
         {filteredOffers.length === 0 ? (
-          <Card
-            style={{
-              background: "#FFFBF0",
-              borderRadius: "12px",
-              border: "1px solid #E5E7EB",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
-            }}
-          >
+          <Card className={DashboardClassNames.emptyStateCard}>
             <CardContent className="py-16 text-center">
-              <Search className="w-12 h-12 mx-auto mb-4" style={{ color: "#FFD861" }} />
-              <h3
-                className="text-lg font-semibold mb-2"
-                style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#2b2b2d" }}
-              >
+              <Search className="w-12 h-12 mx-auto mb-4 text-[#FFD861] opacity-50" />
+              <h3 className="text-lg font-bold mb-2 text-[#232323]">
                 {offers.length === 0
                   ? "No community collab requests available yet"
                   : "No matching collab requests found"}
               </h3>
-              <p
-                className="mb-6 max-w-md mx-auto"
-                style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}
-              >
+              <p className="mb-6 max-w-md mx-auto text-[#606060]">
                 {offers.length === 0
                   ? "New collab requests will appear here soon."
                   : "Try adjusting your search terms."}

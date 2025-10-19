@@ -160,19 +160,10 @@ const CommunityMyOpportunities = () => {
       <div className="container mx-auto px-6 space-y-6">
         <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1
-              style={{
-                fontFamily: "'Rubik', Arial, sans-serif",
-                textTransform: "uppercase" as const,
-                fontWeight: 700,
-                fontSize: 30,
-                color: "#000",
-                letterSpacing: "0.03em",
-              }}
-            >
+            <h1 className="font-[700] text-[30px] uppercase text-[#232323] tracking-tight mb-2">
               MY COLLAB REQUESTS
             </h1>
-            <p className="text-muted-foreground">Create and manage your collaboration opportunities</p>
+            <p className="text-[15px] text-[#999] mb-6">Create and manage your collaboration opportunities</p>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -194,31 +185,17 @@ const CommunityMyOpportunities = () => {
         </header>
 
         <div className="flex gap-2 flex-wrap">
-          {["all", "draft", "published"].map((filter) => {
-            const isActive = activeFilter === filter;
-            return (
-              <Button
-                key={filter}
-                variant={isActive ? "default" : "outline"}
-                size="sm"
-                onClick={() => setActiveFilter(filter as any)}
-                style={
-                  isActive
-                    ? undefined
-                    : {
-                        background: "#f5f5f5",
-                        borderColor: "#c3c3c3",
-                        color: "#636363",
-                        fontWeight: 700,
-                        borderRadius: "9px",
-                      }
-                }
-              >
-                {filter === "all" ? "All my collab requests" : filter.charAt(0).toUpperCase() + filter.slice(1)} (
-                {filter === "all" ? offers.length : offers.filter((o) => o.status === filter).length})
-              </Button>
-            );
-          })}
+          {["all", "draft", "published"].map((filter) => (
+            <Button
+              key={filter}
+              variant={activeFilter === filter ? "primary" : "outline"}
+              size="sm"
+              onClick={() => setActiveFilter(filter as any)}
+            >
+              {filter === "all" ? "All my collab requests" : filter.charAt(0).toUpperCase() + filter.slice(1)} (
+              {filter === "all" ? offers.length : offers.filter((o) => o.status === filter).length})
+            </Button>
+          ))}
         </div>
 
         <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
