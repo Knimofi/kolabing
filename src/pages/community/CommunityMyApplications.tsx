@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import React, { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,16 +13,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import ApplicationCard from '@/components/ApplicationCard';
-import ApplicationDetailsModal from '@/components/modals/ApplicationDetailsModal';
-import { Search } from 'lucide-react';
+} from "@/components/ui/alert-dialog";
+import ApplicationCard from "@/components/ApplicationCard";
+import ApplicationDetailsModal from "@/components/modals/ApplicationDetailsModal";
+import { Search } from "lucide-react";
 
 interface Application {
   id: string;
   message: string;
   availability: string;
-  status: 'pending' | 'accepted' | 'declined' | 'withdrawn';
+  status: "pending" | "accepted" | "declined" | "withdrawn";
   created_at: string;
   collab_opportunities: {
     id: string;
@@ -46,7 +46,7 @@ interface Application {
 const CommunityMyApplications: React.FC = () => {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [showWithdrawDialog, setShowWithdrawDialog] = useState(false);
@@ -59,101 +59,59 @@ const CommunityMyApplications: React.FC = () => {
     if (profile) {
       fetchApplications();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
-const fetchApplications = async () => {
-  try {
-    setLoading(true);
-    
-    const { data, error } = await supabase
-      .from('applications')
-      .select(`
-        id,
-        message,
-        availability,
-        status,
-        created_at,
-        collab_opportunities!inner (
-          id,
-          title,
-          description,
-          categories,
-          address,
-          timeline_days,
-          offer_photo,
-          creator_profile_id
-        )
-      `)
-      .eq('applicant_profile_id', profile?.id)
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    
-    // Fetch creator profiles for each opportunity
-    const applicationsWithProfiles = await Promise.all(
-      (data || []).map(async (app) => {
-        const { data: creatorProfile } = await supabase
-          .from('business_profiles')
-          .select('name, business_type, city, profile_photo, website, instagram')
-          .eq('profile_id', app.collab_opportunities.creator_profile_id)
-          .single();
-        
-        return {
-          ...app,
-          collab_opportunities: {
-            ...app.collab_opportunities,
-            business_profiles: creatorProfile
-          }
-        };
-      })
-    );
-    
-    setApplications(applicationsWithProfiles as Application[]);
-  } catch (error) {
-    console.error('Error fetching applications:', error);
-    toast({
-      title: "Error",
-      description: "Failed to fetch your applications. Please try again.",
-      variant: "destructive",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
-  /*
   const fetchApplications = async () => {
     try {
       setLoading(true);
-      
+
       const { data, error } = await supabase
-        .from('applications')
-        .select(`
-          *,
-          offers (
+        .from("applications")
+        .select(
+          `
+          id,
+          message,
+          availability,
+          status,
+          created_at,
+          collab_opportunities!inner (
             id,
             title,
             description,
             categories,
             address,
             timeline_days,
-            business_profiles (
-              name,
-              business_type,
-              city,
-              profile_photo,
-              website,
-              instagram
-            )
+            offer_photo,
+            creator_profile_id
           )
-        `)
-        .eq('community_profile_id', profile?.id)
-        .order('created_at', { ascending: false });
+        `,
+        )
+        .eq("applicant_profile_id", profile?.id)
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
-      
-      setApplications(data as Application[]);
+
+      const applicationsWithProfiles = await Promise.all(
+        (data || []).map(async (app) => {
+          const { data: creatorProfile } = await supabase
+            .from("business_profiles")
+            .select("name, business_type, city, profile_photo, website, instagram")
+            .eq("profile_id", app.collab_opportunities.creator_profile_id)
+            .single();
+
+          return {
+            ...app,
+            collab_opportunities: {
+              ...app.collab_opportunities,
+              business_profiles: creatorProfile,
+            },
+          };
+        }),
+      );
+      setApplications(applicationsWithProfiles as Application[]);
     } catch (error) {
-      console.error('Error fetching applications:', error);
+      console.error("Error fetching applications:", error);
       toast({
         title: "Error",
         description: "Failed to fetch your applications. Please try again.",
@@ -163,7 +121,7 @@ const fetchApplications = async () => {
       setLoading(false);
     }
   };
-*/
+
   const handleViewApplication = (application: Application) => {
     setSelectedApplication(application);
     setShowDetailsModal(true);
@@ -179,11 +137,8 @@ const fetchApplications = async () => {
 
     try {
       setWithdrawingId(selectedApplication.id);
-      
-      const { error } = await supabase
-        .from('applications')
-        .delete()
-        .eq('id', selectedApplication.id);
+
+      const { error } = await supabase.from("applications").delete().eq("id", selectedApplication.id);
 
       if (error) throw error;
 
@@ -192,10 +147,9 @@ const fetchApplications = async () => {
         description: "Application withdrawn successfully.",
       });
 
-      // Refresh applications list
       await fetchApplications();
     } catch (error) {
-      console.error('Error withdrawing application:', error);
+      console.error("Error withdrawing application:", error);
       toast({
         title: "Error",
         description: "Failed to withdraw application. Please try again.",
@@ -208,24 +162,16 @@ const fetchApplications = async () => {
     }
   };
 
-  // Filter applications based on search term
+  const filteredApplications = applications.filter((application) => {
+    if (!application.collab_opportunities || !application.collab_opportunities.business_profiles) return false;
 
-  const filteredApplications = applications.filter(application => {
-  if (!application.collab_opportunities || !application.collab_opportunities.business_profiles) return false;
-  
-  const title = application.collab_opportunities.title || '';
-  const businessName = application.collab_opportunities.business_profiles.name || '';
-  
-  return title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-         businessName.toLowerCase().includes(searchTerm.toLowerCase());
-});
-
-  /*
-  const filteredApplications = applications.filter(application => 
-    application.collab_opportunities.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    application.collab_opportunities.business_profiles.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  */
+    const title = application.collab_opportunities.title || "";
+    const businessName = application.collab_opportunities.business_profiles.name || "";
+    return (
+      title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      businessName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   if (loading) {
     return (
@@ -245,82 +191,114 @@ const fetchApplications = async () => {
       <div className="container mx-auto px-6 space-y-6">
         {/* Header */}
         <div>
-          <h1 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 700, fontSize: 30, color: "#232323", letterSpacing: "0.03em" }}>APPLICATIONS SUBMITTED</h1>
-        <p className="text-muted-foreground">
-          View and manage your collaboration applications
-        </p>
-      </div>
+          <h1
+            style={{
+              fontFamily: "'Rubik', Arial, sans-serif",
+              textTransform: "uppercase",
+              fontWeight: 700,
+              fontSize: 30,
+              color: "#232323",
+              letterSpacing: "0.03em",
+            }}
+          >
+            APPLICATIONS SUBMITTED
+          </h1>
+          <p className="text-muted-foreground">View and manage your collaboration applications</p>
+        </div>
 
-      {/* Search */}
-      <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-        <Input
-          placeholder="Search applications..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
-        />
-      </div>
+        {/* Search */}
+        <div className="relative max-w-md mb-2">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <input
+            type="text"
+            placeholder="Search applications..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              width: "100%",
+              background: "#F6F7F9",
+              border: "none",
+              outline: "none",
+              borderRadius: "8px",
+              padding: "10px 12px 10px 36px",
+              fontSize: 15,
+              color: "#232323",
+              fontFamily: "'Open Sans', Arial, sans-serif",
+              boxShadow: "0 0.5px 1.5px rgba(55,73,87,0.07)",
+              marginTop: 0,
+              marginBottom: 0,
+            }}
+          />
+        </div>
 
-      {/* Applications Grid */}
-      {filteredApplications.length === 0 ? (
-        <div style={{ background: "#fff", borderRadius: "14px", border: "1px solid #EBEBEB", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)", padding: "3rem", textAlign: "center" }}>
-          <div className="text-muted-foreground">
-            {applications.length === 0 ? (
-              <div>
-                <h3 className="text-lg font-medium mb-2">No applications yet</h3>
-                <p>You haven't applied to any opportunities yet. Browse opportunities to get started!</p>
-              </div>
-            ) : (
-              <div>
-                <h3 className="text-lg font-medium mb-2">No matching applications</h3>
-                <p>Try adjusting your search terms.</p>
-              </div>
-            )}
+        {/* Applications Grid */}
+        {filteredApplications.length === 0 ? (
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: "14px",
+              border: "1px solid #EBEBEB",
+              boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)",
+              padding: "3rem",
+              textAlign: "center",
+            }}
+          >
+            <div className="text-muted-foreground">
+              {applications.length === 0 ? (
+                <div>
+                  <h3 className="text-lg font-medium mb-2">No applications yet</h3>
+                  <p>You haven't applied to any opportunities yet. Browse opportunities to get started!</p>
+                </div>
+              ) : (
+                <div>
+                  <h3 className="text-lg font-medium mb-2">No matching applications</h3>
+                  <p>Try adjusting your search terms.</p>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredApplications.map((application) => (
-            <ApplicationCard
-              key={application.id}
-              application={application}
-              onView={() => handleViewApplication(application)}
-              onWithdraw={() => handleWithdrawApplication(application)}
-            />
-          ))}
-        </div>
-      )}
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredApplications.map((application) => (
+              <ApplicationCard
+                key={application.id}
+                application={application}
+                onView={() => handleViewApplication(application)}
+                onWithdraw={() => handleWithdrawApplication(application)}
+              />
+            ))}
+          </div>
+        )}
 
-      {/* Application Details Modal */}
-      <ApplicationDetailsModal
-        open={showDetailsModal}
-        onOpenChange={setShowDetailsModal}
-        application={selectedApplication}
-      />
+        {/* Application Details Modal */}
+        <ApplicationDetailsModal
+          open={showDetailsModal}
+          onOpenChange={setShowDetailsModal}
+          application={selectedApplication}
+        />
 
-      {/* Withdraw Confirmation Dialog */}
-      <AlertDialog open={showWithdrawDialog} onOpenChange={setShowWithdrawDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Withdraw Application</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to withdraw your application for "{selectedApplication?.collab_opportunities.title}"? 
-              This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={confirmWithdraw}
-              disabled={withdrawingId !== null}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {withdrawingId === selectedApplication?.id ? 'Withdrawing...' : 'Withdraw'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        {/* Withdraw Confirmation Dialog */}
+        <AlertDialog open={showWithdrawDialog} onOpenChange={setShowWithdrawDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Withdraw Application</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to withdraw your application for "
+                {selectedApplication?.collab_opportunities.title}"? This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={confirmWithdraw}
+                disabled={withdrawingId !== null}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {withdrawingId === selectedApplication?.id ? "Withdrawing..." : "Withdraw"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
