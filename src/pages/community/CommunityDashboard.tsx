@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Search, FileText, Users, TrendingUp, Clock } from "lucide-react";
 import ProfileSetupAlert from "@/components/ProfileSetupAlert";
-import CollaborationCalendar from "@/components/CollaborationCalendar"; // <-- calendar import
+import CollaborationCalendar from "@/components/CollaborationCalendar";
 
 const RUBIK_BOLD = {
   fontFamily: "'Rubik', Arial, sans-serif",
@@ -58,10 +58,10 @@ const CommunityDashboard = () => {
                   fontWeight: 700,
                   borderRadius: "8px",
                   boxShadow: "0 1.5px 4px 0 rgba(55, 73, 87, 0.11)",
-                  border: "none"
+                  border: "none",
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
-                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-2px)")}
+                onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
               >
                 <Search className="w-5 h-5 mr-2" />
                 BROWSE OPPORTUNITIES
@@ -73,7 +73,7 @@ const CommunityDashboard = () => {
         {/* Profile Setup Alert */}
         <ProfileSetupAlert />
 
-        {/* Collaboration Calendar (NEW) */}
+        {/* Collaboration Calendar */}
         <CollaborationCalendar userType="community" />
 
         {/* Stats Grid */}
@@ -85,7 +85,12 @@ const CommunityDashboard = () => {
               value: 0,
               desc: "Total applications sent",
             },
-            { title: "PENDING", icon: <Clock className="h-5 w-5" style={{ color: "#2b2b2d" }} />, value: 0, desc: "Awaiting response" },
+            {
+              title: "PENDING",
+              icon: <Clock className="h-5 w-5" style={{ color: "#2b2b2d" }} />,
+              value: 0,
+              desc: "Awaiting response",
+            },
             {
               title: "ACCEPTED",
               icon: <TrendingUp className="h-5 w-5" style={{ color: "#2b2b2d" }} />,
@@ -99,28 +104,46 @@ const CommunityDashboard = () => {
               desc: "Active partnerships",
             },
           ].map(({ title, icon, value, desc }, idx) => (
-            <Card 
-              key={idx} 
-              style={{ 
-                background: "#fff", 
-                border: "1px solid #EBEBEB", 
-                borderRadius: "14px", 
-                boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)", 
-                transition: "all 0.2s ease" 
+            <Card
+              key={idx}
+              style={{
+                background: "#fff",
+                border: "1px solid #EBEBEB",
+                borderRadius: "14px",
+                boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)",
+                transition: "all 0.2s ease",
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.02)"; e.currentTarget.style.boxShadow = "0 4px 16px 0 rgba(55, 73, 87, 0.15), 1px 1px 3px rgba(55,73,87,0.18)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)"; }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "scale(1.02)";
+                e.currentTarget.style.boxShadow =
+                  "0 4px 16px 0 rgba(55, 73, 87, 0.15), 1px 1px 3px rgba(55,73,87,0.18)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1)";
+                e.currentTarget.style.boxShadow =
+                  "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)";
+              }}
             >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "13px", letterSpacing: "0.08em", color: "#2b2b2d" }}>
+                <CardTitle
+                  style={{
+                    fontFamily: "'Rubik', Arial, sans-serif",
+                    textTransform: "uppercase",
+                    fontWeight: 600,
+                    fontSize: "13px",
+                    letterSpacing: "0.08em",
+                    color: "#2b2b2d",
+                  }}
+                >
                   {title}
                 </CardTitle>
-                <div style={{ background: "#FFD861", borderRadius: "50%", padding: "8px" }}>
-                  {icon}
-                </div>
+                <div style={{ background: "#FFD861", borderRadius: "50%", padding: "8px" }}>{icon}</div>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-extrabold mb-1" style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#2b2b2d" }}>
+                <div
+                  className="text-3xl font-extrabold mb-1"
+                  style={{ fontFamily: "'Rubik', Arial, sans-serif", color: "#2b2b2d" }}
+                >
                   {String(value)}
                 </div>
                 <p className="text-xs" style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
@@ -133,9 +156,24 @@ const CommunityDashboard = () => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card style={{ background: "#fff", border: "1px solid #EBEBEB", borderRadius: "14px", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)" }}>
+          <Card
+            style={{
+              background: "#fff",
+              border: "1px solid #EBEBEB",
+              borderRadius: "14px",
+              boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)",
+            }}
+          >
             <CardHeader>
-              <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#2b2b2d" }}>
+              <CardTitle
+                style={{
+                  fontFamily: "'Rubik', Arial, sans-serif",
+                  textTransform: "uppercase",
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  color: "#2b2b2d",
+                }}
+              >
                 GETTING STARTED
               </CardTitle>
               <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
@@ -155,7 +193,7 @@ const CommunityDashboard = () => {
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: "16px",
-                    fontWeight: 700
+                    fontWeight: 700,
                   }}
                 >
                   ✓
@@ -164,8 +202,8 @@ const CommunityDashboard = () => {
                   Set up your community profile
                 </span>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
+              <div>
+                <div className="flex items-center space-x-3 mb-3">
                   <div
                     style={{
                       width: "32px",
@@ -177,7 +215,7 @@ const CommunityDashboard = () => {
                       alignItems: "center",
                       justifyContent: "center",
                       fontSize: "16px",
-                      fontWeight: 700
+                      fontWeight: 700,
                     }}
                   >
                     2
@@ -186,23 +224,25 @@ const CommunityDashboard = () => {
                     Browse available opportunities
                   </span>
                 </div>
-                <Link to="/community/opportunities">
-                  <Button
-                    size="sm"
-                    style={{
-                      background: "#FFD861",
-                      color: "#fff",
-                      fontWeight: 700,
-                      borderRadius: "8px",
-                      boxShadow: "0 1.5px 4px 0 rgba(55, 73, 87, 0.11)",
-                      border: "none"
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-1px)"}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-                  >
-                    BROWSE OPPORTUNITIES
-                  </Button>
-                </Link>
+                <div className="pt-1 flex justify-start">
+                  <Link to="/community/opportunities">
+                    <Button
+                      size="sm"
+                      style={{
+                        background: "#FFD861",
+                        color: "#fff",
+                        fontWeight: 700,
+                        borderRadius: "8px",
+                        boxShadow: "0 1.5px 4px 0 rgba(55, 73, 87, 0.11)",
+                        border: "none",
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-1px)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
+                    >
+                      BROWSE OPPORTUNITIES
+                    </Button>
+                  </Link>
+                </div>
               </div>
               <div className="flex items-center space-x-3">
                 <div
@@ -216,22 +256,39 @@ const CommunityDashboard = () => {
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: "16px",
-                    fontWeight: 700
+                    fontWeight: 700,
                   }}
                 >
                   3
                 </div>
-                  <span style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "15px", color: "#2b2b2d" }}>
-                    Submit your first application
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
+                <span style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "15px", color: "#2b2b2d" }}>
+                  Submit your first application
+                </span>
+              </div>
+            </CardContent>
+          </Card>
 
-            <Card style={{ background: "#fff", border: "1px solid #EBEBEB", borderRadius: "14px", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)" }}>
-              <CardHeader>
-                <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#232323" }}>RECENT OFFERS</CardTitle>
-                <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
+          <Card
+            style={{
+              background: "#fff",
+              border: "1px solid #EBEBEB",
+              borderRadius: "14px",
+              boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)",
+            }}
+          >
+            <CardHeader>
+              <CardTitle
+                style={{
+                  fontFamily: "'Rubik', Arial, sans-serif",
+                  textTransform: "uppercase",
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  color: "#232323",
+                }}
+              >
+                RECENT OFFERS
+              </CardTitle>
+              <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
                 Latest collaboration opportunities
               </CardDescription>
             </CardHeader>
@@ -241,18 +298,41 @@ const CommunityDashboard = () => {
                 <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "15px", color: "#2b2b2d" }}>
                   No offers available yet
                 </p>
-                <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "13px", color: "#6b6b6d", marginTop: "8px" }}>
+                <p
+                  style={{
+                    fontFamily: "'Open Sans', Arial, sans-serif",
+                    fontSize: "13px",
+                    color: "#6b6b6d",
+                    marginTop: "8px",
+                  }}
+                >
                   Check back soon for new opportunities
                 </p>
               </div>
             </CardContent>
           </Card>
         </div>
-
         {/* Tips */}
-        <Card style={{ background: "#fff", border: "1px solid #EBEBEB", borderRadius: "14px", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)" }}>
+        <Card
+          style={{
+            background: "#fff",
+            border: "1px solid #EBEBEB",
+            borderRadius: "14px",
+            boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)",
+          }}
+        >
           <CardHeader>
-            <CardTitle style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "16px", color: "#232323" }}>TIPS FOR SUCCESS</CardTitle>
+            <CardTitle
+              style={{
+                fontFamily: "'Rubik', Arial, sans-serif",
+                textTransform: "uppercase",
+                fontWeight: 600,
+                fontSize: "16px",
+                color: "#232323",
+              }}
+            >
+              TIPS FOR SUCCESS
+            </CardTitle>
             <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
               Maximize your collaboration potential
             </CardDescription>
@@ -260,7 +340,16 @@ const CommunityDashboard = () => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div style={{ padding: "16px", background: "#FFF9E6", borderRadius: "8px" }}>
-                <h4 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "14px", color: "#2b2b2d", marginBottom: "8px" }}>
+                <h4
+                  style={{
+                    fontFamily: "'Rubik', Arial, sans-serif",
+                    textTransform: "uppercase",
+                    fontWeight: 600,
+                    fontSize: "14px",
+                    color: "#2b2b2d",
+                    marginBottom: "8px",
+                  }}
+                >
                   COMPLETE YOUR PROFILE
                 </h4>
                 <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "14px", color: "#5a5a5c" }}>
@@ -268,7 +357,16 @@ const CommunityDashboard = () => {
                 </p>
               </div>
               <div style={{ padding: "16px", background: "#FFF9E6", borderRadius: "8px" }}>
-                <h4 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "14px", color: "#2b2b2d", marginBottom: "8px" }}>
+                <h4
+                  style={{
+                    fontFamily: "'Rubik', Arial, sans-serif",
+                    textTransform: "uppercase",
+                    fontWeight: 600,
+                    fontSize: "14px",
+                    color: "#2b2b2d",
+                    marginBottom: "8px",
+                  }}
+                >
                   WRITE COMPELLING APPLICATIONS
                 </h4>
                 <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "14px", color: "#5a5a5c" }}>
@@ -276,7 +374,16 @@ const CommunityDashboard = () => {
                 </p>
               </div>
               <div style={{ padding: "16px", background: "#FFF9E6", borderRadius: "8px" }}>
-                <h4 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 600, fontSize: "14px", color: "#2b2b2d", marginBottom: "8px" }}>
+                <h4
+                  style={{
+                    fontFamily: "'Rubik', Arial, sans-serif",
+                    textTransform: "uppercase",
+                    fontWeight: 600,
+                    fontSize: "14px",
+                    color: "#2b2b2d",
+                    marginBottom: "8px",
+                  }}
+                >
                   BUILD YOUR REPUTATION
                 </h4>
                 <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: "14px", color: "#5a5a5c" }}>
