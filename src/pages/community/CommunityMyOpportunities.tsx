@@ -9,6 +9,21 @@ import OfferCard from "@/components/OfferCard";
 import OfferDetailsModal from "@/components/modals/OfferDetailsModal";
 import { Plus, Eye, Edit, Send, ArrowLeft, Trash2, Copy } from "lucide-react";
 
+const greyButtonStyle = {
+  background: "#fff",
+  border: "1.5px solid #c3c3c3",
+  color: "#232323",
+  fontWeight: 500,
+  borderRadius: "9px",
+  boxShadow: "none",
+};
+
+const greyButtonDisabledStyle = {
+  ...greyButtonStyle,
+  opacity: 0.5,
+  cursor: "not-allowed",
+};
+
 const CommunityMyOpportunities = () => {
   const { profile } = useAuth();
   const { toast } = useToast();
@@ -29,7 +44,6 @@ const CommunityMyOpportunities = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Fetch community_profile for current user
       const { data: cpData, error: cpError } = await supabase
         .from("community_profiles")
         .select("*")
@@ -42,7 +56,6 @@ const CommunityMyOpportunities = () => {
 
       setCommunityProfile(cpData);
 
-      // Fetch opportunities created by this community
       const { data: offersData, error: offersError } = await supabase
         .from("collab_opportunities")
         .select("*")
@@ -51,7 +64,6 @@ const CommunityMyOpportunities = () => {
         .order("created_at", { ascending: false });
 
       if (offersError) throw offersError;
-
       setOffers(offersData || []);
     } catch (error: any) {
       toast({
@@ -198,6 +210,7 @@ const CommunityMyOpportunities = () => {
                         borderColor: "#c3c3c3",
                         color: "#636363",
                         fontWeight: 700,
+                        borderRadius: "9px",
                       }
                 }
               >
@@ -272,11 +285,11 @@ const CommunityMyOpportunities = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="flex gap-2 flex-wrap">
-                    <Button variant="outline" size="sm" onClick={() => handleViewOffer(offer)}>
+                    <Button style={greyButtonStyle} size="sm" onClick={() => handleViewOffer(offer)}>
                       <Eye className="w-4 h-4 mr-2" /> View
                     </Button>
                     <Button
-                      variant="outline"
+                      style={greyButtonStyle}
                       size="sm"
                       onClick={() => navigate(`/community/my-opportunities/${offer.id}/edit`)}
                       disabled={!["draft", "published"].includes(offer.status)}
@@ -284,20 +297,14 @@ const CommunityMyOpportunities = () => {
                       <Edit className="w-4 h-4 mr-2" /> Edit
                     </Button>
                     <Button
-                      variant="outline"
+                      style={!communityProfile ? greyButtonDisabledStyle : greyButtonStyle}
                       size="sm"
                       onClick={() => handleDuplicateOffer(offer)}
                       disabled={!communityProfile}
-                      style={{ color: "#636363", borderColor: "#c3c3c3" }}
                     >
                       <Copy className="w-4 h-4 mr-2" /> Duplicate
                     </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setOfferToDelete(offer)}
-                      style={{ color: "#636363", borderColor: "#c3c3c3" }}
-                    >
+                    <Button style={greyButtonStyle} size="sm" onClick={() => setOfferToDelete(offer)}>
                       <Trash2 className="w-4 h-4 mr-2" /> Delete
                     </Button>
                     {offer.status === "draft" && (
@@ -317,12 +324,7 @@ const CommunityMyOpportunities = () => {
                       </Button>
                     )}
                     {offer.status === "published" && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => updateOfferStatus(offer.id, "draft")}
-                        style={{ color: "#636363", borderColor: "#c3c3c3" }}
-                      >
+                      <Button style={greyButtonStyle} size="sm" onClick={() => updateOfferStatus(offer.id, "draft")}>
                         <ArrowLeft className="w-4 h-4 mr-2" /> Back to Draft
                       </Button>
                     )}
@@ -348,11 +350,7 @@ const CommunityMyOpportunities = () => {
                 <CardDescription>Are you sure you want to delete "{offerToDelete.title}"?</CardDescription>
               </CardHeader>
               <CardContent className="flex justify-end gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setOfferToDelete(null)}
-                  style={{ color: "#636363", borderColor: "#c3c3c3" }}
-                >
+                <Button style={greyButtonStyle} onClick={() => setOfferToDelete(null)}>
                   Cancel
                 </Button>
                 <Button variant="destructive" onClick={() => handleDeleteOffer(offerToDelete)}>
