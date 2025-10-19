@@ -141,52 +141,7 @@ const CollaborationCard = ({
           </div>
         </div>
 
-        {/* Info/Acceptance box with soft yellow */}
-        {collaboration.status === "scheduled" && (
-          <div
-            style={{
-              background: "#FFF6D8",
-              borderRadius: "14px",
-              boxShadow: "0 2px 10px 0 rgba(255,170,0,0.04)",
-              color: "#232323",
-              padding: "1.1rem 1rem 1rem 1.2rem",
-              margin: "1rem 0 0.2rem 0",
-              fontWeight: 500,
-              fontSize: 16,
-              display: "flex",
-              flexDirection: "column",
-              gap: "0.5rem",
-            }}
-          >
-            <span style={{ fontWeight: 700 }}>
-              <span style={{ marginRight: 6 }}>✨</span>Your collab has been accepted!
-            </span>
-            <span style={{ color: "#474954", fontWeight: 400, fontSize: 15 }}>
-              Now it's time for you to contact the business. Here's their contact information:
-            </span>
-            {/* Additional scheduled event info can go here */}
-            {collaboration.scheduled_date && (
-              <div
-                style={{
-                  background: "#181A20",
-                  color: "#FFF6D8",
-                  borderRadius: 10,
-                  padding: "8px 12px",
-                  marginTop: 8,
-                  display: "inline-block",
-                  fontSize: 15,
-                  fontWeight: 600,
-                  letterSpacing: 0.01,
-                }}
-              >
-                Scheduled For <br />
-                {format(new Date(collaboration.scheduled_date), "EEEE, MMMM d, yyyy 'at' h:mm a")}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Contact Info for Community Users */}
+        {/* Contact Info (includes acceptance box for community users) */}
         {userType === "community" && (
           <ContactInfoCard
             scheduledDate={collaboration.scheduled_date}
