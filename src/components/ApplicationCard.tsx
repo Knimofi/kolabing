@@ -70,8 +70,8 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ application, onView, 
         <CardTitle
           className="text-lg font-bold line-clamp-2"
           style={{
-            color: "#232323",
-            fontFamily: "'Rubik', Arial, sans-serif",
+            color: "#181A20",
+            fontFamily: "'Open Sans', Arial, sans-serif",
             fontWeight: 700,
             letterSpacing: "0.01em",
           }}
@@ -135,7 +135,18 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ application, onView, 
 
       <CardContent className="mt-auto">
         <div className="flex gap-2">
-          <Button variant="outline" onClick={onView} className="flex-1">
+          <Button
+            onClick={onView}
+            className="flex-1"
+            style={{
+              background: "#FFF8E1",
+              color: "#181A20",
+              fontWeight: 700,
+              borderRadius: "8px",
+              border: "none",
+              boxShadow: "0 1.5px 4px 0 rgba(55, 73, 87, 0.11)",
+            }}
+          >
             View
           </Button>
           {canWithdraw && (
