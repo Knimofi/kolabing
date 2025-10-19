@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
-import CollaborationCard from '@/components/CollaborationCard';
-import CollaborationDetailsModal from '@/components/modals/CollaborationDetailsModal';
-import SurveyModal from '@/components/modals/SurveyModal';
-import PendingFeedbackCard from '@/components/PendingFeedbackCard';
-import { Search } from 'lucide-react';
-import { DashboardClassNames } from '@/styles/dashboard-component-styles';
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import CollaborationCard from "@/components/CollaborationCard";
+import CollaborationDetailsModal from "@/components/modals/CollaborationDetailsModal";
+import SurveyModal from "@/components/modals/SurveyModal";
+import PendingFeedbackCard from "@/components/PendingFeedbackCard";
+import { Search } from "lucide-react";
+import { DashboardClassNames } from "@/styles/dashboard-component-styles";
 
 const CommunityCollaborations = () => {
   const { profile } = useAuth();
@@ -18,10 +18,10 @@ const CommunityCollaborations = () => {
 
   const [collaborations, setCollaborations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCollaboration, setSelectedCollaboration] = useState<any>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<'all' | 'scheduled' | 'active' | 'completed' | 'cancelled'>('all');
+  const [activeFilter, setActiveFilter] = useState<"all" | "scheduled" | "active" | "completed" | "cancelled">("all");
   const [pendingSurveys, setPendingSurveys] = useState<any[]>([]);
   const [showSurveyModal, setShowSurveyModal] = useState(false);
   const [currentSurvey, setCurrentSurvey] = useState<any>(null);
@@ -37,8 +37,9 @@ const CommunityCollaborations = () => {
   const fetchPendingSurveys = async () => {
     try {
       const { data: surveys, error } = await supabase
-        .from('surveys')
-        .select(`
+        .from("surveys")
+        .select(
+          `
           id,
           collaboration_id,
           submitted_at,
@@ -49,93 +50,77 @@ const CommunityCollaborations = () => {
             collab_opportunities(title),
             business_profiles(name)
           )
-        `)
-        .eq('filled_by_profile_id', profile.id)
-        .is('submitted_at', null);
+        `,
+        )
+        .eq("filled_by_profile_id", profile.id)
+        .is("submitted_at", null);
 
       if (error) throw error;
 
       const pending = (surveys || []).map((s: any) => ({
         id: s.id,
         collaboration_id: s.collaboration_id,
-        partnerName: s.collaborations?.business_profiles?.name || 'Unknown Partner',
-        offerTitle: s.collaborations?.collab_opportunities?.title || 'Untitled Offer',
+        partnerName: s.collaborations?.business_profiles?.name || "Unknown Partner",
+        offerTitle: s.collaborations?.collab_opportunities?.title || "Untitled Offer",
       }));
 
       setPendingSurveys(pending);
     } catch (error: any) {
-      console.error('Error fetching pending surveys:', error);
+      console.error("Error fetching pending surveys:", error);
     }
   };
 
   const fetchCollaborations = async () => {
     setLoading(true);
     try {
-      // 1) Fetch base collaborations without embedded joins
       const { data: baseRows, error: baseError } = await supabase
-        .from('collaborations')
+        .from("collaborations")
         .select(
-          'id,status,created_at,scheduled_date,completed_at,collab_opportunity_id,creator_profile_id,applicant_profile_id,application_id,contact_methods'
+          "id,status,created_at,scheduled_date,completed_at,collab_opportunity_id,creator_profile_id,applicant_profile_id,application_id,contact_methods",
         )
-        .eq('applicant_profile_id', profile.id)
-        .order('created_at', { ascending: false });
+        .eq("applicant_profile_id", profile.id)
+        .order("created_at", { ascending: false });
 
       if (baseError) throw baseError;
 
-      const offerIds = Array.from(
-        new Set((baseRows || []).map((r: any) => r.collab_opportunity_id).filter(Boolean))
-      );
+      const offerIds = Array.from(new Set((baseRows || []).map((r: any) => r.collab_opportunity_id).filter(Boolean)));
       const businessProfileIds = Array.from(
-        new Set((baseRows || []).map((r: any) => r.creator_profile_id).filter(Boolean))
+        new Set((baseRows || []).map((r: any) => r.creator_profile_id).filter(Boolean)),
       );
-      const applicationIds = Array.from(
-        new Set((baseRows || []).map((r: any) => r.application_id).filter(Boolean))
-      );
+      const applicationIds = Array.from(new Set((baseRows || []).map((r: any) => r.application_id).filter(Boolean)));
 
-      // 2) Fetch related entities in parallel
       const [offersRes, businessProfilesRes, applicationsRes] = await Promise.all([
         offerIds.length
           ? supabase
-              .from('collab_opportunities')
+              .from("collab_opportunities")
               .select(
-                'id,title,description,offer_photo,business_offer,community_deliverables,timeline_days,address,status'
+                "id,title,description,offer_photo,business_offer,community_deliverables,timeline_days,address,status",
               )
-              .in('id', offerIds)
+              .in("id", offerIds)
           : Promise.resolve({ data: [], error: null } as any),
         businessProfileIds.length
           ? supabase
-              .from('business_profiles')
-              .select(
-                'profile_id,name,business_type,city,profile_photo,website,instagram'
-              )
-              .in('profile_id', businessProfileIds)
+              .from("business_profiles")
+              .select("profile_id,name,business_type,city,profile_photo,website,instagram")
+              .in("profile_id", businessProfileIds)
           : Promise.resolve({ data: [], error: null } as any),
         applicationIds.length
-          ? supabase
-              .from('applications')
-              .select('id,message,availability')
-              .in('id', applicationIds)
+          ? supabase.from("applications").select("id,message,availability").in("id", applicationIds)
           : Promise.resolve({ data: [], error: null } as any),
       ]);
 
       if (offersRes.error) {
-        // Offers may fail due to RLS when offers are closed; that's OK, we'll fallback
-        console.warn('Offers fetch warning (possibly due to RLS):', offersRes.error);
+        console.warn("Offers fetch warning (possibly due to RLS):", offersRes.error);
       }
       if (businessProfilesRes.error) throw businessProfilesRes.error;
       if (applicationsRes.error) throw applicationsRes.error;
 
-      const offersMap = new Map<string, any>(
-        ((offersRes.data as any[]) || []).map((o: any) => [o.id, o])
-      );
+      const offersMap = new Map<string, any>(((offersRes.data as any[]) || []).map((o: any) => [o.id, o]));
       const businessProfilesMap = new Map<string, any>(
-        ((businessProfilesRes.data as any[]) || []).map((b: any) => [b.profile_id, b])
+        ((businessProfilesRes.data as any[]) || []).map((b: any) => [b.profile_id, b]),
       );
-      const applicationsMap = new Map<string, any>(
-        ((applicationsRes.data as any[]) || []).map((a: any) => [a.id, a])
-      );
+      const applicationsMap = new Map<string, any>(((applicationsRes.data as any[]) || []).map((a: any) => [a.id, a]));
 
-      // 3) Enrich base rows with related data and safe fallbacks
       const enriched = (baseRows || []).map((c: any) => {
         const offer = offersMap.get(c.collab_opportunity_id);
         const business = businessProfilesMap.get(c.creator_profile_id) || null;
@@ -147,32 +132,32 @@ const CommunityCollaborations = () => {
             ? {
                 ...offer,
                 offer_photo: offer.offer_photo || null,
-                title: offer.title || 'Untitled Offer',
-                description: offer.description || '',
+                title: offer.title || "Untitled Offer",
+                description: offer.description || "",
                 business_offer: offer.business_offer || null,
                 community_deliverables: offer.community_deliverables || null,
                 timeline_days: offer.timeline_days || 0,
-                address: offer.address || '',
+                address: offer.address || "",
               }
             : {
                 id: c.collab_opportunity_id,
-                title: 'Untitled Offer',
-                description: '',
+                title: "Untitled Offer",
+                description: "",
                 offer_photo: null,
                 business_offer: null,
                 community_deliverables: null,
                 timeline_days: 0,
-                address: '',
+                address: "",
               },
           business_profile: business
             ? {
                 ...business,
-                name: business.name || 'Unknown Business',
-                business_type: business.business_type || '',
-                city: business.city || '',
+                name: business.name || "Unknown Business",
+                business_type: business.business_type || "",
+                city: business.city || "",
                 profile_photo: business.profile_photo || null,
-                website: business.website || '',
-                instagram: business.instagram || '',
+                website: business.website || "",
+                instagram: business.instagram || "",
               }
             : null,
           application,
@@ -181,57 +166,55 @@ const CommunityCollaborations = () => {
 
       setCollaborations(enriched);
     } catch (error: any) {
-      console.error('Error fetching collaborations:', error);
+      console.error("Error fetching collaborations:", error);
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to load collaborations.',
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || "Failed to load collaborations.",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
   };
-  const handleStatusUpdate = async (collaborationId: string, newStatus: 'completed' | 'cancelled') => {
+
+  const handleStatusUpdate = async (collaborationId: string, newStatus: "completed" | "cancelled") => {
     try {
       const updateData: any = { status: newStatus };
-      if (newStatus === 'completed') {
+      if (newStatus === "completed") {
         updateData.completed_at = new Date().toISOString();
       }
 
-      const { error } = await supabase
-        .from('collaborations')
-        .update(updateData)
-        .eq('id', collaborationId);
+      const { error } = await supabase.from("collaborations").update(updateData).eq("id", collaborationId);
 
       if (error) throw error;
 
-      setCollaborations(collaborations.map(collaboration =>
-        collaboration.id === collaborationId
-          ? { ...collaboration, ...updateData }
-          : collaboration
-      ));
+      setCollaborations(
+        collaborations.map((collaboration) =>
+          collaboration.id === collaborationId ? { ...collaboration, ...updateData } : collaboration,
+        ),
+      );
 
       toast({
-        title: 'Success',
-        description: `Collaboration ${newStatus === 'completed' ? 'completed' : 'cancelled'} successfully`,
+        title: "Success",
+        description: `Collaboration ${newStatus === "completed" ? "completed" : "cancelled"} successfully`,
       });
 
       await fetchCollaborations();
       await fetchPendingSurveys();
     } catch (error: any) {
       toast({
-        title: 'Error',
-        description: error.message || `Failed to ${newStatus === 'completed' ? 'complete' : 'cancel'} collaboration`,
-        variant: 'destructive',
+        title: "Error",
+        description: error.message || `Failed to ${newStatus === "completed" ? "complete" : "cancel"} collaboration`,
+        variant: "destructive",
       });
     }
   };
 
   const handleOpenFeedbackModal = async (collaborationId: string) => {
-    const collab = collaborations.find(c => c.id === collaborationId);
+    const collab = collaborations.find((c) => c.id === collaborationId);
     if (!collab) return;
 
-    const partnerName = collab.business_profile?.name || 'Partner';
+    const partnerName = collab.business_profile?.name || "Partner";
     setCurrentSurvey({ collaborationId, partnerName });
     setShowSurveyModal(true);
   };
@@ -253,11 +236,12 @@ const CommunityCollaborations = () => {
 
   if (loading) return <div>Loading...</div>;
 
-  const filteredCollaborations = collaborations.filter(collaboration => {
-    const matchesSearch = !searchTerm ||
-      (collaboration.offer?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-       (collaboration.business_profile?.name?.toLowerCase().includes(searchTerm.toLowerCase())));
-    const matchesFilter = activeFilter === 'all' || collaboration.status === activeFilter;
+  const filteredCollaborations = collaborations.filter((collaboration) => {
+    const matchesSearch =
+      !searchTerm ||
+      collaboration.offer?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      collaboration.business_profile?.name?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = activeFilter === "all" || collaboration.status === activeFilter;
     return matchesSearch && matchesFilter;
   });
 
@@ -266,89 +250,106 @@ const CommunityCollaborations = () => {
       <div className="container mx-auto px-6 space-y-6">
         <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 700, fontSize: 30, color: "#232323", letterSpacing: "0.03em" }}>MY COLLABORATIONS</h1>
-          <p className="text-muted-foreground">View and manage your active collaborations</p>
-        </div>
-      </header>
+            <h1
+              style={{
+                fontFamily: "'Rubik', Arial, sans-serif",
+                textTransform: "uppercase" as const,
+                fontWeight: 700,
+                fontSize: 30,
+                color: "#232323",
+                letterSpacing: "0.03em",
+              }}
+            >
+              MY COLLABORATIONS
+            </h1>
+            <p className="text-muted-foreground">View and manage your active collaborations</p>
+          </div>
+        </header>
 
-      {/* Pending Feedback */}
-      <PendingFeedbackCard 
-        pendingSurveys={pendingSurveys}
-        onFillFeedback={handleFillFeedback}
-      />
+        {/* Pending Feedback */}
+        <PendingFeedbackCard pendingSurveys={pendingSurveys} onFillFeedback={handleFillFeedback} />
 
-      {/* Filters */}
-      <div className="flex gap-2 flex-wrap">
-        {['all', 'scheduled', 'active', 'completed', 'cancelled'].map((filter) => (
-          <Button
-            key={filter}
-            variant={activeFilter === filter ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setActiveFilter(filter as any)}
-          >
-            {filter === 'all' ? 'All' : filter.charAt(0).toUpperCase() + filter.slice(1)} ({filter === 'all' ? collaborations.length : collaborations.filter(c => c.status === filter).length})
-          </Button>
-        ))}
-      </div>
-
-      {/* Search */}
-      <div className={DashboardClassNames.searchContainer}>
-        <Search className={DashboardClassNames.searchIcon} />
-        <Input
-          placeholder="Search collaborations by offer title or business name..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className={DashboardClassNames.searchInput}
-        />
-      </div>
-
-      {/* Collaborations Grid */}
-      {filteredCollaborations.length === 0 ? (
-        <Card style={{ background: "#fff", borderRadius: "14px", border: "1px solid #EBEBEB", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)" }}>
-          <CardContent className="py-16 text-center">
-            <p className="text-lg font-semibold">No collaborations found</p>
-            <p className="text-muted-foreground mt-2">
-              {searchTerm ? 'Try adjusting your search terms.' : 'Your active collaborations will appear here.'}
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCollaborations.map((collaboration) => (
-            <CollaborationCard
-              key={collaboration.id}
-              collaboration={collaboration}
-              onView={() => handleViewCollaboration(collaboration)}
-              onStatusUpdate={(status) => handleStatusUpdate(collaboration.id, status)}
-              onOpenFeedbackModal={handleOpenFeedbackModal}
-              userType="community"
-            />
+        {/* Filters */}
+        <div className="flex gap-2 flex-wrap">
+          {["all", "scheduled", "active", "completed", "cancelled"].map((filter) => (
+            <Button
+              key={filter}
+              variant={activeFilter === filter ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveFilter(filter as any)}
+            >
+              {filter === "all" ? "All" : filter.charAt(0).toUpperCase() + filter.slice(1)} (
+              {filter === "all" ? collaborations.length : collaborations.filter((c) => c.status === filter).length})
+            </Button>
           ))}
         </div>
-      )}
 
-      <CollaborationDetailsModal
-        open={showDetailsModal}
-        onOpenChange={setShowDetailsModal}
-        collaboration={selectedCollaboration}
-        onStatusUpdate={(status) => selectedCollaboration && handleStatusUpdate(selectedCollaboration.id, status)}
-        onOpenFeedbackModal={handleOpenFeedbackModal}
-        userType="community"
-        currentUserProfileId={profile?.id}
-      />
+        {/* Search */}
+        <div className={DashboardClassNames.searchContainer}>
+          <Search className={DashboardClassNames.searchIcon} />
+          <Input
+            placeholder="Search collaborations by offer title or business name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={DashboardClassNames.searchInput}
+          />
+        </div>
 
-      {currentSurvey && (
-        <SurveyModal
-          open={showSurveyModal}
-          onOpenChange={setShowSurveyModal}
-          surveyId={currentSurvey.surveyId}
-          collaborationId={currentSurvey.collaborationId}
+        {/* Collaborations List (horizontal, one per row) */}
+        {filteredCollaborations.length === 0 ? (
+          <Card
+            style={{
+              background: "#fff",
+              borderRadius: "14px",
+              border: "1px solid #EBEBEB",
+              boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)",
+            }}
+          >
+            <CardContent className="py-16 text-center">
+              <p className="text-lg font-semibold">No collaborations found</p>
+              <p className="text-muted-foreground mt-2">
+                {searchTerm ? "Try adjusting your search terms." : "Your active collaborations will appear here."}
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="flex flex-col gap-6">
+            {filteredCollaborations.map((collaboration) => (
+              <CollaborationCard
+                key={collaboration.id}
+                collaboration={collaboration}
+                onView={() => handleViewCollaboration(collaboration)}
+                onStatusUpdate={(status) => handleStatusUpdate(collaboration.id, status)}
+                onOpenFeedbackModal={handleOpenFeedbackModal}
+                userType="community"
+                // Pass a prop if your CollaborationCard takes 'horizontal' or adjust its internal layout
+              />
+            ))}
+          </div>
+        )}
+
+        <CollaborationDetailsModal
+          open={showDetailsModal}
+          onOpenChange={setShowDetailsModal}
+          collaboration={selectedCollaboration}
+          onStatusUpdate={(status) => selectedCollaboration && handleStatusUpdate(selectedCollaboration.id, status)}
+          onOpenFeedbackModal={handleOpenFeedbackModal}
           userType="community"
-          partnerName={currentSurvey.partnerName}
-          onSubmitSuccess={handleSurveySubmitSuccess}
           currentUserProfileId={profile?.id}
         />
-      )}
+
+        {currentSurvey && (
+          <SurveyModal
+            open={showSurveyModal}
+            onOpenChange={setShowSurveyModal}
+            surveyId={currentSurvey.surveyId}
+            collaborationId={currentSurvey.collaborationId}
+            userType="community"
+            partnerName={currentSurvey.partnerName}
+            onSubmitSuccess={handleSurveySubmitSuccess}
+            currentUserProfileId={profile?.id}
+          />
+        )}
       </div>
     </div>
   );
