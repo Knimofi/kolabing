@@ -10,6 +10,7 @@ import CollaborationDetailsModal from "@/components/modals/CollaborationDetailsM
 import SurveyModal from "@/components/modals/SurveyModal";
 import PendingFeedbackCard from "@/components/PendingFeedbackCard";
 import { Search } from "lucide-react";
+import { DashboardClassNames } from "@/styles/dashboard-component-styles";
 
 const BusinessCollaborations = () => {
   const { profile } = useAuth();
@@ -218,13 +219,13 @@ const BusinessCollaborations = () => {
       </div>
 
       {/* Search */}
-      <div className="relative w-full max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#606060] pointer-events-none" />
+      <div className={DashboardClassNames.searchContainer}>
+        <Search className={DashboardClassNames.searchIcon} />
         <Input
           placeholder="Search collaborations by offer title or community name..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-[#F5F5F5] text-[#222] border-none rounded-lg px-3 py-2.5 pl-10 focus:outline-none focus:border focus:border-[#E8D7A0] focus:shadow-[0_0_0_3px_rgba(255,246,216,0.4)]"
+          className={DashboardClassNames.searchInput}
         />
       </div>
 

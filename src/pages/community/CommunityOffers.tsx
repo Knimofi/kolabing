@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import OfferCard from '@/components/OfferCard';
 import OfferDetailsModal from '@/components/modals/OfferDetailsModal';
 import ApplyOfferModal from '@/components/modals/ApplyOfferModal';
+import { DashboardClassNames } from '@/styles/dashboard-component-styles';
 
 const CommunityOffers = () => {
   const { profile } = useAuth();
@@ -301,13 +302,13 @@ const CommunityOffers = () => {
 
       {/* Search */}
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative w-full max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#606060] pointer-events-none" />
+        <div className={DashboardClassNames.searchContainer}>
+          <Search className={DashboardClassNames.searchIcon} />
           <Input
             placeholder="Search collabs by title, business, or keywords..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-[#F5F5F5] text-[#222] border-none rounded-lg px-3 py-2.5 pl-10 focus:outline-none focus:border focus:border-[#E8D7A0] focus:shadow-[0_0_0_3px_rgba(255,246,216,0.4)]"
+            className={DashboardClassNames.searchInput}
           />
         </div>
       </div>
