@@ -1,18 +1,19 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Clock, Wrench } from 'lucide-react';
-
 interface ComingSoonProps {
   title: string;
   description: string;
   features?: string[];
 }
-
-const ComingSoon: React.FC<ComingSoonProps> = ({ title, description, features = [] }) => {
-  return (
-    <div className="space-y-6">
+const ComingSoon: React.FC<ComingSoonProps> = ({
+  title,
+  description,
+  features = []
+}) => {
+  return <div className="space-y-6">
       <div>
-        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+        <h1 className="text-2xl md:text-3xl font-bold mb-2 text-gray-950">
           {title}
         </h1>
         <p className="text-muted-foreground">
@@ -35,26 +36,20 @@ const ComingSoon: React.FC<ComingSoonProps> = ({ title, description, features = 
               We're working hard to bring you this feature. It will be available soon!
             </p>
 
-            {features.length > 0 && (
-              <div className="max-w-md mx-auto">
+            {features.length > 0 && <div className="max-w-md mx-auto">
                 <h3 className="text-sm font-medium text-foreground mb-3">
                   What to expect:
                 </h3>
                 <ul className="text-sm text-muted-foreground space-y-2">
-                  {features.map((feature, index) => (
-                    <li key={index} className="flex items-center justify-center">
+                  {features.map((feature, index) => <li key={index} className="flex items-center justify-center">
                       <Clock className="w-4 h-4 mr-2 flex-shrink-0" />
                       {feature}
-                    </li>
-                  ))}
+                    </li>)}
                 </ul>
-              </div>
-            )}
+              </div>}
           </div>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 };
-
 export default ComingSoon;
