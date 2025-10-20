@@ -7,7 +7,11 @@ import "@/styles/landing.css";
 import { landingStyles } from "@/styles/landing-tokens";
 
 // Font styles
-const NAV_FONT = landingStyles.body;
+const NAV_FONT = {
+  ...landingStyles.body,
+  textTransform: 'uppercase' as const,
+  color: '#fff'
+};
 const LOGO_FONT = landingStyles.subheading;
 
 const Navbar = () => {
@@ -121,7 +125,7 @@ const Navbar = () => {
             onClick={scrollToTop}
             style={NAV_FONT}
             className={cn(
-              "text-muted-foreground hover:text-white transition-colors duration-300",
+              "hover:text-white transition-colors duration-300",
               isActivePage("/") && "text-[#FFD861] font-bold",
             )}
           >
@@ -131,7 +135,7 @@ const Navbar = () => {
             onClick={() => navigate("/success-stories")}
             style={NAV_FONT}
             className={cn(
-              "text-muted-foreground hover:text-white transition-colors duration-300",
+              "hover:text-white transition-colors duration-300",
               isActivePage("/success-stories") && "text-[#FFD861] font-bold",
             )}
           >
@@ -141,7 +145,7 @@ const Navbar = () => {
             onClick={() => navigate("/our-communities")}
             style={NAV_FONT}
             className={cn(
-              "text-muted-foreground hover:text-white transition-colors duration-300",
+              "hover:text-white transition-colors duration-300",
               isActivePage("/our-communities") && "text-[#FFD861] font-bold",
             )}
           >
@@ -150,7 +154,7 @@ const Navbar = () => {
           {user ? (
             <button
               style={NAV_FONT}
-              className="text-muted-foreground hover:text-white transition-colors duration-300"
+              className="hover:text-white transition-colors duration-300"
               onClick={() => {
                 if (profile?.user_type === "business") {
                   navigate("/business");
@@ -164,7 +168,7 @@ const Navbar = () => {
           ) : (
             <button
               style={NAV_FONT}
-              className="text-muted-foreground hover:text-white transition-colors duration-300"
+              className="hover:text-white transition-colors duration-300"
               onClick={() => navigate("/auth/sign-in")}
             >
               Sign In

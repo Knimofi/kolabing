@@ -14,11 +14,11 @@ const BusinessPlans = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background py-12">
+    <div style={{ minHeight: "100vh", background: "#F7F8FA" }} className="py-12">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-foreground mb-4">Choose Your Plan</h1>
-          <p className="text-xl text-muted-foreground">
+          <h1 style={{ fontFamily: "'Rubik', Arial, sans-serif", textTransform: "uppercase", fontWeight: 700, color: "#232323", fontSize: 30, letterSpacing: "0.03em" }}>Choose Your Plan</h1>
+          <p style={{ fontFamily: "'Open Sans', Arial, sans-serif", fontSize: 15, color: "#5a5a5c" }}>
             Select the perfect plan for your business needs
           </p>
         </div>
@@ -26,7 +26,8 @@ const BusinessPlans = () => {
         <div className="flex flex-col lg:flex-row gap-8 justify-center items-stretch max-w-4xl mx-auto">
           {/* Standard Plan */}
           <Card 
-            className="flex-1 cursor-pointer hover:shadow-lg transition-shadow duration-300 border-2 hover:border-primary"
+            style={{ background: "#fff", border: "1px solid #EBEBEB", borderRadius: "14px", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)", transition: "all 0.3s ease" }}
+            className="flex-1 cursor-pointer hover:shadow-lg"
             onClick={handleStandardPlanClick}
           >
             <CardHeader className="text-center pb-6">
@@ -84,7 +85,8 @@ const BusinessPlans = () => {
 
           {/* Agency Plan */}
           <Card 
-            className="flex-1 cursor-pointer hover:shadow-lg transition-shadow duration-300 border-2 hover:border-primary"
+            style={{ background: "#fff", border: "1px solid #EBEBEB", borderRadius: "14px", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)", transition: "all 0.3s ease" }}
+            className="flex-1 cursor-pointer hover:shadow-lg"
             onClick={handleAgencyPlanClick}
           >
             <CardHeader className="text-center pb-6">

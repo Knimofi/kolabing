@@ -113,7 +113,7 @@ const BusinessProfile: React.FC = () => {
     fontFamily: "'Rubik', Arial, sans-serif",
     textTransform: "uppercase" as const,
     fontWeight: 700,
-    color: "#2b2b2d",
+    color: "#232323",
     fontSize: 30,
     letterSpacing: "0.03em",
     margin: 0,
@@ -139,7 +139,7 @@ const BusinessProfile: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-screen" style={{ background: "#F7F8FA" }}>
       <div className="max-w-2xl mx-auto py-10 px-4 space-y-8">
         <div className="flex items-center space-x-3">
           <Building2 className="w-8 h-8" style={{ color: "#FFD861" }} />
@@ -152,9 +152,9 @@ const BusinessProfile: React.FC = () => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <Card style={{ background: "#FFF6D8", border: "1.5px solid #F9E9AC", borderRadius: "18px", boxShadow: "0 2px 16px 0 rgba(231, 192, 58, 0.12), 0 1.5px 9px 0 rgba(60, 44, 0, 0.06)" }}>
+          <Card style={{ background: "#fff", border: "1px solid #EBEBEB", borderRadius: "14px", boxShadow: "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)" }}>
             <CardHeader>
-              <CardTitle style={{ fontFamily: "'Open Sans', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 600, fontSize: 16, color: "#2b2b2d" }}>Business Information</CardTitle>
+              <CardTitle style={{ fontFamily: "'Open Sans', Arial, sans-serif", textTransform: "uppercase" as const, fontWeight: 600, fontSize: 16, color: "#232323" }}>Business Information</CardTitle>
               <CardDescription style={{ fontFamily: "'Open Sans', Arial, sans-serif", color: "#5a5a5c" }}>
                 This information will be visible to communities when you create offers
               </CardDescription>

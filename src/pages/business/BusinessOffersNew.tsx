@@ -20,9 +20,13 @@ import { cn } from "@/lib/utils";
 import { FileUpload } from "@/components/ui/file-upload";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-const BG_SECTION = "#F3F4F6";
-const BG_INPUT = "#E5E7EB";
+const BG_PAGE = "#F7F8FA";
+const BG_SECTION = "#fff";
+const BG_INPUT = "#F5F6F8";
 const TEXT_DARK = "#232323";
+const CARD_SHADOW = "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)";
+const CARD_BORDER = "1px solid #EBEBEB";
+const CARD_RADIUS = "14px";
 
 const offerSchema = z.object({
   title: z.string().min(1, "Title is required").max(100, "Title must be under 100 characters"),
@@ -158,7 +162,7 @@ const BusinessOffersNew = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#fff" }} className="py-8 px-4 flex flex-col items-center">
+    <div style={{ minHeight: "100vh", background: BG_PAGE }} className="py-8 px-4 flex flex-col items-center">
       <div className="w-full max-w-2xl space-y-6">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" onClick={() => navigate("/business/opportunities")}>
@@ -173,7 +177,7 @@ const BusinessOffersNew = () => {
         <Form {...form}>
           <form className="space-y-6">
             {/* Basic Information */}
-            <Card style={{ background: BG_SECTION }}>
+            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Basic Information</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -229,7 +233,7 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Availability */}
-            <Card style={{ background: BG_SECTION }}>
+            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Availability</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -312,7 +316,7 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Location */}
-            <Card style={{ background: BG_SECTION }}>
+            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Location</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -364,7 +368,7 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Photo Upload */}
-            <Card style={{ background: BG_SECTION }}>
+            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Request Photo</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -382,7 +386,7 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Business Offer */}
-            <Card style={{ background: BG_SECTION }}>
+            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>What You're Offering</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -416,7 +420,7 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Community Deliverables */}
-            <Card style={{ background: BG_SECTION }}>
+            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>What do you expect from the community?</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>

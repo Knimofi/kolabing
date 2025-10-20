@@ -36,6 +36,14 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+const BG_PAGE = "#F7F8FA";
+const BG_SECTION = "#fff";
+const BG_INPUT = "#F5F6F8";
+const TEXT_DARK = "#232323";
+const CARD_SHADOW = "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)";
+const CARD_BORDER = "1px solid #EBEBEB";
+const CARD_RADIUS = "14px";
+
 const offerSchema = z.object({
   title: z.string().min(1, "Title is required").max(100),
   description: z.string().min(1, "Description is required").max(1000),
@@ -184,229 +192,231 @@ const BusinessOffersEdit = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div style={{ minHeight: "100vh", background: BG_PAGE }} className="py-8 px-4 flex items-center justify-center"><p style={{ color: TEXT_DARK }}>Loading...</p></div>;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate("/business/offers")}>
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Offers
-        </Button>
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold">Edit Offer</h1>
-          <p className="text-muted-foreground">Update your collaboration opportunity</p>
-        </div>
-      </div>
-
-      <Form {...form}>
-        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-          {/* Basic Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
-              <CardDescription>Essential details about your collaboration offer</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField control={form.control} name="title" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Offer Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., Instagram Partnership" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="description" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Describe your offer..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-            </CardContent>
-          </Card>
-
-          {/* Timeline */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Timeline</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <FormField control={form.control} name="timeline_days" render={({ field }) => (
-                <FormItem>
-                  <div className="flex items-center gap-2">
-                    <FormLabel>Timeline (days after collaboration)</FormLabel>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger type="button">
-                          <Info size={14} className="text-muted-foreground" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>How much time a community has to finish all deliverables.</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                  <FormControl>
-                    <Input type="number" min={1} max={365} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-            </CardContent>
-          </Card>
-
-          {/* Availability Dates */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Availability</CardTitle>
-            </CardHeader>
-            <CardContent className="flex gap-4">
-              <FormField control={form.control} name="availability_start" render={({ field }) => (
-                <FormItem className="flex-1">
-                  <FormLabel>Start Date</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button variant="outline" className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
-                          {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar selected={field.value} onSelect={field.onChange} />
-                    </PopoverContent>
-                  </Popover>
-                </FormItem>
-              )} />
-
-              <FormField control={form.control} name="availability_end" render={({ field }) => (
-                <FormItem className="flex-1">
-                  <FormLabel>End Date</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button variant="outline" className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
-                          {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar selected={field.value} onSelect={field.onChange} />
-                    </PopoverContent>
-                  </Popover>
-                </FormItem>
-              )} />
-            </CardContent>
-          </Card>
-
-          {/* Location */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Location</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField control={form.control} name="address" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Venue address" disabled={form.watch("no_venue")} {...field} />
-                  </FormControl>
-                </FormItem>
-              )} />
-              <FormField control={form.control} name="no_venue" render={({ field }) => (
-                <FormItem className="flex items-center gap-2">
-                  <FormControl>
-                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                  </FormControl>
-                  <FormLabel>No physical venue</FormLabel>
-                </FormItem>
-              )} />
-            </CardContent>
-          </Card>
-
-          {/* Business Offer */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Business Offer</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <FormField control={form.control} name="business_offer.description" render={({ field }) => (
-                <FormItem>
-                  <FormLabel>What does the business provide?</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Describe what you are offering" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} />
-            </CardContent>
-          </Card>
-
-          {/* Deliverables */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Community Deliverables</CardTitle>
-            </CardHeader>
-            <CardContent className="grid gap-4">
-              {deliverableOptions.map((option) => (
-                <FormField
-                  key={option.id}
-                  control={form.control}
-                  name={`community_deliverables.${option.id}` as any}
-                  render={({ field }) => (
-                    <FormItem className="flex items-center gap-2">
-                      <FormControl>
-                        {option.hasAmount ? (
-                          <Input type="number" placeholder={`# of ${option.label}`} {...field} />
-                        ) : (
-                          <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                        )}
-                      </FormControl>
-                      <FormLabel>{option.label}</FormLabel>
-                    </FormItem>
-                  )}
-                />
-              ))}
-            </CardContent>
-          </Card>
-
-          {/* Business Contacts (read-only example) */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Business Contact</CardTitle>
-              <CardDescription>Your contact details for applicants</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p><strong>Name:</strong> {profile?.name}</p>
-              <p><strong>Email:</strong> {profile?.email}</p>
-            </CardContent>
-          </Card>
-
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-end">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={form.handleSubmit((data) => handleSubmitOffer(data, "draft"))}
-              disabled={isSubmitting}
-            >
-              <Save className="w-4 h-4 mr-2" /> Save as Draft
-            </Button>
-            <Button
-              type="button"
-              onClick={form.handleSubmit((data) => handleSubmitOffer(data, "published"))}
-              disabled={isSubmitting}
-            >
-              <Send className="w-4 h-4 mr-2" /> Publish Offer
-            </Button>
+    <div style={{ minHeight: "100vh", background: BG_PAGE }} className="py-8 px-4 flex flex-col items-center">
+      <div className="w-full max-w-2xl space-y-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/business/offers")}>
+            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Offers
+          </Button>
+          <div>
+            <h1 style={{ color: TEXT_DARK, fontSize: 30, fontWeight: 900 }}>Edit Offer</h1>
+            <p style={{ color: "#606060" }}>Update your collaboration opportunity</p>
           </div>
-        </form>
-      </Form>
+        </div>
+
+        <Form {...form}>
+          <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+            {/* Basic Information */}
+            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
+              <CardHeader>
+                <CardTitle style={{ color: TEXT_DARK }}>Basic Information</CardTitle>
+                <CardDescription style={{ color: "#606060" }}>Essential details about your collaboration offer</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField control={form.control} name="title" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel style={{ color: TEXT_DARK }}>Offer Title</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Instagram Partnership" style={{ background: BG_INPUT, color: TEXT_DARK, border: "none", fontFamily: "Open Sans, Arial, sans-serif" }} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="description" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel style={{ color: TEXT_DARK }}>Description</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Describe your offer..." style={{ background: BG_INPUT, color: TEXT_DARK, border: "none", fontFamily: "Open Sans, Arial, sans-serif" }} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+              </CardContent>
+            </Card>
+
+            {/* Timeline */}
+            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
+              <CardHeader>
+                <CardTitle style={{ color: TEXT_DARK }}>Timeline</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <FormField control={form.control} name="timeline_days" render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-2">
+                      <FormLabel style={{ color: TEXT_DARK }}>Timeline (days after collaboration)</FormLabel>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger type="button">
+                            <Info size={14} className="text-muted-foreground" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>How much time a community has to finish all deliverables.</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                    <FormControl>
+                      <Input type="number" min={1} max={365} style={{ background: BG_INPUT, color: TEXT_DARK, border: "none", fontFamily: "Open Sans, Arial, sans-serif" }} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+              </CardContent>
+            </Card>
+
+            {/* Availability Dates */}
+            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
+              <CardHeader>
+                <CardTitle style={{ color: TEXT_DARK }}>Availability</CardTitle>
+              </CardHeader>
+              <CardContent className="flex gap-4">
+                <FormField control={form.control} name="availability_start" render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel style={{ color: TEXT_DARK }}>Start Date</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button variant="outline" style={{ background: BG_INPUT, color: TEXT_DARK, border: "none", fontFamily: "Open Sans, Arial, sans-serif" }} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
+                            {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar selected={field.value} onSelect={field.onChange} />
+                      </PopoverContent>
+                    </Popover>
+                  </FormItem>
+                )} />
+
+                <FormField control={form.control} name="availability_end" render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel style={{ color: TEXT_DARK }}>End Date</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button variant="outline" style={{ background: BG_INPUT, color: TEXT_DARK, border: "none", fontFamily: "Open Sans, Arial, sans-serif" }} className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
+                            {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar selected={field.value} onSelect={field.onChange} />
+                      </PopoverContent>
+                    </Popover>
+                  </FormItem>
+                )} />
+              </CardContent>
+            </Card>
+
+            {/* Location */}
+            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
+              <CardHeader>
+                <CardTitle style={{ color: TEXT_DARK }}>Location</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <FormField control={form.control} name="address" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel style={{ color: TEXT_DARK }}>Address</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Venue address" disabled={form.watch("no_venue")} style={{ background: BG_INPUT, color: TEXT_DARK, border: "none", fontFamily: "Open Sans, Arial, sans-serif" }} {...field} />
+                    </FormControl>
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="no_venue" render={({ field }) => (
+                  <FormItem className="flex items-center gap-2">
+                    <FormControl>
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                    <FormLabel style={{ color: TEXT_DARK }}>No physical venue</FormLabel>
+                  </FormItem>
+                )} />
+              </CardContent>
+            </Card>
+
+            {/* Business Offer */}
+            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
+              <CardHeader>
+                <CardTitle style={{ color: TEXT_DARK }}>Business Offer</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <FormField control={form.control} name="business_offer.description" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel style={{ color: TEXT_DARK }}>What does the business provide?</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Describe what you are offering" style={{ background: BG_INPUT, color: TEXT_DARK, border: "none", fontFamily: "Open Sans, Arial, sans-serif" }} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+              </CardContent>
+            </Card>
+
+            {/* Deliverables */}
+            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
+              <CardHeader>
+                <CardTitle style={{ color: TEXT_DARK }}>Community Deliverables</CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-4">
+                {deliverableOptions.map((option) => (
+                  <FormField
+                    key={option.id}
+                    control={form.control}
+                    name={`community_deliverables.${option.id}` as any}
+                    render={({ field }) => (
+                      <FormItem className="flex items-center gap-2">
+                        <FormControl>
+                          {option.hasAmount ? (
+                            <Input type="number" placeholder={`# of ${option.label}`} style={{ background: BG_INPUT, color: TEXT_DARK, border: "none", fontFamily: "Open Sans, Arial, sans-serif" }} {...field} />
+                          ) : (
+                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                          )}
+                        </FormControl>
+                        <FormLabel style={{ color: TEXT_DARK }}>{option.label}</FormLabel>
+                      </FormItem>
+                    )}
+                  />
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Business Contacts (read-only example) */}
+            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
+              <CardHeader>
+                <CardTitle style={{ color: TEXT_DARK }}>Business Contact</CardTitle>
+                <CardDescription style={{ color: "#606060" }}>Your contact details for applicants</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p style={{ color: TEXT_DARK }}><strong>Name:</strong> {profile?.name}</p>
+                <p style={{ color: TEXT_DARK }}><strong>Email:</strong> {profile?.email}</p>
+              </CardContent>
+            </Card>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={form.handleSubmit((data) => handleSubmitOffer(data, "draft"))}
+                disabled={isSubmitting}
+              >
+                <Save className="w-4 h-4 mr-2" /> Save as Draft
+              </Button>
+              <Button
+                type="button"
+                onClick={form.handleSubmit((data) => handleSubmitOffer(data, "published"))}
+                disabled={isSubmitting}
+              >
+                <Send className="w-4 h-4 mr-2" /> Publish Offer
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
     </div>
   );
 };
