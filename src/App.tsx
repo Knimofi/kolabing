@@ -26,6 +26,7 @@ import CommunityOpportunitiesNew from "./pages/community/CommunityOpportunitiesN
 import CommunityOpportunitiesEdit from "./pages/community/CommunityOpportunitiesEdit";
 import CommunityMyOpportunities from "./pages/community/CommunityMyOpportunities";
 import CommunityProfile from "./pages/community/CommunityProfile";
+import CommunityApplications from "./pages/community/CommunityApplications";
 import BusinessCollaborations from "./pages/business/BusinessCollaborations";
 import CommunityCollaborations from "./pages/community/CommunityCollaborations";
 import BusinessPlans from "./pages/business/BusinessPlans";
@@ -102,7 +103,7 @@ const App = () => (
                     <Route path="/my-opportunities/:offerId/edit" element={<CommunityOpportunitiesEdit />} />
                     <Route path="/opportunities" element={<CommunityOffers />} />
                     <Route path="/my-applications" element={<CommunityMyApplications />} />
-                    <Route path="/applications-received" element={<ComingSoon title="Applications Received" description="Review applications to your opportunities" />} />
+                    <Route path="/applications-received" element={<CommunityApplications />} />
                     <Route path="/collaborations" element={<CommunityCollaborations />} />
                     <Route path="/profile" element={<CommunityProfile />} />
                   </Routes>
