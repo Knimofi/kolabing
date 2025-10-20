@@ -39,6 +39,14 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { FileUpload } from "@/components/ui/file-upload";
 
+// Design tokens matching Create page
+const BG_PAGE = "#F7F8FA";
+const BG_SECTION = "#fff";
+const CARD_SHADOW = "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55, 73, 87, 0.13)";
+const CARD_RADIUS = "14px";
+const TEXT_DARK = "#232323";
+const CHIP_YELLOW = "#FFD861";
+
 const offerSchema = z.object({
   title: z.string().min(1, "Title is required").max(100),
   description: z.string().min(1, "Description is required").max(1000),
@@ -272,41 +280,78 @@ const CommunityOpportunitiesEdit = () => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#F7F8FA", padding: "32px 0" }}>
+    <div style={{ minHeight: "100vh", background: BG_PAGE, padding: "32px 0" }}>
       <div className="container mx-auto px-6 space-y-6">
         <div className="flex items-center gap-4">
-        <Button variant="ghost" size="sm" onClick={() => navigate("/community/my-opportunities")}>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => navigate("/community/my-opportunities")}
+          style={{
+            background: "#fff",
+            color: TEXT_DARK,
+            fontWeight: 500,
+            borderRadius: "8px",
+            boxShadow: "0 1.5px 3px 0 rgba(55,73,87,0.08)",
+            border: "1px solid #EBEBEB"
+          }}
+        >
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to My Collab Requests
         </Button>
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold">Edit Collab Request</h1>
-          <p className="text-muted-foreground">Update your collaboration opportunity</p>
+          <h1 style={{ color: TEXT_DARK, fontSize: 30, fontWeight: 900 }}>Edit Collab Request</h1>
+          <p style={{ color: "#606060" }}>Update your collaboration opportunity</p>
         </div>
       </div>
 
       <Form {...form}>
         <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
           {/* Basic Information */}
-          <Card>
+          <Card style={{
+            background: BG_SECTION,
+            boxShadow: CARD_SHADOW,
+            borderRadius: CARD_RADIUS,
+            border: "1px solid #EBEBEB"
+          }}>
             <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
-              <CardDescription>Essential details about your collaboration</CardDescription>
+              <CardTitle style={{ color: TEXT_DARK }}>Basic Information</CardTitle>
+              <CardDescription style={{ color: "#606060" }}>Essential details about your collaboration</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <FormField control={form.control} name="title" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Collab Title</FormLabel>
+                  <FormLabel style={{ color: TEXT_DARK }}>Collab Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Looking for venue partner for monthly meetup" {...field} />
+                    <Input 
+                      placeholder="e.g., Looking for venue partner for monthly meetup" 
+                      {...field}
+                      style={{
+                        background: "#F5F6F8",
+                        color: TEXT_DARK,
+                        border: "none",
+                        borderRadius: "8px",
+                        fontFamily: "Open Sans, Arial, sans-serif"
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )} />
               <FormField control={form.control} name="description" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel style={{ color: TEXT_DARK }}>Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Describe your opportunity..." {...field} />
+                    <Textarea 
+                      placeholder="Describe your opportunity..." 
+                      {...field}
+                      style={{
+                        background: "#F5F6F8",
+                        color: TEXT_DARK,
+                        border: "none",
+                        borderRadius: "8px",
+                        fontFamily: "Open Sans, Arial, sans-serif"
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -315,10 +360,15 @@ const CommunityOpportunitiesEdit = () => {
           </Card>
 
           {/* Availability */}
-          <Card>
+          <Card style={{
+            background: BG_SECTION,
+            boxShadow: CARD_SHADOW,
+            borderRadius: CARD_RADIUS,
+            border: "1px solid #EBEBEB"
+          }}>
             <CardHeader>
-              <CardTitle>Availability</CardTitle>
-              <CardDescription>When are you available for this collaboration?</CardDescription>
+              <CardTitle style={{ color: TEXT_DARK }}>Availability</CardTitle>
+              <CardDescription style={{ color: "#606060" }}>When are you available for this collaboration?</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <FormField
@@ -326,16 +376,16 @@ const CommunityOpportunitiesEdit = () => {
                 name="availability_mode"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Availability Type</FormLabel>
+                    <FormLabel style={{ color: TEXT_DARK }}>Availability Type</FormLabel>
                     <FormControl>
                       <RadioGroup value={field.value} onValueChange={field.onChange}>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="date_range" id="edit_date_range" />
-                          <Label htmlFor="edit_date_range">Specific date range</Label>
+                          <Label htmlFor="edit_date_range" style={{ color: TEXT_DARK }}>Specific date range</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="recurring" id="edit_recurring" />
-                          <Label htmlFor="edit_recurring">Recurring schedule</Label>
+                          <Label htmlFor="edit_recurring" style={{ color: TEXT_DARK }}>Recurring schedule</Label>
                         </div>
                       </RadioGroup>
                     </FormControl>
@@ -348,11 +398,22 @@ const CommunityOpportunitiesEdit = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField control={form.control} name="availability_start" render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Start Date</FormLabel>
+                      <FormLabel style={{ color: TEXT_DARK }}>Start Date</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
-                            <Button variant="outline" className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
+                            <Button 
+                              variant="outline" 
+                              className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
+                              style={{
+                                background: "#fff",
+                                color: TEXT_DARK,
+                                fontWeight: 500,
+                                borderRadius: "8px",
+                                boxShadow: "0 1.5px 3px 0 rgba(55,73,87,0.08)",
+                                border: "1px solid #EBEBEB"
+                              }}
+                            >
                               {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
@@ -367,11 +428,22 @@ const CommunityOpportunitiesEdit = () => {
 
                   <FormField control={form.control} name="availability_end" render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>End Date</FormLabel>
+                      <FormLabel style={{ color: TEXT_DARK }}>End Date</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
-                            <Button variant="outline" className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}>
+                            <Button 
+                              variant="outline" 
+                              className={cn("w-full pl-3 text-left font-normal", !field.value && "text-muted-foreground")}
+                              style={{
+                                background: "#fff",
+                                color: TEXT_DARK,
+                                fontWeight: 500,
+                                borderRadius: "8px",
+                                boxShadow: "0 1.5px 3px 0 rgba(55,73,87,0.08)",
+                                border: "1px solid #EBEBEB"
+                              }}
+                            >
                               {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
@@ -390,10 +462,16 @@ const CommunityOpportunitiesEdit = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField control={form.control} name="recurring_day" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Day of Week</FormLabel>
+                      <FormLabel style={{ color: TEXT_DARK }}>Day of Week</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger style={{
+                            background: "#F5F6F8",
+                            color: TEXT_DARK,
+                            border: "none",
+                            borderRadius: "8px",
+                            fontFamily: "Open Sans, Arial, sans-serif"
+                          }}>
                             <SelectValue placeholder="Select a day" />
                           </SelectTrigger>
                         </FormControl>
@@ -413,9 +491,20 @@ const CommunityOpportunitiesEdit = () => {
                   )} />
                   <FormField control={form.control} name="recurring_time" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Time (optional)</FormLabel>
+                      <FormLabel style={{ color: TEXT_DARK }}>Time (optional)</FormLabel>
                       <FormControl>
-                        <Input type="time" placeholder="e.g., 19:00" {...field} />
+                        <Input 
+                          type="time" 
+                          placeholder="e.g., 19:00" 
+                          {...field}
+                          style={{
+                            background: "#F5F6F8",
+                            color: TEXT_DARK,
+                            border: "none",
+                            borderRadius: "8px",
+                            fontFamily: "Open Sans, Arial, sans-serif"
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -426,28 +515,33 @@ const CommunityOpportunitiesEdit = () => {
           </Card>
 
           {/* Location */}
-          <Card>
+          <Card style={{
+            background: BG_SECTION,
+            boxShadow: CARD_SHADOW,
+            borderRadius: CARD_RADIUS,
+            border: "1px solid #EBEBEB"
+          }}>
             <CardHeader>
-              <CardTitle>Location</CardTitle>
-              <CardDescription>Where will this collaboration take place?</CardDescription>
+              <CardTitle style={{ color: TEXT_DARK }}>Location</CardTitle>
+              <CardDescription style={{ color: "#606060" }}>Where will this collaboration take place?</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <FormField control={form.control} name="venue_mode" render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Venue Requirements</FormLabel>
+                  <FormLabel style={{ color: TEXT_DARK }}>Venue Requirements</FormLabel>
                   <FormControl>
                     <RadioGroup value={field.value} onValueChange={field.onChange}>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="no_venue" id="edit_no_venue" />
-                        <Label htmlFor="edit_no_venue">No physical venue required</Label>
+                        <Label htmlFor="edit_no_venue" style={{ color: TEXT_DARK }}>No physical venue required</Label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="i_have_venue" id="edit_i_have_venue" />
-                        <Label htmlFor="edit_i_have_venue">I have a venue</Label>
+                        <Label htmlFor="edit_i_have_venue" style={{ color: TEXT_DARK }}>I have a venue</Label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="partner_provides" id="edit_partner_provides" />
-                        <Label htmlFor="edit_partner_provides">Collab partner provides venue</Label>
+                        <Label htmlFor="edit_partner_provides" style={{ color: TEXT_DARK }}>Collab partner provides venue</Label>
                       </div>
                     </RadioGroup>
                   </FormControl>
@@ -458,9 +552,19 @@ const CommunityOpportunitiesEdit = () => {
               {form.watch('venue_mode') === 'i_have_venue' && (
                 <FormField control={form.control} name="address" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Venue Address</FormLabel>
+                    <FormLabel style={{ color: TEXT_DARK }}>Venue Address</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter the venue address" {...field} />
+                      <Input 
+                        placeholder="Enter the venue address" 
+                        {...field}
+                        style={{
+                          background: "#F5F6F8",
+                          color: TEXT_DARK,
+                          border: "none",
+                          borderRadius: "8px",
+                          fontFamily: "Open Sans, Arial, sans-serif"
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -471,18 +575,38 @@ const CommunityOpportunitiesEdit = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField control={form.control} name="preferred_city" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Preferred City</FormLabel>
+                      <FormLabel style={{ color: TEXT_DARK }}>Preferred City</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., Barcelona" {...field} />
+                        <Input 
+                          placeholder="e.g., Barcelona" 
+                          {...field}
+                          style={{
+                            background: "#F5F6F8",
+                            color: TEXT_DARK,
+                            border: "none",
+                            borderRadius: "8px",
+                            fontFamily: "Open Sans, Arial, sans-serif"
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="preferred_area" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Preferred Area (optional)</FormLabel>
+                      <FormLabel style={{ color: TEXT_DARK }}>Preferred Area (optional)</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., Eixample, Gracia..." {...field} />
+                        <Input 
+                          placeholder="e.g., Eixample, Gracia..." 
+                          {...field}
+                          style={{
+                            background: "#F5F6F8",
+                            color: TEXT_DARK,
+                            border: "none",
+                            borderRadius: "8px",
+                            fontFamily: "Open Sans, Arial, sans-serif"
+                          }}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -493,10 +617,15 @@ const CommunityOpportunitiesEdit = () => {
           </Card>
 
           {/* Photo Upload */}
-          <Card>
+          <Card style={{
+            background: BG_SECTION,
+            boxShadow: CARD_SHADOW,
+            borderRadius: CARD_RADIUS,
+            border: "1px solid #EBEBEB"
+          }}>
             <CardHeader>
-              <CardTitle>Collaboration Photo</CardTitle>
-              <CardDescription>Add a photo for your collaboration (optional)</CardDescription>
+              <CardTitle style={{ color: TEXT_DARK }}>Collaboration Photo</CardTitle>
+              <CardDescription style={{ color: "#606060" }}>Add a photo for your collaboration (optional)</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <FormField control={form.control} name="use_profile_photo" render={({ field }) => (
@@ -505,8 +634,8 @@ const CommunityOpportunitiesEdit = () => {
                     <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>Use my community's profile photo</FormLabel>
-                    <p className="text-sm text-muted-foreground">
+                    <FormLabel style={{ color: TEXT_DARK }}>Use my community's profile photo</FormLabel>
+                    <p className="text-sm" style={{ color: "#606060" }}>
                       Your profile photo will be used for this collaboration
                     </p>
                   </div>
@@ -526,10 +655,15 @@ const CommunityOpportunitiesEdit = () => {
           </Card>
 
           {/* What You Offer */}
-          <Card>
+          <Card style={{
+            background: BG_SECTION,
+            boxShadow: CARD_SHADOW,
+            borderRadius: CARD_RADIUS,
+            border: "1px solid #EBEBEB"
+          }}>
             <CardHeader>
-              <CardTitle>What can you offer?</CardTitle>
-              <CardDescription>Describe what you're providing to your collaboration partner</CardDescription>
+              <CardTitle style={{ color: TEXT_DARK }}>What can you offer?</CardTitle>
+              <CardDescription style={{ color: "#606060" }}>Describe what you're providing to your collaboration partner</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <FormField control={form.control} name="offer_input_mode" render={({ field }) => (
@@ -538,11 +672,11 @@ const CommunityOpportunitiesEdit = () => {
                     <RadioGroup value={field.value} onValueChange={field.onChange}>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="text" id="edit_offer_text" />
-                        <Label htmlFor="edit_offer_text">Describe in your own words</Label>
+                        <Label htmlFor="edit_offer_text" style={{ color: TEXT_DARK }}>Describe in your own words</Label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="checklist" id="edit_offer_checklist" />
-                        <Label htmlFor="edit_offer_checklist">Select from options</Label>
+                        <Label htmlFor="edit_offer_checklist" style={{ color: TEXT_DARK }}>Select from options</Label>
                       </div>
                     </RadioGroup>
                   </FormControl>
@@ -552,9 +686,19 @@ const CommunityOpportunitiesEdit = () => {
               {form.watch('offer_input_mode') === 'text' && (
                 <FormField control={form.control} name="business_offer.description" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Your Offer</FormLabel>
+                    <FormLabel style={{ color: TEXT_DARK }}>Your Offer</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Describe what you provide" {...field} />
+                      <Textarea 
+                        placeholder="Describe what you provide" 
+                        {...field}
+                        style={{
+                          background: "#F5F6F8",
+                          color: TEXT_DARK,
+                          border: "none",
+                          borderRadius: "8px",
+                          fontFamily: "Open Sans, Arial, sans-serif"
+                        }}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -568,7 +712,7 @@ const CommunityOpportunitiesEdit = () => {
                       <FormControl>
                         <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
-                      <FormLabel className="font-normal">Venue</FormLabel>
+                      <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>Venue</FormLabel>
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="business_offer.event_creation" render={({ field }) => (
@@ -576,7 +720,7 @@ const CommunityOpportunitiesEdit = () => {
                       <FormControl>
                         <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
-                      <FormLabel className="font-normal">Event Creation</FormLabel>
+                      <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>Event Creation</FormLabel>
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="business_offer.split_revenue" render={({ field }) => (
@@ -584,7 +728,7 @@ const CommunityOpportunitiesEdit = () => {
                       <FormControl>
                         <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
-                      <FormLabel className="font-normal">Split Revenue</FormLabel>
+                      <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>Split Revenue</FormLabel>
                     </FormItem>
                   )} />
                   <div className="space-y-2">
@@ -593,7 +737,7 @@ const CommunityOpportunitiesEdit = () => {
                         <FormControl>
                           <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                         </FormControl>
-                        <FormLabel className="font-normal">Monetary Compensation</FormLabel>
+                        <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>Monetary Compensation</FormLabel>
                       </FormItem>
                     )} />
                     {form.watch('business_offer.monetary_compensation') && (
@@ -605,6 +749,13 @@ const CommunityOpportunitiesEdit = () => {
                               placeholder="Amount in €"
                               {...field}
                               onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                              style={{
+                                background: "#F5F6F8",
+                                color: TEXT_DARK,
+                                border: "none",
+                                borderRadius: "8px",
+                                fontFamily: "Open Sans, Arial, sans-serif"
+                              }}
                             />
                           </FormControl>
                           <FormMessage />
@@ -618,10 +769,15 @@ const CommunityOpportunitiesEdit = () => {
           </Card>
 
           {/* Deliverables */}
-          <Card>
+          <Card style={{
+            background: BG_SECTION,
+            boxShadow: CARD_SHADOW,
+            borderRadius: CARD_RADIUS,
+            border: "1px solid #EBEBEB"
+          }}>
             <CardHeader>
-              <CardTitle>What do you expect from collaborators?</CardTitle>
-              <CardDescription>Select what you expect from your collaboration partner</CardDescription>
+              <CardTitle style={{ color: TEXT_DARK }}>What do you expect from collaborators?</CardTitle>
+              <CardDescription style={{ color: "#606060" }}>Select what you expect from your collaboration partner</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {deliverableOptions.map((option) => (
@@ -637,7 +793,7 @@ const CommunityOpportunitiesEdit = () => {
                             onCheckedChange={field.onChange}
                           />
                         </FormControl>
-                        <FormLabel className="font-normal">{option.label}</FormLabel>
+                        <FormLabel className="font-normal" style={{ color: TEXT_DARK }}>{option.label}</FormLabel>
                       </FormItem>
                     )}
                   />
@@ -653,6 +809,13 @@ const CommunityOpportunitiesEdit = () => {
                               placeholder={option.id === 'monetary_compensation' ? 'Amount in €' : `# of ${option.label}`}
                               {...field}
                               onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                              style={{
+                                background: "#F5F6F8",
+                                color: TEXT_DARK,
+                                border: "none",
+                                borderRadius: "8px",
+                                fontFamily: "Open Sans, Arial, sans-serif"
+                              }}
                             />
                           </FormControl>
                           <FormMessage />
@@ -672,6 +835,14 @@ const CommunityOpportunitiesEdit = () => {
               variant="outline"
               onClick={form.handleSubmit((data) => handleSubmitOffer(data, "draft"))}
               disabled={isSubmitting}
+              style={{
+                background: "#fff",
+                color: TEXT_DARK,
+                fontWeight: 500,
+                borderRadius: "8px",
+                boxShadow: "0 1.5px 3px 0 rgba(55,73,87,0.08)",
+                border: "1px solid #EBEBEB"
+              }}
             >
               <Save className="w-4 h-4 mr-2" /> Save as Draft
             </Button>
@@ -679,6 +850,14 @@ const CommunityOpportunitiesEdit = () => {
               type="button"
               onClick={form.handleSubmit((data) => handleSubmitOffer(data, "published"))}
               disabled={isSubmitting}
+              style={{
+                background: CHIP_YELLOW,
+                color: TEXT_DARK,
+                fontWeight: 700,
+                borderRadius: "8px",
+                boxShadow: "0 1.5px 4px 0 rgba(55, 73, 87, 0.11)",
+                border: "none"
+              }}
             >
               <Send className="w-4 h-4 mr-2" /> Publish
             </Button>
