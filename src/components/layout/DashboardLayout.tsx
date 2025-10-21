@@ -96,7 +96,7 @@ const DashboardLayout = ({
     navigate("/");
   };
   const closeSidebar = () => setSidebarOpen(false);
-  return <div className="min-h-screen bg-background flex" style={{
+  return <div className="dashboard-light-theme min-h-screen bg-background flex" style={{
     background: "#fff"
   }}>
       {/* Sidebar */}
