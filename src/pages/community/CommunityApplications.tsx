@@ -74,8 +74,8 @@ export default function CommunityApplications() {
         email: profile.email || null,
       });
 
-      // Fetch applications
-      const { data: applicationsData, error } = await supabase
+      // Step 1: Fetch applications with opportunity data
+      const { data: applicationsData, error: appsError } = await supabase
         .from("applications")
         .select(`
           *,
@@ -85,26 +85,55 @@ export default function CommunityApplications() {
             description,
             creator_profile_id,
             creator_profile_type
-          ),
-          business_profiles!inner(
-            profile_id,
-            name,
-            business_type,
-            city,
-            profile_photo,
-            website,
-            instagram,
-            about
           )
         `)
         .eq("collab_opportunities.creator_profile_id", profile.id)
         .eq("collab_opportunities.creator_profile_type", "community")
+        .eq("applicant_profile_type", "business")
         .eq("status", "pending")
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      if (appsError) throw appsError;
 
-      setApplications(applicationsData || []);
+      if (!applicationsData || applicationsData.length === 0) {
+        setApplications([]);
+        setLoading(false);
+        return;
+      }
+
+      // Step 2: Extract unique business profile IDs
+      const businessProfileIds = [
+        ...new Set(applicationsData.map((app) => app.applicant_profile_id)),
+      ];
+
+      // Step 3: Fetch business profiles
+      const { data: businessProfiles, error: bizError } = await supabase
+        .from("business_profiles")
+        .select("profile_id, name, business_type, city, profile_photo, website, instagram, about")
+        .in("profile_id", businessProfileIds);
+
+      if (bizError) throw bizError;
+
+      // Step 4: Merge business profiles into applications
+      const businessProfileMap = new Map(
+        businessProfiles?.map((bp) => [bp.profile_id, bp]) || []
+      );
+
+      const mergedApplications = applicationsData.map((app) => ({
+        ...app,
+        business_profiles: businessProfileMap.get(app.applicant_profile_id) || {
+          profile_id: app.applicant_profile_id,
+          name: null,
+          business_type: null,
+          city: null,
+          profile_photo: null,
+          website: null,
+          instagram: null,
+          about: null,
+        },
+      }));
+
+      setApplications(mergedApplications);
     } catch (error) {
       console.error("Error fetching applications:", error);
       toast({
