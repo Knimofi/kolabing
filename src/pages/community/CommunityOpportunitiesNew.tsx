@@ -3,21 +3,34 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Button,
+  Input,
+  Textarea,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Checkbox,
+  Calendar,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  FileUpload,
+} from "@/components/ui";
 import { CalendarIcon, ArrowLeft, Save, Send } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { FileUpload } from "@/components/ui/file-upload";
 
 const BG_PAGE = "#F7F8FA";
 const BG_SECTION = "#fff";
@@ -42,29 +55,50 @@ const checklistOptions = [
   { id: "monetary_compensation", label: "Monetary Compensation (€)", hasAmount: true },
 ];
 
-const offerSchema = z.object({
-  title: z.string().min(1, "Title is required").max(100),
-  description: z.string().min(1, "Description is required").max(1000),
-  availability_mode: z.enum(["date_range", "recurring"]).default("date_range"),
-  availability_start: z.date().optional(),
-  availability_end: z.date().optional(),
-  recurring_day: z.string().optional(),
-  recurring_time: z.string().optional(),
-  venue_mode: z.enum(["no_venue", "i_have_venue", "partner_provides"]).default("no_venue"),
-  address: z.string().optional(),
-  preferred_city: z.string().optional(),
-  preferred_area: z.string().optional(),
-  use_profile_photo: z.boolean().default(false),
-  offer_photo: z.string().optional(),
+// Helper Zod refinement for at-least-one selection
+const atLeastOneChecked = (obj: Record<string, any>) =>
+  Object.values(obj || {}).some((val) => (typeof val === "number" && val > 0) || val === true);
 
-  offer_input_mode: z.enum(["checklist", "text"]).default("text"),
-  offer_checklist: z.record(z.union([z.boolean(), z.number()])).optional(),
-  offer_text: z.string().optional(),
+// Improved Zod schema, focusing on offer_checklist & expect_checklist,
+// and address field conditional on venue_mode:
+const offerSchema = z
+  .object({
+    title: z.string().min(1, "Title is required").max(100),
+    description: z.string().min(1, "Description is required").max(1000),
+    availability_mode: z.enum(["date_range", "recurring"]).default("date_range"),
+    availability_start: z.date().optional(),
+    availability_end: z.date().optional(),
+    recurring_day: z.string().optional(),
+    recurring_time: z.string().optional(),
+    venue_mode: z.enum(["no_venue", "i_have_venue", "partner_provides"]).default("no_venue"),
+    address: z.string().optional(),
+    preferred_city: z.string().optional(),
+    preferred_area: z.string().optional(),
+    use_profile_photo: z.boolean().default(false),
+    offer_photo: z.string().optional(),
 
-  expect_input_mode: z.enum(["checklist", "text"]).default("checklist"),
-  expect_checklist: z.record(z.union([z.boolean(), z.number()])).optional(),
-  expect_text: z.string().optional(),
-});
+    offer_input_mode: z.enum(["checklist", "text"]).default("text"),
+    offer_checklist: z
+      .record(z.union([z.boolean(), z.number()]))
+      .optional()
+      .refine((val, data) => data?.offer_input_mode !== "checklist" || atLeastOneChecked(val), {
+        message: "Please select at least one offer option if using checklist.",
+      }),
+    offer_text: z.string().optional(),
+
+    expect_input_mode: z.enum(["checklist", "text"]).default("checklist"),
+    expect_checklist: z
+      .record(z.union([z.boolean(), z.number()]))
+      .optional()
+      .refine((val, data) => data?.expect_input_mode !== "checklist" || atLeastOneChecked(val), {
+        message: "Please select at least one expectation if using checklist.",
+      }),
+    expect_text: z.string().optional(),
+  })
+  .refine((data) => data.venue_mode === "no_venue" || (data.venue_mode !== "no_venue" && !!data.address), {
+    message: "Address is required if you select a venue mode.",
+    path: ["address"],
+  });
 
 type OfferFormData = z.infer<typeof offerSchema>;
 
