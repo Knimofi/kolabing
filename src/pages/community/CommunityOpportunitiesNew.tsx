@@ -62,27 +62,34 @@ const offerSchema = z
     offer_photo: z.string().optional(),
 
     offer_input_mode: z.enum(["checklist", "text"]).default("text"),
-    offer_checklist: z
-      .record(z.union([z.boolean(), z.number()]))
-      .optional()
-      .refine((val, data) => data?.offer_input_mode !== "checklist" || atLeastOneChecked(val), {
-        message: "Please select at least one offer option if using checklist.",
-      }),
+    offer_checklist: z.record(z.union([z.boolean(), z.number()])).optional(),
     offer_text: z.string().optional(),
 
     expect_input_mode: z.enum(["checklist", "text"]).default("checklist"),
-    expect_checklist: z
-      .record(z.union([z.boolean(), z.number()]))
-      .optional()
-      .refine((val, data) => data?.expect_input_mode !== "checklist" || atLeastOneChecked(val), {
-        message: "Please select at least one expectation if using checklist.",
-      }),
+    expect_checklist: z.record(z.union([z.boolean(), z.number()])).optional(),
     expect_text: z.string().optional(),
   })
-  .refine((data) => data.venue_mode === "no_venue" || (data.venue_mode !== "no_venue" && !!data.address), {
-    message: "Address is required if you select a venue mode.",
-    path: ["address"],
-  });
+  .refine(
+    (data) => data.offer_input_mode !== "checklist" || atLeastOneChecked(data.offer_checklist),
+    {
+      message: "Please select at least one offer option if using checklist.",
+      path: ["offer_checklist"],
+    }
+  )
+  .refine(
+    (data) => data.expect_input_mode !== "checklist" || atLeastOneChecked(data.expect_checklist),
+    {
+      message: "Please select at least one expectation if using checklist.",
+      path: ["expect_checklist"],
+    }
+  )
+  .refine(
+    (data) => data.venue_mode === "no_venue" || !!data.address,
+    {
+      message: "Address is required if you select a venue mode.",
+      path: ["address"],
+    }
+  );
 
 type OfferFormData = z.infer<typeof offerSchema>;
 
