@@ -12,7 +12,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { FileUpload } from "@/components/ui/file-upload";
-import { CalendarIcon, ArrowLeft, Save, Send } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CalendarIcon, ArrowLeft, Save, Send, CheckCircle } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -65,31 +66,43 @@ const offerSchema = z
     offer_checklist: z.record(z.union([z.boolean(), z.number()])).optional(),
     offer_text: z.string().optional(),
 
-    expect_input_mode: z.enum(["checklist", "text"]).default("checklist"),
+    expect_input_mode: z.enum(["checklist", "text"]).default("text"),
     expect_checklist: z.record(z.union([z.boolean(), z.number()])).optional(),
     expect_text: z.string().optional(),
+
+    intent: z.enum(["draft", "published"]).default("draft"),
   })
-  .refine(
-    (data) => data.offer_input_mode !== "checklist" || atLeastOneChecked(data.offer_checklist),
-    {
-      message: "Please select at least one offer option if using checklist.",
-      path: ["offer_checklist"],
+  .superRefine((data, ctx) => {
+    // Only validate strictly for publish intent
+    if (data.intent === "published") {
+      // Validate expectations
+      if (data.expect_input_mode === "checklist" && !atLeastOneChecked(data.expect_checklist)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Please select at least one expectation if using checklist",
+          path: ["expect_checklist"],
+        });
+      }
+      
+      // Validate offers
+      if (data.offer_input_mode === "checklist" && !atLeastOneChecked(data.offer_checklist)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Please select at least one offer option if using checklist",
+          path: ["offer_checklist"],
+        });
+      }
+      
+      // Validate venue/address
+      if (data.venue_mode !== "no_venue" && !data.address) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Address is required if you select a venue mode",
+          path: ["address"],
+        });
+      }
     }
-  )
-  .refine(
-    (data) => data.expect_input_mode !== "checklist" || atLeastOneChecked(data.expect_checklist),
-    {
-      message: "Please select at least one expectation if using checklist.",
-      path: ["expect_checklist"],
-    }
-  )
-  .refine(
-    (data) => data.venue_mode === "no_venue" || !!data.address,
-    {
-      message: "Address is required if you select a venue mode.",
-      path: ["address"],
-    }
-  );
+  });
 
 type OfferFormData = z.infer<typeof offerSchema>;
 
@@ -111,14 +124,36 @@ const CommunityOpportunitiesNew = () => {
       offer_input_mode: "text",
       offer_checklist: {},
       offer_text: "",
-      expect_input_mode: "checklist",
+      expect_input_mode: "text",
       expect_checklist: {},
       expect_text: "",
+      intent: "draft",
     },
   });
 
-  const handleSubmit = async (data: OfferFormData, status: "draft" | "published") => {
+  const handleSubmit = async (data: OfferFormData) => {
     if (!profile) return;
+    
+    const status = data.intent;
+    
+    // Dev mode: log validation blocks
+    if (import.meta.env.DEV && !form.formState.isValid) {
+      console.log("[Validation Blocked]", form.formState.errors);
+    }
+    
+    // Scroll to first error if validation fails
+    if (!form.formState.isValid) {
+      form.setError("root", {
+        message: "Please fix the errors below before " + (status === "published" ? "publishing" : "saving"),
+      });
+      const firstErrorField = Object.keys(form.formState.errors)[0];
+      if (firstErrorField) {
+        const element = document.querySelector(`[name="${firstErrorField}"]`);
+        element?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      return;
+    }
+    
     setIsSubmitting(true);
     try {
       const { data: communityProfile, error: communityError } = await supabase
@@ -217,7 +252,28 @@ const CommunityOpportunitiesNew = () => {
           details: error.details,
           hint: error.hint,
         });
-        throw error;
+        
+        // Map known errors to friendly messages
+        if (error.message.includes("subscription")) {
+          toast({
+            title: "Subscription Required",
+            description: "You need an active subscription to publish. Please check your subscription status.",
+            variant: "destructive",
+          });
+        } else if (error.code === "42501" || error.message.includes("policy")) {
+          toast({
+            title: "Permission Denied",
+            description: "You don't have permission to publish this request. Please sign in again or contact support.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: `Failed to ${status === "published" ? "publish" : "save"}: ${error.message}`,
+            variant: "destructive",
+          });
+        }
+        return;
       }
 
       console.log("[CommunityOpportunitiesNew] Successfully created offer:", insertedOffer);
@@ -297,6 +353,13 @@ const CommunityOpportunitiesNew = () => {
         </div>
         <Form {...form}>
           <form className="space-y-6">
+            {/* Top-of-form error alert */}
+            {form.formState.errors.root && (
+              <Alert variant="destructive">
+                <AlertDescription>{form.formState.errors.root.message}</AlertDescription>
+              </Alert>
+            )}
+            
             {/* Basic Information */}
             <Card style={cardStyles}>
               <CardHeader>
@@ -910,11 +973,11 @@ const CommunityOpportunitiesNew = () => {
               <Button
                 type="button"
                 style={outlineButtonStyles}
-                onClick={form.handleSubmit((data) => handleSubmit(data, "draft"))}
+                onClick={form.handleSubmit((data) => handleSubmit({ ...data, intent: "draft" }))}
                 disabled={isSubmitting}
               >
                 <Save className="w-4 h-4 mr-2" />
-                Save as Draft
+                {isSubmitting ? "Saving..." : "Save as Draft"}
               </Button>
               <Button
                 type="button"
@@ -924,11 +987,11 @@ const CommunityOpportunitiesNew = () => {
                   fontSize: "17px",
                   padding: "12px 0",
                 }}
-                onClick={form.handleSubmit((data) => handleSubmit(data, "published"))}
+                onClick={form.handleSubmit((data) => handleSubmit({ ...data, intent: "published" }))}
                 disabled={isSubmitting}
               >
                 <Send className="w-4 h-4 mr-2" />
-                Publish Request
+                {isSubmitting ? "Publishing..." : "Publish Request"}
               </Button>
             </div>
           </form>

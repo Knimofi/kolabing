@@ -11,7 +11,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, ArrowLeft, Save, Send, Info } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CalendarIcon, ArrowLeft, Save, Send, CheckCircle, Info } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -27,6 +28,9 @@ const TEXT_DARK = "#232323";
 const CARD_SHADOW = "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55,73,87,0.13)";
 const CARD_BORDER = "1px solid #EBEBEB";
 const CARD_RADIUS = "14px";
+
+const atLeastOneChecked = (obj: any) =>
+  Object.values(obj || {}).some((val) => (typeof val === "number" && val > 0) || val === true);
 
 const offerSchema = z.object({
   title: z.string().min(1, "Title is required").max(100, "Title must be under 100 characters"),
@@ -52,6 +56,28 @@ const offerSchema = z.object({
     minimum_consumption: z.number().optional(),
   }),
   timeline_days: z.number().min(1, "Timeline is required").max(365, "Timeline must be under 365 days"),
+  intent: z.enum(["draft", "published"]).default("draft"),
+}).superRefine((data, ctx) => {
+  // Only validate strictly for publish intent
+  if (data.intent === "published") {
+    // Validate at least one deliverable
+    if (!atLeastOneChecked(data.community_deliverables)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please select at least one community deliverable for publishing",
+        path: ["community_deliverables"],
+      });
+    }
+    
+    // Validate venue/address
+    if (!data.no_venue && !data.address) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Address is required if no venue checkbox is not checked",
+        path: ["address"],
+      });
+    }
+  }
 });
 
 type OfferFormData = z.infer<typeof offerSchema>;
@@ -85,6 +111,7 @@ const BusinessOffersNew = () => {
         minimum_consumption: undefined,
       },
       timeline_days: 7,
+      intent: "draft",
     },
   });
 
@@ -100,8 +127,29 @@ const BusinessOffersNew = () => {
     { id: "loyalty_signups", label: "Loyalty Sign-ups", hasAmount: true },
   ] as const;
 
-  const handleSubmit = async (data: OfferFormData, status: "draft" | "published") => {
+  const handleSubmit = async (data: OfferFormData) => {
     if (!profile) return;
+
+    const status = data.intent;
+    
+    // Dev mode: log validation blocks
+    if (import.meta.env.DEV && !form.formState.isValid) {
+      console.log("[Validation Blocked]", form.formState.errors);
+    }
+    
+    // Scroll to first error if validation fails
+    if (!form.formState.isValid) {
+      form.setError("root", {
+        message: "Please fix the errors below before " + (status === "published" ? "publishing" : "saving"),
+      });
+      const firstErrorField = Object.keys(form.formState.errors)[0];
+      if (firstErrorField) {
+        const element = document.querySelector(`[name="${firstErrorField}"]`);
+        element?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      return;
+    }
+    
     setIsSubmitting(true);
 
     try {
@@ -169,7 +217,29 @@ const BusinessOffersNew = () => {
           details: error.details,
           hint: error.hint,
         });
-        throw error;
+        
+        // Map known errors to friendly messages
+        if (error.message.includes("subscription")) {
+          toast({
+            title: "Subscription Required",
+            description: "You need an active subscription to publish. Please visit Business Plans.",
+            variant: "destructive",
+          });
+        } else if (error.code === "42501" || error.message.includes("policy")) {
+          toast({
+            title: "Permission Denied",
+            description: "You don't have permission to publish this request. Please sign in again or contact support.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: `Failed to ${status === "published" ? "publish" : "save"}: ${error.message}`,
+            variant: "destructive",
+          });
+        }
+        setIsSubmitting(false);
+        return;
       }
 
       console.log("[BusinessOffersNew] Successfully created offer:", insertedOffer);
@@ -210,6 +280,13 @@ const BusinessOffersNew = () => {
         </div>
         <Form {...form}>
           <form className="space-y-6">
+            {/* Top-of-form error alert */}
+            {form.formState.errors.root && (
+              <Alert variant="destructive">
+                <AlertDescription>{form.formState.errors.root.message}</AlertDescription>
+              </Alert>
+            )}
+            
             {/* Basic Information */}
             <Card
               style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}
@@ -586,19 +663,19 @@ const BusinessOffersNew = () => {
               <Button
                 type="button"
                 variant="outline"
-                onClick={form.handleSubmit((data) => handleSubmit(data, "draft"))}
+                onClick={form.handleSubmit((data) => handleSubmit({ ...data, intent: "draft" }))}
                 disabled={isSubmitting}
               >
                 <Save className="w-4 h-4 mr-2" />
-                Save as Draft
+                {isSubmitting ? "Saving..." : "Save as Draft"}
               </Button>
               <Button
                 type="button"
-                onClick={form.handleSubmit((data) => handleSubmit(data, "published"))}
+                onClick={form.handleSubmit((data) => handleSubmit({ ...data, intent: "published" }))}
                 disabled={isSubmitting}
               >
                 <Send className="w-4 h-4 mr-2" />
-                Publish Request
+                {isSubmitting ? "Publishing..." : "Publish Request"}
               </Button>
             </div>
           </form>
