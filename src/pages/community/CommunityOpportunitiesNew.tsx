@@ -19,12 +19,12 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { FileUpload } from "@/components/ui/file-upload";
 
-const BG_PAGE = "#F7F8FA"; // uniform greyish background
-const BG_SECTION = "#fff"; // cards are white for lifted effect
+const BG_PAGE = "#F7F8FA";
+const BG_SECTION = "#fff";
 const CARD_SHADOW = "0 1.5px 8px 0 rgba(55, 73, 87, 0.10), 0.5px 0.5px 1.5px rgba(55, 73, 87, 0.13)";
 const CARD_RADIUS = "14px";
 const TEXT_DARK = "#232323";
-const CHIP_YELLOW = "#FFD861"; // Use this for main buttons and chips
+const CHIP_YELLOW = "#FFD861";
 
 const checklistOptions = [
   { id: "tagged_stories", label: "Tagged Stories", hasAmount: true },
@@ -113,6 +113,31 @@ const CommunityOpportunitiesNew = () => {
       if (data.use_profile_photo && communityProfile.profile_photo) {
         finalOfferPhoto = communityProfile.profile_photo;
       }
+      let business_offer = {};
+      if (data.expect_input_mode === "checklist" && data.expect_checklist) {
+        business_offer = {
+          mode: "checklist",
+          checklist: data.expect_checklist,
+        };
+      } else if (data.expect_input_mode === "text" && data.expect_text) {
+        business_offer = {
+          mode: "text",
+          text: data.expect_text,
+        };
+      }
+      let community_deliverables = {};
+      if (data.offer_input_mode === "checklist" && data.offer_checklist) {
+        community_deliverables = {
+          mode: "checklist",
+          checklist: data.offer_checklist,
+        };
+      } else if (data.offer_input_mode === "text" && data.offer_text) {
+        community_deliverables = {
+          mode: "text",
+          text: data.offer_text,
+        };
+      }
+
       const offerData = {
         title: data.title,
         description: data.description,
@@ -127,17 +152,13 @@ const CommunityOpportunitiesNew = () => {
         preferred_area: data.preferred_area,
         use_profile_photo: data.use_profile_photo,
         offer_photo: finalOfferPhoto,
-
-        offer_input_mode: data.offer_input_mode,
-        offer_checklist: data.offer_checklist,
-        offer_text: data.offer_text,
-        expect_input_mode: data.expect_input_mode,
-        expect_checklist: data.expect_checklist,
-        expect_text: data.expect_text,
         creator_profile_id: communityProfile.profile_id,
         creator_profile_type: "community" as const,
+        business_offer,
+        community_deliverables,
         status,
       };
+
       const { error } = await supabase.from("collab_opportunities").insert([offerData]);
       if (error) throw error;
       toast({
@@ -157,7 +178,6 @@ const CommunityOpportunitiesNew = () => {
     }
   };
 
-  // Card style shortcut
   const cardStyles = {
     background: BG_SECTION,
     boxShadow: CARD_SHADOW,
@@ -165,7 +185,6 @@ const CommunityOpportunitiesNew = () => {
     border: "1px solid #EBEBEB",
   };
 
-  // Button styles
   const mainButtonStyles = {
     background: CHIP_YELLOW,
     color: TEXT_DARK,
@@ -443,7 +462,6 @@ const CommunityOpportunitiesNew = () => {
                 )}
               </CardContent>
             </Card>
-            {/* Location */}
             <Card style={cardStyles}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Location</CardTitle>
@@ -555,7 +573,6 @@ const CommunityOpportunitiesNew = () => {
                 />
               </CardContent>
             </Card>
-            {/* Photo Upload */}
             <Card style={cardStyles}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Request Photo</CardTitle>
@@ -589,7 +606,6 @@ const CommunityOpportunitiesNew = () => {
                 )}
               </CardContent>
             </Card>
-            {/* What can you offer? */}
             <Card style={cardStyles}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>What can you offer?</CardTitle>
@@ -709,7 +725,6 @@ const CommunityOpportunitiesNew = () => {
                 )}
               </CardContent>
             </Card>
-            {/* What do you expect from collaborators? */}
             <Card style={cardStyles}>
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>What do you expect from collaborators?</CardTitle>
@@ -829,7 +844,6 @@ const CommunityOpportunitiesNew = () => {
                 )}
               </CardContent>
             </Card>
-            {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-end">
               <Button
                 type="button"
