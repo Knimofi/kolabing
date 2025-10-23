@@ -1,74 +1,62 @@
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Send } from 'lucide-react';
-import PreferredDatesSelector, { PreferredDate } from '@/components/PreferredDatesSelector';
+import React, { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Send } from "lucide-react";
+import PreferredDatesSelector, { PreferredDate } from "@/components/PreferredDatesSelector";
 
 interface ApplyOfferModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   offer: any;
   businessProfile: any;
-  onSubmit: (applicationData: {
-    availability: string;
-    message: string;
-  }) => Promise<void>;
+  onSubmit: (applicationData: { availability: string; message: string }) => Promise<void>;
   isSubmitting?: boolean;
 }
 
-const ApplyOfferModal = ({ 
-  open, 
-  onOpenChange, 
-  offer, 
-  businessProfile, 
-  onSubmit, 
-  isSubmitting = false 
+const ApplyOfferModal = ({
+  open,
+  onOpenChange,
+  offer,
+  businessProfile,
+  onSubmit,
+  isSubmitting = false,
 }: ApplyOfferModalProps) => {
   const [preferredDates, setPreferredDates] = useState<PreferredDate[]>([]);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!message.trim()) return;
 
     try {
-      // Convert preferred dates to JSON string for storage
-      const availabilityData = preferredDates.length > 0 
-        ? JSON.stringify({ preferred_dates: preferredDates })
-        : '';
+      const availabilityData = preferredDates.length > 0 ? JSON.stringify({ preferred_dates: preferredDates }) : "";
 
       await onSubmit({
         availability: availabilityData,
-        message: message.trim()
+        message: message.trim(),
       });
-      
-      // Reset form
+
       setPreferredDates([]);
-      setMessage('');
+      setMessage("");
       onOpenChange(false);
     } catch (error) {
-      // Error handling is done in parent component
+      // error handling is done in parent component
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[80vh] sm:max-w-full sm:max-h-[90vh] overflow-y-auto flex flex-col justify-between">
         <DialogHeader>
           <DialogTitle>Apply to "{offer?.title}"</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Preferred Dates & Times */}
-          <PreferredDatesSelector
-            value={preferredDates}
-            onChange={setPreferredDates}
-          />
+        <form onSubmit={handleSubmit} className="space-y-4 flex-1 flex flex-col">
+          <PreferredDatesSelector value={preferredDates} onChange={setPreferredDates} />
 
-          {/* Application Message */}
           <div className="space-y-2">
             <Label htmlFor="message">
               Application Message <span className="text-destructive">*</span>
@@ -81,23 +69,17 @@ const ApplyOfferModal = ({
               rows={5}
               required
             />
-            <p className="text-xs text-muted-foreground">
-              {message.length}/500 characters
-            </p>
+            <p className="text-xs text-muted-foreground">{message.length}/500 characters</p>
           </div>
 
-          {/* Business Info */}
           <div className="bg-muted/50 p-3 rounded-lg text-sm">
             <p className="font-medium">You're applying to:</p>
             <p className="text-muted-foreground">
               {businessProfile?.name} • {businessProfile?.business_type}
             </p>
-            {businessProfile?.city && (
-              <p className="text-muted-foreground">{businessProfile.city}</p>
-            )}
+            {businessProfile?.city && <p className="text-muted-foreground">{businessProfile.city}</p>}
           </div>
 
-          {/* Action Buttons */}
           <div className="flex gap-2 pt-2">
             <Button
               type="button"
@@ -108,11 +90,7 @@ const ApplyOfferModal = ({
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={!message.trim() || isSubmitting}
-              className="flex-1"
-            >
+            <Button type="submit" disabled={!message.trim() || isSubmitting} className="flex-1">
               {isSubmitting ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
