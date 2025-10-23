@@ -3,28 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Button,
-  Input,
-  Textarea,
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  Checkbox,
-  Calendar,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  FileUpload,
-} from "@/components/ui";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { FileUpload } from "@/components/ui/file-upload";
 import { CalendarIcon, ArrowLeft, Save, Send } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
@@ -55,12 +42,9 @@ const checklistOptions = [
   { id: "monetary_compensation", label: "Monetary Compensation (€)", hasAmount: true },
 ];
 
-// Helper Zod refinement for at-least-one selection
-const atLeastOneChecked = (obj: Record<string, any>) =>
+const atLeastOneChecked = (obj) =>
   Object.values(obj || {}).some((val) => (typeof val === "number" && val > 0) || val === true);
 
-// Improved Zod schema, focusing on offer_checklist & expect_checklist,
-// and address field conditional on venue_mode:
 const offerSchema = z
   .object({
     title: z.string().min(1, "Title is required").max(100),
