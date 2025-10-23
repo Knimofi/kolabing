@@ -112,9 +112,25 @@ const BusinessOffersNew = () => {
         .single();
 
       if (businessError || !businessProfile) {
+        console.error("[BusinessOffersNew] Profile fetch error:", businessError);
         toast({
           title: "Error",
           description: "Business profile missing. Please complete your business profile setup.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Defensive check: Ensure profile IDs match
+      if (businessProfile.profile_id !== profile.id) {
+        console.warn("[BusinessOffersNew] Profile ID mismatch!", {
+          businessProfileId: businessProfile.profile_id,
+          authProfileId: profile.id,
+        });
+        toast({
+          title: "Profile Error",
+          description: "Profile ID mismatch detected. Please contact support.",
           variant: "destructive",
         });
         setIsSubmitting(false);
@@ -137,8 +153,26 @@ const BusinessOffersNew = () => {
         status,
       };
 
-      const { error } = await supabase.from("collab_opportunities").insert([offerData]);
-      if (error) throw error;
+      console.log("[BusinessOffersNew] Attempting to insert offer:", offerData);
+
+      const { data: insertedOffer, error } = await supabase
+        .from("collab_opportunities")
+        .insert([offerData])
+        .select("id")
+        .single();
+
+      if (error) {
+        console.error("[BusinessOffersNew] Insert error:", {
+          error,
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+        });
+        throw error;
+      }
+
+      console.log("[BusinessOffersNew] Successfully created offer:", insertedOffer);
 
       toast({
         title: status === "draft" ? "Offer saved as draft" : "Offer published successfully",
@@ -150,6 +184,7 @@ const BusinessOffersNew = () => {
 
       navigate("/business/opportunities");
     } catch (error: any) {
+      console.error("[BusinessOffersNew] Submission failed:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to create offer. Please try again.",

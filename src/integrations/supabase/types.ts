@@ -602,10 +602,7 @@ export type Database = {
         }
         Returns: string
       }
-      get_current_profile_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      get_current_profile_id: { Args: never; Returns: string }
       is_applicant_of_application: {
         Args: { application_id: string }
         Returns: boolean
@@ -626,10 +623,7 @@ export type Database = {
         Args: { collaboration_id: string }
         Returns: boolean
       }
-      is_profile_owner: {
-        Args: { profile_id: string }
-        Returns: boolean
-      }
+      is_profile_owner: { Args: { profile_id: string }; Returns: boolean }
       is_profile_owner_by_user_id: {
         Args: { profile_user_id: string }
         Returns: boolean

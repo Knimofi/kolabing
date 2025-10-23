@@ -126,7 +126,9 @@ const CommunityOpportunitiesNew = () => {
         .select("profile_id, profile_photo")
         .eq("profile_id", profile.id)
         .single();
+      
       if (communityError || !communityProfile) {
+        console.error("[CommunityOpportunitiesNew] Profile fetch error:", communityError);
         toast({
           title: "Error",
           description: "Community profile missing. Please complete your setup.",
@@ -134,6 +136,21 @@ const CommunityOpportunitiesNew = () => {
         });
         return;
       }
+
+      // Defensive check: Ensure profile IDs match
+      if (communityProfile.profile_id !== profile.id) {
+        console.warn("[CommunityOpportunitiesNew] Profile ID mismatch!", {
+          communityProfileId: communityProfile.profile_id,
+          authProfileId: profile.id,
+        });
+        toast({
+          title: "Profile Error",
+          description: "Profile ID mismatch detected. Please contact support.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       let finalOfferPhoto = data.offer_photo;
       if (data.use_profile_photo && communityProfile.profile_photo) {
         finalOfferPhoto = communityProfile.profile_photo;
@@ -184,8 +201,27 @@ const CommunityOpportunitiesNew = () => {
         status,
       };
 
-      const { error } = await supabase.from("collab_opportunities").insert([offerData]);
-      if (error) throw error;
+      console.log("[CommunityOpportunitiesNew] Attempting to insert offer:", offerData);
+
+      const { data: insertedOffer, error } = await supabase
+        .from("collab_opportunities")
+        .insert([offerData])
+        .select("id")
+        .single();
+
+      if (error) {
+        console.error("[CommunityOpportunitiesNew] Insert error:", {
+          error,
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+        });
+        throw error;
+      }
+
+      console.log("[CommunityOpportunitiesNew] Successfully created offer:", insertedOffer);
+
       toast({
         title: status === "draft" ? "Saved as Draft" : "Published!",
         description:
@@ -193,6 +229,7 @@ const CommunityOpportunitiesNew = () => {
       });
       navigate("/community/my-opportunities");
     } catch (error: any) {
+      console.error("[CommunityOpportunitiesNew] Submission failed:", error);
       toast({
         title: "Error",
         description: error.message || "Something went wrong. Try again.",
