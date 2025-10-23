@@ -138,7 +138,6 @@ const BusinessOffersNew = () => {
       };
 
       const { error } = await supabase.from("collab_opportunities").insert([offerData]);
-
       if (error) throw error;
 
       toast({
@@ -177,7 +176,9 @@ const BusinessOffersNew = () => {
         <Form {...form}>
           <form className="space-y-6">
             {/* Basic Information */}
-            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
+            <Card
+              style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}
+            >
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Basic Information</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -233,7 +234,9 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Availability */}
-            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
+            <Card
+              style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}
+            >
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Availability</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -316,7 +319,9 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Location */}
-            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
+            <Card
+              style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}
+            >
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Location</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -368,7 +373,9 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Photo Upload */}
-            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
+            <Card
+              style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}
+            >
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>Request Photo</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -386,7 +393,9 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Business Offer */}
-            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
+            <Card
+              style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}
+            >
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>What You're Offering</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
@@ -420,7 +429,9 @@ const BusinessOffersNew = () => {
               </CardContent>
             </Card>
             {/* Community Deliverables */}
-            <Card style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}>
+            <Card
+              style={{ background: BG_SECTION, border: CARD_BORDER, borderRadius: CARD_RADIUS, boxShadow: CARD_SHADOW }}
+            >
               <CardHeader>
                 <CardTitle style={{ color: TEXT_DARK }}>What do you expect from the community?</CardTitle>
                 <CardDescription style={{ color: "#606060" }}>
