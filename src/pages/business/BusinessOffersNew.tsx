@@ -663,7 +663,21 @@ const BusinessOffersNew = () => {
               <Button
                 type="button"
                 variant="outline"
-                onClick={form.handleSubmit((data) => handleSubmit({ ...data, intent: "draft" }))}
+                onClick={form.handleSubmit(
+                  (data) => {
+                    if (import.meta.env.DEV) console.log("[BusinessOffersNew] Draft submit clicked", { data });
+                    handleSubmit({ ...data, intent: "draft" });
+                  },
+                  (errors) => {
+                    console.warn("[BusinessOffersNew] Draft submit blocked by validation", errors);
+                    form.setError("root", { message: "Please fix the errors below before saving" });
+                    const firstErrorField = Object.keys(errors || {})[0];
+                    if (firstErrorField) {
+                      const element = document.querySelector(`[name="${firstErrorField}"]`);
+                      element?.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }
+                  }
+                )}
                 disabled={isSubmitting}
               >
                 <Save className="w-4 h-4 mr-2" />
@@ -671,7 +685,21 @@ const BusinessOffersNew = () => {
               </Button>
               <Button
                 type="button"
-                onClick={form.handleSubmit((data) => handleSubmit({ ...data, intent: "published" }))}
+                onClick={form.handleSubmit(
+                  (data) => {
+                    if (import.meta.env.DEV) console.log("[BusinessOffersNew] Publish submit clicked", { data });
+                    handleSubmit({ ...data, intent: "published" });
+                  },
+                  (errors) => {
+                    console.warn("[BusinessOffersNew] Publish submit blocked by validation", errors);
+                    form.setError("root", { message: "Please fix the errors below before publishing" });
+                    const firstErrorField = Object.keys(errors || {})[0];
+                    if (firstErrorField) {
+                      const element = document.querySelector(`[name="${firstErrorField}"]`);
+                      element?.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }
+                  }
+                )}
                 disabled={isSubmitting}
               >
                 <Send className="w-4 h-4 mr-2" />
