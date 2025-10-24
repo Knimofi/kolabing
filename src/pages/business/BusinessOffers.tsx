@@ -137,7 +137,10 @@ const BusinessOffers = () => {
             Create and manage your collaboration opportunities
           </p>
           <Button
-            onClick={() => navigate("/business/offers/new")}
+            onClick={() => {
+              console.log("[BusinessOffers] Navigating to create new request");
+              navigate("/business/opportunities/new");
+            }}
             style={{
               background: "#FFD861",
               color: "#fff",

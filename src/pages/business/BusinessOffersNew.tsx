@@ -83,10 +83,14 @@ const offerSchema = z.object({
 type OfferFormData = z.infer<typeof offerSchema>;
 
 const BusinessOffersNew = () => {
+  console.log("[BusinessOffersNew] Component mounted");
+  
   const navigate = useNavigate();
   const { profile } = useAuth();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  console.log("[BusinessOffersNew] Profile:", profile);
 
   const form = useForm<OfferFormData>({
     resolver: zodResolver(offerSchema),
@@ -265,6 +269,8 @@ const BusinessOffersNew = () => {
     }
   };
 
+  console.log("[BusinessOffersNew] Rendering form");
+  
   return (
     <div style={{ minHeight: "100vh", background: BG_PAGE }} className="py-8 px-4 flex flex-col items-center">
       <div className="w-full max-w-2xl space-y-6">
