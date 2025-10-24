@@ -980,7 +980,27 @@ const CommunityOpportunitiesNew = () => {
                   },
                   (errors) => {
                     console.warn("[CommunityOpportunitiesNew] Draft submit blocked by validation", errors);
-                    form.setError("root", { message: "Please fix the errors below before saving" });
+                    
+                    // Extract actual error messages
+                    const errorMessages = Object.entries(errors)
+                      .filter(([key]) => key !== "root")
+                      .map(([key, error]: [string, any]) => {
+                        const message = error?.message || "Invalid value";
+                        return `${key}: ${message}`;
+                      })
+                      .join(", ");
+                    
+                    const displayMessage = errorMessages 
+                      ? `Validation failed: ${errorMessages}`
+                      : "Please fix the errors below before saving";
+                    
+                    form.setError("root", { message: displayMessage });
+                    toast({
+                      title: "Validation Error",
+                      description: displayMessage,
+                      variant: "destructive",
+                    });
+                    
                     const firstErrorField = Object.keys(errors || {})[0];
                     if (firstErrorField) {
                       const element = document.querySelector(`[name="${firstErrorField}"]`);
@@ -1008,7 +1028,27 @@ const CommunityOpportunitiesNew = () => {
                   },
                   (errors) => {
                     console.warn("[CommunityOpportunitiesNew] Publish submit blocked by validation", errors);
-                    form.setError("root", { message: "Please fix the errors below before publishing" });
+                    
+                    // Extract actual error messages
+                    const errorMessages = Object.entries(errors)
+                      .filter(([key]) => key !== "root")
+                      .map(([key, error]: [string, any]) => {
+                        const message = error?.message || "Invalid value";
+                        return `${key}: ${message}`;
+                      })
+                      .join(", ");
+                    
+                    const displayMessage = errorMessages 
+                      ? `Validation failed: ${errorMessages}`
+                      : "Please fix the errors below before publishing";
+                    
+                    form.setError("root", { message: displayMessage });
+                    toast({
+                      title: "Validation Error",
+                      description: displayMessage,
+                      variant: "destructive",
+                    });
+                    
                     const firstErrorField = Object.keys(errors || {})[0];
                     if (firstErrorField) {
                       const element = document.querySelector(`[name="${firstErrorField}"]`);
