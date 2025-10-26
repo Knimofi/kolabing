@@ -81,7 +81,11 @@ const BusinessProfile: React.FC = () => {
     }
     
     if (formData.phone_number && !/^\+?[\d\s\-\(\)]+$/.test(formData.phone_number)) {
-      newErrors.phone_number = 'Please enter a valid phone number';
+      newErrors.phone_number = 'Please enter a valid phone number (numbers only)';
+    }
+    
+    if (formData.phone_number && formData.phone_number.replace(/[\s\-\(\)\+]/g, '').length < 10) {
+      newErrors.phone_number = 'Phone number must be at least 10 digits';
     }
     
     if (formData.instagram && !formData.instagram.match(/^@?[\w\.]+$/)) {
@@ -204,6 +208,7 @@ const BusinessProfile: React.FC = () => {
                   placeholder="Enter your business name"
                   aria-invalid={!!errors.name}
                   aria-describedby={errors.name ? 'name-error' : undefined}
+                  style={{ background: '#FFFFFF' }}
                 />
                 {errors.name && (
                   <p id="name-error" className="text-sm text-destructive" role="alert">
@@ -228,10 +233,10 @@ const BusinessProfile: React.FC = () => {
                   value={formData.city_id} 
                   onValueChange={(value) => handleInputChange('city_id', value)}
                 >
-                  <SelectTrigger id="city_id" aria-invalid={!!errors.city_id}>
+                  <SelectTrigger id="city_id" aria-invalid={!!errors.city_id} style={{ background: '#FFFFFF' }}>
                     <SelectValue placeholder="Select your city" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent style={{ background: '#FFFFFF' }}>
                     {cities.map((city) => (
                       <SelectItem key={city.id} value={city.id}>
                         {city.name}
@@ -263,10 +268,10 @@ const BusinessProfile: React.FC = () => {
                 value={formData.business_type} 
                 onValueChange={(value) => handleInputChange('business_type', value)}
               >
-                <SelectTrigger id="business_type" aria-invalid={!!errors.business_type}>
+                <SelectTrigger id="business_type" aria-invalid={!!errors.business_type} style={{ background: '#FFFFFF' }}>
                   <SelectValue placeholder="Select your business type" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent style={{ background: '#FFFFFF' }}>
                   {businessTypes.map((type) => (
                     <SelectItem key={type} value={type}>
                       {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -297,10 +302,17 @@ const BusinessProfile: React.FC = () => {
                 id="phone_number"
                 type="tel"
                 value={formData.phone_number}
-                onChange={(e) => handleInputChange('phone_number', e.target.value)}
-                placeholder="Enter your phone number"
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Only allow numbers, +, -, (, ), and spaces
+                  if (value === '' || /^[\d\s\-\(\)\+]*$/.test(value)) {
+                    handleInputChange('phone_number', value);
+                  }
+                }}
+                placeholder="+34 600 123 456"
                 aria-invalid={!!errors.phone_number}
                 aria-describedby={errors.phone_number ? 'phone-error' : undefined}
+                style={{ background: '#FFFFFF' }}
               />
               {errors.phone_number && (
                 <p id="phone-error" className="text-sm text-destructive" role="alert">
@@ -329,6 +341,7 @@ const BusinessProfile: React.FC = () => {
                 onChange={(e) => handleInputChange('about', e.target.value)}
                 placeholder="Describe here your business and mentality."
                 className="min-h-[100px]"
+                style={{ background: '#FFFFFF' }}
               />
             </div>
 
@@ -353,6 +366,7 @@ const BusinessProfile: React.FC = () => {
                   placeholder="yourwebsite.com"
                   aria-invalid={!!errors.website}
                   aria-describedby={errors.website ? 'website-error' : undefined}
+                  style={{ background: '#FFFFFF' }}
                 />
                 {errors.website && (
                   <p id="website-error" className="text-sm text-destructive" role="alert">
@@ -380,6 +394,7 @@ const BusinessProfile: React.FC = () => {
                   placeholder="yourbusiness"
                   aria-invalid={!!errors.instagram}
                   aria-describedby={errors.instagram ? 'instagram-error' : undefined}
+                  style={{ background: '#FFFFFF' }}
                 />
                 {errors.instagram && (
                   <p id="instagram-error" className="text-sm text-destructive" role="alert">
