@@ -14,6 +14,7 @@ interface Profile {
   // Extended profile fields
   name?: string;
   city?: string;
+  city_id?: string;
   profile_photo?: string;
   website?: string;
   instagram?: string;
@@ -109,6 +110,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           extendedData = {
             name: businessData.name,
             city: businessData.city,
+            city_id: businessData.city_id,
             profile_photo: businessData.profile_photo,
             website: businessData.website,
             instagram: businessData.instagram,
@@ -128,6 +130,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           extendedData = {
             name: communityData.name,
             city: communityData.city,
+            city_id: communityData.city_id,
             profile_photo: communityData.profile_photo,
             website: communityData.website,
             instagram: communityData.instagram,
@@ -238,6 +241,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Extended profile fields
       if (updates.name !== undefined) extendedProfileUpdates.name = updates.name;
       if (updates.city !== undefined) extendedProfileUpdates.city = updates.city;
+      if (updates.city_id !== undefined) extendedProfileUpdates.city_id = updates.city_id;
       if (updates.profile_photo !== undefined) extendedProfileUpdates.profile_photo = updates.profile_photo;
       if (updates.website !== undefined) extendedProfileUpdates.website = updates.website;
       if (updates.instagram !== undefined) extendedProfileUpdates.instagram = updates.instagram;

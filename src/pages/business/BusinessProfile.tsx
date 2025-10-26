@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
 import { Building2, Save, Loader2, Info } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const businessTypes = [
   'restaurant',
@@ -28,9 +29,10 @@ const businessTypes = [
 const BusinessProfile: React.FC = () => {
   const { profile, updateProfile } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [cities, setCities] = useState<Array<{ id: string; name: string }>>([]);
   const [formData, setFormData] = useState({
     name: profile?.name || '',
-    city: profile?.city || '',
+    city_id: profile?.city_id || '',
     phone_number: profile?.phone_number || '',
     business_type: profile?.business_type || '',
     profile_photo: profile?.profile_photo || '',
@@ -41,6 +43,28 @@ const BusinessProfile: React.FC = () => {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  useEffect(() => {
+    const fetchCities = async () => {
+      const { data, error } = await supabase
+        .from('cities')
+        .select('id, name')
+        .order('name');
+      
+      if (error) {
+        console.error('Error fetching cities:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load cities",
+          variant: "destructive",
+        });
+      } else {
+        setCities(data || []);
+      }
+    };
+    
+    fetchCities();
+  }, []);
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     
@@ -48,8 +72,8 @@ const BusinessProfile: React.FC = () => {
       newErrors.name = 'Business name is required';
     }
     
-    if (!formData.city.trim()) {
-      newErrors.city = 'City is required';
+    if (!formData.city_id) {
+      newErrors.city_id = 'City is required';
     }
     
     if (!formData.business_type) {
@@ -190,27 +214,34 @@ const BusinessProfile: React.FC = () => {
 
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Label htmlFor="city">City *</Label>
+                  <Label htmlFor="city_id">City *</Label>
                   <Tooltip>
                     <TooltipTrigger>
                       <Info size={14} className="text-muted-foreground" />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Where is the business located? Add Street, Number, Zip Code, City, Country</p>
+                      <p>Select the city where your business is located</p>
                     </TooltipContent>
                   </Tooltip>
                 </div>
-                <Input
-                  id="city"
-                  value={formData.city}
-                  onChange={(e) => handleInputChange('city', e.target.value)}
-                  placeholder="Enter your city"
-                  aria-invalid={!!errors.city}
-                  aria-describedby={errors.city ? 'city-error' : undefined}
-                />
-                {errors.city && (
+                <Select 
+                  value={formData.city_id} 
+                  onValueChange={(value) => handleInputChange('city_id', value)}
+                >
+                  <SelectTrigger id="city_id" aria-invalid={!!errors.city_id}>
+                    <SelectValue placeholder="Select your city" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {cities.map((city) => (
+                      <SelectItem key={city.id} value={city.id}>
+                        {city.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.city_id && (
                   <p id="city-error" className="text-sm text-destructive" role="alert">
-                    {errors.city}
+                    {errors.city_id}
                   </p>
                 )}
               </div>

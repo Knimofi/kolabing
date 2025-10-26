@@ -9,6 +9,7 @@ export type Database = GeneratedDatabase & {
           about: string | null;
           business_type: string | null;
           city: string | null;
+          city_id: string | null;
           created_at: string;
           instagram: string | null;
           name: string | null;
@@ -21,6 +22,7 @@ export type Database = GeneratedDatabase & {
           about?: string | null;
           business_type?: string | null;
           city?: string | null;
+          city_id?: string | null;
           created_at?: string;
           instagram?: string | null;
           name?: string | null;
@@ -33,6 +35,7 @@ export type Database = GeneratedDatabase & {
           about?: string | null;
           business_type?: string | null;
           city?: string | null;
+          city_id?: string | null;
           created_at?: string;
           instagram?: string | null;
           name?: string | null;
@@ -67,6 +70,7 @@ export type Database = GeneratedDatabase & {
         Row: {
           about: string | null;
           city: string | null;
+          city_id: string | null;
           community_type: string | null;
           created_at: string;
           Featured: boolean;
@@ -81,6 +85,7 @@ export type Database = GeneratedDatabase & {
         Insert: {
           about?: string | null;
           city?: string | null;
+          city_id?: string | null;
           community_type?: string | null;
           created_at?: string;
           Featured?: boolean;
@@ -95,6 +100,7 @@ export type Database = GeneratedDatabase & {
         Update: {
           about?: string | null;
           city?: string | null;
+          city_id?: string | null;
           community_type?: string | null;
           created_at?: string;
           Featured?: boolean;

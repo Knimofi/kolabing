@@ -5,6 +5,7 @@ export interface PublicBusinessProfile {
   name: string | null;
   business_type: string | null;
   city: string | null;
+  city_id: string | null;
   profile_photo: string | null;
   website: string | null;
   instagram: string | null;
@@ -17,6 +18,7 @@ export interface PublicCommunityProfile {
   name: string | null;
   community_type: string | null;
   city: string | null;
+  city_id: string | null;
   profile_photo: string | null;
   website: string | null;
   instagram: string | null;

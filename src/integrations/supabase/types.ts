@@ -104,6 +104,7 @@ export type Database = {
           about: string | null
           business_type: string | null
           city: string | null
+          city_id: string | null
           created_at: string
           instagram: string | null
           name: string | null
@@ -116,6 +117,7 @@ export type Database = {
           about?: string | null
           business_type?: string | null
           city?: string | null
+          city_id?: string | null
           created_at?: string
           instagram?: string | null
           name?: string | null
@@ -128,6 +130,7 @@ export type Database = {
           about?: string | null
           business_type?: string | null
           city?: string | null
+          city_id?: string | null
           created_at?: string
           instagram?: string | null
           name?: string | null
@@ -137,6 +140,13 @@ export type Database = {
           website?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "business_profiles_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "business_profiles_id_fkey"
             columns: ["profile_id"]
@@ -184,6 +194,24 @@ export type Database = {
             referencedColumns: ["profile_id"]
           },
         ]
+      }
+      cities: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
       }
       collab_opportunities: {
         Row: {
@@ -378,6 +406,7 @@ export type Database = {
         Row: {
           about: string | null
           city: string | null
+          city_id: string | null
           community_type: string | null
           created_at: string
           Featured: boolean
@@ -392,6 +421,7 @@ export type Database = {
         Insert: {
           about?: string | null
           city?: string | null
+          city_id?: string | null
           community_type?: string | null
           created_at?: string
           Featured?: boolean
@@ -406,6 +436,7 @@ export type Database = {
         Update: {
           about?: string | null
           city?: string | null
+          city_id?: string | null
           community_type?: string | null
           created_at?: string
           Featured?: boolean
@@ -418,6 +449,13 @@ export type Database = {
           website?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "community_profiles_city_id_fkey"
+            columns: ["city_id"]
+            isOneToOne: false
+            referencedRelation: "cities"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "community_profiles_id_fkey"
             columns: ["profile_id"]
