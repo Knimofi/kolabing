@@ -208,7 +208,7 @@ const BusinessProfile: React.FC = () => {
                   placeholder="Enter your business name"
                   aria-invalid={!!errors.name}
                   aria-describedby={errors.name ? 'name-error' : undefined}
-                  style={{ background: '#FFFFFF' }}
+                  style={{ background: '#FFF9E6', border: '1px solid #FFD861' }}
                 />
                 {errors.name && (
                   <p id="name-error" className="text-sm text-destructive" role="alert">
@@ -233,10 +233,10 @@ const BusinessProfile: React.FC = () => {
                   value={formData.city_id} 
                   onValueChange={(value) => handleInputChange('city_id', value)}
                 >
-                  <SelectTrigger id="city_id" aria-invalid={!!errors.city_id} style={{ background: '#FFFFFF' }}>
+                  <SelectTrigger id="city_id" aria-invalid={!!errors.city_id} style={{ background: '#FFF9E6', border: '1px solid #FFD861' }}>
                     <SelectValue placeholder="Select your city" />
                   </SelectTrigger>
-                  <SelectContent style={{ background: '#FFFFFF' }}>
+                  <SelectContent style={{ background: '#FFF9E6' }}>
                     {cities.map((city) => (
                       <SelectItem key={city.id} value={city.id}>
                         {city.name}
@@ -268,10 +268,10 @@ const BusinessProfile: React.FC = () => {
                 value={formData.business_type} 
                 onValueChange={(value) => handleInputChange('business_type', value)}
               >
-                <SelectTrigger id="business_type" aria-invalid={!!errors.business_type} style={{ background: '#FFFFFF' }}>
+                <SelectTrigger id="business_type" aria-invalid={!!errors.business_type} style={{ background: '#FFF9E6', border: '1px solid #FFD861' }}>
                   <SelectValue placeholder="Select your business type" />
                 </SelectTrigger>
-                <SelectContent style={{ background: '#FFFFFF' }}>
+                <SelectContent style={{ background: '#FFF9E6' }}>
                   {businessTypes.map((type) => (
                     <SelectItem key={type} value={type}>
                       {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -312,7 +312,7 @@ const BusinessProfile: React.FC = () => {
                 placeholder="+34 600 123 456"
                 aria-invalid={!!errors.phone_number}
                 aria-describedby={errors.phone_number ? 'phone-error' : undefined}
-                style={{ background: '#FFFFFF' }}
+                style={{ background: '#FFF9E6', border: '1px solid #FFD861' }}
               />
               {errors.phone_number && (
                 <p id="phone-error" className="text-sm text-destructive" role="alert">
@@ -341,7 +341,7 @@ const BusinessProfile: React.FC = () => {
                 onChange={(e) => handleInputChange('about', e.target.value)}
                 placeholder="Describe here your business and mentality."
                 className="min-h-[100px]"
-                style={{ background: '#FFFFFF' }}
+                style={{ background: '#FFF9E6', border: '1px solid #FFD861' }}
               />
             </div>
 
@@ -366,7 +366,7 @@ const BusinessProfile: React.FC = () => {
                   placeholder="yourwebsite.com"
                   aria-invalid={!!errors.website}
                   aria-describedby={errors.website ? 'website-error' : undefined}
-                  style={{ background: '#FFFFFF' }}
+                  style={{ background: '#FFF9E6', border: '1px solid #FFD861' }}
                 />
                 {errors.website && (
                   <p id="website-error" className="text-sm text-destructive" role="alert">
@@ -394,7 +394,7 @@ const BusinessProfile: React.FC = () => {
                   placeholder="yourbusiness"
                   aria-invalid={!!errors.instagram}
                   aria-describedby={errors.instagram ? 'instagram-error' : undefined}
-                  style={{ background: '#FFFFFF' }}
+                  style={{ background: '#FFF9E6', border: '1px solid #FFD861' }}
                 />
                 {errors.instagram && (
                   <p id="instagram-error" className="text-sm text-destructive" role="alert">
